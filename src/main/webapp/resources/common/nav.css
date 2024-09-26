@@ -15,6 +15,10 @@
 	width: 200px;
 }
 
+.nav {
+	margin-top:10px;
+}
+
 .nav-link {
 	color: #fff;
 	display: flex;
@@ -23,6 +27,7 @@
 	transition: opacity 0.3s;
 	opacity: 0.4;
 	position: relative;
+	margin-bottom: 30px;
 }
 
 .nav-link:hover {
