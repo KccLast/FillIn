@@ -1,0 +1,32 @@
+#sidebar {
+    height: calc(100vh - 60px); /* 헤더 높이만큼 빼고 전체 높이 설정 */
+    background-color: #005BAC;
+    padding: 15px 0;
+    position: fixed;
+    top: 60px;
+    left: 0;
+    width: 200px;
+    z-index: 1;
+}
+
+.workspace {
+    color: #fff;
+    margin: 10px 0 20px 10px;
+}
+
+.logo-border {
+    border: 1px solid #fff;
+    margin: 0 10px 10px 10px;
+}
+
+.nav-menu {
+	color: #fff;
+	display: flex;
+	align-items: center;
+}
+
+.arrow-icon {
+	width: 10px; 
+	height: 10px;
+	margin-left: 10px; /* 이미지와 텍스트 간의 간격 조정 */
+}
