@@ -92,3 +92,6 @@ gradle-app.setting
 
 # 기타
 node_modules/
+
+# Eclipse 관련
+.metadata
