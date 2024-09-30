@@ -43,3 +43,11 @@ header {
 .username {
 	font-weight: bold;
 }
+
+.modal-backdrop {
+	display: none;
+}
+
+.modal-content {
+	background-color: #fff;
+}

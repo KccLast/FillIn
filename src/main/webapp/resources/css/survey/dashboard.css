@@ -1,65 +1,219 @@
 body {
-	background-color: red;
+	background-color: #f8f9fC !important;
 }
 
 .content {
-	height: 700px;
-	background-color: green;
+	min-height: calc(100vh - 60px);
+	/* background-color: green; */
 	margin-top: 100px;
 	margin-left: 240px;
 	margin-right: 40px;
+	display: flex;
+	gap: 10px;
+	flex-wrap: wrap;
+	align-items: flex-start;
+}
+
+/* 다중 검색 스타일 */
+.filter-section {
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+	padding: 10px;
+	border: 1px solid #ddd;
+	border-radius: 10px;
+	width: 97%;
+	margin-left: 10px;
+	margin-bottom: 20px;
+}
+
+.filter-row {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	padding-bottom: 20px;
+	margin: 10px 10px 0 10px;
+	font-size: 15px;
+}
+
+.filter-row p {
+	width: 120px; /* p 태그의 고정 너비를 설정하여 input과 줄 맞춤 */
+	margin: 0;
+	text-align: left; /* 오른쪽 정렬로 input과 더 가깝게 */
+}
+
+.filter-row:nth-child(6) {
+	margin-top: 0px;
+}
+
+.filter-input {
+	display: flex;
+	align-items: center;
+	gap: 5px;
+	flex: 1; /* 남은 공간을 차지 */
+}
+
+.filter-input span {
+	margin-left: 10px;
+	font-size: 13px;
+}
+
+.filter-row:nth-child(5) .filter-input input {
+	width: 60px;
+}
+
+.filter-row:nth-child(4) .filter-input input {
+	width: 300px;
+}
+
+input[type="date"],
+input[type="text"],
+.selectpicker {
+	padding: 5px;
+	border: 1px solid #ccc;
+	border-radius: 10px;
+}
+
+
+.filter-row:nth-child(1),
+.filter-row:nth-child(2),
+.filter-row:nth-child(3),
+.filter-row:nth-child(4) {
+	border-bottom: 1px solid #ddd; /* 1, 2, 3, 4번째 항목에만 아래 줄 */
+}
+
+.search-btn {
+	background-color: #005BAC;
+	color: white;
+	border: none;
+	border-radius: 20px;
+	font-size: 15px;
+	padding: 5px 15px;
+	cursor: pointer;
+}
+
+.initial-btn {
+	background-color: #c0c0c0;
+	color: white;
+	border: none;
+	border-radius: 20px;
+	font-size: 15px;
+	padding: 5px 15px;
+	cursor: pointer;
+}
+
+.filter-row:last-child {
+    display: flex;
+    justify-content: center;
+}
+
+.date-badge {
+    padding: 5px 10px;
+    border: 1px solid #000;
+    font-size: 0.75rem;
+    font-weight: 500;
+    border-radius: 20px;
+    cursor: pointer; 
+    margin-left: 5px;
+}
+
+.selected-badge {
+    padding: 5px 10px;
+    background-color: #005BAC;
+    color: #fff;
+    border: none;
+    font-size: 0.75rem;
+    font-weight: 500;
+    border-radius: 20px;
+    cursor: pointer; 
+    margin-left: 5px;
 }
 
 /* card 스타일 */
-.card {
-    border: 1px solid #ddd;
-    border-radius: 20px; 
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    width: 250px;
-    margin: 10px;
+.cards-container {
     display: flex;
-    flex-direction: column;
-    height: auto;
-    overflow: hidden;
+    gap: 10px;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    padding-bottom:15px;
+}
+
+.card {
+	border: 1px solid #ddd;
+	border-radius: 0;
+	box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+	width: 250px;
+	max-height: 205px;
+	margin: 10px;
+	display: flex;
+	flex-direction: column;
+	overflow: hidden;
+}
+
+.card:hover {
+	cursor: pointer;
+	background-color: #f2f2f2;
 }
 
 .card-header {
-    background-color: #007bff;
-    color: white;
-    padding: 5px 8px;
-    font-weight: bold;
-    font-size: 13px;
-    border-top-left-radius: 5px;
-    border-top-right-radius: 5px;
+	background-color: #007bff;
+	color: white;
+	padding: 5px 8px;
+	font-weight: bold;
+	font-size: 13px;
+	border-top-left-radius: 5px;
+	border-top-right-radius: 5px;
 }
 
 .card-body {
-    padding: 8px; 
-    font-size: 12px;
+	font-size: 13px;
+	max-height: 170px;
 }
 
 .card-body img {
-	width:50px;
+	width: 50px;
 	justify-content: center;
 	align-items: center;
 }
 
+.add-survey-card {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	height: 200px;
+}
+
+.add-survey-card img {
+	width: 50px;
+	max-height: 100%;
+	object-fit: contain;
+}
+
+.add-survey-card:hover img {
+	filter: opacity(0.5) drop-shadow(0 0 0 #005BAC);
+}
+
+.add-survey-card:hover {
+	background-color: #f0f1f2;
+	cursor: pointer;
+}
+
 .date-info {
-    display: flex; 
-    justify-content: space-between;
-    margin-bottom: 2px; 
-    font-size: 12px;
+	display: flex;
+	justify-content: space-between;
+	margin-bottom: 2px;
+	font-size: 12px;
 }
 
 .date-info p {
-    margin: 0 3px 0 0;
+	margin: 0 3px 0 0;
 }
 
 .card-footer {
-    background-color: #f8f9fa;
-    text-align: left;
-    border-bottom-left-radius: 5px;
-    border-bottom-right-radius: 5px;
-    font-weight: bold;
-    font-size: 12px;
+	background-color: #f8f9fa;
+	text-align: left;
+	border-bottom-left-radius: 5px;
+	border-bottom-right-radius: 5px;
+	font-weight: bold;
+	font-size: 12px;
 }
