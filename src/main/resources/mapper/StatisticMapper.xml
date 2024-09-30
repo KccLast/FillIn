@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.kcc.fillin.statistic.mapper.StatisticMapper">
+
+    <select id="selectTargetCount">
+        SELECT target_people AS targetCount
+        FROM survey
+        WHERE id = #{surveyId}
+    </select>
+
+    <select id="selectParticipantsCount">
+        SELECT COUNT(DISTINCT a.participant_id) AS participantsCount
+        FROM survey s,
+             question q,
+             answer a
+        WHERE s.id = q.survey_id
+          AND q.id = a.question_id
+          AND s.id = #{surveyId}
+    </select>
+
+</mapper>
