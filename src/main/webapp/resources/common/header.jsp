@@ -33,10 +33,16 @@
 						src="/resources/img/common/alarm.png" width="25" height="23">
 						<div class="circle"></div></li>
 					<li class="px-2 username">송동호</li>
-					<li class="px-2"><img alt="profile"
-						src="/resources/img/common/profile.png" width="35" height="35"
+					<!-- <button type="button"  data-bs-toggle="modal" 
+					data-bs-target="#search-modal-account" 
+					class="search-btn" id="search-account-btn">계좌검색</button> -->
+					<li class="px-2">
+						<!-- <img alt="profile" src="/resources/img/common/profile.png" width="35" height="35"
 						data-toggle="modal" data-target="#mypageModal"
-						onclick="openMypageModal()"> <!-- 모달 연결 --></li>
+						onclick="openMypageModal()"> --> <!-- 모달 연결 --></li>
+						<button type="button"  data-bs-toggle="modal" 
+					data-bs-target="#mypageModal" 
+					>계좌검색</button>
 				</div>
 			</ul>
 		</div>

@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.kcc.fillin.survey.Criteria;
 import com.kcc.fillin.survey.dto.multiSearchSurveyRequest;
 import com.kcc.fillin.survey.dto.multiSearchSurveyResponse;
 import com.kcc.fillin.survey.service.SurveyService;
@@ -23,10 +24,27 @@ public class SurveyController {
 	private final SurveyService service;
 
 	@GetMapping("/dashboard")
-	public String dashboard(Model model) {
-		List<multiSearchSurveyResponse> allSurveys = service.getAllSurveys();
-		/*System.out.println("전체 설문: " + allSurveys);*/
-		model.addAttribute("allSurveys", allSurveys);
+	public String dashboard(Criteria cri, Model model) {
+		System.out.println("Criteria: " + cri);
+		int pageNum = cri.getPageNum();
+		int amount = cri.getAmount();
+		List<multiSearchSurveyResponse> pagedSurveys = service.getSurveyListWithPaging(cri);
+
+		model.addAttribute("pagedSurveys", pagedSurveys);
+		model.addAttribute("pageNum", pageNum);
+		model.addAttribute("amount", amount);
+
+		System.out.println("pagedSurveys: " + pagedSurveys);
+		System.out.println("pageNum: " + pageNum);
+		System.out.println("amount: " + amount);
+
+		int totalSurveyCount = service.getTotalSurveyCount();
+		model.addAttribute("totalSurveyCount", totalSurveyCount);
+		System.out.println("totalSurveyCount: " + totalSurveyCount);
+
+		int totalPages = (int)Math.ceil((double)totalSurveyCount / amount);
+		model.addAttribute("totalPages", totalPages);
+
 		return "/survey/dashboard";
 	}
 

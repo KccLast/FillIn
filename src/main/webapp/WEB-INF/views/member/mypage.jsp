@@ -18,14 +18,17 @@
 	src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script> -->
 </head>
 <body>
+<div class="modal fade" id="search-modal-account" tabindex="-1" aria-labelledby="searchModalLabel" aria-hidden="true">
 	<div class="container mt-5">
 		<!-- Modal Header -->
 		<div class="modal-header">
 			<h4 class="modal-title">마이 페이지</h4>
-			<button type="button" class="close" data-dismiss="modal"
+			<!-- <button type="button" class="close" data-dismiss="modal"
 				aria-label="Close">
 				<span aria-hidden="true">&times;</span>
-			</button>
+			</button> -->
+			<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            
 		</div>
 
 		<!-- Modal Body -->
@@ -71,7 +74,7 @@
 			</div>
 		</div>
 	</div>
-
+</div>
 	<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
 
 </body>

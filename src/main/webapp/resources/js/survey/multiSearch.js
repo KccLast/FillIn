@@ -1,4 +1,8 @@
 $(document).ready(function() {
+	let currentPage = 1;
+	const pageSize = 9;
+	let surveysData = [];
+
 	// 기간별 설문지 조회
 	$('.date-badge').on('click', function() {
 		// 선택된 배지 스타일 업데이트
@@ -53,20 +57,6 @@ $(document).ready(function() {
 				endDate = null;
 				break;
 		}
-
-		/*function formatDate(date, isEndOfDay = false) {
-			if (!date) return ''; // 값이 없으면 빈 문자열 반환
-
-			if (isEndOfDay) {
-				date.setHours(23, 59, 59, 999);
-			} else {
-				date.setHours(0, 0, 0, 0);
-			}
-
-			return date.getFullYear() + '-' +
-				('0' + (date.getMonth() + 1)).slice(-2) + '-' +
-				('0' + date.getDate()).slice(-2);
-		}*/
 
 		// 날짜 포맷팅 함수
 		function formatDate(date, isEndOfDay = false) {
@@ -147,6 +137,33 @@ $(document).ready(function() {
 		var startUpdatedAt = formatDate($('#startUpdatedAt').val(), false);
 		var endUpdatedAt = formatDate($('#endUpdatedAt').val(), true);
 
+		// 응답 수 입력 유효성 검사
+		let minAnswerCount = $('#minAnswerCount').val();
+		let maxAnswerCount = $('#maxAnswerCount').val();
+
+		if (minAnswerCount && isNaN(minAnswerCount)) {
+			alert('응답 수 최소값은 숫자여야 합니다.');
+			return;
+		}
+
+		if (maxAnswerCount && isNaN(maxAnswerCount)) {
+			alert('응답 수 최대값은 숫자여야 합니다.');
+			return;
+		}
+
+		minAnswerCount = parseInt(minAnswerCount, 10);
+		maxAnswerCount = parseInt(maxAnswerCount, 10);
+
+		if (minAnswerCount < 1) {
+			alert('응답 수 최소값은 1 이상이어야 합니다.');
+			return;
+		}
+
+		if (maxAnswerCount < minAnswerCount) {
+			alert('응답 수 최대값은 최소값보다 작을 수 없습니다.');
+			return;
+		}
+
 		// 요청 데이터 구성
 		const requestData = {
 			ccId: parseInt($('#ccId').val(), 10) || null, // 값이 없으면 null
@@ -171,7 +188,9 @@ $(document).ready(function() {
 			dataType: 'json',
 			success: function(response) {
 				console.log(response);
-				filteringSurveyCards(response); // 필터링된 설문 카드 동적으로 업데이트
+				surveysData = response; // 응답 저장
+				filteringSurveyCards(); // 필터링된 설문 카드 동적으로 업데이트
+				setupPagination(); // 페이지 설정	
 			},
 			error: function(xhr, status, error) {
 				console.error('Error message:', xhr.responseText || error);
@@ -179,9 +198,19 @@ $(document).ready(function() {
 		});
 	});
 
-	function filteringSurveyCards(surveys) {
+	function filteringSurveyCards() {
 		// 카드 컨테이너 초기화
 		$('.cards-container').empty();
+
+		// 현재 페이지에 해당하는 설문 데이터 필터링
+		const startRow = (currentPage - 1) * pageSize;
+		const endRow = startRow + pageSize;
+		const currentSurveys = surveysData.slice(startRow, endRow);
+
+		if (currentSurveys.length === 0) {
+			$('.cards-container').append('<p>검색 결과와 일치하는 설문지가 없습니다.</p>');
+			return;
+		}
 
 		// 설문지 생성하는 카드
 		var surveyCard =
@@ -191,9 +220,9 @@ $(document).ready(function() {
                 </div>
         	</div>`;
 
-		if (Array.isArray(surveys)) {
+		if (Array.isArray(currentSurveys)) {
 			// 필터링된 설문지 생성
-			surveyCard += surveys.map(survey =>
+			surveyCard += currentSurveys.map(survey =>
 				`<div class="card h-100">
                 <div class="card-body">
                     <span class="badge rounded-pill ${getBadgeClass(survey.ccId)} mb-1 px-2 py-1">${getBadgeText(survey.ccId)}</span>
@@ -219,8 +248,58 @@ $(document).ready(function() {
 
 			// 최종적으로 생성된 HTML을 카드 컨테이너에 추가
 			$('.cards-container').append(surveyCard);
-		} else {
-			console.warn("응답은 배열이 아닙니다:", surveys);
+		}
+	}
+
+	function setupPagination() {
+		$('.pagination').empty(); // 페이지네이션 초기화
+		const totalPage = Math.ceil(surveysData.length / pageSize); // 총 페이지 수 계산
+
+		// 이전 버튼 추가
+		if (currentPage > 1) {
+			$('.pagination').append($('<div class="page-item"></div>')
+				.append($('<a class="page-link" href="#">이전</a>')
+					.on('click', function(e) {
+						e.preventDefault();
+						if (currentPage > 1) {
+							currentPage--; // 이전 페이지로 이동
+							filteringSurveyCards();
+							setupPagination();
+						}
+					})));
+		}
+
+		// 페이지 링크 추가
+		for (let i = 1; i <= totalPage; i++) {
+			const pageLink = $('<div class="page-item"></div>')
+				.append($('<a class="page-link" href="#"></a>')
+					.text(i)
+					.on('click', function(e) {
+						e.preventDefault();
+						currentPage = i; // 클릭한 페이지로 이동
+						filteringSurveyCards();
+						setupPagination();
+					}));
+
+			if (i === currentPage) {
+				pageLink.addClass('active'); // 현재 페이지에 active 클래스 추가
+			}
+
+			$('.pagination').append(pageLink);
+		}
+
+		// 다음 버튼 추가
+		if (currentPage < totalPage) {
+			$('.pagination').append($('<div class="page-item"></div>')
+				.append($('<a class="page-link" href="#">다음</a>')
+					.on('click', function(e) {
+						e.preventDefault();
+						if (currentPage < totalPage) {
+							currentPage++; // 다음 페이지로 이동
+							filteringSurveyCards();
+							setupPagination();
+						}
+					})));
 		}
 	}
 
@@ -259,7 +338,10 @@ $(document).ready(function() {
 		$('#ccId').prop('selectedIndex', 0);
 
 		// 배지(span)들에 선택 상태가 있을 경우 초기화
-		$('.badge').removeClass('selected'); // 'selected' 클래스가 있다면 제거
+		$('.date-badge').removeClass('selected-badge');
 
+		// 페이지 초기화
+		currentPage = 1;
+		filteringSurveyCards();
 	});
 });

@@ -12,4 +12,8 @@ public interface SurveyMapper {
 	public List<multiSearchSurveyResponse> getAllSurveys();
 
 	public List<multiSearchSurveyResponse> getFilteringSurveys(multiSearchSurveyRequest request);
+
+	public List<multiSearchSurveyResponse> getSurveyListWithPaging(int startRow, int endRow);
+
+	public int getTotalSurveyCount();
 }

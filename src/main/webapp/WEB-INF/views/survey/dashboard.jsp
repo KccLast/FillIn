@@ -97,7 +97,7 @@
 			</div>
 
 			<!-- 생성된 설문지 카드 -->
-			<c:forEach var="survey" items="${allSurveys}">
+			<c:forEach var="survey" items="${pagedSurveys}">
 				<div class="card h-100">
 					<div class="card-body">
 						<c:choose>
@@ -105,8 +105,7 @@
 								<span class="badge rounded-pill bg-warning mb-1 px-2 py-1">예정</span>
 							</c:when>
 							<c:when test="${survey.ccId == 12}">
-								<span class="badge rounded-pill bg-primary mb-1 px-2 py-1">진행
-									중</span>
+								<span class="badge rounded-pill bg-primary mb-1 px-2 py-1">진행 중</span>
 							</c:when>
 							<c:when test="${survey.ccId == 13}">
 								<span class="badge rounded-pill bg-secondary mb-1 px-2 py-1">완료</span>
@@ -141,6 +140,28 @@
 					</div>
 				</div>
 			</c:forEach>
+		</div>
+
+		<!-- 페이지 네비게이션 -->
+		<div class="pagination">
+			<c:if test="${pageNum > 1 }">
+				<a href="?pageNum=${pageNum - 1 }&amount=${amount}">이전</a>
+			</c:if>
+
+			<c:forEach var="i" begin="1" end="${totalPages }">
+				<c:choose>
+					<c:when test="${i == pageNum }">
+						<strong>${i }</strong>
+					</c:when>
+					<c:otherwise>
+						<a href="?pageNum=${i }&amount=${amount}">${i }</a>
+					</c:otherwise>
+				</c:choose>
+			</c:forEach>
+
+			<c:if test="${pageNum < totalPages }">
+				<a href="?pageNum=${pageNum + 1 }&amount=${amount}">다음</a>
+			</c:if>
 		</div>
 	</div>
 	<script type="text/javascript"
