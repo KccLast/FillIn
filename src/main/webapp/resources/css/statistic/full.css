@@ -60,14 +60,38 @@ button {
     background-color: #005BAC !important;
 }
 
-/*.carousel-inner {*/
-/*    height: 400px; !* 캐러셀 높이 설정 *!*/
-/*}*/
+.progress-bar-container {
+    position: relative;
+    background-color: #e0e0e0;
+    height: 30px;
+    border-radius: 5px;
+    overflow: hidden;
+    width: 100%;
+    margin-bottom: 10px;
+}
 
-/*.card {*/
-/*    height: 100%; !* 카드 높이를 캐러셀과 동일하게 설정 *!*/
-/*}*/
+.progress-bar-fill {
+    background-color: #005bac;
+    height: 100%;
+    text-align: center;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
 
-/*.carousel-control-prev, .carousel-control-next {*/
-/*    z-index: 10 !important; !* 버튼이 다른 요소 위에 보이도록 설정 *!*/
-/*}*/
+.progress-bar-text {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    color: white;
+    font-weight: bold;
+}
+
+.progress-bar-total {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: white;
+}

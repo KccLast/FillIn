@@ -25,6 +25,7 @@ public class StatisticServiceImpl implements StatisticService {
 			.targetCount(statisticMapper.selectTargetCount(surveyId))
 			// 참여 인원
 			.participantsCount(statisticMapper.selectParticipantsCount(surveyId))
+			.hitsResponseList(statisticMapper.selectHits(surveyId))
 			.build();
 	}
 }

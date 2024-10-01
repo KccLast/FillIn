@@ -24,7 +24,7 @@ public class StatisticController {
 		mav.setViewName("statistic/full");
 		mav.addObject("statisticSurveyResponse", statisticService.getStatisticSurvey(surveyId));
 
-		log.info(statisticService.getStatisticSurvey(surveyId).toString());
+		log.info(mav.getModel().get("statisticSurveyResponse").toString());
 
 		return mav;
 	}

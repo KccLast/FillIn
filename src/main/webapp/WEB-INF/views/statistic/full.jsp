@@ -1,4 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -10,7 +11,6 @@
 </head>
 <body>
 <%@include file="/resources/common/header.jsp" %>
-<%-- <%@ include file="/resources/common/miniNav.jsp"%> --%>
 <%@include file="/resources/common/nav.jsp" %>
 
 <!-- 컨텐츠 내용 -->
@@ -52,6 +52,16 @@
         <div class="col-md-2 d-flex align-items-end">
             <button class="btn btn-primary">검색</button>
         </div>
+    </div>
+
+    <!-- 참여자 수 그래프 -->
+    <div class="progress-bar-container">
+        <c:set var="progressPercentage"
+               value="${(statisticSurveyResponse.participantsCount / statisticSurveyResponse.targetCount) * 100}"/>
+        <div class="progress-bar-fill"
+             style="width: ${progressPercentage}%;">${statisticSurveyResponse.participantsCount}명
+        </div>
+        <div class="progress-bar-total">${statisticSurveyResponse.targetCount}명</div>
     </div>
 
     <!-- 통계 데이터 -->

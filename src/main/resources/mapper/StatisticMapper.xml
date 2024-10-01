@@ -13,12 +13,37 @@
 
     <select id="selectParticipantsCount">
         SELECT COUNT(DISTINCT a.participant_id) AS participantsCount
-        FROM survey s,
-             question q,
+        FROM question q,
              answer a
-        WHERE s.id = q.survey_id
+        WHERE q.survey_id = #{surveyId}
           AND q.id = a.question_id
-          AND s.id = #{surveyId}
+    </select>
+
+    <select id="selectHits" resultType="HitsDTO">
+        SELECT occur_date                     AS occurDate,
+               COALESCE(total_views, 0)       AS totalViews,    -- 조회수
+               COALESCE(total_starts, 0)      AS startCount,    -- 시작수
+               COALESCE(participant_count, 0) AS completedCount -- 완료수
+        FROM (
+                 -- survey_log에서 조회수와 시작수를 날짜별로 집계
+                 SELECT TRUNC(occur_date)                          AS occur_date,
+                        SUM(CASE WHEN cc_id = 7 THEN 1 ELSE 0 END) AS total_views, -- 조회수
+                        SUM(CASE WHEN cc_id = 8 THEN 1 ELSE 0 END) AS total_starts -- 시작수
+                 FROM survey_log
+                 WHERE survey_id = #{surveyId}
+                 GROUP BY TRUNC(occur_date)) survey_log_data
+                 LEFT JOIN
+             (
+                 -- answer에서 날짜별 응답자 수 집계
+                 SELECT TRUNC(a.answer_date)             AS answer_date,
+                        COUNT(DISTINCT a.participant_id) AS participant_count
+                 FROM answer a
+                          JOIN
+                      question q ON a.question_id = q.id
+                 WHERE q.survey_id = #{surveyId}
+                 GROUP BY TRUNC(a.answer_date)) answer_data
+             ON survey_log_data.occur_date = answer_data.answer_date
+        ORDER BY occur_date
     </select>
 
 </mapper>
