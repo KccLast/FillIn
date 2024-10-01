@@ -28,3 +28,14 @@
 .modal-footer .btn{
     margin-right: 20px;
 }
+
+.profile-container .btn {
+	background-color: #005BAC;
+	border: none;
+}
+
+.change-profile {
+	background-color: #005BAC;
+	border: none;
+	color: white;
+}

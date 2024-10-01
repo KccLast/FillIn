@@ -70,9 +70,9 @@
 			COUNT(a.id) AS answer_count
 		FROM
 			survey s
-		JOIN question q
+		LEFT JOIN question q
 		ON s.id = q.survey_id
-		JOIN answer a
+		LEFT JOIN answer a
 		ON q.id = a.question_id
 		<where>
 			<!-- 진행 상태 -->

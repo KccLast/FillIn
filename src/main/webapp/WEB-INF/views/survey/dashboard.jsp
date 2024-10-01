@@ -7,12 +7,9 @@
 <head>
 <meta charset="UTF-8">
 <title>DashBoard</title>
-<link rel="stylesheet" type="text/css"
-	href="/resources/common/dashBoardNav.css">
-<link rel="stylesheet" type="text/css"
-	href="/resources/css/survey/dashboard.css">
-<script type="text/javascript"
-	src="http://code.jquery.com/jquery-3.7.1.min.js"></script>
+<link rel="stylesheet" type="text/css" href="/resources/common/dashBoardNav.css">
+<link rel="stylesheet" type="text/css" href="/resources/css/survey/dashboard.css">
+<!-- <script type="text/javascript" src="http://code.jquery.com/jquery-3.7.1.min.js"></script> -->
 </head>
 <body>
 	<%@include file="/resources/common/header.jsp"%>
@@ -25,7 +22,7 @@
 			<div class="filter-row">
 				<p>진행 상태</p>
 				<div class="filter-input">
-					<select class="selectpicker" id="ccId" name="ccId">
+					<select class="selectpicker" id="progress-ccId" name="ccId">
 						<option value="">전체</option>
 						<option value="11">예정</option>
 						<option value="12">진행 중</option>
@@ -69,7 +66,7 @@
 			<div class="filter-row">
 				<p>제목</p>
 				<div class="filter-input">
-					<input type="text" id="name" name="name" placeholder="제목">
+					<input type="text" id="title" name="title" placeholder="제목">
 				</div>
 			</div>
 

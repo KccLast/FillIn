@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class MemberController {
 	@GetMapping("/mypage")
 	public String mypage() {
-		return "/member/mypage";
+		return "/member/modal-mypage";
 	}
 
 	@GetMapping("/update-mypage")

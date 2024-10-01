@@ -166,16 +166,19 @@ $(document).ready(function() {
 
 		// 요청 데이터 구성
 		const requestData = {
-			ccId: parseInt($('#ccId').val(), 10) || null, // 값이 없으면 null
+			ccId: parseInt($('#progress-ccId').val(), 10) || null, // 값이 없으면 null
 			startCreatedAt: startCreatedAt,
 			endCreatedAt: endCreatedAt,
 			startUpdatedAt: startUpdatedAt,
 			endUpdatedAt: endUpdatedAt,
-			name: $('#name').val() || '', // 빈 문자열로 기본값 설정
+			name: $('#title').val() || '', // 빈 문자열로 기본값 설정
 			minAnswerCount: $('#minAnswerCount').val() ? parseInt($('#minAnswerCount').val(), 10) : null,
 			maxAnswerCount: $('#maxAnswerCount').val() ? parseInt($('#maxAnswerCount').val(), 10) : null
 
 		};
+		console.log($("#title").val());  // 값이 제대로 들어오는지 확인
+		console.log($("#progress-ccId").val());
+		console.log($("#minAnswerCount").val());
 
 		console.log(requestData);
 
@@ -332,10 +335,10 @@ $(document).ready(function() {
 	// 초기화 버튼
 	$('#initialBtn').on('click', function() {
 		// 모든 텍스트 입력 필드와 날짜 입력 필드를 초기화
-		$('#name, #minAnswerCount, #maxAnswerCount, #startCreatedAt, #endCreatedAt, #startUpdatedAt, #endUpdatedAt').val('');
+		$('#title, #minAnswerCount, #maxAnswerCount, #startCreatedAt, #endCreatedAt, #startUpdatedAt, #endUpdatedAt').val('');
 
 		// 셀렉트 박스를 초기 상태로 설정
-		$('#ccId').prop('selectedIndex', 0);
+		$('#progress-ccId').prop('selectedIndex', 0);
 
 		// 배지(span)들에 선택 상태가 있을 경우 초기화
 		$('.date-badge').removeClass('selected-badge');
