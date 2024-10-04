@@ -98,13 +98,13 @@
 				<div class="card h-100">
 					<div class="card-body">
 						<c:choose>
-							<c:when test="${survey.ccId == 11 }">
+							<c:when test="${survey.ccSeq == 11 }">
 								<span class="badge rounded-pill bg-warning mb-1 px-2 py-1">예정</span>
 							</c:when>
-							<c:when test="${survey.ccId == 12}">
+							<c:when test="${survey.ccSeq == 12}">
 								<span class="badge rounded-pill bg-primary mb-1 px-2 py-1">진행 중</span>
 							</c:when>
-							<c:when test="${survey.ccId == 13}">
+							<c:when test="${survey.ccSeq == 13}">
 								<span class="badge rounded-pill bg-secondary mb-1 px-2 py-1">완료</span>
 							</c:when>
 						</c:choose>

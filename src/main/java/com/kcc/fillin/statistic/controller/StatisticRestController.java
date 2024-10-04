@@ -12,8 +12,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.kcc.fillin.survey.Criteria;
-import com.kcc.fillin.survey.dto.multiSearchSurveyRequest;
-import com.kcc.fillin.survey.dto.multiSearchSurveyResponse;
+import com.kcc.fillin.survey.dto.MultiSearchSurveyRequest;
+import com.kcc.fillin.survey.dto.MultiSearchSurveyResponse;
 import com.kcc.fillin.survey.service.SurveyService;
 
 import lombok.RequiredArgsConstructor;
@@ -30,7 +30,7 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 @RequiredArgsConstructor
 @Slf4j
-public class StatisticController {
+public class StatisticRestController {
 	private final StatisticService statisticService;
 
 	@GetMapping("/statistic/{surveyId}")

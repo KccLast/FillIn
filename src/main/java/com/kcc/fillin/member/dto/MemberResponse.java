@@ -11,10 +11,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class MemberResponse {
 	// 파일 아이디
-	private String email;
+	private String username;
 	private String name;
 	private Date birth;
 	private int status;
-	private int postalCode;
+	private String postalCode;
 	private String address;
 }

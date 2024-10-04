@@ -11,9 +11,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class MemberVO {
-	private long id;
-	private long fileId;
-	private String email;
+	private long seq;
+	private long tbFileSeq;
+	private String username;
 	private String password;
 	private String name;
 	private Date birth;
