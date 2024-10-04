@@ -49,12 +49,14 @@ public class SurveyController {
 	}
 
 	@PostMapping("/dashboard")
-	public ResponseEntity<List<multiSearchSurveyResponse>> filterDashboard(@RequestBody
-	multiSearchSurveyRequest request) {
+	public ResponseEntity<List<multiSearchSurveyResponse>> filterDashboard(@RequestBody multiSearchSurveyRequest request) {
 		List<multiSearchSurveyResponse> filteringSurveys = service.getFilteringSurveys(request);
 		System.out.println("필터링 결과: " + filteringSurveys);
 
 		return ResponseEntity.ok(filteringSurveys);
 	}
+
+	@GetMapping("/project")
+	public void newProject() {}
 
 }
