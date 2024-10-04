@@ -1,6 +1,6 @@
+<%@ page import="com.kcc.fillin.statistic.dto.StatisticSurveyResponse" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -12,6 +12,12 @@
 <body>
 <%@include file="/resources/common/header.jsp" %>
 <%@include file="/resources/common/nav.jsp" %>
+<%
+    StatisticSurveyResponse res = (StatisticSurveyResponse)request.getAttribute("statisticSurveyResponse");
+%>
+<c:set var='hitsResponseList' value='<%=res.getHitsResponseList()%>'/>
+<c:set var='quantitativeResponseList' value='<%=res.getQualitativeResponseList()%>'/>
+<c:set var='qualitativeResponseList' value='<%=res.getQualitativeResponseList()%>'/>
 
 <!-- 컨텐츠 내용 -->
 <div class="content">
@@ -260,7 +266,95 @@
 
     </div>
 
+
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        <%--const jjj = JSON.stringify('${statisticSurveyResponse}');--%>
+        <%--console.log(jjj);--%>
+
+        <%--const jsstr = JSON.parse('${hitsResponseList}');--%>
+        <%--console.log(jsstr);--%>
+
+        // 조회수, 시작수, 완료수를 저장할 배열 초기화
+        const totalViews = [];
+        const startCount = [];
+        const completedCount = [];
+        // 날짜 리스트 추출
+        const labels = [];
+
+        // JSP에서 c:forEach를 사용하여 데이터를 자바스크립트 배열로 저장
+        <c:forEach var="hit" items="${hitsResponseList}">
+        <%--console.log('${hit.occurDate}');--%>
+        totalViews.push(${hit.totalViews});
+        startCount.push(${hit.startCount});
+        completedCount.push(${hit.completedCount});
+        labels.push('${hit.occurDate}');
+        </c:forEach>
+
+        const ctx = document.getElementById('statisticChart').getContext('2d');
+
+        const data = {
+            labels: labels,
+            datasets: [
+                {
+                    label: '조회수',
+                    data: totalViews,
+                    fill: true,
+                    borderColor: 'rgba(72, 136, 246, 1)',
+                    backgroundColor: 'rgba(198, 218, 253, 0.3)',
+                    tension: 0.1
+                },
+                {
+                    label: '시작수',
+                    data: startCount,
+                    fill: true,
+                    borderColor: 'rgba(52, 200, 102, 1)',
+                    backgroundColor: 'rgba(198, 237, 208, 0.3)',
+                    tension: 0.1
+                },
+                {
+                    label: '완료수',
+                    data: completedCount,
+                    fill: true,
+                    borderColor: 'rgba(173, 94, 247, 1)',
+                    backgroundColor: 'rgba(229, 204, 254, 0.3)',
+                    tension: 0.1
+                }
+            ]
+        };
+
+        const config = {
+            type: 'line',
+            data: data,
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    },
+                },
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: '날짜'
+                        }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: '수치'
+                        }
+                    }
+                }
+            }
+        };
+
+        // 차트 생성
+        new Chart(ctx, config);
+    </script>
+
+    <script src="/resources/js/statistic/full.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-..."
             crossorigin="anonymous"></script>
 </body>

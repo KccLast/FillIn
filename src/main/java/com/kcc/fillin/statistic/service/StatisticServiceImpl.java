@@ -26,6 +26,7 @@ public class StatisticServiceImpl implements StatisticService {
 			// 참여 인원
 			.participantsCount(statisticMapper.selectParticipantsCount(surveyId))
 			.hitsResponseList(statisticMapper.selectHits(surveyId))
+			// .quantitativeResponseList(statisticMapper.selectQuantitativeList(surveyId))
 			.build();
 	}
 }

@@ -2,13 +2,13 @@ package com.kcc.fillin.statistic.dto;
 
 import java.util.List;
 
-import com.kcc.fillin.statistic.domain.QuestionItem;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
+@Getter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
@@ -16,5 +16,5 @@ import lombok.ToString;
 public class QuantitativeResponse {
 	private Long questionOrder;
 	private String questionName;
-	private List<QuestionItem> questionItemList;
+	private List<QuantitativeQuestionItemDTO> questionItems;
 }

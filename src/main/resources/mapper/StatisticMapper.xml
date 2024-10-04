@@ -26,6 +26,7 @@
                COALESCE(participant_count, 0) AS completedCount -- 완료수
         FROM (
                  -- survey_log에서 조회수와 시작수를 날짜별로 집계
+--                  SELECT TRUNC(occur_date)                          AS occur_date,
                  SELECT TRUNC(occur_date)                          AS occur_date,
                         SUM(CASE WHEN cc_id = 7 THEN 1 ELSE 0 END) AS total_views, -- 조회수
                         SUM(CASE WHEN cc_id = 8 THEN 1 ELSE 0 END) AS total_starts -- 시작수
@@ -44,6 +45,28 @@
                  GROUP BY TRUNC(a.answer_date)) answer_data
              ON survey_log_data.occur_date = answer_data.answer_date
         ORDER BY occur_date
+    </select>
+
+    <resultMap id="quantitativeResponse" type="QuantitativeResponse">
+        <id property="questionOrder" column="order_num"/>
+        <result property="questionName" column="name"/>
+
+        <collection property="questionItems" ofType="QuantitativeQuestionItemDTO">
+            <result property="itemContent" column="contents"/>
+            <result property="itemRatio" column="itemRatio"/>
+        </collection>
+    </resultMap>
+
+    <select id="selectQuantitativeList" resultType="quantitativeResponse">
+        SELECT q.order_num,
+               q.name,
+               a.contents,
+               (COUNT(a.id) * 100.0 / SUM(COUNT(a.id)) OVER (PARTITION BY a.question_id)) AS itemRatio
+        FROM question q
+                 JOIN
+             answer a ON q.id = a.question_id
+        WHERE q.survey_id = #{surveyId}
+        GROUP BY q.order_num, q.name, a.contents, a.question_id;
     </select>
 
 </mapper>

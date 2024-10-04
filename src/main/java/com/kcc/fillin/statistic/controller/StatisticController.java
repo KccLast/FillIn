@@ -14,7 +14,6 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 @Slf4j
 public class StatisticController {
-
 	private final StatisticService statisticService;
 
 	@GetMapping("/statistic/{surveyId}")
