@@ -246,14 +246,14 @@
                 	currentCharCard = $(this).closest('.j-question-card'); // 현재 카드 저장
 					
 					// 현재 카드의 위치 및 크기 계산
-					var cardOffset = currentCharCard.offset(); // 카드의 화면에서의 위치
-					var cardHeight = currentCharCard.outerHeight(); // 카드의 높이
-					var cardWidth = currentCharCard.outerWidth(); // 카드의 너비
+					let cardOffset = currentCharCard.offset(); // 카드의 화면에서의 위치
+					let cardHeight = currentCharCard.outerHeight(); // 카드의 높이
+					let cardWidth = currentCharCard.outerWidth(); // 카드의 너비
 
 					// 모달의 위치 설정 (카드 중앙에 위치)
-					var modal = $('#preview-modal');
-					var modalHeight = modal.outerHeight();
-					var modalWidth = modal.outerWidth();
+					let modal = $('#preview-modal');
+					let modalHeight = modal.outerHeight();
+					let modalWidth = modal.outerWidth();
 
 					// 카드 중앙에 모달을 배치
 					modal.css({
@@ -281,6 +281,50 @@
 				$('.content').on('click','.j-location',function(){
 					getMyPosittion();
 				})
+				
+				$('.j-question-plus-button').click(function(){
+					let modal = $('#add-type-modal');
+					 // 모달이 이미 보이는 상태라면 숨기기
+			        if (modal.is(':visible')) {
+			        	
+			       
+			            modal.fadeOut();
+			            return; // 이미 보이는 상태일 때는 모달을 숨기고 함수 종료
+			        }
+					let buttonOffset = $(this).offset();
+					let buttonWidth = $(this).outerWidth();
+					let buttonHeight = $(this).outerHeight();
+					
+					let modalHeight = modal.outerHeight();
+					let modalWidth = modal.outerWidth();
+					
+					modal.css({
+						position: 'absolute',
+						top: buttonOffset.top - (buttonHeight/2) - (modalHeight/4) + 'px', // 카드 중앙 기준
+						left: buttonOffset.left + buttonWidth+ 'px'
+					});
+					
+					modal.fadeIn(); 
+					// 모달을 화면에 고정 
+				    modal.css({
+				        position: 'fixed', // 화면에 고정
+				        top: modal.offset().top - $(window).scrollTop() + 'px', // 현재 화면에 보이는 위치로 고정
+				        left: modal.offset().left - $(window).scrollLeft() + 'px'
+				    });
+				})
+				
+				
+				 // 모달 바깥을 클릭했을 때 모달 숨기기
+			    $(document).mouseup(function(e) {
+			        let modal = $('#add-type-modal');
+			        if (!modal.is(e.target) && modal.has(e.target).length === 0) {
+			           
+			            modal.fadeOut();
+			        }
+			    });
+				
+				
+				
 })
 
 // 행과 열을 기반으로 테이블 생성
@@ -843,6 +887,32 @@ function generatePreviewTable(target) {
 				<!-- 위치기록 -->
 			</div>
 		</div>
+		
+		
+		
+		<div class="j-question-card j-flex-col-center">
+			<div class="j-survey-es-type j-flex-row-center">
+				<button class="j-essential">필수</button>
+				<!-- 위치기록 -->
+				<div class="j-typeAndImg j-flex-row-center">
+					<img src="/resources/img/question/picture.png" />
+					<div class="j-tpye-name">사진</div>
+				</div>
+				<!-- 위치기록  -->
+			</div>
+			<div class="j-survey-name">
+				<input class="j-survey-name-input" type="text"
+					placeholder="질문명을 작성해주세요">
+			</div>
+			<div class="j-survey-content">
+				<textarea rows="" cols="" placeholder="질문에 대한 설명을 작성해주세요"></textarea>
+			</div>
+			<div class="j-question-content-box">
+				<!-- 위치기록 -->
+				
+				<!-- 위치기록 -->
+			</div>
+		</div>
 
 		<!-- 사용자 식별용  -->
 
@@ -931,10 +1001,8 @@ function generatePreviewTable(target) {
 				<div class="j-data-box j-flex-col-center">
 					<span>Data</span>
 					<div class="j-type-box ">
-					<div class="j-typeAndImg-modal j-flex-row-center">
-					<img src="/resources/img/question/choice.png" />
-					<div class="j-type-name-modal">전화번호</div>
-				    </div>
+					
+					
 				    
 				    <div class="j-typeAndImg-modal j-flex-row-center">
 					<img src="/resources/img/question/gender.png" />
@@ -946,20 +1014,47 @@ function generatePreviewTable(target) {
 					<div class="j-type-name-modal">위치기록</div>
 				    </div>
 				    
-				    <div class="j-typeAndImg-modal j-flex-row-center">
-					<img src="/resources/img/question/house.png" />
-					<div class="j-type-name-modal">주소</div>
-					</div>
+				   
 					
 					<div class="j-typeAndImg-modal j-flex-row-center">
 					<img src="/resources/img/question/secu.png" />
-					<div class="j-type-name-modal">개인정보동의</div>
+					<div class="j-type-name-modal">개인정보</div>
 				    </div>
 				    
 				    <div class="j-typeAndImg-modal j-flex-row-center">
 					<img src="/resources/img/question/picture.png" />
 					<div class="j-type-name-modal">사진</div>
 				    </div>
+				   </div>
+				</div>
+				
+				<div class="j-contact-box j-flex-col-center">
+					<span>Contact</span>
+					
+					<div class="j-type-box ">
+					
+					
+					
+					  <div class="j-typeAndImg-modal j-flex-row-center">
+					<img src="/resources/img/question/email.png" />
+					<div class="j-type-name-modal">이메일</div>
+				    </div>
+					
+					
+					<div class="j-typeAndImg-modal j-flex-row-center">
+					<img src="/resources/img/question/phones.png" />
+					<div class="j-type-name-modal">전화번호</div>
+				    </div>
+				    
+				    
+				    <div class="j-typeAndImg-modal j-flex-row-center">
+					<img src="/resources/img/question/house.png" />
+					<div class="j-type-name-modal">주소</div>
+					</div>
+					
+					
+				    
+				  
 				   </div>
 				</div>
 			</div>

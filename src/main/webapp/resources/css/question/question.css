@@ -553,14 +553,14 @@ tr:nth-child(even) {
 .add-type-modal-class{
   position: absolute; /* 위치를 카드 기준으로 설정하기 위해 absolute 사용 */
   z-index: 1000; /* 모달을 다른 요소 위로 */
-  width: 400px;
+  width: 600px;
   height:300px;
   top:500px;
   left:500px;
   background-color: white;
   border-radius:10px;
   box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.1);
-	
+  display: none;
 }
 .add-type-modal-content{
 	height: 100%;
@@ -579,38 +579,41 @@ tr:nth-child(even) {
 	width: 100%;
 	display: flex;
 	flex-direction: column;
-	justify-content: space-around;
 	height: 80%;
 }
 
-.j-quantity-box > span{
+.j-quantity-box{
 	font-weight: bold;
 	color:#005BAC;
 }
-.j-quantity-box > div{
-	color:#005BAC;
-}
 
-.j-qual-box > span{
+.j-qual-box {
 	font-weight: bold;
 	color:#47920D;
 }
-.j-qual-box > div {
-	color:#47920D;
-}
 
-.j-data-box > span{
+.j-data-box{
 	font-weight: bold;
 	color: #805AD5;
 }
-.j-data-box > div{
-	color: #805AD5;
+.j-contact-box{
+	font-weight: bold;
+	color: #6FA5CD;
 }
+
 
 .j-typeAndImg-modal{
 	width: 100%;
+	height: 10%;
 	justify-content: flex-start !important;
-	margin-bottom: 3%;
+	margin-bottom: 10%;
+	margin-top: 8%;
+	border-radius: 10px;
+	box-sizing: border-box;
+}
+.j-typeAndImg-modal:hover {
+    background-color: rgba(239,248,255,0.6);
+    cursor: pointer; 
 }
 .j-typeAndImg-modal > img{
 	width: 20px;
