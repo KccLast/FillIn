@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+   <mapper namespace="com.kcc.fillin.member.mapper.MemberMapper">
+     <!-- 이메일 중복 체크 -->
+    <select id="emailExists" parameterType="String" resultType="int">
+        SELECT COUNT(*) FROM MEMBER WHERE EMAIL = #{email}
+    </select>
+    
+     <!-- 회원 정보 삽입 -->
+    <insert id="insertMember" parameterType="com.kcc.fillin.member.dto.MemberDTO">
+    INSERT INTO MEMBER (
+            EMAIL, PASSWORD, NAME, PHONE, BIRTH, ADDRESS, POSTAL_CODE, CC_ID, CREATED_AT, UPDATED_AT
+        ) VALUES (
+            #{email}, #{password}, #{name}, #{phone}, #{birth,jdbcType=DATE}, #{address}, #{postalCode, jdbcType=NUMERIC}, #{ccId}, 
+            CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
+        )
+    </insert>
+</mapper>
+

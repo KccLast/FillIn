@@ -1,0 +1,106 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    height: 100%;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f6f7fb;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    padding-top: 60px; /* Navbar 공간 확보 */
+}
+
+.login-container {
+    background-color: #fff;
+    padding: 60px; /* 패딩을 늘려서 공간 확보 */
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 40%;
+    height: auto; /* 높이를 자동으로 설정하여 내용에 맞춤 */
+}
+
+.navbar {
+    width: 100%;
+    background-color: #f8f9fa;
+    padding: 13px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #ddd;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+}
+
+.navbar a {
+    text-decoration: none;
+    color: black;
+    margin: 0 10px;
+    display: flex;
+    align-items: center;
+}
+
+.logo {
+    max-width: 68%;
+    max-height: 72px;
+    margin-right: 8px;
+}
+
+h2 {
+    text-align: center;
+    font-size: 42px;
+    color: #333;
+    margin-bottom: 40px; /* 제목과 입력 필드 간 간격을 늘림 */
+}
+
+.input-container {
+    margin-bottom: 35px; /* 입력 필드 간 간격을 늘림 */
+}
+
+.input-container input {
+    width: 100%;
+    padding: 20px; /* 패딩을 더 늘려서 입력 필드를 더 깔끔하게 */
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 20px; /* 글자 크기 조정 */
+}
+
+#login-btn {
+    width: 100%;
+    padding: 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 25px;
+    cursor: pointer;
+    margin-top: 20px; /* 버튼과 입력 필드 간 간격을 늘림 */
+}
+
+#login-btn:hover {
+    background-color: #0056b3;
+}
+
+.links {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.links a {
+    text-decoration: none;
+    color: #007bff;
+    font-size: 18px; /* 링크 글자 크기 조정 */
+}
+
+.links a:hover {
+    text-decoration: underline;
+}
