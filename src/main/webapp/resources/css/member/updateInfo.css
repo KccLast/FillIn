@@ -1,0 +1,32 @@
+.changeProfileBtn {
+	background-color: #005BAC;
+	border: none;
+}
+
+#postalCode {
+	width: 70%;
+}
+
+.postal-wrapper {
+    display: flex;
+    align-items: center;
+}
+
+.postal-wrapper button {
+	width: 30%;
+    margin-left: 8px;
+    margin-bottom: 10px;
+    background-color: #005BAC;
+	border: none; 
+
+}
+
+.address-container {
+    display: flex;
+    gap: 10px;
+}
+
+.address-container .address-input {
+    width: 50%;
+    box-sizing: border-box;
+}

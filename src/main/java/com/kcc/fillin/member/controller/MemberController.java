@@ -1,28 +1,27 @@
 package com.kcc.fillin.member.controller;
 
-import java.sql.Date;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.format.DateTimeFormatter;
 
-import org.apache.ibatis.javassist.compiler.ast.Member;
+import com.kcc.fillin.member.dto.LoginMemberRequest;
+import com.kcc.fillin.member.dto.MemberResponse;
+import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
-
+import org.springframework.web.bind.annotation.*;
 import com.kcc.fillin.member.dto.MemberDTO;
 import com.kcc.fillin.member.service.MemberService;
 
 @Controller
 @RequestMapping("/member")
+@RequiredArgsConstructor
 public class MemberController {
+
+	private final MemberService memberService;
+
 	// 이메일 찾기, 비밀번호 찾기 등은 로그인 없이 접근 가능하게 설정
 	@GetMapping("/email")
 	public String emailFind() {
@@ -39,8 +38,7 @@ public class MemberController {
 		return "/member/passwordFind";
 	}
 
-	@Autowired
-	private MemberService memberService;
+
 
 	// 회원가입 폼 화면 이동
 	@GetMapping("/register")
@@ -86,4 +84,13 @@ public class MemberController {
 	public String myPage() {
 		return "/member/myPage"; // 예: 마이페이지
 	}
+
+	@PostMapping("/mypage")
+	public ResponseEntity<MemberResponse> getMember(@RequestBody
+													LoginMemberRequest request) {
+		MemberResponse member = memberService.getMemberByEmail(request.getEmail());
+
+		return ResponseEntity.ok(member);
+	}
 }
+

@@ -7,11 +7,28 @@ import org.springframework.stereotype.Service;
 import com.kcc.fillin.member.dto.MemberDTO;
 import com.kcc.fillin.member.mapper.MemberMapper;
 
+import org.springframework.stereotype.Service;
+
+import com.kcc.fillin.member.dto.MemberRequest;
+import com.kcc.fillin.member.dto.MemberResponse;
+
+import lombok.RequiredArgsConstructor;
+
 @Service
+@RequiredArgsConstructor
 public class MemberServiceImpl implements MemberService {
 
-    @Autowired
-    private MemberMapper memberMapper;
+    private final MemberMapper memberMapper;
+
+	@Override
+	public MemberResponse getMemberByEmail(String email) {
+		return memberMapper.getMemberByEmail(email);
+	}
+
+	@Override
+	public void updateMemberByEmail(MemberRequest request) {
+		memberMapper.updateMemberByEmail(request);
+	}
 
     @Override
     public int emailExists(String name) {
@@ -20,6 +37,6 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public void registerMember(MemberDTO memberDTO) {
-        memberMapper.registerMember(memberDTO);  // return 문을 제거
-    }
+        memberMapper.registerMember(memberDTO); }
+
 }

@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kcc.fillin.survey.mapper.SurveyMapper">
+	<resultMap id="surveyResultMap"
+		type="com.kcc.fillin.survey.dto.multiSearchSurveyResponse">
+		<result column="name" property="name" />
+		<result column="created_at" property="createdAt" />
+		<result column="updated_at" property="updatedAt" />
+		<result column="post_date" property="postDate" />
+		<result column="end_date" property="endDate" />
+		<result column="cc_id" property="ccId" />
+		<result column="answer_count" property="answerCount" />
+	</resultMap>
+
+	<!-- 전체 설문지 조회 -->
+	<select id="getSurveyListWithPaging" resultMap="surveyResultMap"
+		parameterType="com.kcc.fillin.survey.Criteria">
+		<![CDATA[
+			SELECT *
+			        FROM (
+			            SELECT /*+INDEX_DESC(s pk_survey) */
+			                s.name AS name,
+			                s.cc_id AS cc_id,
+			                s.created_at AS created_at,
+			                s.updated_at AS updated_at,
+			                s.post_date AS post_date,
+			                s.end_date AS end_date,
+			                COUNT(a.id) AS answer_count,
+			                ROW_NUMBER() OVER (ORDER BY s.created_at DESC) AS rn
+			            FROM
+			                survey s
+		             	LEFT JOIN question q ON s.id = q.survey_id
+			            LEFT JOIN answer a ON q.id = a.question_id
+			            GROUP BY
+			                s.name, s.cc_id, s.created_at, s.updated_at, s.post_date, s.end_date
+			        )
+			        WHERE rn >= #{startRow} AND rn <= #{endRow}
+    	]]>
+	</select>
+	
+	<!-- 총 설문 수 조회 -->
+	<select id="getTotalSurveyCount" resultType="int">
+		SELECT COUNT(*)
+		FROM survey s
+	</select>
+
+	<!-- 다중 검색 -->
+	<select id="getFilteringSurveys" resultMap="surveyResultMap"
+		parameterType="com.kcc.fillin.survey.dto.multiSearchSurveyRequest">
+		SELECT
+			s.name AS name,
+			s.cc_id AS cc_id,
+			s.created_at AS created_at,
+			s.updated_at AS updated_at,
+			s.post_date AS post_date,
+			s.end_date AS
+			end_date,
+			COUNT(a.id) AS answer_count
+		FROM
+			survey s
+		LEFT JOIN question q
+		ON s.id = q.survey_id
+		LEFT JOIN answer a
+		ON q.id = a.question_id
+		<where>
+			<!-- 진행 상태 -->
+			<if test="ccId != null">
+				<choose>
+					<when test="ccId == 11">
+						AND s.cc_id = #{ccId}
+					</when>
+					<when test="ccId == 12">
+						AND s.cc_id = #{ccId}
+					</when>
+					<when test="ccId == 13">
+						AND s.cc_id = #{ccId}
+					</when>
+				</choose>
+			</if>
+			<!-- <if test="ccId != null">
+				AND s.cc_id = #{ccId}
+			</if> -->
+			<!-- 최초 생성일 필터 -->
+			<choose>
+				<when test="startCreatedAt != null and endCreatedAt != null">
+					AND s.created_at BETWEEN #{startCreatedAt} AND
+					#{endCreatedAt}
+				</when>
+				<when test="startCreatedAt != null">
+            <![CDATA[AND s.created_at >= #{startCreatedAt} ]]>
+				</when>
+				<when test="endCreatedAt != null">
+            <![CDATA[AND s.created_at <= #{endCreatedAt}]]>
+				</when>
+			</choose>
+			<!-- 마지막 수정일 필터 -->
+			<choose>
+				<when test="startUpdatedAt != null and endUpdatedAt != null">
+					AND s.updated_at BETWEEN #{startUpdatedAt} AND #{endUpdatedAt}
+				</when>
+				<when test="startUpdatedAt != null">
+            		<![CDATA[AND s.updated_at >= #{startUpdatedAt} ]]>
+				</when>
+				<when test="endUpdatedAt != null">
+            		<![CDATA[AND s.updated_at <= #{endUpdatedAt}]]>
+				</when>
+			</choose>
+			<!-- 제목 필터 -->
+			<if test="name != null and name != ''">
+				<![CDATA[AND instr(LOWER(s.name), LOWER(#{name})) > 0]]>
+			</if>
+		</where>
+		GROUP BY
+			s.id, s.name, s.cc_id, s.created_at, s.updated_at,
+			s.post_date, s.end_date
+		<!-- 응답 수 필터 -->
+		<if test="minAnswerCount > 0 or maxAnswerCount > 0">
+			HAVING
+			<if test="minAnswerCount > 0">
+				<![CDATA[COUNT(a.id) >= #{minAnswerCount}]]>
+			</if>
+			<if test="minAnswerCount > 0 and maxAnswerCount > 0">
+				AND
+			</if>
+			<if test="maxAnswerCount > 0">
+				<![CDATA[COUNT(a.id) <= #{maxAnswerCount}]]>
+			</if>
+		</if>
+	</select>
+
+</mapper>
