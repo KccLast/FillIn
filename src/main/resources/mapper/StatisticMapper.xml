@@ -3,20 +3,20 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.kcc.fillin.statistic.mapper.StatisticMapper">
+<mapper namespace="com.kcc.fillin.statistic.dao.StatisticMapper">
 
     <select id="selectTargetCount">
         SELECT target_people AS targetCount
         FROM survey
-        WHERE id = #{surveyId}
+        WHERE seq = #{surveySeq}
     </select>
 
     <select id="selectParticipantsCount">
-        SELECT COUNT(DISTINCT a.participant_id) AS participantsCount
+        SELECT COUNT(DISTINCT a.participant_seq) AS participantsCount
         FROM question q,
              answer a
-        WHERE q.survey_id = #{surveyId}
-          AND q.id = a.question_id
+        WHERE q.survey_seq = #{surveySeq}
+          AND q.seq = a.question_seq
     </select>
 
     <select id="selectHits" resultType="HitsDTO">
@@ -28,20 +28,20 @@
                  -- survey_log에서 조회수와 시작수를 날짜별로 집계
 --                  SELECT TRUNC(occur_date)                          AS occur_date,
                  SELECT TRUNC(occur_date)                          AS occur_date,
-                        SUM(CASE WHEN cc_id = 7 THEN 1 ELSE 0 END) AS total_views, -- 조회수
-                        SUM(CASE WHEN cc_id = 8 THEN 1 ELSE 0 END) AS total_starts -- 시작수
+                        SUM(CASE WHEN cc_seq = 7 THEN 1 ELSE 0 END) AS total_views, -- 조회수
+                        SUM(CASE WHEN cc_seq = 8 THEN 1 ELSE 0 END) AS total_starts -- 시작수
                  FROM survey_log
-                 WHERE survey_id = #{surveyId}
+                 WHERE survey_seq = #{surveySeq}
                  GROUP BY TRUNC(occur_date)) survey_log_data
                  LEFT JOIN
              (
                  -- answer에서 날짜별 응답자 수 집계
                  SELECT TRUNC(a.answer_date)             AS answer_date,
-                        COUNT(DISTINCT a.participant_id) AS participant_count
+                        COUNT(DISTINCT a.participant_seq) AS participant_count
                  FROM answer a
                           JOIN
-                      question q ON a.question_id = q.id
-                 WHERE q.survey_id = #{surveyId}
+                      question q ON a.question_seq = q.seq
+                 WHERE q.survey_seq = #{surveySeq}
                  GROUP BY TRUNC(a.answer_date)) answer_data
              ON survey_log_data.occur_date = answer_data.answer_date
         ORDER BY occur_date
@@ -61,12 +61,12 @@
         SELECT q.order_num,
                q.name,
                a.contents,
-               (COUNT(a.id) * 100.0 / SUM(COUNT(a.id)) OVER (PARTITION BY a.question_id)) AS itemRatio
+               (COUNT(a.seq) * 100.0 / SUM(COUNT(a.seq)) OVER (PARTITION BY a.question_seq)) AS itemRatio
         FROM question q
                  JOIN
-             answer a ON q.id = a.question_id
-        WHERE q.survey_id = #{surveyId}
-        GROUP BY q.order_num, q.name, a.contents, a.question_id;
+             answer a ON q.seq = a.question_seq
+        WHERE q.survey_seq = #{surveySeq}
+        GROUP BY q.order_num, q.name, a.contents, a.question_seq;
     </select>
 
 </mapper>

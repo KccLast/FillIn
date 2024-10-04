@@ -10,9 +10,9 @@ import lombok.ToString;
 @Builder
 @ToString
 public class Answer {
-	private Long id;
-	private Long questionId;
-	private Long participantId;
+	private Long seq;
+	private Long questionSeq;
+	private Long participantSeq;
 	private String contents;
 	private LocalDateTime answerDate;
 }

@@ -1,19 +1,23 @@
 package com.kcc.fillin.member.controller;
 
-
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
-import com.kcc.fillin.member.dto.LoginMemberRequest;
-import com.kcc.fillin.member.dto.MemberResponse;
-import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import com.kcc.fillin.member.dto.LoginMemberRequest;
 import com.kcc.fillin.member.dto.MemberDTO;
+import com.kcc.fillin.member.dto.MemberResponse;
 import com.kcc.fillin.member.service.MemberService;
+
+import lombok.RequiredArgsConstructor;
 
 @Controller
 @RequestMapping("/member")
@@ -38,8 +42,6 @@ public class MemberController {
 		return "/member/passwordFind";
 	}
 
-
-
 	// 회원가입 폼 화면 이동
 	@GetMapping("/register")
 	public String showRegisterPage() {
@@ -48,9 +50,14 @@ public class MemberController {
 
 	// 회원가입 처리
 	@PostMapping("/register")
-	public String registerMember(@ModelAttribute MemberDTO memberDTO, @RequestParam("gender") String gender,
-			@RequestParam("address") String address, @RequestParam("detailed-address") String detailedAddress,
-			@RequestParam("birth") String birth) {
+	public String registerMember(@ModelAttribute
+	MemberDTO memberDTO, @RequestParam("gender")
+	String gender,
+		@RequestParam("address")
+		String address, @RequestParam("detailed-address")
+		String detailedAddress,
+		@RequestParam("birth")
+		String birth) {
 
 		// 생년월일을 java.sql.Date로 변환
 		try {
@@ -67,9 +74,9 @@ public class MemberController {
 
 		// 성별 처리: 남성일 경우 1, 여성일 경우 2
 		if ("male".equals(gender)) {
-			memberDTO.setCcId(1);
+			memberDTO.setCcSeq(1);
 		} else if ("female".equals(gender)) {
-			memberDTO.setCcId(2);
+			memberDTO.setCcSeq(2);
 		}
 
 		// 회원 등록 서비스 호출
@@ -87,10 +94,14 @@ public class MemberController {
 
 	@PostMapping("/mypage")
 	public ResponseEntity<MemberResponse> getMember(@RequestBody
-													LoginMemberRequest request) {
-		MemberResponse member = memberService.getMemberByEmail(request.getEmail());
+	LoginMemberRequest request) {
+		MemberResponse member = memberService.getMemberByEmail(request.getUsername());
 
 		return ResponseEntity.ok(member);
 	}
-}
 
+	@GetMapping("/logout")
+	public void logOut() {
+
+	}
+}

@@ -9,6 +9,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class MemberRequest {
 	private String password;
-	private int postalCode;
+	private String postalCode;
 	private String address;
 }

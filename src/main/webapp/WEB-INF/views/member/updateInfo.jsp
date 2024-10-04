@@ -40,7 +40,7 @@
 				</div>
 				<div class="form-group">
 					<label for="email">이메일</label> <input type="email" id="email"
-						name="email" class="form-control" placeholder="" disabled>
+						name="username" class="form-control" placeholder="" disabled>
 				</div>
 				<div class="form-group">
 					<label for="password">비밀번호</label> 
@@ -54,7 +54,7 @@
 				</div>
 				<div class="form-group">
 					<label for="email">이메일</label> <input type="email" id="email"
-						name="email" class="form-control" placeholder="" disabled>
+						name="username" class="form-control" placeholder="" disabled>
 				</div>
 				<div class="form-group">
 					<label for="name">이름</label> <input type="text" id="name"
@@ -66,7 +66,7 @@
 				</div>
 				<div class="form-group">
 					<label for="gender">성별</label> <input type="text" id="ccId"
-						name="ccId" class="form-control" disabled>
+						name="ccSeq" class="form-control" disabled>
 				</div>
 				<div class="form-group">
 				    <label for="address">주소</label>

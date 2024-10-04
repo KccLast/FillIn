@@ -1,4 +1,4 @@
-package com.kcc.fillin.statistic.mapper;
+package com.kcc.fillin.statistic.dao;
 
 import java.util.List;
 

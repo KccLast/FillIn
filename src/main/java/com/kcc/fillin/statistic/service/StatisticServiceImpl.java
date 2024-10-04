@@ -3,8 +3,8 @@ package com.kcc.fillin.statistic.service;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.kcc.fillin.statistic.dao.StatisticMapper;
 import com.kcc.fillin.statistic.dto.StatisticSurveyResponse;
-import com.kcc.fillin.statistic.mapper.StatisticMapper;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

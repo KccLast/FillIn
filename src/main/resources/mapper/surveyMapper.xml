@@ -2,15 +2,15 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.kcc.fillin.survey.mapper.SurveyMapper">
+<mapper namespace="com.kcc.fillin.survey.dao.SurveyMapper">
 	<resultMap id="surveyResultMap"
-		type="com.kcc.fillin.survey.dto.multiSearchSurveyResponse">
+		type="multiSearchSurveyResponse">
 		<result column="name" property="name" />
 		<result column="created_at" property="createdAt" />
 		<result column="updated_at" property="updatedAt" />
 		<result column="post_date" property="postDate" />
 		<result column="end_date" property="endDate" />
-		<result column="cc_id" property="ccId" />
+		<result column="cc_seq" property="ccSeq" />
 		<result column="answer_count" property="answerCount" />
 	</resultMap>
 
@@ -22,19 +22,19 @@
 			        FROM (
 			            SELECT /*+INDEX_DESC(s pk_survey) */
 			                s.name AS name,
-			                s.cc_id AS cc_id,
+			                s.cc_seq AS cc_seq,
 			                s.created_at AS created_at,
 			                s.updated_at AS updated_at,
 			                s.post_date AS post_date,
 			                s.end_date AS end_date,
-			                COUNT(a.id) AS answer_count,
+			                COUNT(a.seq) AS answer_count,
 			                ROW_NUMBER() OVER (ORDER BY s.created_at DESC) AS rn
 			            FROM
 			                survey s
-		             	LEFT JOIN question q ON s.id = q.survey_id
-			            LEFT JOIN answer a ON q.id = a.question_id
+		             	LEFT JOIN question q ON s.seq = q.survey_seq
+			            LEFT JOIN answer a ON q.seq = a.question_seq
 			            GROUP BY
-			                s.name, s.cc_id, s.created_at, s.updated_at, s.post_date, s.end_date
+			                s.name, s.cc_seq, s.created_at, s.updated_at, s.post_date, s.end_date
 			        )
 			        WHERE rn >= #{startRow} AND rn <= #{endRow}
     	]]>
@@ -48,10 +48,10 @@
 
 	<!-- 다중 검색 -->
 	<select id="getFilteringSurveys" resultMap="surveyResultMap"
-		parameterType="com.kcc.fillin.survey.dto.multiSearchSurveyRequest">
+		parameterType="multiSearchSurveyRequest">
 		SELECT
 			s.name AS name,
-			s.cc_id AS cc_id,
+			s.cc_seq AS cc_seq,
 			s.created_at AS created_at,
 			s.updated_at AS updated_at,
 			s.post_date AS post_date,
@@ -61,21 +61,21 @@
 		FROM
 			survey s
 		LEFT JOIN question q
-		ON s.id = q.survey_id
+		ON s.seq = q.survey_seq
 		LEFT JOIN answer a
-		ON q.id = a.question_id
+		ON q.seq = a.question_seq
 		<where>
 			<!-- 진행 상태 -->
 			<if test="ccId != null">
 				<choose>
 					<when test="ccId == 11">
-						AND s.cc_id = #{ccId}
+						AND s.cc_seq = #{ccSeq}
 					</when>
 					<when test="ccId == 12">
-						AND s.cc_id = #{ccId}
+						AND s.cc_seq = #{ccSeq}
 					</when>
 					<when test="ccId == 13">
-						AND s.cc_id = #{ccId}
+						AND s.cc_seq = #{ccSeq}
 					</when>
 				</choose>
 			</if>
@@ -113,19 +113,19 @@
 			</if>
 		</where>
 		GROUP BY
-			s.id, s.name, s.cc_id, s.created_at, s.updated_at,
+			s.id, s.name, s.cc_seq, s.created_at, s.updated_at,
 			s.post_date, s.end_date
 		<!-- 응답 수 필터 -->
 		<if test="minAnswerCount > 0 or maxAnswerCount > 0">
 			HAVING
 			<if test="minAnswerCount > 0">
-				<![CDATA[COUNT(a.id) >= #{minAnswerCount}]]>
+				<![CDATA[COUNT(a.seq) >= #{minAnswerCount}]]>
 			</if>
 			<if test="minAnswerCount > 0 and maxAnswerCount > 0">
 				AND
 			</if>
 			<if test="maxAnswerCount > 0">
-				<![CDATA[COUNT(a.id) <= #{maxAnswerCount}]]>
+				<![CDATA[COUNT(a.seq) <= #{maxAnswerCount}]]>
 			</if>
 		</if>
 	</select>

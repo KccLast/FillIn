@@ -10,8 +10,8 @@ import lombok.ToString;
 @Builder
 @ToString
 public class QuestionItem {
-	private Long id;
-	private Long questionId;
+	private Long seq;
+	private Long questionSeq;
 	private String content;
 	private Integer orderNum;
 	private boolean isActive;

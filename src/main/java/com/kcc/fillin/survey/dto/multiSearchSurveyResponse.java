@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class multiSearchSurveyResponse {
+public class MultiSearchSurveyResponse {
 	private int ccId;
 	private String name;
 	private Timestamp createdAt;

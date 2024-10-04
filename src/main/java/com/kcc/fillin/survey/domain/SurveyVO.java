@@ -10,15 +10,15 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class SurveyVO {
-	private long id;
-	private String name = "";
+	private long seq;
+	private String name;
 	private LocalDateTime postDate;
 	private LocalDateTime endDate;
 	private String url;
 	private LocalDateTime createdAt;
 	private LocalDateTime updatedAt;
 	private int targetPeople;
-	private int ccId;
-	private long memberId;
+	private int ccSeq;
+	private long memberSeq;
 
 }

@@ -1,4 +1,4 @@
-package com.kcc.fillin.member.mapper;
+package com.kcc.fillin.member.dao;
 import org.apache.ibatis.annotations.Mapper;
 import com.kcc.fillin.member.dto.MemberDTO;
 

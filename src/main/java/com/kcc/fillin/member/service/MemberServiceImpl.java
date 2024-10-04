@@ -4,8 +4,8 @@ package com.kcc.fillin.member.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.kcc.fillin.member.dao.MemberMapper;
 import com.kcc.fillin.member.dto.MemberDTO;
-import com.kcc.fillin.member.mapper.MemberMapper;
 
 import org.springframework.stereotype.Service;
 
