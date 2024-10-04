@@ -1,5 +1,5 @@
 package com.kcc.fillin.question.mapper;
 
-public class a {
+public class a8 {
 
 }

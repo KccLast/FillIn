@@ -1,5 +1,5 @@
 package com.kcc.fillin.survey.dto;
 
-public class a {
+public class a17 {
 
 }

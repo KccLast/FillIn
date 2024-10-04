@@ -1,5 +1,5 @@
 package com.kcc.fillin.question.dto;
 
-public class a {
+public class a7 {
 
 }

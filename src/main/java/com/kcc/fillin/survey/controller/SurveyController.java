@@ -1,62 +1,59 @@
 package com.kcc.fillin.survey.controller;
 
-import java.util.List;
-
+import com.kcc.fillin.statistic.controller.StatisticController;
+import com.kcc.fillin.survey.Criteria;
+import com.kcc.fillin.survey.dto.multiSearchSurveyRequest;
+import com.kcc.fillin.survey.dto.multiSearchSurveyResponse;
+import com.kcc.fillin.survey.service.SurveyService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import com.kcc.fillin.survey.Criteria;
-import com.kcc.fillin.survey.dto.multiSearchSurveyRequest;
-import com.kcc.fillin.survey.dto.multiSearchSurveyResponse;
-import com.kcc.fillin.survey.service.SurveyService;
-
-import lombok.RequiredArgsConstructor;
-
-@Controller
+import java.util.List;
 @RequestMapping("/survey")
 @RequiredArgsConstructor
 public class SurveyController {
-	private final SurveyService service;
 
-	@GetMapping("/dashboard")
-	public String dashboard(Criteria cri, Model model) {
-		System.out.println("Criteria: " + cri);
-		int pageNum = cri.getPageNum();
-		int amount = cri.getAmount();
-		List<multiSearchSurveyResponse> pagedSurveys = service.getSurveyListWithPaging(cri);
+    private final SurveyService service;
 
-		model.addAttribute("pagedSurveys", pagedSurveys);
-		model.addAttribute("pageNum", pageNum);
-		model.addAttribute("amount", amount);
+        @GetMapping("/dashboard")
+        public String dashboard(Criteria cri, Model model) {
+            System.out.println("Criteria: " + cri);
+            int pageNum = cri.getPageNum();
+            int amount = cri.getAmount();
+            List<multiSearchSurveyResponse> pagedSurveys = service.getSurveyListWithPaging(cri);
 
-		System.out.println("pagedSurveys: " + pagedSurveys);
-		System.out.println("pageNum: " + pageNum);
-		System.out.println("amount: " + amount);
+            model.addAttribute("pagedSurveys", pagedSurveys);
+            model.addAttribute("pageNum", pageNum);
+            model.addAttribute("amount", amount);
 
-		int totalSurveyCount = service.getTotalSurveyCount();
-		model.addAttribute("totalSurveyCount", totalSurveyCount);
-		System.out.println("totalSurveyCount: " + totalSurveyCount);
+            System.out.println("pagedSurveys: " + pagedSurveys);
+            System.out.println("pageNum: " + pageNum);
+            System.out.println("amount: " + amount);
 
-		int totalPages = (int)Math.ceil((double)totalSurveyCount / amount);
-		model.addAttribute("totalPages", totalPages);
+            int totalSurveyCount = service.getTotalSurveyCount();
+            model.addAttribute("totalSurveyCount", totalSurveyCount);
+            System.out.println("totalSurveyCount: " + totalSurveyCount);
 
-		return "/survey/dashboard";
-	}
+            int totalPages = (int)Math.ceil((double)totalSurveyCount / amount);
+            model.addAttribute("totalPages", totalPages);
 
-	@PostMapping("/dashboard")
-	public ResponseEntity<List<multiSearchSurveyResponse>> filterDashboard(@RequestBody multiSearchSurveyRequest request) {
-		List<multiSearchSurveyResponse> filteringSurveys = service.getFilteringSurveys(request);
-		System.out.println("필터링 결과: " + filteringSurveys);
+            return "/survey/dashboard";
+        }
 
-		return ResponseEntity.ok(filteringSurveys);
-	}
+        @PostMapping("/dashboard")
+        public ResponseEntity<List<multiSearchSurveyResponse>> filterDashboard(@RequestBody multiSearchSurveyRequest request) {
+            List<multiSearchSurveyResponse> filteringSurveys = service.getFilteringSurveys(request);
+            System.out.println("필터링 결과: " + filteringSurveys);
 
-	@GetMapping("/project")
-	public void newProject() {}
+            return ResponseEntity.ok(filteringSurveys);
+        }
+
+        @GetMapping("/project")
+        public void newProject() {}
 
 }

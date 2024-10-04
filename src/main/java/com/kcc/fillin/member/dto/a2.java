@@ -1,5 +1,5 @@
 package com.kcc.fillin.member.dto;
 
-public class a {
+public class a2{
 
 }

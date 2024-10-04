@@ -1,5 +1,5 @@
 package com.kcc.fillin.member.domain;
 
-public class a {
+public class a1 {
 
 }

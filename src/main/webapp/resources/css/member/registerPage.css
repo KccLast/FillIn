@@ -1,0 +1,194 @@
+ body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f5f5f5;
+    font-size: 23px; /* 전체 폰트 크기를 기본적으로 키움 */
+}
+
+.profile-container {
+    position: relative;
+    width: 200px;
+    height: 200px;
+    margin: 48px auto;
+}
+
+.profile-image {
+    display: block;
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    border: 2px solid #ddd;
+    object-fit: cover;
+}
+
+.camera-icon {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    height: 40px;
+    cursor: pointer;
+    border-radius: 50%;
+    border: 2px solid #ddd;
+}
+
+
+
+.navbar {
+    width: 100%;
+    background-color: #f8f9fa;
+    padding: 13px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #ddd;
+    /* navbar가 페이지 흐름에 맞게 배치되도록 position 설정 */
+    position: relative;
+}
+
+.navbar a {
+    text-decoration: none;
+    color: black;
+    margin: 0 10px;
+    display: flex;
+    align-items: center;
+}
+
+.logo {
+    max-width: 68%;
+    max-height: 72px;
+    margin-right: 8px;
+}
+
+/* navbar와 signup-container 사이에 충분한 간격 추가 */
+#signup-container {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    margin-top: 20px; /* navbar와 폼 사이에 여유 공간 추가 */
+    height: auto; /* 88vh 대신 auto로 변경하여 줌 시 더 나은 처리 */
+}
+
+/* .signup-container {
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    width: 600px;
+    margin: 50px auto;
+    폼 너비를 반응형으로 설정
+    max-width: 100%;
+} */
+.signup-container {
+    background-color: white;
+    padding: 30px; /* 패딩을 조금 더 넓게 설정 */
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    width: 80%; /* 전체 너비의 80%를 차지하도록 수정 */
+    max-width: 900px; /* 최대 900px로 넓힘 */
+    margin: 50px auto;
+    /* 폼 너비를 반응형으로 설정 */
+}
+
+h2 {
+    text-align: center;
+    font-size: 40px; /* 폰트 크기를 키움 */
+    font-weight: bold; /* 텍스트를 더 강조하기 위해 굵게 설정 */
+    margin-bottom: 20px; /* 제목 아래 여백 추가 */
+}
+
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+/* input[type="text"],
+input[type="email"],
+input[type="password"],
+select {
+    width: calc(100% - 10px);
+    padding: 10px;
+    margin-bottom: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+} */
+input[type="text"],
+input[type="email"],
+input[type="password"],
+select {
+    width: calc(100% - 20px); /* 입력 필드 좌우 여백을 더 추가 */
+    padding: 15px; /* 패딩을 약간 늘려서 넓어 보이도록 설정 */
+    margin-bottom: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+    font-size: 23px;
+}
+
+.error-message {
+    color: red;
+    font-size: 20px;
+    display: block;
+    margin-bottom: 10px;
+    display: none;
+}
+
+button.check-button,
+button.find-zipcode {
+    background-color: #007bff;
+    color: white;
+    padding: 15px;
+    margin-bottom: 7px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size:23px;
+}
+
+button.check-button {
+    margin-top: 5px;
+}
+
+button.submit-button {
+    background-color: #007bff;
+    color: white;
+    width: 100%;
+    padding: 18px;
+    font-size: 23px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+/* 작은 화면을 위한 추가 미디어 쿼리 */
+/* @media screen and (max-width: 768px) {
+    .signup-container {
+        width: 90%;
+    }
+
+    #signup-container {
+        margin-top: 30px;
+    }
+}
+ */
+ @media screen and (max-width: 768px) {
+ 
+    .signup-container {
+        width: 90%; /* 작은 화면에서는 기존 90% 설정 유지 */
+    }
+
+    #signup-container {
+        margin-top: 30px;
+    }
+}
+ 

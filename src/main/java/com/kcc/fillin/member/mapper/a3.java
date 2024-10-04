@@ -1,5 +1,5 @@
 package com.kcc.fillin.member.mapper;
 
-public class a {
+public class a3 {
 
 }

@@ -1,5 +1,5 @@
 package com.kcc.fillin.question.domain;
 
-public class a {
+public class a6 {
 
 }
