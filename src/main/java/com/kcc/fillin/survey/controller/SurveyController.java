@@ -11,4 +11,7 @@ public class SurveyController {
 	public String dashboard() {
 		return "/survey/dashboard";
 	}
+
+	@GetMapping("/project")
+	public void newProject() {}
 }
