@@ -110,6 +110,7 @@
 						</c:choose>
 
 						<p>${survey.name }</p>
+						<%-- <p>${survey.formattedLocaldate}</p> --%>
 						<div class="date-info">
 							<p>최초 생성일:</p>
 							<p>

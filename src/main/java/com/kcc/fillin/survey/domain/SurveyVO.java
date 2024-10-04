@@ -1,6 +1,6 @@
 package com.kcc.fillin.survey.domain;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -11,13 +11,14 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class SurveyVO {
 	private long id;
-	private String name;
-	private Timestamp postDate;
-	private Timestamp endDate;
+	private String name = "";
+	private LocalDateTime postDate;
+	private LocalDateTime endDate;
 	private String url;
-	private Timestamp createdAt;
-	private Timestamp updatedAt;
+	private LocalDateTime createdAt;
+	private LocalDateTime updatedAt;
 	private int targetPeople;
 	private int ccId;
 	private long memberId;
+
 }

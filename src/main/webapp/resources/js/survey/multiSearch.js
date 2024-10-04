@@ -1,5 +1,5 @@
 $(document).ready(function() {
-	let currentPage = 1;
+	var currentPage = 1;
 	const pageSize = 9;
 	let surveysData = [];
 
@@ -110,6 +110,7 @@ $(document).ready(function() {
 
 	// 다중 검색 조건으로 조회
 	$('#searchBtn').on('click', function() {
+		currentPage = 1;
 		// 날짜 값을 yyyy-MM-dd 형식으로 포맷하는 함수
 		function formatDate(dateString, isEndOfDay) {
 			if (!dateString) return null; // 값이 없으면 null 반환
@@ -255,6 +256,7 @@ $(document).ready(function() {
 	}
 
 	function setupPagination() {
+		
 		$('.pagination').empty(); // 페이지네이션 초기화
 		const totalPage = Math.ceil(surveysData.length / pageSize); // 총 페이지 수 계산
 
@@ -304,6 +306,8 @@ $(document).ready(function() {
 						}
 					})));
 		}
+		
+	
 	}
 
 	// 상태에 따른 배지 클래스 반환
@@ -348,3 +352,4 @@ $(document).ready(function() {
 		filteringSurveyCards();
 	});
 });
+

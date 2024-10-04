@@ -46,16 +46,6 @@
 		FROM survey s
 	</select>
 
-	<!-- <select id="getSurveyListWithPaging" resultType="com.kcc.fillin.survey.dto.multiSearchSurveyRequest"
-		parameterType="com.kcc.fillin.survey.Criteria">
-		SELECT COUNT(DISTINCT s.id)
-		FROM survey s
-		JOIN question q
-		ON s.id = survey_id
-		JOIN answer a
-		ON q.id = a.question_id
-	</select> -->
-
 	<!-- 다중 검색 -->
 	<select id="getFilteringSurveys" resultMap="surveyResultMap"
 		parameterType="com.kcc.fillin.survey.dto.multiSearchSurveyRequest">
@@ -89,6 +79,9 @@
 					</when>
 				</choose>
 			</if>
+			<!-- <if test="ccId != null">
+				AND s.cc_id = #{ccId}
+			</if> -->
 			<!-- 최초 생성일 필터 -->
 			<choose>
 				<when test="startCreatedAt != null and endCreatedAt != null">

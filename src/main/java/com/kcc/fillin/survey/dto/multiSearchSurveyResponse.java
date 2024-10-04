@@ -17,4 +17,8 @@ public class multiSearchSurveyResponse {
 	private Timestamp postDate;
 	private Timestamp endDate;
 	private int answerCount;
+
+	/*public String getFormattedLocaldate() {
+		return createdAt.toLocalDateTime().format(null);
+	}*/
 }
