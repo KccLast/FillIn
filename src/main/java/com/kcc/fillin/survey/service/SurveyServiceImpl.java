@@ -1,11 +1,15 @@
 package com.kcc.fillin.survey.service;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.stereotype.Service;
 
 import com.kcc.fillin.survey.Criteria;
 import com.kcc.fillin.survey.dao.SurveyMapper;
+import com.kcc.fillin.survey.dto.CommonCodeResponse;
 import com.kcc.fillin.survey.dto.MultiSearchSurveyRequest;
 import com.kcc.fillin.survey.dto.MultiSearchSurveyResponse;
 
@@ -38,4 +42,27 @@ public class SurveyServiceImpl implements SurveyService {
 	public int getTotalSurveyCount() {
 		return mapper.getTotalSurveyCount();
 	}
+
+	@Override
+	public Map<String, List<CommonCodeResponse>> getCommonCodes() {
+		List<CommonCodeResponse> allCodes = mapper.getCommonCodes();
+		List<CommonCodeResponse> progressStatus = new ArrayList<>();
+		List<CommonCodeResponse> selectPeriod = new ArrayList<>();
+		
+		for(CommonCodeResponse code : allCodes) {
+			if(code.getParentSeq() == 2) {
+				progressStatus.add(code);
+			} else if(code.getParentSeq() == 8) {
+				selectPeriod.add(code);
+			}
+		}
+		
+		Map<String, List<CommonCodeResponse>> resultMap = new HashMap<>();
+		resultMap.put("progressStatus", progressStatus);
+		resultMap.put("selectPeriod", selectPeriod);
+		
+		return resultMap;
+	}
+
+	
 }

@@ -94,7 +94,7 @@ $(document).ready(function() {
 	});
 
 	// 날짜 포맷팅 함수
-	function formatDate(date, isEndOfDay = false) {
+	/*function formatDate(date, isEndOfDay = false) {
 		if (!date) return ''; // 값이 없으면 빈 문자열 반환
 
 		if (isEndOfDay) {
@@ -106,13 +106,13 @@ $(document).ready(function() {
 		return date.getFullYear() + '-' +
 			('0' + (date.getMonth() + 1)).slice(-2) + '-' +
 			('0' + date.getDate()).slice(-2);
-	}
+	}*/
 
 	// 다중 검색 조건으로 조회
 	$('#searchBtn').on('click', function() {
 		currentPage = 1;
 		// 날짜 값을 yyyy-MM-dd 형식으로 포맷하는 함수
-		function formatDate(dateString, isEndOfDay) {
+		/*function formatDate(dateString, isEndOfDay) {
 			if (!dateString) return null; // 값이 없으면 null 반환
 			var date = new Date(dateString);
 
@@ -130,19 +130,19 @@ $(document).ready(function() {
 				('0' + date.getHours()).slice(-2) + ':' + // 날짜 객체의 hour 가져와서 두 자리 문자열로 변환
 				('0' + date.getMinutes()).slice(-2) + ':' + // 날짜 객체의 minutes를 가져와서 두 자리 문자열로 변환
 				('0' + date.getSeconds()).slice(-2); // 날짜 객체의 seconds를 가져와서 두 자리 문자열로 반환
-		}
+		}*/
 
 		// 날짜 값 포맷팅
-		var startCreatedAt = formatDate($('#startCreatedAt').val(), false);
-		var endCreatedAt = formatDate($('#endCreatedAt').val(), true);
-		var startUpdatedAt = formatDate($('#startUpdatedAt').val(), false);
-		var endUpdatedAt = formatDate($('#endUpdatedAt').val(), true);
+		var startCreatedAt = $('#startCreatedAt').val();
+		var endCreatedAt = $('#endCreatedAt').val();
+		var startUpdatedAt = $('#startUpdatedAt').val();
+		var endUpdatedAt = $('#endUpdatedAt').val();
 
 		// 응답 수 입력 유효성 검사
 		let minAnswerCount = $('#minAnswerCount').val();
 		let maxAnswerCount = $('#maxAnswerCount').val();
 
-		if (minAnswerCount && isNaN(minAnswerCount)) {
+		/*if (minAnswerCount && isNaN(minAnswerCount)) {
 			alert('응답 수 최소값은 숫자여야 합니다.');
 			return;
 		}
@@ -150,7 +150,7 @@ $(document).ready(function() {
 		if (maxAnswerCount && isNaN(maxAnswerCount)) {
 			alert('응답 수 최대값은 숫자여야 합니다.');
 			return;
-		}
+		}*/
 
 		minAnswerCount = parseInt(minAnswerCount, 10);
 		maxAnswerCount = parseInt(maxAnswerCount, 10);
@@ -167,7 +167,7 @@ $(document).ready(function() {
 
 		// 요청 데이터 구성
 		const requestData = {
-			ccId: parseInt($('#progress-ccId').val(), 10) || null, // 값이 없으면 null
+			ccSeq: parseInt($('#progress-ccSeq').val(), 10) || null, // 값이 없으면 null
 			startCreatedAt: startCreatedAt,
 			endCreatedAt: endCreatedAt,
 			startUpdatedAt: startUpdatedAt,
@@ -177,22 +177,23 @@ $(document).ready(function() {
 			maxAnswerCount: $('#maxAnswerCount').val() ? parseInt($('#maxAnswerCount').val(), 10) : null
 
 		};
-		console.log($("#title").val());  // 값이 제대로 들어오는지 확인
-		console.log($("#progress-ccId").val());
+		
+		console.log($("#title").val());
+		console.log($("#progress-ccSeq").val());
 		console.log($("#minAnswerCount").val());
 
 		console.log(requestData);
 
 		// AJAX 요청
 		$.ajax({
-			url: '/survey/dashboard',
+			url: '/survey/api/dashboard',
 			type: 'POST',
 			contentType: 'application/json',
 			data: JSON.stringify(requestData),
 			dataType: 'json',
 			success: function(response) {
-				console.log(response);
-				surveysData = response; // 응답 저장
+				console.log(response);	
+				surveysData = response.data; // 응답 저장
 				filteringSurveyCards(); // 필터링된 설문 카드 동적으로 업데이트
 				setupPagination(); // 페이지 설정	
 			},
@@ -209,8 +210,18 @@ $(document).ready(function() {
 		// 현재 페이지에 해당하는 설문 데이터 필터링
 		const startRow = (currentPage - 1) * pageSize;
 		const endRow = startRow + pageSize;
-		const currentSurveys = surveysData.slice(startRow, endRow);
+		const selectedCcSeq = $('#progress-ccSeq').val() || null;
 
+		const currentSurveys = surveysData.filter(survey => {
+			// ccSeq가 빈 문자열인 경우 모든 설문지를 포함
+			if (selectedCcSeq === null || selectedCcSeq == '') {
+				return true; // 모든 설문지 포함
+			}
+			return survey.ccSeq == selectedCcSeq; // 선택된 ccSeq와 일치하는 설문지만 포함
+		}).slice(startRow, endRow);	
+		
+		/*const currentSurveys = surveysData.slice(startRow, endRow); // 전체 데이터를 기준으로 페이지네이션*/
+	
 		if (currentSurveys.length === 0) {
 			$('.cards-container').append('<p>검색 결과와 일치하는 설문지가 없습니다.</p>');
 			return;
@@ -224,31 +235,41 @@ $(document).ready(function() {
                 </div>
         	</div>`;
 
-		if (Array.isArray(currentSurveys)) {
-			// 필터링된 설문지 생성
-			surveyCard += currentSurveys.map(survey =>
-				`<div class="card h-100">
-                <div class="card-body">
-                    <span class="badge rounded-pill ${getBadgeClass(survey.ccId)} mb-1 px-2 py-1">${getBadgeText(survey.ccId)}</span>
-                    <p>${survey.name}</p>
-                    <div class="date-info">
-                        <p>최초 생성일:</p>
-                        <p>${formatDate(survey.createdAt)}</p>
-                    </div>
-                    <div class="date-info">
-                        <p>마지막 수정일:</p>
-                        <p>${formatDate(survey.updatedAt)}</p>
-                    </div>
-                    <div class="date-info">
-                        <p>설문 기간:</p>
-                        <p>${formatDate(survey.postDate)} ~ ${formatDate(survey.endDate)}</p>
-                    </div>
-                </div>
-                <div class="card-footer">
-                    <p>${survey.answerCount}개 응답</p>
-                </div>
-            </div>`
-			).join('');
+			if (Array.isArray(currentSurveys)) {
+				console.log(currentSurveys);
+				/*<c:foreach items="${progressStatus}" var="item">
+					console.log(item);
+				</c:foreach>*/
+
+				
+				
+				// 필터링된 설문지 생성
+				surveyCard += currentSurveys.map(survey =>
+				
+				
+					`<div class="card h-100">
+	                <div class="card-body">
+	                    <span class="badge rounded-pill  ${getBadgeClass(survey.ccSeq)} mb-1 px-2 py-1">${getBadgeText(survey.ccSeq)}</span>
+	                    <p>${survey.name}</p>
+	                    <div class="date-info">
+	                        <p>생성일:</p>
+	                        <p>${formatDate(survey.createdAt)}</p>
+	                    </div>
+	                    <div class="date-info">
+	                        <p>수정일:</p>
+	                        <p>${formatDate(survey.updatedAt)}</p>
+	                    </div>
+	                    <div class="date-info">
+	                        <p>설문 기간:</p>
+	                       
+	                        <p>${survey.postDate && survey.endDate ? (survey.postDate) + ' ~ ' + (survey.endDate) : "설문 예정입니다." }</p>
+	                    </div>
+	                </div>
+	                <div class="card-footer">
+	                    <p>${survey.answerCount}개 응답</p>
+	                </div>
+	            </div>`
+				).join('');
 
 			// 최종적으로 생성된 HTML을 카드 컨테이너에 추가
 			$('.cards-container').append(surveyCard);
@@ -256,7 +277,6 @@ $(document).ready(function() {
 	}
 
 	function setupPagination() {
-		
 		$('.pagination').empty(); // 페이지네이션 초기화
 		const totalPage = Math.ceil(surveysData.length / pageSize); // 총 페이지 수 계산
 
@@ -306,26 +326,24 @@ $(document).ready(function() {
 						}
 					})));
 		}
-		
-	
 	}
 
 	// 상태에 따른 배지 클래스 반환
-	function getBadgeClass(ccId) {
-		switch (ccId) {
-			case 11: return 'bg-warning'; // 예정
-			case 12: return 'bg-primary'; // 진행 중
-			case 13: return 'bg-secondary'; // 완료
+	function getBadgeClass(ccSeq) {
+		switch (ccSeq) {
+			case 3: return 'bg-warning'; // 예정
+			case 4: return 'bg-primary'; // 진행 중
+			case 5: return 'bg-secondary'; // 완료
 			default: return '';
 		}
 	}
 
 	// 상태에 따른 배지 텍스트 반환
-	function getBadgeText(ccId) {
-		switch (ccId) {
-			case 11: return '예정'; // 예정
-			case 12: return '진행 중'; // 진행 중
-			case 13: return '완료'; // 완료
+	function getBadgeText(ccSeq) {
+		switch (ccSeq) {
+			case 3: return '생성'; // 예정
+			case 4: return '진행중'; // 진행 중
+			case 5: return '완료'; // 완료
 			default: return '';
 		}
 	}
@@ -340,10 +358,8 @@ $(document).ready(function() {
 	$('#initialBtn').on('click', function() {
 		// 모든 텍스트 입력 필드와 날짜 입력 필드를 초기화
 		$('#title, #minAnswerCount, #maxAnswerCount, #startCreatedAt, #endCreatedAt, #startUpdatedAt, #endUpdatedAt').val('');
-
 		// 셀렉트 박스를 초기 상태로 설정
-		$('#progress-ccId').prop('selectedIndex', 0);
-
+		$('#progress-ccSeq').prop('selectedIndex', 0);
 		// 배지(span)들에 선택 상태가 있을 경우 초기화
 		$('.date-badge').removeClass('selected-badge');
 
