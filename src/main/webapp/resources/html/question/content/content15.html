@@ -1,0 +1,44 @@
+<!-- 주소 -->
+				<div class="j-address j-flex-row-center">
+    <div class="col-sm-10 j-address-box">
+        <label for="zipp_btn" class="form-label">주소</label><br />
+        <input
+            type="text"
+            class="form-control mb-2 zipp_code_id"
+            id="zipp_code_id"
+            name="zipp_code"
+            maxlength="10"
+            placeholder="우편번호"
+            style="width: 50%; display: inline;"
+        >
+        <input
+            type="button"
+            id="zipp_btn"
+            class="btn btn-primary"
+            onclick="execDaumPostcode(this)"
+            value="우편번호 찾기"
+        ><br>
+        <input
+            type="text"
+            class="form-control mb-2 UserAdd1"
+            name="user_add1"
+            id="UserAdd1"
+            maxlength="40"
+            placeholder="기본 주소를 입력하세요"
+            required
+        >
+        <div class="invalid-feedback">
+            주소를 입력해주시기 바랍니다!
+        </div>
+        <input
+            type="text"
+            class="form-control UserAdd2"
+            name="user_add2"
+            id="UserAdd2"
+            maxlength="40"
+            placeholder="상세 주소를 입력하세요"
+        >
+    </div>
+</div>
+				<!-- 주소 -->
+			
