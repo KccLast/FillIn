@@ -9,7 +9,6 @@
 <title>DashBoard</title>
 <link rel="stylesheet" type="text/css" href="/resources/common/dashBoardNav.css">
 <link rel="stylesheet" type="text/css" href="/resources/css/survey/dashboard.css">
-<!-- <script type="text/javascript" src="http://code.jquery.com/jquery-3.7.1.min.js"></script> -->
 </head>
 <body>
 	<%@include file="/resources/common/header.jsp"%>
@@ -22,44 +21,40 @@
 			<div class="filter-row">
 				<p>진행 상태</p>
 				<div class="filter-input">
-					<select class="selectpicker" id="progress-ccId" name="ccId">
+					<select class="selectpicker" id="progress-ccSeq" name="ccSeq">
 						<option value="">전체</option>
-						<option value="11">예정</option>
-						<option value="12">진행 중</option>
-						<option value="13">완료</option>
+						<c:forEach var="status" items="${progressStatus }">
+			            	<option value="${status.seq}">${status.name}</option>
+						</c:forEach>
 					</select>
 				</div>
 			</div>
 
 			<div class="filter-row">
-				<p>최초 생성일</p>
+				<p>생성일</p>
 				<div class="filter-input">
 					<input type="date" id="startCreatedAt" name="startCreatedAt">
 					- <input type="date" id="endCreatedAt" name="endCreatedAt">
 
-					<span class="date-badge created-at" data-period="1주일">1주일</span> <span
-						class="date-badge created-at" data-period="1개월">1개월</span> <span
-						class="date-badge created-at" data-period="6개월">6개월</span> <span
-						class="date-badge created-at" data-period="1년">1년</span> <span
-						class="date-badge created-at" data-period="2년">2년</span> <span
-						class="date-badge created-at" data-period="3년">3년</span> <span
-						class="date-badge created-at" data-period="전체">전체</span>
+						<c:forEach var="status" items="${selectPeriod }">
+							<span class="date-badge created-at" data-period="${status.name}">
+								${status.name}
+							</span>
+						</c:forEach>
 				</div>
 			</div>
 
 			<div class="filter-row">
-				<p>마지막 수정일</p>
+				<p>수정일</p>
 				<div class="filter-input">
 					<input type="date" id="startUpdatedAt" name="startUpdatedAt">
 					- <input type="date" id="endUpdatedAt" name="endUpdatedAt">
-
-					<span class="date-badge updated-at" data-period="1주일">1주일</span> <span
-						class="date-badge updated-at" data-period="1개월">1개월</span> <span
-						class="date-badge updated-at" data-period="6개월">6개월</span> <span
-						class="date-badge updated-at" data-period="1년">1년</span> <span
-						class="date-badge updated-at" data-period="2년">2년</span> <span
-						class="date-badge updated-at" data-period="3년">3년</span> <span
-						class="date-badge updated-at" data-period="전체">전체</span>
+					
+					<c:forEach var="status" items="${selectPeriod }">
+						<span class="date-badge updated-at" data-period="${status.name}">
+								${status.name}
+						</span>
+					</c:forEach>
 				</div>
 			</div>
 
@@ -73,8 +68,9 @@
 			<div class="filter-row">
 				<p>응답 수</p>
 				<div class="filter-input">
-					<input type="text" id="minAnswerCount" name="minAnswerCount">
-					- <input type="text" id="maxAnswerCount" name="maxAnswerCount">
+					<input type="text" id="minAnswerCount" name="minAnswerCount" oninput="this.value = this.value.replace(/[^0-9]/g,'')">
+					- <input type="text" id="maxAnswerCount" name="maxAnswerCount" oninput="this.value = this.value.replace(/[^0-9]/g,'')">
+					<p class="limit-num">* 숫자만 입력</p>
 				</div>
 			</div>
 
@@ -97,44 +93,34 @@
 			<c:forEach var="survey" items="${pagedSurveys}">
 				<div class="card h-100">
 					<div class="card-body">
-						<c:choose>
-							<c:when test="${survey.ccSeq == 11 }">
-								<span class="badge rounded-pill bg-warning mb-1 px-2 py-1">예정</span>
-							</c:when>
-							<c:when test="${survey.ccSeq == 12}">
-								<span class="badge rounded-pill bg-primary mb-1 px-2 py-1">진행 중</span>
-							</c:when>
-							<c:when test="${survey.ccSeq == 13}">
-								<span class="badge rounded-pill bg-secondary mb-1 px-2 py-1">완료</span>
-							</c:when>
-						</c:choose>
-
+						<c:forEach var="status" items="${progressStatus }">
+							<c:if test="${survey.ccSeq == status.seq }">
+								<span class="badge rounded-pill mb-1 px-2 py-1
+									<c:choose>
+										<c:when test="${status.seq == 3 }">bg-warning</c:when>
+										<c:when test="${status.seq == 4 }">bg-primary</c:when>
+										<c:when test="${status.seq == 5 }">bg-secondary</c:when>
+									</c:choose>">
+									${status.name }
+								</span>
+							</c:if>
+						</c:forEach>
 						<p>${survey.name }</p>
-						<%-- <p>${survey.formattedLocaldate}</p> --%>
 						<div class="date-info">
-							<p>최초 생성일:</p>
-							<p>
-								<fmt:formatDate value="${survey.createdAt }" />
-							</p>
+							<p>생성일:</p>
+							<p>${survey.createdAt }</p>
 						</div>
 						<div class="date-info">
-							<p>마지막 수정일:</p>
-							<p>
-								<fmt:formatDate value="${survey.updatedAt }" />
-							</p>
+							<p>수정일:</p>
+							<p>${survey.updatedAt }</p>
 						</div>
 						<div class="date-info">
 							<p>설문 기간:</p>
-							<p>
-								<fmt:formatDate value="${survey.postDate }" />
-								~
-								<fmt:formatDate value="${survey.endDate }" />
-							</p>
+							<p>${survey.postDate } ~ ${survey.endDate }</p>
 						</div>
 					</div>
-
 					<div class="card-footer">
-						<p>${survey.answerCount}개응답</p>
+						<p>${survey.answerCount}개 응답</p>
 					</div>
 				</div>
 			</c:forEach>
@@ -162,7 +148,6 @@
 			</c:if>
 		</div>
 	</div>
-	<script type="text/javascript"
-		src="/resources/js/survey/multiSearch.js"></script>
+	<script type="text/javascript" src="/resources/js/survey/multiSearch.js"></script>
 </body>
 </html>

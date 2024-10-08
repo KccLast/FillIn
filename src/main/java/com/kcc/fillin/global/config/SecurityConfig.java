@@ -16,6 +16,7 @@ public class SecurityConfig {
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 		http
+			.csrf(csrf -> csrf.disable())
 			.authorizeHttpRequests(authz -> authz
 				.requestMatchers("/member/register", "/member/login").permitAll() // 회원가입과 로그인은 허용
 				.anyRequest().permitAll() // 그 외는 로그인 필요
