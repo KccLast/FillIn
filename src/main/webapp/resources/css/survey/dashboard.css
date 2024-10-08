@@ -19,7 +19,7 @@ body {
     flex-direction: column;
     gap: 10px;
     padding: 10px;
-    border: 1px solid #ddd;
+    border: 1px solid #a0a0a0;
     border-radius: 10px;
     width: 97%;
     margin-left: 10px;
@@ -32,7 +32,7 @@ body {
     gap: 10px;
     padding-bottom: 20px;
     margin: 10px 10px 0 10px;
-    font-size: 15px;
+    font-size: 17px;
 }
 
 .filter-row p {
@@ -52,6 +52,8 @@ body {
     flex: 1; /* 남은 공간을 차지 */
 }
 
+#min
+
 .filter-input span {
     margin-left: 10px;
     font-size: 13px;
@@ -59,6 +61,10 @@ body {
 
 .filter-row:nth-child(5) .filter-input input {
     width: 60px;
+}
+
+.limit-num {
+    color: red;
 }
 
 .filter-row:nth-child(4) .filter-input input {
@@ -73,7 +79,7 @@ input[type="date"], input[type="text"], .selectpicker {
 
 .filter-row:nth-child(1), .filter-row:nth-child(2), .filter-row:nth-child(3),
 .filter-row:nth-child(4) {
-    border-bottom: 1px solid #ddd; /* 1, 2, 3, 4번째 항목에만 아래 줄 */
+    border-bottom: 1px solid #a0a0a0; /* 1, 2, 3, 4번째 항목에만 아래 줄 */
 }
 
 .search-btn {
@@ -81,7 +87,7 @@ input[type="date"], input[type="text"], .selectpicker {
     color: white;
     border: none;
     border-radius: 20px;
-    font-size: 15px;
+    font-size: 17px;
     padding: 5px 15px;
     cursor: pointer;
 }
@@ -91,7 +97,7 @@ input[type="date"], input[type="text"], .selectpicker {
     color: white;
     border: none;
     border-radius: 20px;
-    font-size: 15px;
+    font-size: 17px;
     padding: 5px 15px;
     cursor: pointer;
 }
@@ -103,8 +109,7 @@ input[type="date"], input[type="text"], .selectpicker {
 
 .date-badge {
     padding: 5px 10px;
-    border: 1px solid #000;
-    font-size: 0.75rem;
+    border: 1.4px solid #000;
     font-weight: 500;
     border-radius: 20px;
     cursor: pointer;
@@ -116,7 +121,6 @@ input[type="date"], input[type="text"], .selectpicker {
     background-color: #005BAC;
     color: #fff;
     border: none;
-    font-size: 0.75rem;
     font-weight: 500;
     border-radius: 20px;
     cursor: pointer;
@@ -160,7 +164,7 @@ input[type="date"], input[type="text"], .selectpicker {
 }
 
 .card-body {
-    font-size: 13px;
+    font-size: 14px;
     max-height: 170px;
 }
 

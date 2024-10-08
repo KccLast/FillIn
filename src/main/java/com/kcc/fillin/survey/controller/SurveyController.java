@@ -1,6 +1,7 @@
 package com.kcc.fillin.survey.controller;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -9,10 +10,13 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.kcc.fillin.global.Common.Response;
 import com.kcc.fillin.survey.Criteria;
 import com.kcc.fillin.survey.dto.MultiSearchSurveyRequest;
 import com.kcc.fillin.survey.dto.MultiSearchSurveyResponse;
+import com.kcc.fillin.survey.dto.CommonCodeResponse;
 import com.kcc.fillin.survey.service.SurveyService;
 
 import lombok.RequiredArgsConstructor;
@@ -30,6 +34,10 @@ public class SurveyController {
 		int pageNum = cri.getPageNum();
 		int amount = cri.getAmount();
 		List<MultiSearchSurveyResponse> pagedSurveys = service.getSurveyListWithPaging(cri);
+		
+		Map<String, List<CommonCodeResponse>> commonCodes = service.getCommonCodes();
+		model.addAttribute("progressStatus", commonCodes.get("progressStatus"));
+		model.addAttribute("selectPeriod", commonCodes.get("selectPeriod"));
 
 		model.addAttribute("pagedSurveys", pagedSurveys);
 		model.addAttribute("pageNum", pageNum);
@@ -47,15 +55,6 @@ public class SurveyController {
 		model.addAttribute("totalPages", totalPages);
 
 		return "/survey/dashboard";
-	}
-
-	@PostMapping("/dashboard")
-	public ResponseEntity<List<MultiSearchSurveyResponse>> filterDashboard(@RequestBody
-	MultiSearchSurveyRequest request) {
-		List<MultiSearchSurveyResponse> filteringSurveys = service.getFilteringSurveys(request);
-		System.out.println("필터링 결과: " + filteringSurveys);
-
-		return ResponseEntity.ok(filteringSurveys);
 	}
 
 	@GetMapping("/project")
