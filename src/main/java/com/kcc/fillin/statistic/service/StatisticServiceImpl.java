@@ -20,15 +20,16 @@ public class StatisticServiceImpl implements StatisticService {
 	@Override
 	public StatisticSurveyResponse getStatisticSurvey(Long surveyId) {
 
-		// log.info(statisticMapper.selectQuantitativeList(surveyId).toString());
-
 		return StatisticSurveyResponse.builder() // 참여자 수 그래프 데이터
 			// 목표 인원
 			.targetCount(statisticMapper.selectTargetCount(surveyId))
 			// 참여 인원
 			.participantsCount(statisticMapper.selectParticipantsCount(surveyId))
+			// 조회수
 			.hitsResponseList(statisticMapper.selectHits(surveyId))
+			// 정량 평가 응답
 			.quantitativeResponseList(statisticMapper.selectQuantitativeList(surveyId))
+			// 정성 평가 응답
 			.qualitativeResponseList(statisticMapper.selectQualitativeList(surveyId))
 			.build();
 	}
