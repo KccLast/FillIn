@@ -27,16 +27,16 @@
         FROM (
                  -- survey_log에서 조회수와 시작수를 날짜별로 집계
 --                  SELECT TRUNC(occur_date)                          AS occur_date,
-                 SELECT TRUNC(occur_date)                          AS occur_date,
-                        SUM(CASE WHEN cc_seq = 7 THEN 1 ELSE 0 END) AS total_views, -- 조회수
-                        SUM(CASE WHEN cc_seq = 8 THEN 1 ELSE 0 END) AS total_starts -- 시작수
+                 SELECT TRUNC(occur_date)                            AS occur_date,
+                        SUM(CASE WHEN cc_seq = 22 THEN 1 ELSE 0 END) AS total_views, -- 조회수
+                        SUM(CASE WHEN cc_seq = 23 THEN 1 ELSE 0 END) AS total_starts -- 시작수
                  FROM survey_log
                  WHERE survey_seq = #{surveySeq}
                  GROUP BY TRUNC(occur_date)) survey_log_data
                  LEFT JOIN
              (
                  -- answer에서 날짜별 응답자 수 집계
-                 SELECT TRUNC(a.answer_date)             AS answer_date,
+                 SELECT TRUNC(a.answer_date)              AS answer_date,
                         COUNT(DISTINCT a.participant_seq) AS participant_count
                  FROM answer a
                           JOIN
@@ -57,16 +57,39 @@
         </collection>
     </resultMap>
 
-    <select id="selectQuantitativeList" resultType="quantitativeResponse">
+    <select id="selectQuantitativeList" resultMap="quantitativeResponse">
         SELECT q.order_num,
                q.name,
                a.contents,
-               (COUNT(a.seq) * 100.0 / SUM(COUNT(a.seq)) OVER (PARTITION BY a.question_seq)) AS itemRatio
-        FROM question q
+               ROUND((COUNT(a.seq) * 100.0 / SUM(COUNT(a.seq)) OVER (PARTITION BY a.question_seq)), 2) AS itemRatio
+        FROM (SELECT q.*
+              FROM question q
+                       JOIN common_code c
+                            ON q.cc_seq = c.seq
+              WHERE parent_seq = 3) q
                  JOIN
              answer a ON q.seq = a.question_seq
         WHERE q.survey_seq = #{surveySeq}
-        GROUP BY q.order_num, q.name, a.contents, a.question_seq;
+        GROUP BY q.order_num, q.name, a.contents, a.question_seq
+    </select>
+
+    <resultMap id="qualitativeResponse" type="QualitativeResponse">
+        <id property="questionOrder" column="order_num"/>
+        <result property="questionName" column="name"/>
+
+        <collection property="answerList" ofType="QualitativeAnswerDTO">
+            <result property="answerDate" column="answer_date"/>
+            <result property="answerContent" column="contents"/>
+        </collection>
+    </resultMap>
+
+    <select id="selectQualitativeList" resultMap="qualitativeResponse">
+        SELECT q.order_num, q.name, a.answer_date, a.contents
+        FROM question q
+                 JOIN common_code c ON q.cc_seq = c.seq
+                 JOIN answer a ON q.seq = a.question_seq
+        WHERE c.parent_seq = 4
+          AND q.survey_seq = #{surveyId}
     </select>
 
 </mapper>

@@ -95,3 +95,12 @@ button {
     transform: translateY(-50%);
     color: white;
 }
+
+/*.carousel-inner {*/
+/*    height: auto; !* 또는 필요한 높이 설정 *!*/
+/*    overflow: hidden; !* 필요에 따라 *!*/
+/*}*/
+
+/*.card {*/
+/*    margin-bottom: 1rem; !* 카드 간 간격 설정 *!*/
+/*}*/
