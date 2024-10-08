@@ -37,6 +37,5 @@
 		</div>
 	</header>
 	<%@include file="/WEB-INF/views/member/modal-mypage.jsp"%>
-	<script type="text/javascript" src="/resources/js/member/mypageModal.js"></script>
 </body>
 </html>

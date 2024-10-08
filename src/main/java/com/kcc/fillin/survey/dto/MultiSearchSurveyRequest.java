@@ -1,8 +1,6 @@
 package com.kcc.fillin.survey.dto;
 
-import java.sql.Timestamp;
-
-import com.fasterxml.jackson.annotation.JsonFormat;
+import java.time.LocalDate;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -12,15 +10,11 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class MultiSearchSurveyRequest {
-	private int ccId;
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
-	private Timestamp startCreatedAt;
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
-	private Timestamp endCreatedAt;
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
-	private Timestamp startUpdatedAt;
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
-	private Timestamp endUpdatedAt;
+	private int ccSeq;
+	private LocalDate startCreatedAt;
+	private LocalDate endCreatedAt;
+	private LocalDate startUpdatedAt;
+	private LocalDate endUpdatedAt;
 	private String name;
 	private int minAnswerCount;
 	private int maxAnswerCount;
