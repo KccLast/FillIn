@@ -14,20 +14,18 @@
 <body>
 <%@include file="/resources/common/header.jsp" %>
 <%@include file="/resources/common/nav.jsp" %>
-<%--<%--%>
-<%--    // StatisticSurveyResponse res = (StatisticSurveyResponse)request.getAttribute("statisticSurveyResponse");--%>
-<%--    // HitsDTO hitsResponseList = (HitsDTO)res.getHitsResponseList();--%>
-<%--    // QuantitativeResponse quantitativeResponseList = (QuantitativeResponse)res.getQuantitativeResponseList();--%>
-<%--%>--%>
 <script>
     var surveyId = '${surveyId}';
 </script>
-<%--<c:set var='hitsResponseList' value='${statisticSurveyResponse.hitsResponseList}'/>--%>
-<%--<c:set var='quantitativeResponseList' value='${statisticSurveyResponse.quantitativeResponseList}'/>--%>
-<%--<c:set var='qualitativeResponseList' value='${statisticSurveyResponse.qualitativeResponseList}'/>--%>
-
+<!-- 로딩 스피너 -->
+<div id="loading" style="display: none !important;">
+    <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Loading...</span>
+    </div>
+    <h5>Loaing!!!!!!!!!!!!!!!!!!!!!</h5>
+</div>
 <!-- 컨텐츠 내용 -->
-<div class="content">
+<div id="content" class="content" style="display: none;">
     <!-- 날짜 조회 및 질문 선택 -->
     <div class="row mb-4">
         <div class="col-md-2">
@@ -90,95 +88,44 @@
         </div>
     </div>
 
-    <!-- 정량 평가 통계 -->
     <!-- 보기 전환 버튼 -->
     <div class="view-toggle-container">
         <button id="listViewButton" class="btn btn-secondary">표로 보기</button>
         <button id="carouselViewButton" class="btn btn-secondary">슬라이드로 보기</button>
     </div>
 
+    <!-- 정량 평가 통계 -->
     <!-- 테이블 형태 -->
-    <div id="quantitativeListView" class="row mt-4 d-none"></div>
+    <div id="quanListView" class="row mt-4 d-none"></div>
 
     <!-- 캐러셀 형태 -->
-    <div id="quantitativeCarouselView" class="carousel slide mt-4" data-bs-ride="carousel">
-        <div class="carousel-inner"></div>
+    <div id="quanCarouselView" class="carousel slide mt-4" data-bs-ride="carousel">
+        <div class="carousel-inner quan-carousel-inner"></div>
 
-        <a class="carousel-control-prev" href="#dataCarouselView" role="button" data-bs-slide="prev">
+        <a class="carousel-control-prev" href="#quanCarouselView" role="button" data-bs-slide="prev">
             <span class="carousel-control-prev-icon" aria-hidden="true"></span>
             <span class="visually-hidden">Previous</span>
         </a>
-        <a class="carousel-control-next" href="#dataCarouselView" role="button" data-bs-slide="next">
+        <a class="carousel-control-next" href="#quanCarouselView" role="button" data-bs-slide="next">
             <span class="carousel-control-next-icon" aria-hidden="true"></span>
             <span class="visually-hidden">Next</span>
         </a>
     </div>
 
-    <!-- 테이블 데이터 캐러셀 -->
-    <div id="tableCarousel" class="carousel slide mt-4" data-bs-ride="carousel">
-        <div class="carousel-inner">
-            <div class="carousel-item active">
-                <div class="row">
-                    <div class="col-12">
-                        <div class="card">
-                            <div class="card-body">
-                                <h5>3번: 고양이를 좋아하는 이유를 알려주세요.</h5>
-                                <div class="table-responsive">
-                                    <table class="table">
-                                        <thead>
-                                        <tr>
-                                            <th>활동 시간</th>
-                                            <th>사유 선택</th>
-                                        </tr>
-                                        </thead>
-                                        <tbody>
-                                        <tr>
-                                            <td>2024. 2. 2. 오후 6:39:25</td>
-                                            <td>귀엽기 때문에</td>
-                                        </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!-- 다음 슬라이드 -->
-            <div class="carousel-item">
-                <div class="row">
-                    <div class="col-12">
-                        <div class="card">
-                            <div class="card-body">
-                                <h5>3번: 고양이를 좋아하는 이유를 알려주세요.</h5>
-                                <div class="table-responsive">
-                                    <table class="table">
-                                        <thead>
-                                        <tr>
-                                            <th>활동 시간</th>
-                                            <th>사유 선택</th>
-                                        </tr>
-                                        </thead>
-                                        <tbody>
-                                        <tr>
-                                            <td>2024. 2. 2. 오후 6:38:54</td>
-                                            <td>서열 싫어한다</td>
-                                        </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+    <!-- 정성 평가 통계 -->
+    <!-- 테이블 형태 -->
+    <div id="qualListView" class="row mt-4 d-none"></div>
+
+    <!-- 캐러셀 형태 -->
+    <div id="qualCarouselView" class="carousel slide mt-4" data-bs-ride="carousel">
+        <div class="carousel-inner qual-carousel-inner">
         </div>
 
-        <a class="carousel-control-prev" href="#tableCarousel" role="button" data-bs-slide="prev">
+        <a class="carousel-control-prev" href="#qualCarouselView" role="button" data-bs-slide="prev">
             <span class="carousel-control-prev-icon" aria-hidden="true"></span>
             <span class="visually-hidden">Previous</span>
         </a>
-        <a class="carousel-control-next" href="#tableCarousel" role="button" data-bs-slide="next">
+        <a class="carousel-control-next" href="#qualCarouselView" role="button" data-bs-slide="next">
             <span class="carousel-control-next-icon" aria-hidden="true"></span>
             <span class="visually-hidden">Next</span>
         </a>
