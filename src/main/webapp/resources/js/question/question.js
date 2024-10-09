@@ -447,6 +447,7 @@ $(function () {
                   }
                });
                
+               
                $('.content').on('click','.j-typeAndImg', function() {
                 // j-typeAndImg의 위치를 가져옴
                var $this = $(this);
@@ -472,7 +473,8 @@ $(function () {
               $('#add-type-modal-container2 .j-typeAndImg-modal').on('click',async function(){
 				  let ccSeq = $(this).find('input[type="hidden"').val()
 				  let selectDiv = $('.content').find('.j-card-selected');
-			  	  
+			  	  let idx = selectDiv.index();
+			  	  console.log(idx);
 			  	 try{
 				  let header = await fetchHeader(ccSeq);
 				   selectDiv.find('.j-typeAndImg').remove();
@@ -481,8 +483,42 @@ $(function () {
 			  	  selectDiv.find('.j-question-content-box').remove();
 			  	  let frame = $('<div class="j-question-content-box"></div>');
 			  	   frame.append(content);
-			  	   console.log(frame);
 			  	   selectDiv.append(frame);
+			  	   
+			  	    if(ccSeq === '17'){
+						  
+							selectDiv.find('.j-map-container').attr('id','map'+idx);
+							setTimeout(() => createDefaultMap('map'+idx), 100);
+					}
+					if (ccSeq === '18') {
+                     
+                    selectDiv.find('.j-survey-name').remove();
+                    selectDiv.find('.j-survey-content').remove();
+                    } else {
+						
+						
+					   // .j-survey-content이 없으면 추가
+                   if (selectDiv.find('.j-survey-content').length === 0) {
+                     selectDiv.find('.j-question-content-box').prepend(`
+                      <div class="j-survey-content">
+                       <textarea rows="" cols="" placeholder="질문에 대한 설명을 작성해주세요"></textarea>
+                       </div>
+                       `);
+                     }
+						
+						
+                   // .j-survey-name이 없으면 추가
+                    if (selectDiv.find('.j-survey-name').length === 0) {
+                    selectDiv.find('.j-question-content-box').prepend(`
+                    <div class="j-survey-name">
+                    <input class="j-survey-name-input" type="text" placeholder="질문명을 작성해주세요">
+                    </div>
+                     `);
+                       }
+
+                  
+                   }
+			  	   
 				}
 			      catch (error) {
      					   console.error("AJAX 요청 실패:", error);
@@ -492,6 +528,28 @@ $(function () {
 			  	  
 			  	 
 			  })
+			  
+			  
+			  //question nav 탭 누르면 변하기 
+			  $('.j-questionNav-tab-Box > div').on('click',function(){
+				  
+				  $('.j-questionNav-tab-Box > div').removeClass('j-question-nav-color')
+				  $(this).addClass('j-question-nav-color');
+				  
+				  if($(this).hasClass('j-question-nav-tab')){
+					  $('.j-question-box').show();
+					  $('.j-condition-button').show();
+					  $('.j-deploy-box').hide();
+					  $('.j-depoly-button').hide();
+				  }else{
+					   $('.j-question-box').hide();
+					   $('.j-condition-button').hide();
+					   $('.j-deploy-box').show();
+				  	   $('.j-depoly-button').show();
+				  }
+			  })
+			  
+			  
 })
 
 

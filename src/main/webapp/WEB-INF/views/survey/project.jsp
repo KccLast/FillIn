@@ -45,6 +45,15 @@
 	<!-- style="height: 700px; background-color: green; margin-top: 100px; margin-left: 100px; margin-right: 40px; -->
 
 	<div id="j-question-nav">
+		<div class="j-questionNav-tab-Box j-flex-row-center">
+			<div class="j-question-nav-tab j-question-nav-color">
+				질문 상세
+			</div>
+			<div class="j-deploy-nav-tab">
+				게시 정보
+			</div>
+			
+		</div>
 		<div class="j-question-box">
 			<div class="j-total-question-box j-flex-row-center">
 				<span>전체문항수</span>
@@ -52,33 +61,6 @@
 			</div>
 
 			<div class="j-question-list">
-
-
-<!-- 
-				<div class="j-question j-flex-row-center">
-					<div class="question-img j-flex-row-center">
-						<img src="/resources/img/question/choice.png">
-					</div>
-					<div class="question-name">
-						<span>만족도 조사</span>
-					</div>
-					<div>
-						
-					</div>
-				</div>
-
-				<div class="j-question j-flex-row-center">
-					<div class="question-img j-flex-row-center">
-						<img src="/resources/img/question/choice.png">
-					</div>
-					<div class="question-name">
-						<span>만족도 조사</span>
-					</div>
-					<div class="j-list-xbutton j-flex-row-center">
-						<img src="/resources/img/question/x-circle.png">
-					</div>
-				</div>  -->
-
 
 
 			</div>
@@ -92,27 +74,20 @@
 				</button>
 			</div>
 		</div>
-		<div class="j-identified-box">
-			<div class="j-i-questions">
-
-
-				<div class="j-question j-flex-row-center">
-					<div class="question-img j-flex-row-center">
-						<img src="/resources/img/question/choice.png">
-					</div>
-					<div class="question-name">
-						<span>만족도 조사</span>
-					</div>
-				</div>
-
-			</div>
-			<div class="j-i-plus-button j-flex-row-center">
-				<span class="j-i-btn-name">응답자 식별용 필드</span>
-				<div class="j-i-btn-plus j-flex-row-center">
-					<img src="/resources/img/question/plus-square-fill.png">
-				</div>
-			</div>
+		
+		<div class="j-deploy-box">
+		
+		
 		</div>
+		
+		<div class="j-condition-button j-flex-row-center j-fix-height">
+			<input type="button" value="질문 고급조건" class="j-nav-input-button">
+		</div>
+		
+		<div class="j-depoly-button j-flex-row-center j-fix-height">
+			<input type="button" value="게시하기" class="j-nav-input-button">
+		</div>
+		
 	</div>
 	<div class="content">
 
