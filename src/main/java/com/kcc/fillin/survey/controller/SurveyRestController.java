@@ -15,22 +15,13 @@ import com.kcc.fillin.survey.service.SurveyService;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/survey")
+@RequestMapping("/api/survey")
 @RequiredArgsConstructor
 public class SurveyRestController {
 	private final SurveyService service;
 	
-	@PostMapping("/api/dashboard")
+	@PostMapping("/dashboard")
 	public Response filterDashboard(@RequestBody MultiSearchSurveyRequest request) {
-		/*
-		 * System.out.println("dashboard PostMapping 실행");
-		 * List<MultiSearchSurveyResponse> filteringSurveys =
-		 * service.getFilteringSurveys(request); System.out.println("필터링 결과: " +
-		 * filteringSurveys);
-		 * 
-		 * return Response.setSuccess(filteringSurveys, 200);
-		 */
-		
 		 if (request == null) {
 		        System.out.println("받은 요청이 null입니다.");
 		    } else {

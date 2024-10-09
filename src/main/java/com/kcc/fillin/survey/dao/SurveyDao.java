@@ -9,7 +9,7 @@ import com.kcc.fillin.survey.dto.MultiSearchSurveyResponse;
 import com.kcc.fillin.survey.dto.CommonCodeResponse;
 
 @Mapper
-public interface SurveyMapper {
+public interface SurveyDao {
 	public List<MultiSearchSurveyResponse> getAllSurveys();
 
 	public List<MultiSearchSurveyResponse> getFilteringSurveys(MultiSearchSurveyRequest request);

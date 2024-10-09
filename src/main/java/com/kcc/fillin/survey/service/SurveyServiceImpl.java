@@ -8,7 +8,7 @@ import java.util.Map;
 import org.springframework.stereotype.Service;
 
 import com.kcc.fillin.survey.Criteria;
-import com.kcc.fillin.survey.dao.SurveyMapper;
+import com.kcc.fillin.survey.dao.SurveyDao;
 import com.kcc.fillin.survey.dto.CommonCodeResponse;
 import com.kcc.fillin.survey.dto.MultiSearchSurveyRequest;
 import com.kcc.fillin.survey.dto.MultiSearchSurveyResponse;
@@ -18,7 +18,7 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class SurveyServiceImpl implements SurveyService {
-	private final SurveyMapper mapper;
+	private final SurveyDao mapper;
 
 	@Override
 	public List<MultiSearchSurveyResponse> getAllSurveys() {

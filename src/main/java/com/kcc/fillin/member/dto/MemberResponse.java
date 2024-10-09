@@ -14,7 +14,8 @@ public class MemberResponse {
 	private String username;
 	private String name;
 	private Date birth;
-	private int status;
+	private int ccSeq;
+	private String phone;
 	private String postalCode;
 	private String address;
 }

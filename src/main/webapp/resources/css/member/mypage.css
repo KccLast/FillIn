@@ -16,7 +16,20 @@
 	margin-bottom: 15px; 
 }
 
+.form-group .btn {
+	background-color: #005BAC;
+	border: none;
+	margin-bottom: 10px;
+	margin-left: 5px;
+}
+
+.postalCode-group {
+	display: flex;
+	align-items: center;
+}
+
 .address-input {
+	flex: 1;
 	margin-bottom: 10px;
 }
 
@@ -25,8 +38,19 @@
 	border: none;
 }
 
+.modal-footer {
+	display: flex;
+	justify-content: center;
+}
+
 .modal-footer .btn{
     margin-right: 20px;
+}
+
+.btn-group {
+	display: flex;
+	gap: 10px;
+	border-radius: 50%;
 }
 
 .profile-container .btn {
@@ -38,4 +62,10 @@
 	background-color: #005BAC;
 	border: none;
 	color: white;
+}
+
+.error-message {
+	margin-top: 10px;
+	color: #EB1C23;
+  	font-size: 15px;
 }

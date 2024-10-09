@@ -1,5 +1,5 @@
  <%@ page contentType="text/html;charset=UTF-8" language="java"%>
-
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -22,39 +22,42 @@
 				</div>
 				<div class="modal-body">
 					<div class="profile-container">
-						<img alt="profile" class="profile-image"
-							src="/resources/img/common/profile.png">
+						<img alt="profile" class="profile-image" src="/resources/img/common/profile.png">
 					</div>
 					<div class="form-group">
-						<label for="email">이메일</label> <input type="email" id="email"
-							name="username" class="form-control" disabled>
+						<label for="username">이메일</label> 
+						<input type="email" id="username" name="username" class="form-control" disabled>
 					</div>
 					<div class="form-group">
-						<label for="name">이름</label> <input type="text" id="name"
-							name="name" class="form-control" disabled>
+						<label for="name">이름</label> 
+						<input type="text" id="name" name="name" class="form-control" disabled>
 					</div>
 					<div class="form-group">
-						<label for="birth">생년월일</label> <input type="text" id="birth"
-							name="birth" class="form-control" disabled>
+						<label for="birth">생년월일</label> 
+						<input type="text" id="birth" name="birth" class="form-control" disabled>
 					</div>
 					<div class="form-group">
-						<label for="ccId">성별</label> <input type="text" id="ccId"
-							name="ccSeq" class="form-control" disabled>
+						<label for="ccSeq">성별</label>
+						<input type="text" id="ccSeq" name="ccSeq" class="form-control" disabled>
+					</div>
+					<div class="form-group">
+						<label for="phone">휴대폰 번호</label>
+						<input type="text" id="phone" name="phone" class="form-control" disabled>
 					</div>
 					<div class="form-group">
 						<label for="address">주소</label> <input type="text" id="postalCode"
 							name="postalCode" class="form-control address-input" disabled>
 						<input type="text" id="address" name="address"
-							class="form-control address-input" disabled> <input
-							type="text" id="detailAddress" name="detailAddress"
+							class="form-control address-input" disabled>
+						<input type="text" id="detailAddress" name="detailAddress"
 							class="form-control address-input" disabled>
 					</div>
 				</div>
 				<div class="modal-footer">
 					<div class="mx-auto">
-						<button type="button" class="btn btn-primary updateBtn"
+						<button type="button" id="updateMemberInfoBtn" class="btn btn-primary updateBtn"
 							data-bs-target="#update-member-modal" data-bs-toggle="modal"
-							data-bs-dismiss="modal">회원 정보 수정</button>
+							data-bs-dismiss="modal"> 회원 정보 수정</button>
 						<button type="button" class="btn btn-secondary logoutBtn">로그아웃</button>
 					</div>
 				</div>
@@ -75,55 +78,62 @@
 
 				<div class="modal-body">
 					<div class="profile-container">
-						<img alt="profile" class="profile-image"
-							src="/resources/img/common/profile.png">
+						<img alt="profile" class="profile-image" src="/resources/img/common/profile.png">
 						<button type="button" class="btn btn-primary">프로필 변경</button>
 					</div>
 					<div class="form-group">
-						<label for="update-email">이메일</label> 
-						<input type="email" id="update-email"
-							name="username" class="form-control" disabled>
+						<label for="update-username">이메일</label> 
+						<input type="email" id="update-username" name="username" class="form-control" disabled>
 					</div>
-					<div class="form-group">
+					<!-- <div class="form-group">
 						<label for="update-password">비밀번호</label> 
-						<input type="password"
-							id="password" name="update-password" class="form-control">
+						<input type="password" id="password" name="update-password" class="form-control">
 					</div>
 					<div class="form-group">
 						<label for="update-password-confirm">비밀번호 확인</label> 
 						<input type="password" id="update-password-confirm" name="password-confirm" class="form-control">
-					</div>
+					</div> -->
 					<div class="form-group">
 						<label for="update-name">이름</label>
-						<input type="text" id="update-name"
-							name="name" class="form-control" disabled>
+						<input type="text" id="update-name" name="name" class="form-control" disabled>
 					</div>
 					<div class="form-group">
 						<label for="update-birth">생년월일</label> 
 						<input type="text" id="update-birth" name="birth" class="form-control" disabled>
 					</div>
 					<div class="form-group">
-						<label for="update-ccId">성별</label> 
-						<input type="text" id="update-ccId" name="ccSeq" class="form-control" disabled>
+						<label for="update-ccSeq">성별</label> 
+						<input type="text" id="update-ccSeq" name="ccSeq" class="form-control" disabled>
+					</div>
+					<div class="form-group">
+						<label for="update-phone">휴대폰 번호</label>
+						<input type="text" id="update-phone" name="phone" class="form-control">
+						<div id="phone-error" class="error-message" style="display: none;"></div>
 					</div>
 					<div class="form-group">
 						<label for="update-address">주소</label> 
-						<input type="text" id="update-postalCode" name="postalCode" class="form-control address-input">
+						<div class="postalCode-group">
+							<input type="text" id="update-postalCode" name="postalCode"
+								class="form-control address-input" placeholder="우편번호">
+							<button class="btn btn-primary" id="postalCodeSearchBtn" type="button" onclick="sample6_execDaumPostcode()">우편번호 검색</button>
+						</div>
 						<input type="text" id="update-address" name="address"
-							class="form-control address-input"> 
+							class="form-control address-input" placeholder="주소"> 
 						<input type="text" id="update-detailAddress" name="detailAddress"
-							class="form-control address-input">
+							class="form-control address-input" placeholder="상세주소">
 					</div>
 				</div>
 				<div class="modal-footer">
-					<button class="btn btn-primary" data-bs-target="#mypage-modal"
-						data-bs-toggle="modal" >저장하기</button>
-					<button class="btn btn-secondary logoutBtn" data-bs-target="#mypage-modal"
-					data-bs-toggle="modal">취소하기</button>
+					<div class="btn-group">
+						<button class="btn btn-primary" id="saveBtn">저장하기</button>
+						<button class="btn btn-secondary logoutBtn" data-bs-target="#mypage-modal"
+						data-bs-toggle="modal">취소하기</button>
+					</div>
 				</div>
 			</div>
 		</div>
 	</div>
-
+	<script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+	<script type="text/javascript" src="/resources/js/member/mypage.js"></script>
 </body>
 </html> 
