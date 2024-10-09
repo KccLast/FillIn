@@ -93,44 +93,9 @@ $(document).ready(function() {
 		}
 	});
 
-	// 날짜 포맷팅 함수
-	/*function formatDate(date, isEndOfDay = false) {
-		if (!date) return ''; // 값이 없으면 빈 문자열 반환
-
-		if (isEndOfDay) {
-			date.setHours(23, 59, 59, 999);
-		} else {
-			date.setHours(0, 0, 0, 0);
-		}
-
-		return date.getFullYear() + '-' +
-			('0' + (date.getMonth() + 1)).slice(-2) + '-' +
-			('0' + date.getDate()).slice(-2);
-	}*/
-
 	// 다중 검색 조건으로 조회
 	$('#searchBtn').on('click', function() {
 		currentPage = 1;
-		// 날짜 값을 yyyy-MM-dd 형식으로 포맷하는 함수
-		/*function formatDate(dateString, isEndOfDay) {
-			if (!dateString) return null; // 값이 없으면 null 반환
-			var date = new Date(dateString);
-
-			// 시작 시간은 00:00:00, 종료 시간은 23:59:59로 설정
-			if (isEndOfDay) {
-				date.setHours(23, 59, 59, 999);
-			} else {
-				date.setHours(0, 0, 0, 0);
-			}
-
-			// yyyy-MM-ddTHH:mm:ss.sss' 형식으로 변환하여 반환
-			return date.getFullYear() + '-' + // date 객체 연도 가져옴(반환되는 값: 4자리 연도)
-				('0' + (date.getMonth() + 1)).slice(-2) + '-' + // date 객체의 월을 가져옴 (0부터 시작), 2자리 수로 만듦
-				('0' + date.getDate()).slice(-2) + ' ' + // 일을 두 자리 문자열로 반환
-				('0' + date.getHours()).slice(-2) + ':' + // 날짜 객체의 hour 가져와서 두 자리 문자열로 변환
-				('0' + date.getMinutes()).slice(-2) + ':' + // 날짜 객체의 minutes를 가져와서 두 자리 문자열로 변환
-				('0' + date.getSeconds()).slice(-2); // 날짜 객체의 seconds를 가져와서 두 자리 문자열로 반환
-		}*/
 
 		// 날짜 값 포맷팅
 		var startCreatedAt = $('#startCreatedAt').val();
@@ -141,16 +106,6 @@ $(document).ready(function() {
 		// 응답 수 입력 유효성 검사
 		let minAnswerCount = $('#minAnswerCount').val();
 		let maxAnswerCount = $('#maxAnswerCount').val();
-
-		/*if (minAnswerCount && isNaN(minAnswerCount)) {
-			alert('응답 수 최소값은 숫자여야 합니다.');
-			return;
-		}
-
-		if (maxAnswerCount && isNaN(maxAnswerCount)) {
-			alert('응답 수 최대값은 숫자여야 합니다.');
-			return;
-		}*/
 
 		minAnswerCount = parseInt(minAnswerCount, 10);
 		maxAnswerCount = parseInt(maxAnswerCount, 10);
@@ -186,7 +141,7 @@ $(document).ready(function() {
 
 		// AJAX 요청
 		$.ajax({
-			url: '/survey/api/dashboard',
+			url: '/api/survey/dashboard',
 			type: 'POST',
 			contentType: 'application/json',
 			data: JSON.stringify(requestData),
@@ -219,8 +174,6 @@ $(document).ready(function() {
 			}
 			return survey.ccSeq == selectedCcSeq; // 선택된 ccSeq와 일치하는 설문지만 포함
 		}).slice(startRow, endRow);	
-		
-		/*const currentSurveys = surveysData.slice(startRow, endRow); // 전체 데이터를 기준으로 페이지네이션*/
 	
 		if (currentSurveys.length === 0) {
 			$('.cards-container').append('<p>검색 결과와 일치하는 설문지가 없습니다.</p>');
@@ -237,16 +190,8 @@ $(document).ready(function() {
 
 			if (Array.isArray(currentSurveys)) {
 				console.log(currentSurveys);
-				/*<c:foreach items="${progressStatus}" var="item">
-					console.log(item);
-				</c:foreach>*/
-
-				
-				
 				// 필터링된 설문지 생성
 				surveyCard += currentSurveys.map(survey =>
-				
-				
 					`<div class="card h-100">
 	                <div class="card-body">
 	                    <span class="badge rounded-pill  ${getBadgeClass(survey.ccSeq)} mb-1 px-2 py-1">${getBadgeText(survey.ccSeq)}</span>
