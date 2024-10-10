@@ -473,7 +473,7 @@ $(function() {
 	
 	//
 	$('.content').on('click', '.j-essential', function() {
-    let isEssential = $(this).data('essential') === true ? false : true;
+    let isEssential = $(this).data('essential') === 'Y' ? 'N' : 'Y';
     $(this).data('essential', isEssential);
     });
 
@@ -597,35 +597,42 @@ function saveQuestion() {
 		let question = {};
 		let questionItem = {};
 		let questionItems = [];
+		question.surveySeq = surveySeq;
 		question.order = $item.index();
-		question.title = $item.find('.j-survey-name-input').val();
+		question.name = $item.find('.j-survey-name-input').val();
 		question.description = $item.find('.j-survey-content > textarea').val();
-		question.seq = ccSeq;
+		question.ccSeq = ccSeq;
 		question.isEssential = isEssential;
 		if (ccSeq >= 7 && ccSeq <= 11) {
-			console.log('Target:', item);
+
 			question.questionItems = getQuestionItemFunction(ccSeq, item);
 		}
 		questions.push(question);
 	})
-	console.log(questions);
+	saveQuestionInDB(questions)
 
 	return questions;
 }
 
 function saveQuestionInDB(questions) {
 	$.ajax({
-		url: '/your-api-endpoint',    // 서버 URL
+		url: '/api/question',    // 서버 URL
 		type: 'POST',
 		contentType: 'application/json',  // JSON 형식으로 보낸다는 것을 명시
 		data: JSON.stringify(questions), // 자바스크립트 객체를 JSON 형식으로 변환
 		success: function(response) {
 			console.log('서버 응답:', response);
+			removeNewCardClass();
+			location.reload(true);
 		},
 		error: function(error) {
 			console.error('에러 발생:', error);
 		}
 	});
+}
+
+function removeNewCardClass(){
+ $('.content div.j-new-card').removeClass('j-new-card');
 }
 
 function getQuestionItemFunction(ccSeq, target) {
@@ -748,7 +755,9 @@ function setQuestionNav(idx, src) {
 		'<img src="/resources/img/question/x-circle.png">' +
 		'</div>' +
 		'</div>';
+
 	$('.j-question-list').append(html);
+	return $('.j-question-list');
 }
 
 // 행과 열을 기반으로 테이블 생성

@@ -3,6 +3,8 @@ package com.kcc.fillin.survey.controller;
 import java.util.List;
 import java.util.Map;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -74,6 +76,14 @@ public class SurveyController {
 
 		SurveyVO findSurvey = service.findSurveyBySurveySeq(surveySeq);
 		model.addAttribute("survey", findSurvey);
+		ObjectMapper objectMapper = new ObjectMapper();
+		String jsonString = "";
+		try {
+			 jsonString = objectMapper.writeValueAsString(findSurvey);
+		} catch (JsonProcessingException e) {
+			throw new RuntimeException(e);
+		}
+		model.addAttribute("surveyJson",jsonString);
 		return "/survey/project";
 	}
 

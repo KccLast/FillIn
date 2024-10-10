@@ -23,6 +23,7 @@
 </script>
 
 <script src="/resources/js/question/question.js"></script>
+<script src="/resources/js/question/questionParse.js"></script>
 <script type="text/javascript">
 	
 	$(function(){
@@ -30,6 +31,10 @@
 			let idx = $(this).parent().parent().index();
 			$('.j-question-list').find('.j-question').eq(idx).find('.question-name > span').html($(this).val());
 		})
+
+	    let survey = '${surveyJson}';
+	    parseJson(survey);
+
 	})
 </script>
 

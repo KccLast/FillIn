@@ -21,7 +21,17 @@ public class QuestionVO extends CommonVO {
 	private Character isEssential;
 	private Long ccSeq;
 
-	private List<QuestionItemVO> items;
+	private List<QuestionItemVO> questionItems;
 	private List<ConditionVO> conditions;
 
+	public boolean isQuestionItemExist() {
+		if(questionItems.size() > 0){
+			return true;
+		}
+		return false;
+	}
+
+	public boolean compareQuestionItemCnt(int questionItemInsertResult) {
+		return questionItems.size() == questionItemInsertResult;
+	}
 }

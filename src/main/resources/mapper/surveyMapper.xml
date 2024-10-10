@@ -41,7 +41,7 @@
         <result column="tb_file_seq" property="tbFileSeq"/>
         <result column="question_name" property="name"/>
         <result column="description" property="description"/>
-        <result column="question_order" property="order"/>
+        <result column="q_order" property="order"/>
         <result column="is_essential" property="isEssential"/>
         <result column="question_cc_seq" property="ccSeq"/>
         <result column="q_is_active" property="isActive"/>
@@ -49,11 +49,11 @@
         <result column="q_updated_at" property="updatedAt"/>
 
         <!-- 질문 항목 리스트 -->
-        <collection property="items" ofType="QuestionItemVO">
+        <collection property="questionItems" ofType="QuestionItemVO">
             <id column="question_item_seq" property="seq"/>
-            <result column="question_seq" property="questionSeq"/>
+            <result column="qi_question_seq" property="questionSeq"/>
             <result column="content" property="content"/>
-            <result column="order_num" property="orderNum"/>
+            <result column="qi_order" property="orderNum"/>
             <result column="qi_is_active" property="isActive"/>
             <result column="qi_created_at" property="createdAt"/>
             <result column="qi_updated_at" property="updatedAt"/>
@@ -62,7 +62,7 @@
         <!-- 조건 리스트 -->
         <collection property="conditions" ofType="ConditionVO">
             <id column="condition_seq" property="seq"/>
-            <result column="question_seq" property="questionSeq"/>
+            <result column="c_question_seq" property="questionSeq"/>
             <result column="next_question_seq" property="nextQuestionSeq"/>
             <result column="c_value" property="cValue"/>
             <result column="operation" property="operation"/>
@@ -202,12 +202,20 @@
 		VALUES (#{seq},#{memberSeq},#{name},3)
 	</insert>
 	
-	<select id="selectSurveyBySurveySeq" resultType="SurveyVO">
-	
-	 SELECT *
-	 FROM 
-	 SURVEY
-	 WHERE seq = #{surveySeq}
+	<select id="selectSurveyBySurveySeq" resultMap="surveyInfo" parameterType="long">
+
+		SELECT s.seq, s.name, s.post_date, s.end_date, s.url, s.target_people,
+		q.seq AS question_seq, q.survey_seq, q.tb_file_seq, q.name AS question_name, q.description, q.order_num as q_order, q.is_essential, q.cc_seq AS question_cc_seq,
+		qi.seq AS question_item_seq, qi.question_seq AS qi_question_seq, qi.content, qi.order_num as qi_order,
+		c.seq AS condition_seq, c.question_seq as c_question_seq, c.next_question_seq, c.c_value, c.operation
+		FROM survey s
+		LEFT JOIN question q ON s.seq = q.survey_seq
+		LEFT JOIN question_item qi ON q.seq = qi.question_seq
+		LEFT JOIN condition c ON q.seq = c.question_seq
+		WHERE s.seq = #{memberSeq}
+		AND  (q.is_active != 'N' OR q.is_active IS NULL)
+		AND (qi.is_active != 'N' OR qi.is_active IS NULL)
+		AND (c.is_active != 'N' OR c.is_active IS NULL)
 	
 		
 	
