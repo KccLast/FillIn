@@ -20,6 +20,60 @@
 		<result column="parent_seq" property="parentSeq" />
 		<result column="name" property="name" />
 	</resultMap>
+	
+	<resultMap type="SurveyVO" id="surveyInfo">
+    <!-- 설문지 정보 -->
+    <id column="seq" property="seq"/>
+    <result column="name" property="name"/>
+    <result column="post_date" property="postDate"/>
+    <result column="end_date" property="endDate"/>
+    <result column="url" property="url"/>
+    <result column="created_at" property="createdAt"/>
+    <result column="updated_at" property="updatedAt"/>
+    <result column="target_people" property="targetPeople"/>
+    <result column="cc_seq" property="ccSeq"/>
+    <result column="member_seq" property="memberSeq"/>
+
+    <!-- question List -->
+    <collection property="questions" ofType="QuestionVO">
+        <id column="question_seq" property="seq"/>
+        <result column="survey_seq" property="surveySeq"/>
+        <result column="tb_file_seq" property="tbFileSeq"/>
+        <result column="question_name" property="name"/>
+        <result column="description" property="description"/>
+        <result column="question_order" property="order"/>
+        <result column="is_essential" property="isEssential"/>
+        <result column="question_cc_seq" property="ccSeq"/>
+        <result column="q_is_active" property="isActive"/>
+        <result column="q_created_at" property="createdAt"/>
+        <result column="q_updated_at" property="updatedAt"/>
+
+        <!-- 질문 항목 리스트 -->
+        <collection property="items" ofType="QuestionItemVO">
+            <id column="question_item_seq" property="seq"/>
+            <result column="question_seq" property="questionSeq"/>
+            <result column="content" property="content"/>
+            <result column="order_num" property="orderNum"/>
+            <result column="qi_is_active" property="isActive"/>
+            <result column="qi_created_at" property="createdAt"/>
+            <result column="qi_updated_at" property="updatedAt"/>
+        </collection>
+
+        <!-- 조건 리스트 -->
+        <collection property="conditions" ofType="ConditionVO">
+            <id column="condition_seq" property="seq"/>
+            <result column="question_seq" property="questionSeq"/>
+            <result column="next_question_seq" property="nextQuestionSeq"/>
+            <result column="c_value" property="cValue"/>
+            <result column="operation" property="operation"/>
+            <result column="c_is_active" property="isActive"/>
+            <result column="c_created_at" property="createdAt"/>
+            <result column="c_updated_at" property="updatedAt"/>
+        </collection>
+    </collection>
+    <!-- question List -->
+    
+</resultMap>
 
 	<!-- 전체 설문지 조회 -->
 	<select id="getSurveyListWithPaging" resultMap="surveyResultMap"
@@ -136,6 +190,27 @@
 				<![CDATA[COUNT(a.seq) <= #{maxAnswerCount}]]>
 			</if>
 		</if>
+	</select>
+	
+	<insert id="insertNewSurvey" parameterType="SurveyVO">
+		<selectKey order="BEFORE" resultType="long" keyProperty="seq"> 
+			SELECT survey_seq.nextval 
+			FROM dual
+		</selectKey>
+	
+		INSERT INTO survey (seq,member_seq,name,cc_seq)
+		VALUES (#{seq},#{memberSeq},#{name},3)
+	</insert>
+	
+	<select id="selectSurveyBySurveySeq" resultType="SurveyVO">
+	
+	 SELECT *
+	 FROM 
+	 SURVEY
+	 WHERE seq = #{surveySeq}
+	
+		
+	
 	</select>
 
 </mapper>

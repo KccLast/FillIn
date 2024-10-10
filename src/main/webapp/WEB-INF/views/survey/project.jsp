@@ -17,6 +17,11 @@
 <script type="text/javascript"
 	src="//dapi.kakao.com/v2/maps/sdk.js?appkey=f7372f613dea5dbd8f49b7be0a73bbb8"></script>
 
+<script type="text/javascript">
+	let surveyName = "${survey.name}";
+	console.log("surveyName In jsp"+surveyName);
+</script>
+
 <script src="/resources/js/question/question.js"></script>
 <script type="text/javascript">
 	
@@ -34,6 +39,7 @@
 </head>
 
 <body>
+	<input type="hidden" id="surveySeq" value="${survey.seq}"/>
 	<%@include file="/resources/common/header.jsp"%>
 	<%-- <%@ include file="/resources/common/miniNav.jsp" %> --%>
 	<%@ include file="/resources/common/nav.jsp"%>
@@ -86,6 +92,10 @@
 		
 		<div class="j-depoly-button j-flex-row-center j-fix-height">
 			<input type="button" value="게시하기" class="j-nav-input-button">
+		</div>
+		
+		<div class="j-save-button j-flex-row-center j-fixSave-height">
+			<input type="button" value="저장하기" class="j-nav-input-button j-nav-save-button">
 		</div>
 		
 	</div>

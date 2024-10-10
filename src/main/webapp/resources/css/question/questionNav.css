@@ -162,7 +162,7 @@ body {
 
 .j-fix-height{
 	position: fixed;
-	 bottom: 80px; 
+	 bottom: 120px; 
 	 left: 95px;
 	
 }
@@ -178,6 +178,16 @@ body {
 }
 .j-depoly-button{
 	display: none;
+}
+.j-save-button{
+	
+}
+
+.j-fixSave-height{
+	position: fixed;
+	 bottom: 50px; 
+	 left: 95px;
+	
 }
 
 /* question navBar  */
