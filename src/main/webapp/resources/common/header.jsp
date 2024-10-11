@@ -21,7 +21,7 @@
             type : "GET",
             success : function(response){
                 console.log("response : ", response);
-				$('.header-list .username').text(response);
+				$('.header-list .username').text(response.data);
             },
             error : function(error){
                 console.log("error : ", error);
@@ -55,6 +55,5 @@
 		</div>
 	</header>
 	<%@include file="/WEB-INF/views/member/modal-mypage.jsp"%>
-	<script type="text/javascript" src="/resources/js/member/mypageModal.js"></script>
 </body>
 </html>

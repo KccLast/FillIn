@@ -1,6 +1,6 @@
 package com.kcc.fillin.survey.dto;
 
-import java.sql.Timestamp;
+import java.time.LocalDate;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -10,15 +10,15 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class MultiSearchSurveyResponse {
+<<<<<<< HEAD
+=======
+	private Long seq;
+>>>>>>> 376a11bcecc2674be83d01e8cfb1f49d961bd386
 	private int ccSeq;
 	private String name;
-	private Timestamp createdAt;
-	private Timestamp updatedAt;
-	private Timestamp postDate;
-	private Timestamp endDate;
+	private LocalDate createdAt;
+	private LocalDate updatedAt;
+	private LocalDate postDate;
+	private LocalDate endDate;
 	private int answerCount;
-
-	/*public String getFormattedLocaldate() {
-		return createdAt.toLocalDateTime().format(null);
-	}*/
 }

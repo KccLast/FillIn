@@ -2,9 +2,10 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.kcc.fillin.survey.dao.SurveyMapper">
+<mapper namespace="com.kcc.fillin.survey.dao.SurveyDao">
 	<resultMap id="surveyResultMap"
 		type="multiSearchSurveyResponse">
+		<result column="seq" property="seq" />
 		<result column="name" property="name" />
 		<result column="created_at" property="createdAt" />
 		<result column="updated_at" property="updatedAt" />
@@ -13,6 +14,12 @@
 		<result column="cc_seq" property="ccSeq" />
 		<result column="answer_count" property="answerCount" />
 	</resultMap>
+	
+	<resultMap type="CommonCodeResponse" id="commonCodeResultMap">
+		<result column="seq" property="seq" />
+		<result column="parent_seq" property="parentSeq" />
+		<result column="name" property="name" />
+	</resultMap>
 
 	<!-- 전체 설문지 조회 -->
 	<select id="getSurveyListWithPaging" resultMap="surveyResultMap"
@@ -20,7 +27,8 @@
 		<![CDATA[
 			SELECT *
 			        FROM (
-			            SELECT /*+INDEX_DESC(s pk_survey) */
+			            SELECT
+			        		s.seq AS seq,
 			                s.name AS name,
 			                s.cc_seq AS cc_seq,
 			                s.created_at AS created_at,
@@ -34,7 +42,7 @@
 		             	LEFT JOIN question q ON s.seq = q.survey_seq
 			            LEFT JOIN answer a ON q.seq = a.question_seq
 			            GROUP BY
-			                s.name, s.cc_seq, s.created_at, s.updated_at, s.post_date, s.end_date
+			                s.seq, s.name, s.cc_seq, s.created_at, s.updated_at, s.post_date, s.end_date
 			        )
 			        WHERE rn >= #{startRow} AND rn <= #{endRow}
     	]]>
@@ -43,21 +51,29 @@
 	<!-- 총 설문 수 조회 -->
 	<select id="getTotalSurveyCount" resultType="int">
 		SELECT COUNT(*)
-		FROM survey s
+		FROM survey
+	</select>
+	
+	<!-- 공통 코드 조회 -->
+	<select id="getCommonCodes" resultMap="commonCodeResultMap">
+		SELECT seq, name, parent_seq
+		FROM common_code
+		WHERE (parent_seq = 2 AND seq BETWEEN 3 AND 5)
+    	OR parent_seq = 8 
 	</select>
 
 	<!-- 다중 검색 -->
 	<select id="getFilteringSurveys" resultMap="surveyResultMap"
-		parameterType="multiSearchSurveyRequest">
+		parameterType="MultiSearchSurveyRequest">
 		SELECT
+			s.seq AS seq,
 			s.name AS name,
 			s.cc_seq AS cc_seq,
 			s.created_at AS created_at,
 			s.updated_at AS updated_at,
 			s.post_date AS post_date,
-			s.end_date AS
-			end_date,
-			COUNT(a.id) AS answer_count
+			s.end_date AS end_date,
+			COUNT(a.seq) AS answer_count
 		FROM
 			survey s
 		LEFT JOIN question q
@@ -66,23 +82,15 @@
 		ON q.seq = a.question_seq
 		<where>
 			<!-- 진행 상태 -->
-			<if test="ccId != null">
-				<choose>
-					<when test="ccId == 11">
-						AND s.cc_seq = #{ccSeq}
-					</when>
-					<when test="ccId == 12">
-						AND s.cc_seq = #{ccSeq}
-					</when>
-					<when test="ccId == 13">
-						AND s.cc_seq = #{ccSeq}
-					</when>
-				</choose>
-			</if>
-			<!-- <if test="ccId != null">
-				AND s.cc_id = #{ccId}
-			</if> -->
-			<!-- 최초 생성일 필터 -->
+			<choose>
+			    <when test="ccSeq != null and ccSeq != 0">
+			        AND s.cc_seq = #{ccSeq}
+			    </when>
+			    <otherwise>
+			        <!-- cc_seq가 null이거나 0일 경우 조건을 추가하지 않음 -->
+			    </otherwise>
+			</choose>
+			<!-- 생성일 필터 -->
 			<choose>
 				<when test="startCreatedAt != null and endCreatedAt != null">
 					AND s.created_at BETWEEN #{startCreatedAt} AND
@@ -95,7 +103,7 @@
             <![CDATA[AND s.created_at <= #{endCreatedAt}]]>
 				</when>
 			</choose>
-			<!-- 마지막 수정일 필터 -->
+			<!-- 수정일 필터 -->
 			<choose>
 				<when test="startUpdatedAt != null and endUpdatedAt != null">
 					AND s.updated_at BETWEEN #{startUpdatedAt} AND #{endUpdatedAt}
@@ -109,11 +117,11 @@
 			</choose>
 			<!-- 제목 필터 -->
 			<if test="name != null and name != ''">
-				<![CDATA[AND instr(LOWER(s.name), LOWER(#{name})) > 0]]>
+				AND LOWER(s.name) LIKE '%'||LOWER(#{name})||'%'
 			</if>
 		</where>
 		GROUP BY
-			s.id, s.name, s.cc_seq, s.created_at, s.updated_at,
+			s.seq, s.name, s.cc_seq, s.created_at, s.updated_at,
 			s.post_date, s.end_date
 		<!-- 응답 수 필터 -->
 		<if test="minAnswerCount > 0 or maxAnswerCount > 0">

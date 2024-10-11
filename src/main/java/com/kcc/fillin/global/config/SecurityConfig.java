@@ -218,14 +218,15 @@ public class SecurityConfig {
 	@Bean
 	public HttpFirewall allowUrlEncodedSlashHttpFirewall() {
 		StrictHttpFirewall firewall = new StrictHttpFirewall();
-		firewall.setAllowUrlEncodedSlash(true);  // URL 인코딩된 슬래시 허용
-		firewall.setAllowUrlEncodedDoubleSlash(true);  // 연속된 슬래시 허용
+		firewall.setAllowUrlEncodedSlash(true); // URL 인코딩된 슬래시 허용
+		firewall.setAllowUrlEncodedDoubleSlash(true); // 연속된 슬래시 허용
 		return firewall;
 	}
 
 	// 방화벽 설정을 WebSecurity에 적용
 	@Bean
 	public WebSecurityCustomizer webSecurityCustomizer() {
-		return (web) -> web.httpFirewall(allowUrlEncodedSlashHttpFirewall());  // 수정된 방화벽 적용
+		return (web) -> web.httpFirewall(allowUrlEncodedSlashHttpFirewall()); // 수정된 방화벽 적용
 	}
+
 }

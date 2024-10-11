@@ -163,7 +163,7 @@ public class MemberRestController {
     }
 
     @GetMapping("/info")
-    public ResponseEntity<String> getUser(@AuthenticationPrincipal PrincipalDetail  user) {
+    public Response<String> getUser(@AuthenticationPrincipal PrincipalDetail  user) {
 
 
        return Response.setSuccess(user.getUser(),200);

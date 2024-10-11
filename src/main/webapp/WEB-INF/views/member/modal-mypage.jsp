@@ -22,44 +22,43 @@
 				</div>
 				<div class="modal-body">
 					<div class="profile-container">
-						<img alt="profile" class="profile-image"
-							src="/resources/img/common/profile.png">
+						<img alt="profile" class="profile-image" src="/resources/img/common/profile.png">
 					</div>
 					<div class="form-group">
-						<label for="email">이메일</label> <input type="email" id="email"
-							name="username" class="form-control" disabled>
+						<label for="username">이메일</label>
+						<input type="email" id="username" name="username" class="form-control" disabled>
 					</div>
 					<div class="form-group">
-						<label for="name">이름</label> <input type="text" id="name"
-							name="name" class="form-control" disabled>
+						<label for="name">이름</label>
+						<input type="text" id="name" name="name" class="form-control" disabled>
 					</div>
 					<div class="form-group">
-						<label for="birth">생년월일</label> <input type="text" id="birth"
-							name="birth" class="form-control" disabled>
+						<label for="birth">생년월일</label>
+						<input type="text" id="birth" name="birth" class="form-control" disabled>
 					</div>
 					<div class="form-group">
-						<label for="ccId">성별</label> <input type="text" id="ccId"
-							name="ccSeq" class="form-control" disabled>
+						<label for="ccSeq">성별</label>
+						<input type="text" id="ccSeq" name="ccSeq" class="form-control" disabled>
+					</div>
+					<div class="form-group">
+						<label for="phone">휴대폰 번호</label>
+						<input type="text" id="phone" name="phone" class="form-control" disabled>
 					</div>
 					<div class="form-group">
 						<label for="address">주소</label> <input type="text" id="postalCode"
 							name="postalCode" class="form-control address-input" disabled>
 						<input type="text" id="address" name="address"
-							class="form-control address-input" disabled> <input
-							type="text" id="detailAddress" name="detailAddress"
+							class="form-control address-input" disabled>
+						<input type="text" id="detailAddress" name="detailAddress"
 							class="form-control address-input" disabled>
 					</div>
 				</div>
 				<div class="modal-footer">
 					<div class="mx-auto">
-						<button type="button" class="btn btn-primary updateBtn"
+						<button type="button" id="updateMemberInfoBtn" class="btn btn-primary updateBtn"
 							data-bs-target="#update-member-modal" data-bs-toggle="modal"
 							data-bs-dismiss="modal">회원 정보 수정</button>
-
-							<form method="POST" action="/logout" class="">
-								<button type="submit" class="btn btn-secondary logoutBtn">로그아웃</button>
-							</form>
-
+						<button type="button" class="btn btn-secondary logoutBtn">로그아웃</button>
 					</div>
 				</div>
 			</div>

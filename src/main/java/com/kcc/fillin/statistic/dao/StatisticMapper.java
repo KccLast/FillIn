@@ -5,6 +5,7 @@ import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
 
 import com.kcc.fillin.statistic.dto.HitsDTO;
+import com.kcc.fillin.statistic.dto.QualitativeResponse;
 import com.kcc.fillin.statistic.dto.QuantitativeResponse;
 
 @Mapper
@@ -16,5 +17,7 @@ public interface StatisticMapper {
 	List<HitsDTO> selectHits(Long surveyId);
 
 	List<QuantitativeResponse> selectQuantitativeList(Long surveyId);
+
+	List<QualitativeResponse> selectQualitativeList(Long surveyId);
 
 }
