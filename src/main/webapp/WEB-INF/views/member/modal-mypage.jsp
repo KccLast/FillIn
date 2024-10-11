@@ -49,7 +49,7 @@
 							name="postalCode" class="form-control address-input" disabled>
 						<input type="text" id="address" name="address"
 							class="form-control address-input" disabled>
-						<input type="text" id="detailAddress" name="detailAddress"
+						<input type="text" id="addressDetail" name="addressDetail"
 							class="form-control address-input" disabled>
 					</div>
 				</div>
@@ -119,7 +119,7 @@
 						</div>
 						<input type="text" id="update-address" name="address"
 							class="form-control address-input" placeholder="주소"> 
-						<input type="text" id="update-detailAddress" name="detailAddress"
+						<input type="text" id="update-addressDetail" name="addressDetail"
 							class="form-control address-input" placeholder="상세주소">
 					</div>
 				</div>

@@ -1,0 +1,99 @@
+.body-title {
+    font-weight: bold;
+    font-size: 20px;
+}
+
+textarea {
+    width: 100%;
+    height: 100px;
+    resize: none;
+}
+
+.checkbox-group label {
+    margin-right: 10px;
+}
+
+.review-btn {
+    background-color: #005BAC;
+}
+
+.select-question-type p:nth-child(1) {
+    font-weight: bold;
+    font-size: 17px;
+}
+
+.checkbox-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group {
+    display: flex;
+    align-items: center;
+}
+
+.form-group label {
+    margin-right: 10px;
+}
+
+.form-select {
+    margin-left: 10px;
+}
+
+.checkbox-group {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.checkbox-item {
+    display: flex;
+    align-items: center;
+}
+
+.checkbox-item label {
+    margin-left: 5px;
+    margin-right: 10px;
+    min-width: 70px;
+}
+
+.small-select {
+    margin-left: 10px;
+    width: 80px;	
+}
+
+/* 추천 질문 목록 */
+.questions-list {
+    max-height: 400px; 
+    overflow-y: auto;
+    padding: 10px;
+}
+
+.questions-list h6 {
+    margin: 10px 0 5px; 
+    color: #333;
+    font-weight: bold;
+}
+
+.questions-list div {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background-color: #fff;
+    transition: background-color 0.3s;
+    margin: 10px 0 10px 0;
+}
+
+.questions-list div:hover {
+    background-color: #f0f0f0;
+}
+
+.questions-list input[type="checkbox"] {
+    margin-right: 8px;
+}
+
+.question-toggle {
+    cursor: pointer;
+    border-bottom: 1px solid #d7d7d7;
+    padding-bottom: 10px;
+}

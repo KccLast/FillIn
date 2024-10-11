@@ -13,7 +13,14 @@
 }
 
 .form-group {
+	display: flex;
+    flex-direction: column;
 	margin-bottom: 15px; 
+}
+
+.form-group label {
+    align-self: flex-start;
+    margin-bottom: 10px;
 }
 
 .form-group .btn {
@@ -24,6 +31,7 @@
 }
 
 .postalCode-group {
+	width: 100%;
 	display: flex;
 	align-items: center;
 }
