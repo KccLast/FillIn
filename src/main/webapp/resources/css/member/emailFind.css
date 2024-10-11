@@ -49,7 +49,7 @@ body {
     margin-right: 8px;
 }
 
-/* 로그인 창 스타일 */
+/* 이메일 찾기 스타일 */
 .login-container {
     background-color: #fff;
     padding: 40px;
@@ -191,3 +191,32 @@ button:disabled {
     color: white;
     font-size: 25px; /* 인증 버튼 글자 크기 */
 }
+
+#resultContainer {
+    display: none;
+    margin-top: 20px; /* 결과 상단 여백 */
+    padding: 15px;
+    border-radius: 5px;
+    background-color: #f2f2f2;
+    color: #333;
+    font-size: 20px;
+    text-align: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border: 1px solid #ccc;
+}
+
+.links {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.links a {
+    text-decoration: none;
+    color: #007bff;
+    font-size: 25px; /* 링크 글자 크기 조정 */
+}
+
+.links a:hover {
+    text-decoration: underline;
+}
+

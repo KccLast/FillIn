@@ -55,7 +55,11 @@
 						<button type="button" class="btn btn-primary updateBtn"
 							data-bs-target="#update-member-modal" data-bs-toggle="modal"
 							data-bs-dismiss="modal">회원 정보 수정</button>
-						<button type="button" class="btn btn-secondary logoutBtn">로그아웃</button>
+
+							<form method="POST" action="/logout" class="">
+								<button type="submit" class="btn btn-secondary logoutBtn">로그아웃</button>
+							</form>
+
 					</div>
 				</div>
 			</div>
