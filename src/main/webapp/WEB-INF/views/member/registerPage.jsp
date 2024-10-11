@@ -7,11 +7,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>회원가입</title>
     <link rel="stylesheet" href="/resources/css/member/registerPage.css">
+
+    <!-- CSRF 메타 태그 추가 -->
+    <meta name="_csrf" content="${_csrf.token}">
+    <meta name="_csrf_header" content="${_csrf.headerName}">
+
 </head>
 <body>
     <div class="navbar">
         <div class="nav-left">
             <a href="#"><img src="/resources/img/common/logo.png" alt="Logo" class="logo"></a>
+        </div>
+
+        <div class="links">
+            <a href="/member/login" id="login-page">로그인 페이지</a>
         </div>
     </div>
 
@@ -19,7 +28,8 @@
         <div class="signup-container">
             <h2>회원가입</h2>
             <form id="register-form" action="/member/register" method="post" enctype="multipart/form-data">
-                
+                <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+
                 <!-- 프로필 이미지 업로드 -->
                 <div class="profile-container">
                     <label for="profile-image-input">
@@ -31,10 +41,11 @@
 
                 <!-- 이메일 입력 -->
                 <div class="form-group">
-                    <label for="username">이메일</label>
+                    <%--@declare id="username"--%><label for="username">이메일</label>
                     <input type="email" id="email" name="username" placeholder="이메일을 입력하세요">
                     <span class="error-message" id="email-error">유효하지 않은 이메일 형식입니다</span>
-                    <button type="button" class="check-button">중복확인</button>
+                    <button type="button" id="check-email-button" class="check-button">중복확인</button>
+
                 </div>
 
                 <!-- 비밀번호 입력 -->

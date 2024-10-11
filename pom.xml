@@ -32,10 +32,15 @@
 	</properties>
 	<dependencies>
 		
-		<!--<dependency>
+		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-security</artifactId>
-		</dependency>-->
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-taglibs</artifactId>
+		</dependency>
 		
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -99,7 +104,13 @@
 			<artifactId>jakarta.servlet.jsp.jstl-api</artifactId>
 			<version>3.0.0</version>
 		</dependency>
-		
+
+		<dependency>
+		<groupId>org.glassfish.web</groupId>
+		<artifactId>jakarta.servlet.jsp.jstl</artifactId>
+		<version>3.0.1</version>
+		</dependency>
+
 		<!-- 시큐리티 -->
 		
 		<dependency>
@@ -114,12 +125,27 @@
 		</dependency>
 		
 		<!-- 시큐리티 -->
-		
+
+		<!-- 이메일 전송 라이브러리 -->
+		<!-- Spring Boot Starter Mail 의존성 -->
 		<dependency>
-			<groupId>org.glassfish.web</groupId>
-			<artifactId>jakarta.servlet.jsp.jstl</artifactId>
-			<version>3.0.1</version>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-mail</artifactId>
 		</dependency>
+		<!-- 이메일 전송 라이브러리 -->
+
+		<!-- 이메일 전송 시 타임리프 설정 -->
+<!--		<dependency>-->
+<!--			<groupId>org.springframework.boot</groupId>-->
+<!--			<artifactId>spring-boot-starter-thymeleaf</artifactId>-->
+<!--		</dependency>-->
+		<!-- 이메일 전송 시 타임리프 설정 -->
+
+<!--		<dependency>-->
+<!--			<groupId>org.glassfish.web</groupId>-->
+<!--			<artifactId>jakarta.servlet.jsp.jstl</artifactId>-->
+<!--			<version>3.0.1</version>-->
+<!--		</dependency>-->
 	</dependencies>
 	<build>
 		<plugins>
