@@ -13,6 +13,24 @@
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <!-- Bootstrap JS 추가 -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+	$(function(){
+		$.ajax({
+			url : "/api/member/info",
+            type : "GET",
+            success : function(response){
+                console.log("response : ", response);
+				$('.header-list .username').text(response.data);
+            },
+            error : function(error){
+                console.log("error : ", error);
+            }
+		})
+	})
+
+</script>
+
 </head>
 
 <body>

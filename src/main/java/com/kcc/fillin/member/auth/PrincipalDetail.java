@@ -1,8 +1,10 @@
 package com.kcc.fillin.member.auth;
 
+import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
 
+import com.kcc.fillin.member.domain.MemberVO;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -20,36 +22,52 @@ public class PrincipalDetail implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of();  // 권한 설정이 필요하다면 이곳에서 추가 가능
+        return List.of();  // 권한 정보가 필요하면 이곳에 추가할 수 있습니다.
     }
 
     @Override
     public String getPassword() {
-        return member.getPassword();  // 비밀번호 가져오기
+        return member.getPassword();  // 비밀번호를 반환
     }
 
     @Override
     public String getUsername() {
-        return member.getUsername();  // 이메일을 사용자 이름으로 사용
+        return member.getUsername();  // 사용자 이름(이메일)을 반환
+    }
+
+    public String getUser(){
+        return member.getName(); // 사용자 이름 반환
+    }
+
+    public LocalDate getBirth(){
+        return member.getBirth();
+    }
+
+    public String getPostalCode(){
+        return member.getPostalCode();
+    }
+
+    public String getAddress(){
+        return member.getAddress();
     }
 
     @Override
     public boolean isAccountNonExpired() {
-        return true;
+        return true;  // 계정 만료 여부
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return true;
+        return true;  // 계정 잠김 여부
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return true;
+        return true;  // 자격 증명 만료 여부
     }
 
     @Override
     public boolean isEnabled() {
-        return true;
+        return true;  // 계정 활성화 여부
     }
 }

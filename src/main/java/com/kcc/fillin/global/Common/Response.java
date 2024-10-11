@@ -26,7 +26,7 @@ public class Response<T> {
 
 	public static <T> Response<T> setSuccess(T data, int code) {
 		return new ResponseBuilder<T>().message("").data(data).status(SUCCESS).statusCode(code).message("")
-			.build();
+				.build();
 	}
 
 	public static Response<?> setError(String errorMessage, int code) {
@@ -50,7 +50,7 @@ public class Response<T> {
 	public static Response<?> setError(String errorMessage, int code, String uri) {
 		// TODO Auto-generated method stub
 		return new ResponseBuilder<>().status(ERROR).message(errorMessage).statusCode(code).requestUrl(uri)
-			.build();
+				.build();
 	}
 
 }
