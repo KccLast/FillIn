@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kcc.fillin.question.dao.QuestionDao">
+
+	<insert id="insertQuestion" parameterType="QuestionVO">
+		<selectKey keyProperty="seq" resultType="long" order="BEFORE">
+			SELECT question_seq.nextval
+			FROM dual
+		</selectKey>
+
+		INSERT INTO question (seq, survey_seq, name, description, order_num, is_essential, cc_seq
+		<if test="tbFileSeq != null">
+			, tb_file_seq
+		</if>)
+		VALUES (#{seq}, #{surveySeq}, #{name}, #{description}, #{order}, #{isEssential}, #{ccSeq}
+		<if test="tbFileSeq != null">
+			, #{tbFileSeq}
+		</if>)
+	</insert>
+
+	<insert id="insertQuestionItem" parameterType="QuestionItemVO">
+
+		<selectKey keyProperty="seq" resultType="long" order="BEFORE">
+			SELECT question_item_seq.nextval
+			FROM dual
+		</selectKey>
+
+		INSERT INTO question_item(seq,question_seq,content,order_num)
+		VALUES(#{seq},#{questionSeq},#{content},#{orderNum})
+
+	</insert>
+
+		
+</mapper>
