@@ -31,6 +31,32 @@
 		VALUES(#{seq},#{questionSeq},#{content},#{orderNum})
 
 	</insert>
-
+	
+	<update id="updateQuestion" parameterType="UpdateQuestionRequest">
+		UPDATE question
+		<set>
+		
+        <if test="name != null and name != ''">
+            name = #{name},
+        </if>
+        
+        <if test="description != null and description != ''">
+            description = #{description},
+        </if>
+        
+        <if test="order != null">
+            order_num = #{order},
+        </if>
+        
+        <if test="isEssential != null">
+            is_essential = #{isEssential},
+        </if>
+        
+        <if test="ccSeq != null">
+            cc_seq = #{ccSeq},
+        </if>
+		</set>
+		WHERE seq = #{seq}
+	</update>
 		
 </mapper>

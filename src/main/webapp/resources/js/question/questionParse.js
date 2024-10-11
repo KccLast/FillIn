@@ -53,7 +53,9 @@ async function appendQuestionCard(question,index){
         	$newContainer.find('.j-survey-content > textarea').val(question.description.trim());
             }
             if(question.isEssential === "Y"){
-
+				let es = $newContainer.find('.j-essential');
+            	es.data('essential', 'Y');
+            	es.addClass('j-es-seleted');
             }
             $('.content').append($newContainer);
 

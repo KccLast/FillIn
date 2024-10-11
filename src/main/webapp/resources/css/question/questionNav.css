@@ -82,6 +82,8 @@ body {
   color: #42526e;
   font-weight: normal;
   font-size: 13px;
+  overflow: hidden;
+  text-overflow: ellipsis; 
 }
 .question-img > img {
   width: 25px;
@@ -191,3 +193,42 @@ body {
 }
 
 /* question navBar  */
+
+/* toolTip */
+ .wrap{
+    position: relative; 
+    display: inline-block;
+  }
+  .box{
+    width: 150px; 
+    background: #242F9B; 
+    padding: 10px; 
+    border-radius: 5px; 
+    color: #ffffff; 
+    text-align: center;
+  }
+  .tooltip{
+    position:absolute; 
+    left:0px; 
+    top:52px; 
+    background: #646FD4; 
+    padding: 10px; 
+    border-radius:5px; 
+    color: #fff; 
+    text-align: center; 
+    display: none;
+  }
+  .tooltip:after{
+    display: block; 
+    content: ''; 
+    position: absolute; 
+    top: -7px; 
+    left:15px; 
+    width: 0px; 
+    height: 0px; 
+    border-top: 8px solid none; 
+    border-left: 8psolid transparent; 
+    border-right: 8px solid transparent; 
+    border-bottom: 8px solid #646FD4;
+  } 
+  .wrap:hover .tooltip{display: block;}

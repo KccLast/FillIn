@@ -1,9 +1,12 @@
 package com.kcc.fillin.question.service;
 
-import com.kcc.fillin.question.domain.QuestionVO;
-
 import java.util.List;
 
+import com.kcc.fillin.question.domain.QuestionVO;
+import com.kcc.fillin.question.dto.UpdateQuestionRequest;
+
 public interface QuestionService {
-    public boolean insertQuestionAndQuestionItem(List<QuestionVO> questionVOList);
+	public boolean insertQuestionAndQuestionItem(List<QuestionVO> questionVOList);
+
+	public boolean updateQuestion(List<UpdateQuestionRequest> updateRequests);
 }

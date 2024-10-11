@@ -9,6 +9,7 @@ import com.kcc.fillin.global.Exception.CannotCreateQuestionException;
 import com.kcc.fillin.question.dao.QuestionDao;
 import com.kcc.fillin.question.domain.QuestionItemVO;
 import com.kcc.fillin.question.domain.QuestionVO;
+import com.kcc.fillin.question.dto.UpdateQuestionRequest;
 
 import lombok.RequiredArgsConstructor;
 
@@ -53,4 +54,21 @@ public class QuestionServiceImpl implements QuestionService {
 		}
 		return result;
 	}
+
+	@Override
+	@Transactional
+	public boolean updateQuestion(List<UpdateQuestionRequest> updateRequests) {
+
+		for (UpdateQuestionRequest up : updateRequests) {
+
+			boolean result = questionDao.updateQuestion(up);
+
+			if (result == false) {
+				return false;
+			}
+		}
+
+		return true;
+	}
+
 }

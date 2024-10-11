@@ -12,6 +12,17 @@ $(function() {
 
 	//필수버튼 클릭이벤트 
 	$('.content').on('click', '.j-essential', function() {
+		
+		
+		let card = $(this).parent().parent();
+		if(!card.hasClass('j-u-card')){
+			card.addClass('j-u-card')
+		}
+        let isEssential = $(this).data('essential') === 'N' ? 'Y' : 'N';
+    
+       $(this).data('essential', isEssential);
+  
+		
 		if ($(this).hasClass('j-es-seleted')) {
 			$(this).removeClass('j-es-seleted');
 		} else {
@@ -471,11 +482,7 @@ $(function() {
 		}
 	});
 	
-	//
-	$('.content').on('click', '.j-essential', function() {
-    let isEssential = $(this).data('essential') === 'Y' ? 'N' : 'Y';
-    $(this).data('essential', isEssential);
-    });
+	
 
 	$('#add-type-modal-container2 .j-typeAndImg-modal').on('click', async function() {
 		let ccSeq = $(this).find('input[type="hidden"').val();
@@ -483,6 +490,7 @@ $(function() {
 		let selectDiv = $('.content').find('.j-card-selected');
 		let idx = selectDiv.index();
 		
+		selectDiv.find('.j-cseq').val(ccSeq);
 		
 		let modalName = $(this).find('.j-type-name-modal').text();
 		let divTypeName = $(selectDiv).find('.j-tpye-name').text();
@@ -591,65 +599,73 @@ const questionItemStrategies = {
 };
 /* question 넣는 함수 모음 */
 
-function insertQuestion(){
-	let surveySeq = $('#surveySeq').val();
-	let questions = [];
+async  function insertQuestion(){
+	 let surveySeq = $('#surveySeq').val();
+    let questions = [];
 
-	$('.content').find('.j-new-card').each(function(index, item) {
-		//title, desciption부터 
-		let $item = $(item);
-		let ccSeq = $item.find('.j-cseq').val();
-		let isEssential = $item.find('.j-essential').data('essential'); 
-		let question = {};
-		let questionItem = {};
-		let questionItems = [];
-		question.surveySeq = surveySeq;
-		question.order = $item.index();
-		question.name = ($item.find('.j-survey-name-input').val() || ' ').trim() || ' ';
+    $('.content').find('.j-new-card').each(function(index, item) {
+        let $item = $(item);
+        let ccSeq = $item.find('.j-cseq').val();
+        let isEssential = $item.find('.j-essential').data('essential'); 
+        let question = {};
+        
+        question.surveySeq = surveySeq;
+        question.order = $item.index();
+        question.name = ($item.find('.j-survey-name-input').val() || ' ').trim() || ' ';
         question.description = ($item.find('.j-survey-content > textarea').val() || ' ').trim() || ' ';
-		question.ccSeq = ccSeq;
-		question.isEssential = isEssential;
-		if (ccSeq >= 7 && ccSeq <= 11) {
-
-			question.questionItems = getQuestionItemFunction(ccSeq, item);
-		}
-		questions.push(question);
-	})
-	saveQuestionInDB(questions)
-
-	return questions;
+        question.ccSeq = ccSeq;
+        question.isEssential = isEssential;
+        
+        if (ccSeq >= 7 && ccSeq <= 11) {
+            question.questionItems = getQuestionItemFunction(ccSeq, item);
+        }
+        
+        questions.push(question);
+    });
+    
+    // AJAX 요청 완료 후 Promise 반환
+    return saveQuestionInDB(questions);
 }
 
-function updateQuestion(){
-	let surveySeq = $('#surveySeq').val();
-	let updatedQuestions = [];
-	$('.content').find('.j-u-card').not('.j-new-card').each(function(index, item){
-		let $item = $(item);
-		let ccSeq = $item.find('.j-cseq').val();
-		let isEssential = $item.find('.j-essential').data('essential');
-		let updateQuestion = {};
-		let seq = $item.find('.j-qseq').val();
-		updateQuestion.seq = seq;
-		updateQuestion.surveySeq = surveySeq;
-		updateQuestion.order = $item.index();
-		updateQuestion.name = ($item.find('.j-survey-name-input').val() || ' ').trim() || ' ';
+async function updateQuestion(){
+	 let surveySeq = $('#surveySeq').val();
+    let updatedQuestions = [];
+    
+    $('.content').find('.j-u-card').not('.j-new-card').each(function(index, item) {
+        let $item = $(item);
+        let ccSeq = $item.find('.j-cseq').val();
+        let isEssential = $item.find('.j-essential').data('essential');
+        let updateQuestion = {};
+        
+        updateQuestion.seq = $item.find('.j-qseq').val();
+        updateQuestion.surveySeq = surveySeq;
+        updateQuestion.order = $item.index();
+        updateQuestion.name = ($item.find('.j-survey-name-input').val() || ' ').trim() || ' ';
         updateQuestion.description = ($item.find('.j-survey-content > textarea').val() || ' ').trim() || ' ';
-		updateQuestion.ccSeq = ccSeq;
-		updateQuestion.isEssential = isEssential;
-		updatedQuestions.push(updateQuestion);
-	})
-	updateQuestionInDB(updatedQuestions);
+        updateQuestion.ccSeq = ccSeq;
+        updateQuestion.isEssential = isEssential;
+        
+        
+        updatedQuestions.push(updateQuestion);
+    });
+    
+    // AJAX 요청 완료 후 Promise 반환
+    return updateQuestionInDB(updatedQuestions);
 	
 }
 
-function saveQuestion() {
+async function saveQuestion() {
 
-	insertQuestion();
-	updateQuestion();
-	location.reload(true);
+	 try {
+        await insertQuestion();  
+        await updateQuestion(); 
+         window.location.href ='/survey/82'; 
+    } catch (error) {
+        console.error('오류 발생:', error);
+    }
 }
 
-function updateQuestionInDB(updatedQuestions){
+/*async function updateQuestionInDB(updatedQuestions){
 	$.ajax({
 		url: '/api/question',    // 서버 URL
 		type: 'patch',
@@ -663,10 +679,28 @@ function updateQuestionInDB(updatedQuestions){
 			console.error('에러 발생:', error);
 		}
 	});
+}*/
+
+async function updateQuestionInDB(updatedQuestions) {
+    return new Promise((resolve, reject) => {
+        $.ajax({
+            url: '/api/question',    // 서버 URL
+            type: 'PATCH',
+            contentType: 'application/json',  // JSON 형식으로 보낸다는 것을 명시
+            data: JSON.stringify(updatedQuestions), // 자바스크립트 객체를 JSON 형식으로 변환
+            success: function(response) {
+                console.log('서버 응답:', response);
+                resolve(response);  // 요청이 완료되면 Promise 해결
+            },
+            error: function(error) {
+                console.error('에러 발생:', error);
+                reject(error);  // 오류 발생 시 Promise 거부
+            }
+        });
+    });
 }
 
-
-function saveQuestionInDB(questions) {
+/*function saveQuestionInDB(questions) {
 	$.ajax({
 		url: '/api/question',    // 서버 URL
 		type: 'POST',
@@ -681,7 +715,25 @@ function saveQuestionInDB(questions) {
 		}
 	});
 }
-
+*/
+function saveQuestionInDB(questions) {
+    return new Promise((resolve, reject) => {
+        $.ajax({
+            url: '/api/question',    // 서버 URL
+            type: 'POST',
+            contentType: 'application/json',  // JSON 형식으로 보낸다는 것을 명시
+            data: JSON.stringify(questions), // 자바스크립트 객체를 JSON 형식으로 변환
+            success: function(response) {
+                console.log('서버 응답:', response);
+                resolve(response);  // 요청이 완료되면 Promise 해결
+            },
+            error: function(error) {
+                console.error('에러 발생:', error);
+                reject(error);  // 오류 발생 시 Promise 거부
+            }
+        });
+    });
+}
 function removeUpdatedCardClass(){
  $('.content div.j-u-card').removeClass('j-u-card');
 }

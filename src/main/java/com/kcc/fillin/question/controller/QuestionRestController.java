@@ -34,10 +34,13 @@ public class QuestionRestController {
 	@PatchMapping("")
 	public Response<String> updateQuestion(@RequestBody
 	List<UpdateQuestionRequest> updateRequests) {
-
 		System.out.println(updateRequests);
+		boolean result = questionService.updateQuestion(updateRequests);
 
-		return Response.setSuccess("성공적으로 질문을 등록했습니다.", 200);
+		if (result == false) {
+			return (Response<String>)Response.setError("질문을 수정하는 중 문제가 발생했습니다.", 500);
+		}
+		return Response.setSuccess("성공적으로 질문을 수정했습니다.", 200);
 	}
 
 }
