@@ -216,6 +216,7 @@
 		AND  (q.is_active != 'N' OR q.is_active IS NULL)
 		AND (qi.is_active != 'N' OR qi.is_active IS NULL)
 		AND (c.is_active != 'N' OR c.is_active IS NULL)
+        ORDER BY q_order,qi_order
 	
 		
 	

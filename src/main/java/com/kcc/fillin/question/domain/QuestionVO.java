@@ -25,7 +25,7 @@ public class QuestionVO extends CommonVO {
 	private List<ConditionVO> conditions;
 
 	public boolean isQuestionItemExist() {
-		if(questionItems.size() > 0){
+		if (this.questionItems != null && questionItems.size() > 0) {
 			return true;
 		}
 		return false;

@@ -478,10 +478,17 @@ $(function() {
     });
 
 	$('#add-type-modal-container2 .j-typeAndImg-modal').on('click', async function() {
-		let ccSeq = $(this).find('input[type="hidden"').val()
+		let ccSeq = $(this).find('input[type="hidden"').val();
+		
 		let selectDiv = $('.content').find('.j-card-selected');
 		let idx = selectDiv.index();
-		console.log(idx);
+		
+		
+		let modalName = $(this).find('.j-type-name-modal').text();
+		let divTypeName = $(selectDiv).find('.j-tpye-name').text();
+		if(modalName === divTypeName){
+			return;
+		}
 		try {
 			let header = await fetchHeader(ccSeq);
 			selectDiv.find('.j-typeAndImg').remove();
@@ -525,6 +532,7 @@ $(function() {
 
 
 			}
+			selectDiv.addClass('j-u-card');
 
 		}
 		catch (error) {
@@ -583,9 +591,7 @@ const questionItemStrategies = {
 };
 /* question 넣는 함수 모음 */
 
-
-function saveQuestion() {
-
+function insertQuestion(){
 	let surveySeq = $('#surveySeq').val();
 	let questions = [];
 
@@ -599,8 +605,8 @@ function saveQuestion() {
 		let questionItems = [];
 		question.surveySeq = surveySeq;
 		question.order = $item.index();
-		question.name = $item.find('.j-survey-name-input').val();
-		question.description = $item.find('.j-survey-content > textarea').val();
+		question.name = ($item.find('.j-survey-name-input').val() || ' ').trim() || ' ';
+        question.description = ($item.find('.j-survey-content > textarea').val() || ' ').trim() || ' ';
 		question.ccSeq = ccSeq;
 		question.isEssential = isEssential;
 		if (ccSeq >= 7 && ccSeq <= 11) {
@@ -614,6 +620,52 @@ function saveQuestion() {
 	return questions;
 }
 
+function updateQuestion(){
+	let surveySeq = $('#surveySeq').val();
+	let updatedQuestions = [];
+	$('.content').find('.j-u-card').not('.j-new-card').each(function(index, item){
+		let $item = $(item);
+		let ccSeq = $item.find('.j-cseq').val();
+		let isEssential = $item.find('.j-essential').data('essential');
+		let updateQuestion = {};
+		let seq = $item.find('.j-qseq').val();
+		updateQuestion.seq = seq;
+		updateQuestion.surveySeq = surveySeq;
+		updateQuestion.order = $item.index();
+		updateQuestion.name = ($item.find('.j-survey-name-input').val() || ' ').trim() || ' ';
+        updateQuestion.description = ($item.find('.j-survey-content > textarea').val() || ' ').trim() || ' ';
+		updateQuestion.ccSeq = ccSeq;
+		updateQuestion.isEssential = isEssential;
+		updatedQuestions.push(updateQuestion);
+	})
+	updateQuestionInDB(updatedQuestions);
+	
+}
+
+function saveQuestion() {
+
+	insertQuestion();
+	updateQuestion();
+	location.reload(true);
+}
+
+function updateQuestionInDB(updatedQuestions){
+	$.ajax({
+		url: '/api/question',    // 서버 URL
+		type: 'patch',
+		contentType: 'application/json',  // JSON 형식으로 보낸다는 것을 명시
+		data: JSON.stringify(updatedQuestions), // 자바스크립트 객체를 JSON 형식으로 변환
+		success: function(response) {
+			console.log('서버 응답:', response);
+			
+		},
+		error: function(error) {
+			console.error('에러 발생:', error);
+		}
+	});
+}
+
+
 function saveQuestionInDB(questions) {
 	$.ajax({
 		url: '/api/question',    // 서버 URL
@@ -622,8 +674,7 @@ function saveQuestionInDB(questions) {
 		data: JSON.stringify(questions), // 자바스크립트 객체를 JSON 형식으로 변환
 		success: function(response) {
 			console.log('서버 응답:', response);
-			removeNewCardClass();
-			location.reload(true);
+			
 		},
 		error: function(error) {
 			console.error('에러 발생:', error);
@@ -631,8 +682,8 @@ function saveQuestionInDB(questions) {
 	});
 }
 
-function removeNewCardClass(){
- $('.content div.j-new-card').removeClass('j-new-card');
+function removeUpdatedCardClass(){
+ $('.content div.j-u-card').removeClass('j-u-card');
 }
 
 function getQuestionItemFunction(ccSeq, target) {
@@ -676,12 +727,14 @@ function getQuestionItemFor10(target) {
 	let questionItems = [];
 
 	$(target).find('.j-dropdwon  option').each(function(index, item) {
+		if(index >0){
 		let questionItem = {};
-		let order = (index + 1);
+		let order = (index);
 		let content = $(item).val();
 		questionItem.orderNum = order;
 		questionItem.content = content;
 		questionItems.push(questionItem);
+		}
 	})
 	return questionItems;
 }

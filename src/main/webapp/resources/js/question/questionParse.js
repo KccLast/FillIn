@@ -1,21 +1,39 @@
 
+$(function(){
+	
+	$('.content').on('change','.j-survey-name-input, .j-survey-content > textarea',function(){
+		
+		let selectDiv = $('.content').find('.j-card-selected');
+		selectDiv.addClass('j-u-card');
+		
+	})
+	
+	
+	
+})
 
-function parseJson(jsonString){
-
+/** 질문 조회 및 등록 관련 */
+function parseJson(jsonString) {
     const surveyObject = JSON.parse(jsonString);
     const questions = surveyObject.questions;
 
+    console.log(questions);
+
+    // 비동기 함수로 질문을 순차적으로 처리하기 위해 async/await 사용
+    processQuestions(questions);
+}
 
 
-    questions.forEach((question,index)=>{
-        //일단 제목하고 내용가지고 프레임 불러와서 만들기 해야함
-        // questionFrame.html 불러오기
-          appendQuestionCard(question,index)
-    })
+
+async function processQuestions(questions) {
+    for (const [index, question] of questions.entries()) {
+        
+        await appendQuestionCard(question, index);  // 비동기 함수가 순차적으로 실행되도록 처리
+    }
 }
 
 async function appendQuestionCard(question,index){
-
+			
            try{
            //일단 제목하고 내용가지고 프레임 불러와서 만들기 해야함
           // questionFrame.html 불러오기
@@ -26,13 +44,13 @@ async function appendQuestionCard(question,index){
         	$newContainer.html(questionData); // 불러온 questionFrame.html을 삽입
         	$newContainer.append('<input type="hidden" value="' + question.ccSeq + '" class="j-cseq"/>');
             $newContainer.append('<input type="hidden" value="' + question.seq + '" class="j-qseq"/>');
-        	if (ccSeq === '18') {
+        	if (question.ccSeq === 18) {
             	$newContainer.find('.j-survey-name').remove();
             	$newContainer.find('.j-survey-content').remove();
             }
         	else{
-        	$newContainer.find('.j-survey-name-input').val(question.name);
-        	$newContainer.find('.j-survey-content > textarea').val(question.description);
+        	$newContainer.find('.j-survey-name-input').val(question.name.trim());
+        	$newContainer.find('.j-survey-content > textarea').val(question.description.trim());
             }
             if(question.isEssential === "Y"){
 
@@ -55,11 +73,13 @@ async function appendQuestionCard(question,index){
             let src = $newContainer.find('.j-typeAndImg > img').attr('src');
 
             let nav = setQuestionNav(question.order, src);
-            nav.find('.question-name').text(question.name);
+           	
+           	if(question.name ===' ' || question.name === null) question.name='질문명';
+            nav.find('.question-name').eq(index).text(question.name);
 
-            if (ccSeq === '17') {
-            	$newContainer.find('.j-map-container').attr('id', 'map' + idx);
-            	setTimeout(() => createDefaultMap('map' + idx), 100);
+            if (question.ccSeq === 17) {
+            	$newContainer.find('.j-map-container').attr('id', 'map' + question.seq);
+            	setTimeout(() => createDefaultMap('map' + question.seq), 100);
             	}
 
 
@@ -87,20 +107,56 @@ async function setQuestionItem(question, container) {
                 let fetchContent = await fetchQuestionItem(question.ccSeq);
                 container.find('.j-option-plus').before(fetchContent);
                 let cur = container.find('.j-select-optionBox').eq(index);
+                $(cur).addClass(qi.seq + ' ' + qi.questionSeq);
                 type7Common($(cur),qi);
 
             }
         }
         if(question.ccSeq === 9){
-
+			if(index === 0 ){
+			container.find('.j-num-start').val(qi.content);
+			}else{
+			 container.find('.j-num-end').val(qi.content);
+			}
         }
 
         if(question.ccSeq === 10){
-
+			
+			let html = `<option value="${qi.content}" class="${qi.seq}">${qi.content}</option>`;
+			container.find('.j-dropdwon > select').append(html);
         }
 
         if(question.ccSeq === 11){
-
+			let row = $(container.find('.j-row-box'));
+			let col = $(container.find('.j-col-box'));
+			if(qi.orderNum === 1){
+				row.find('.j-row-input').eq(0).val(qi.content);
+				row.find('.j-row-input').eq(0).addClass('qi'+qi.seq);
+			}else if(qi.orderNum > 1 && qi.orderNum <85){
+				let html = `
+<div class="j-rowAndcol-input-x-box j-flex-row-center">
+    <input class="j-rowAndcol-input j-row-input qi${qi.seq}" type="text" value="${qi.content}" placeholder="&nbsp;&nbsp;Row 1">
+    <button class="j-rowAndcol-input-xbutton j-flex-row-center">
+        <span>x</span>
+    </button>
+</div>
+`;
+			row.append(html); 
+			}else if(qi.orderNum == 85){
+				col.find('.j-col-input').eq(0).val(qi.content);
+				col.find('.j-col-input').eq(0).addClass('qi'+qi.seq);
+			}else{
+								let html = `
+<div class="j-rowAndcol-input-x-box j-flex-row-center">
+    <input class="j-rowAndcol-input j-col-input qi${qi.seq}" type="text" value="${qi.content}" placeholder="&nbsp;&nbsp;Col 1">
+    <button class="j-rowAndcol-input-xbutton j-flex-row-center">
+        <span>x</span>
+    </button>
+</div>
+`;
+			col.append(html); 
+			}
+			updateVerticalLine($(container));
         }
 
 
@@ -115,7 +171,18 @@ async function fetchQuestionItem(seq){
 }
 
 function type7Common(target,qi){
-    target.addClass(qi.seq + ' ' + qi.questionSeq);
+    target.find('.j-select-optionBox').addClass(qi.seq + ' ' + qi.questionSeq);
     target.find('.j-option-order').text(qi.orderNum);
      target.find('.j-option-input-radio > input[type="text"]').val(qi.content);
+     target.find('.j-chAndRa').attr('name',qi.questionSeq);
+     
 }
+function type9Common(target,qi){
+		
+}
+/** 질문 조회 및 등록 관련 */
+
+
+/** 질문 업데이트 관련 제목, 내용, 타입이 수정될 수 있음 */
+
+
