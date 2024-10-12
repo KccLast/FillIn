@@ -50,9 +50,9 @@
 
     <!-- Bootstrap 모달에 필요한 CSS만 로드 -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-
     <!-- 여기에 기존의 커스텀 CSS 파일도 그대로 유지 -->
     <link rel="stylesheet" href="/resources/css/member/passwordFind.css">
+
 
 </head>
 <body>
@@ -77,7 +77,7 @@
             <button type="button" id="sendCode">전송</button>
         </div>
         <div id="verificationSection" style="display:none;">
-            <input type="text" id="tempPassword" placeholder="임시 비밀번호 입력" required><br>
+            <input type="text" id="tempPassword" placeholder="인증코드 입력" required><br>
             <button type="button" id="verifyTempPassword">인증</button>
             <!-- 타이머 표시 영역 -->
             <div id="timer" style="display:none; font-size:23px; color:red; margin-top:10px;"></div>
@@ -96,12 +96,10 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="resetPasswordModalLabel">비밀번호 재설정</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <button type="button" id="resetPasswordClose" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-
-
 
             <div class="modal-body">
                 <form id="resetPasswordForm">

@@ -10,10 +10,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class MultiSearchSurveyResponse {
-<<<<<<< HEAD
-=======
+
 	private Long seq;
->>>>>>> 376a11bcecc2674be83d01e8cfb1f49d961bd386
 	private int ccSeq;
 	private String name;
 	private LocalDate createdAt;
