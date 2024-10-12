@@ -31,20 +31,16 @@ $(function() {
 	})
 
 	//객관식 옵션 추가하기 버튼 
-	$('.content').on('click', '.j-option-plus', function() {
-		let $prev = $(this).prev();
+	$('.content').on('click', '.j-op-name, .j-option-plus-img', async function() {
+		let $prev = $(this).parent().prev();
 		let number = $prev.find('.j-option-order').text();
+		let idx = $prev.parents('.j-question-card').index();
+		$prev.parents('.j-question-card').addClass('j-item-u');
 		let next = parseInt(number) + 1;
-		let html = '<div class="j-select-optionBox j-flex-row-center">' +
-			'<div class="j-option-order">' + next + '</div>' +
-			'<div class="j-option-input-radio">' +
-			'<input type="text" placeholder="옵션 입력란">' +
-			'<input type="checkbox">' +
-			'</div>' +
-			'<div class="j-xbutton">' +
-			'<img src="/resources/img/question/x-circle.png">' +
-			'</div></div>';
-		$prev.after(html);
+		let parentSeq = $(this).parent().parent().parent().next('.j-cseq').val();
+		let html = await fetchQuestionItem(parentSeq);
+		await setQiCheckBoxAndRadioName(html,$prev,next,idx);
+		
 	})
 
 
@@ -152,11 +148,12 @@ $(function() {
 	/*객관식 표 관련*/
 	/*row And col 추가*/
 	$('.content').on('click', '.j-row-plus-button', function(e) {
+		$(this).parents('.j-question-card').addClass('j-item-u');
 		/*<input class="j-rowAndcol-input" type="text" placeholder="&nbsp;&nbsp;Row 1">*/
 		let $row = $(this).parent().parent().find('.j-row-box');
 		let idx = ($row.find('input').length) + 1;
 
-		let inputHtml = '<div class="j-rowAndcol-input-x-box j-flex-row-center">' +
+		let inputHtml = '<div class="j-rowAndcol-input-x-box j-flex-row-center j-new-checkAndRadio">' +
 			'<input class="j-rowAndcol-input j-row-input" type="text" placeholder="&nbsp;&nbsp;Row ' + idx + '">' +
 			'<button class="j-rowAndcol-input-xbutton">x</button>' +
 			'</div>';
@@ -165,10 +162,11 @@ $(function() {
 		updateVerticalLine($(this).parent().parent());
 	})
 	$('.content').on('click', '.j-col-plus-button', function() {
+		$(this).parents('.j-question-card').addClass('j-item-u');
 		let $col = $(this).parent().parent().find('.j-col-box');
 		let idx = ($col.find('input').length) + 1;
 
-		let inputHtml = '<div class="j-rowAndcol-input-x-box j-flex-row-center">' +
+		let inputHtml = '<div class="j-rowAndcol-input-x-box j-flex-row-center j-new-checkAndRadio">' +
 			'<input class="j-rowAndcol-input j-col-input" type="text" placeholder="&nbsp;&nbsp;Col ' + idx + '">' +
 			'<button class="j-rowAndcol-input-xbutton">x</button>' +
 			'</div>';
@@ -576,6 +574,19 @@ $(function() {
 	$('.j-nav-save-button').on('click', saveQuestion);
 })
 
+async function setQiCheckBoxAndRadioName(html,prev,next,idx){
+	let prevName = prev.find('.j-chAndRa').attr('name');
+	
+	prev.after(html);
+	prev.next().addClass('j-new-checkAndRadio');
+	prev.next().find('.j-option-order').text(next);
+	/*$(html).find('.j-option-order').text(next);*/
+	if(prevName === undefined || prevName === null )
+	prev.next().find('.j-option-input-radio > input').eq(1).attr('name',idx);
+	else{
+		prev.next().find('.j-option-input-radio > input').eq(1).attr('name',prevName);
+	}
+}
 
 const questionItemStrategies = {
 	7: function(target) {
@@ -623,9 +634,11 @@ async  function insertQuestion(){
         questions.push(question);
     });
     
-    // AJAX 요청 완료 후 Promise 반환
+    
     return saveQuestionInDB(questions);
 }
+
+
 
 async function updateQuestion(){
 	 let surveySeq = $('#surveySeq').val();
@@ -649,7 +662,7 @@ async function updateQuestion(){
         updatedQuestions.push(updateQuestion);
     });
     
-    // AJAX 요청 완료 후 Promise 반환
+    
     return updateQuestionInDB(updatedQuestions);
 	
 }
@@ -659,10 +672,85 @@ async function saveQuestion() {
 	 try {
         await insertQuestion();  
         await updateQuestion(); 
+        await updateAndInsertQuestionItem();
          window.location.href ='/survey/82'; 
     } catch (error) {
         console.error('오류 발생:', error);
     }
+}
+
+async function updateAndInsertQuestionItem() {
+    let tasks = [];
+
+    // 각각의 비동기 작업을 Promise로 저장
+    $('.content').find('.j-item-u').not('.j-new-card').each(function (idx, item) {
+        let questionSeq = $(item).find('.j-qseq').val();
+        let insertedItems = $(item).find('.j-new-checkAndRadio');
+        let updatedItems = $(item).find('.j-u-item').not('.j-new-checkAndRadio');
+		let questionType = $(item).find('.j-cseq').val();
+        // 각각의 작업을 Promise에 추가
+        tasks.push(insertQuestionItem(questionType, questionSeq, insertedItems));
+        tasks.push(updateQuestionItem(questionType, questionSeq, updatedItems));
+    });
+
+    // 모든 비동기 작업이 완료될 때까지 대기
+    await Promise.all(tasks);
+}
+
+async function insertQuestionItem(questionType,questionSeq,insertedItems){
+	  let itemList = [];
+	  console.log(insertedItems);
+	  console.log(questionType);
+
+    insertedItems.each(function (idx, item) {
+		
+        let insertItem = {};
+        let order;
+        let content;
+        
+        if(questionType == '11'){
+			let rowAndcol = $(item).find('.j-rowAndcol-input');
+			let orderString = rowAndcol.attr('placeholder');
+			order = parseInt(orderString.match(/\d+/)[0]);
+			if(rowAndcol.hasClass('j-col-input')){
+			order += 85;	 	
+			}
+			content = rowAndcol.val();
+		}else{
+        order = $(item).find('.j-option-order').text();
+        content = $(item).find('.j-option-input-radio > input[type="text"]').val();
+        }
+       
+        
+        insertItem.orderNum = order;
+        insertItem.content = content;
+        insertItem.questionSeq = questionSeq;
+        itemList.push(insertItem);
+    });
+
+    
+    return new Promise((resolve, reject) => {
+        $.ajax({
+            url: "/api/question/item",
+            type: "post",
+            contentType: 'application/json',
+            data: JSON.stringify(itemList),
+            success: function (response) {
+                console.log(response.data);
+                resolve(response);
+            },
+            error: function (error) {
+                console.error('에러 발생:', error);
+                reject(error);
+            }
+        });
+    });
+}
+
+async function updateQuestionItem(item,questionSeq,updatedItems){
+	updatedItems.each(function(idx,item){
+		
+	})
 }
 
 /*async function updateQuestionInDB(updatedQuestions){

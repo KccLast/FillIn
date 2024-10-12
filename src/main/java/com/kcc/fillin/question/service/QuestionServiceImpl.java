@@ -71,4 +71,15 @@ public class QuestionServiceImpl implements QuestionService {
 		return true;
 	}
 
+	@Override
+	@Transactional
+	public boolean insertQuestionItems(List<QuestionItemVO> insertItems) {
+		int result = insertQuestionItem(insertItems.get(0).getQuestionSeq(), insertItems);
+
+		if (result < 1) {
+			return false;
+		}
+		return true;
+	}
+
 }

@@ -43,7 +43,7 @@ body {
 
 .j-question-box {
   min-height: 10%;
-  max-height: 670px;
+  max-height: 600px;
   overflow:auto;
   border-bottom: 2px solid #e7dfdf;
 }
