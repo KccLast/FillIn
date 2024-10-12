@@ -1,4 +1,39 @@
 $(function() {
+		
+	
+	if (!localStorage.getItem('updatedQuestionItemList')) {
+        localStorage.setItem('updatedQuestionItemList', JSON.stringify([]));
+    }
+	
+	$('.content').on('change','input[type="text"][class*="qi"], select[class*="qi"]',function(){
+		 let classList = $(this).attr('class') || '';
+        let match = classList.match(/(\d+)/);  // 'qi' 뒤의 숫자 추출
+
+        if (match) {
+            let seq = match[1];  
+            let content = $(this).val();  // 변경된 값 가져오기
+
+            // 변경된 데이터를 객체로 만듦
+            let updatedItem = { seq: seq, content: content };
+            console.log(updatedItem);
+
+            // 기존 데이터 가져오기
+            let updatedQuestionItemList = JSON.parse(localStorage.getItem('updatedQuestionItemList')) || [];
+
+            // 동일한 seq 값이 있으면 업데이트, 없으면 추가
+            let index = updatedQuestionItemList.findIndex(item => item.seq === seq);
+            if (index !== -1) {
+                updatedQuestionItemList[index] = updatedItem;  // 업데이트
+            } else {
+                updatedQuestionItemList.push(updatedItem);  // 새로 추가
+            }
+
+            // 로컬 스토리지에 저장
+            localStorage.setItem('updatedQuestionItemList', JSON.stringify(updatedQuestionItemList));
+        }
+	})
+	
+	
 	$('.content').on('click', '.j-question-card', function(e) {
 		changeFocus(this);
 		this.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -64,21 +99,24 @@ $(function() {
 	//모달 바디 클릭하면, 
 
 	// 처음에 숫자 범위 설정
-	updateNumberRange();
+	updateNumberRange($('.j-number-range'));
 
 	// 숫자를 클릭하면 해당 숫자만큼 선을 채우는 이벤트 설정
 	$('.content').on('click', '.j-number span', function(e) {
 		var clickedIndex = $(this).index(); // 클릭된 숫자의 인덱스
-		var totalNumbers = $('.j-number span').length - 1; // 전체 숫자의 갯수 (인덱스 기준으로 -1)
-
+		var totalNumbers = $(this).parent().find('span').length - 1; // 전체 숫자의 갯수 (인덱스 기준으로 -1)
+		
+		console.log(clickedIndex);
+		console.log(totalNumbers);
 		// 선 채우기 업데이트
-		updateLine(clickedIndex, totalNumbers);
+		updateLine( $(this).parents('.j-LineAndnumber'),clickedIndex, totalNumbers);
 		e.stopPropagation();
 	});
 
 	// start와 end select 변경 시 숫자 범위 업데이트
 	$('.content').on('change', '.j-num-start, .j-num-end', function() {
-		updateNumberRange();
+		$(this).addClass('j-updated');
+		updateNumberRange($(this).parent());
 	});
 
 
@@ -138,7 +176,7 @@ $(function() {
 				selectBox.append('<option>' + option.trim() + '</option>');
 			}
 		});
-
+		
 		// 모달 닫기 및 입력 초기화
 		$('#optionModal').fadeOut();
 		$('#optionTextarea').val('');
@@ -995,27 +1033,29 @@ function updateVerticalLine(target) {
 
 	target.find('.j-vertical-line').outerHeight(row > col ? row : col);
 }
-function updateNumberRange() {
-	var start = parseInt($('.j-num-start').val()); // 시작 값
-	var end = parseInt($('.j-num-end').val()); // 끝 값
-
+function updateNumberRange(target) {
+	
+	var start = parseInt($(target).find('.j-num-start').val()); // 시작 값
+	var end = parseInt($(target).find('.j-num-end').val()); // 끝 값
+	
+	let numRangeLine = $(target).prev();
+	let numRange = numRangeLine.find('.j-number');
 	// 숫자 범위 표시 초기화
-	$('.j-number').empty();
+	numRange.empty();
 
 	// start에서 end까지 span으로 숫자를 동적으로 추가
 	for (var i = start; i <= end; i++) {
-		$('.j-number').append('<span>' + i + '</span>');
+		numRange.append('<span>' + i + '</span>');
 	}
 
 	// 선 초기화
-	updateLine(0, end - start); // 첫 클릭 전 초기화
+	updateLine(numRangeLine,0, end - start); // 첫 클릭 전 초기화
 }
 
 // 클릭한 숫자에 따라 선 채우기
-function updateLine(clickedIndex, totalNumbers) {
+function updateLine(numRangeLine,clickedIndex,totalNumbers) {
 	var percentage = (clickedIndex / totalNumbers) * 100; // 클릭한 비율 계산
-	console.log('clickedIndex:', clickedIndex, 'totalNumbers:', totalNumbers, 'percentage:', percentage); // 값 확인용 로그
-	$('.j-line').css('background-image', 'linear-gradient(90deg, #005bac ' + percentage + '%, rgba(0, 91, 172, 0.4) ' + percentage + '%)');
+	numRangeLine.find('.j-line').css('background-image', 'linear-gradient(90deg, #005bac ' + percentage + '%, rgba(0, 91, 172, 0.4) ' + percentage + '%)');
 }
 
 function changeFocus(el) {
