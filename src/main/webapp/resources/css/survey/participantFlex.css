@@ -1,0 +1,111 @@
+@media screen and (max-width: 430px) {
+  body {
+    max-width: 430px;
+    height: 100vh;
+    overflow-x: hidden;
+  }
+  .navbar {
+    width: 50%;
+  }
+  .titleAndProgressBar {
+    width: 100vh;
+  }
+  .j-question-card {
+    display: none; /* 기본적으로 모든 카드는 숨김 */
+    margin: 0 auto;
+    width: 100%;
+    min-height: 50%;
+  }
+  .j-question-card.active {
+    display: block; /* 현재 활성화된 카드만 보임 */
+  }
+
+  .content {
+    margin: 0 auto;
+    margin-top: 25px;
+    min-height: 280px;
+    width: 90%;
+    box-sizing: border-box;
+  }
+  /*설문 설명*/
+  .j-survey-content > textarea {
+    height: 50px;
+    box-sizing: border-box;
+    padding-left: 2%;
+  }
+
+  .j-survey-input {
+    width: 100%;
+    border: none;
+    resize: none;
+    color: black;
+    font-weight: bold;
+    font-size: large;
+    padding-left: 2%;
+  }
+  .j-survey-es-type {
+    justify-content: flex-end;
+  }
+  .j-essential {
+    width: 20%;
+    margin-top: 2%;
+  }
+  /*다음 버튼*/
+  .nextBtn {
+    box-sizing: border-box;
+    padding-top: 2%;
+    gap: 20px;
+  }
+  .nextBtn img {
+    width: 25px;
+    height: 25px;
+  }
+  .nextBtn > button {
+    border: none;
+  }
+  /*다음 버튼*/
+
+  /*item 객관식 box*/
+  .j-select-optionBox {
+    margin-top: 5%;
+    margin-bottom: 5%;
+  }
+  .j-option-order {
+    margin-right: 4%;
+  }
+
+  /*선형*/
+  .j-number-range > select {
+    width: 20%;
+  }
+  /*선형*/
+
+  /*드롭다운*/
+  .j-dropdwon-box {
+    margin-top: 10%;
+  }
+  .j-dropdwon {
+    margin-bottom: 10%;
+  }
+  /*드롭다운*/
+
+  /*단답형*/
+  .j-short-box {
+    margin-top: 10%;
+  }
+  .j-short-inputBox {
+    margin-bottom: 10%;
+  }
+  /*단답형*/
+
+  /*서술형*/
+  .j-long-box {
+    margin-top: 10%;
+  }
+  .j-long-inputBox {
+    margin-bottom: 10%;
+  }
+
+  /*서술형*/
+  /*item box*/
+}

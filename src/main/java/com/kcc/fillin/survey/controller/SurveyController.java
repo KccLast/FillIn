@@ -93,4 +93,9 @@ public class SurveyController {
 
 		return "성공";
 	}
+
+	@GetMapping("/url/{surveyUrl}")
+	public String getSurveyByParticipant(){
+		return "/survey/participant";
+	}
 }

@@ -129,6 +129,7 @@ async function setQuestionItem(question, container) {
 			
 			let html = `<option value="${qi.content}" class="qi${qi.seq}">${qi.content}</option>`;
 			//let questionSeq = `<input type="hidden" value="${qi.questionSeq}" class="j-qseq"/>`;
+			container.find('.j-dropdwon > select').addClass('qiBox');
 			container.find('.j-dropdwon > select').append(html);
 			
         	

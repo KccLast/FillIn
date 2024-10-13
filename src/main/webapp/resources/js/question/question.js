@@ -1,10 +1,10 @@
 $(function() {
 		
-	
+	 localStorage.clear();
 	if (!localStorage.getItem('updatedQuestionItemList')) {
         localStorage.setItem('updatedQuestionItemList', JSON.stringify([]));
     }
-	
+
 	$('.content').on('change','input[type="text"][class*="qi"], select[class*="qi"]',function(){
 		 let classList = $(this).attr('class') || '';
         let match = classList.match(/(\d+)/);  // 'qi' 뒤의 숫자 추출
@@ -15,21 +15,8 @@ $(function() {
 
             // 변경된 데이터를 객체로 만듦
             let updatedItem = { seq: seq, content: content };
-            console.log(updatedItem);
+            storeUpdateQuestionItemInLocal(updatedItem,seq);
 
-            // 기존 데이터 가져오기
-            let updatedQuestionItemList = JSON.parse(localStorage.getItem('updatedQuestionItemList')) || [];
-
-            // 동일한 seq 값이 있으면 업데이트, 없으면 추가
-            let index = updatedQuestionItemList.findIndex(item => item.seq === seq);
-            if (index !== -1) {
-                updatedQuestionItemList[index] = updatedItem;  // 업데이트
-            } else {
-                updatedQuestionItemList.push(updatedItem);  // 새로 추가
-            }
-
-            // 로컬 스토리지에 저장
-            localStorage.setItem('updatedQuestionItemList', JSON.stringify(updatedQuestionItemList));
         }
 	})
 	
@@ -176,7 +163,10 @@ $(function() {
 				selectBox.append('<option>' + option.trim() + '</option>');
 			}
 		});
-		
+		//DB에서 불라온 셀렉트 box일 경우
+		if(selectBox.hasClass('qiBox')){
+		    saveDropDownInStorage(options,currentCard.find('.j-qseq').val());
+		}
 		// 모달 닫기 및 입력 초기화
 		$('#optionModal').fadeOut();
 		$('#optionTextarea').val('');
@@ -612,6 +602,41 @@ $(function() {
 	$('.j-nav-save-button').on('click', saveQuestion);
 })
 
+function saveDropDownInStorage(options,questionSeq){
+    let optionListObject = {};
+    optionListObject.seq = questionSeq;
+    optionListObject.dropdownOptionList = [];
+    let orderNum=1;
+    options.forEach(function(option) {
+    if (option.trim()) { // 공백은 추가하지 않음
+            let optionObject = {};
+             optionObject.dropContent = option.trim();
+             optionObject.questionSeq = questionSeq;
+             optionObject.orderNum = orderNum++;
+             optionListObject.optionList.push(optionObject);
+    	}
+    });
+
+
+      storeUpdateQuestionItemInLocal(optionListObject,questionSeq);
+}
+
+function storeUpdateQuestionItemInLocal(updateItem,seq){
+     //로컬 스토리지에서 꺼내오기
+     let updatedQuestionItemList = JSON.parse(localStorage.getItem('updatedQuestionItemList')) || [];
+      //이미 있는 데이터인지 검사
+      let index = updatedQuestionItemList.findIndex(item => item.seq === seq);
+             //있으면 업데이트
+             if(index !== -1){
+                 updatedQuestionItemList[index] = updateItem;
+             //없으면 새로 넣기
+             }else{
+                 updatedQuestionItemList.push(updateItem);
+             }
+             console.log(updatedQuestionItemList);
+             localStorage.setItem('updatedQuestionItemList', JSON.stringify(updatedQuestionItemList));
+}
+
 async function setQiCheckBoxAndRadioName(html,prev,next,idx){
 	let prevName = prev.find('.j-chAndRa').attr('name');
 	
@@ -648,7 +673,7 @@ const questionItemStrategies = {
 };
 /* question 넣는 함수 모음 */
 
-async  function insertQuestion(){
+async function insertQuestion(){
 	 let surveySeq = $('#surveySeq').val();
     let questions = [];
 
@@ -711,11 +736,33 @@ async function saveQuestion() {
         await insertQuestion();  
         await updateQuestion(); 
         await updateAndInsertQuestionItem();
+         // 로컬 스토리지 데이터 가져오기
+                let localData = localStorage.getItem('updatedQuestionItemList'); // 로컬 스토리지의 특정 데이터 가져오기
+                if (localData) {
+                    await sendLocalStorageData(localData);
+                }
          window.location.href ='/survey/82'; 
     } catch (error) {
         console.error('오류 발생:', error);
     }
 }
+
+
+async function sendLocalStorageData(data) {
+    return $.ajax({
+        url: '/api/question/item',
+        type: 'patch',
+        data: { localData: data },  // 서버로 보낼 데이터
+        success: function(response) {
+            console.log(response.data);
+            localStorage.clear();
+        },
+        error: function(error) {
+            console.error('데이터 전송 오류:', error);
+        }
+    });
+}
+
 
 async function updateAndInsertQuestionItem() {
     let tasks = [];
@@ -724,21 +771,28 @@ async function updateAndInsertQuestionItem() {
     $('.content').find('.j-item-u').not('.j-new-card').each(function (idx, item) {
         let questionSeq = $(item).find('.j-qseq').val();
         let insertedItems = $(item).find('.j-new-checkAndRadio');
-        let updatedItems = $(item).find('.j-u-item').not('.j-new-checkAndRadio');
+        //let updatedItems = $(item).find('.j-u-item').not('.j-new-checkAndRadio');
 		let questionType = $(item).find('.j-cseq').val();
         // 각각의 작업을 Promise에 추가
         tasks.push(insertQuestionItem(questionType, questionSeq, insertedItems));
-        tasks.push(updateQuestionItem(questionType, questionSeq, updatedItems));
+        /*tasks.push(updateQuestionItem(questionType, questionSeq, updatedItems));*/
     });
 
     // 모든 비동기 작업이 완료될 때까지 대기
     await Promise.all(tasks);
 }
-
+function isListExists(itemList){
+    if(!itemList || itemList.length === 0){
+            return false;
+     }
+     return true;
+}
 async function insertQuestionItem(questionType,questionSeq,insertedItems){
+       if(isListExists(insertedItems)){
+        return;
+       }
+
 	  let itemList = [];
-	  console.log(insertedItems);
-	  console.log(questionType);
 
     insertedItems.each(function (idx, item) {
 		
@@ -785,29 +839,9 @@ async function insertQuestionItem(questionType,questionSeq,insertedItems){
     });
 }
 
-async function updateQuestionItem(item,questionSeq,updatedItems){
-	updatedItems.each(function(idx,item){
-		
-	})
-}
-
-/*async function updateQuestionInDB(updatedQuestions){
-	$.ajax({
-		url: '/api/question',    // 서버 URL
-		type: 'patch',
-		contentType: 'application/json',  // JSON 형식으로 보낸다는 것을 명시
-		data: JSON.stringify(updatedQuestions), // 자바스크립트 객체를 JSON 형식으로 변환
-		success: function(response) {
-			console.log('서버 응답:', response);
-			
-		},
-		error: function(error) {
-			console.error('에러 발생:', error);
-		}
-	});
-}*/
 
 async function updateQuestionInDB(updatedQuestions) {
+    if(isListExists(updatedQuestions));
     return new Promise((resolve, reject) => {
         $.ajax({
             url: '/api/question',    // 서버 URL
@@ -826,23 +860,9 @@ async function updateQuestionInDB(updatedQuestions) {
     });
 }
 
-/*function saveQuestionInDB(questions) {
-	$.ajax({
-		url: '/api/question',    // 서버 URL
-		type: 'POST',
-		contentType: 'application/json',  // JSON 형식으로 보낸다는 것을 명시
-		data: JSON.stringify(questions), // 자바스크립트 객체를 JSON 형식으로 변환
-		success: function(response) {
-			console.log('서버 응답:', response);
-			
-		},
-		error: function(error) {
-			console.error('에러 발생:', error);
-		}
-	});
-}
-*/
+
 function saveQuestionInDB(questions) {
+   if(isListExists(questions));
     return new Promise((resolve, reject) => {
         $.ajax({
             url: '/api/question',    // 서버 URL

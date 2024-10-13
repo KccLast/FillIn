@@ -2,6 +2,8 @@ package com.kcc.fillin.question.service;
 
 import java.util.List;
 
+import com.kcc.fillin.question.dto.UpdateDropContent;
+import com.kcc.fillin.question.dto.UpdateQuestionItemRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -81,5 +83,39 @@ public class QuestionServiceImpl implements QuestionService {
 		}
 		return true;
 	}
+
+	@Override
+	@Transactional
+	public boolean updateQuestionItems(List<UpdateQuestionItemRequest> list) {
+		boolean updateResult=false;
+		for(UpdateQuestionItemRequest item : list){
+
+			if(item.getDropList() != null){
+				updateResult = updateDropItem(item);
+			}else updateResult = updateQuestionItem(item);
+
+			if(updateResult == false) throw new RuntimeException("질문 항목 수정에 실패");
+		}
+
+		return true;
+	}
+
+	private boolean updateQuestionItem(UpdateQuestionItemRequest item) {
+		return questionDao.updateQuestionItem(item);
+	}
+	@Transactional
+	private boolean updateDropItem(UpdateQuestionItemRequest item) {
+		deleteQuestionItem(item);
+
+		for(UpdateDropContent dr: item.getDropList()){
+			questionDao.insertQuestionItem(dr.transferQuestItemVO());
+		}
+		return true;
+	}
+
+	private <T> boolean  deleteQuestionItem(T item) {
+	return 	questionDao.deleteAllQuestionItem(item);
+	}
+
 
 }

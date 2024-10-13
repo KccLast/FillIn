@@ -2,6 +2,7 @@ package com.kcc.fillin.question.controller;
 
 import java.util.List;
 
+import com.kcc.fillin.question.dto.UpdateQuestionItemRequest;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -52,6 +53,13 @@ public class QuestionRestController {
 			return Response.setFail(insertItems, 500, "질문 항목 등록에 실패했습니다");
 		}
 		return Response.setSuccess("성공적으로 질문 항목을 등록했습니다.", 200);
+	}
+
+	@PatchMapping("/item")
+	public Response<?> updateQuestionItem(@RequestBody List<UpdateQuestionItemRequest> list){
+		boolean updateResult = questionService.updateQuestionItems(list);
+
+		return Response.setSuccess("성공적으로 질문 항목을 수정했습니다.", 200);
 	}
 
 }

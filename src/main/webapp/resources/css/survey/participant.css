@@ -1,0 +1,310 @@
+/* 공통 카드 스타일 */
+
+.j-flex-row-center {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+.j-flex-col-center {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+/*카드 전체 관련 css*/
+.j-card-selected {
+  /*선택된 카드 색*/
+  border: 1px solid #dc3545 !important;
+}
+
+.j-question-card {
+  /*카드초기 css*/
+  width: 85%;
+  min-height: 240px;
+  background-color: white;
+  border: 1px solid #005bac;
+  border-radius: 15px;
+  margin: 0 auto;
+  margin-bottom: 10%;
+  box-shadow: 5px 5px 5px #e5e7eb;
+}
+/*카드에 설문명*/
+.j-survey-name {
+  width: 95%;
+  min-height: 50px;
+  box-sizing: border-box;
+}
+.j-survey-name-input {
+  width: 100%;
+  font-size: 23px;
+  font-weight: bold;
+  padding-left: 3%;
+  border: none;
+}
+/*카드에 설문명*/
+
+/*카드의 질문내용*/
+.j-survey-content {
+  margin-top: 1%;
+  width: 95%;
+  min-height: 50px;
+}
+.j-survey-content > textarea {
+  width: 100%;
+  height: 70px;
+  border: none;
+  resize: none;
+  padding-left: 3%;
+  padding-right: 4%;
+  color: #aeaeae;
+  font-weight: bold;
+  text-align: left;
+}
+/*카드의 질문내용*/
+
+/*카드 컨텐츠 박스*/
+.j-question-content-box {
+  width: 100%;
+  min-height: 50px;
+}
+/*카드 컨텐츠 박스*/
+
+/*카드 필수 버튼*/
+.j-essential {
+  margin-right: 2%;
+  border: 2px solid #cccccc;
+  border-radius: 5px;
+  background: white;
+  color: #999999;
+  font-weight: bold;
+  width: 6%;
+}
+.j-es-seleted {
+  color: white !important;
+  background-color: #005bac !important;
+  border: 2px solid rgba(0, 91, 172, 0.4) !important;
+}
+/*카드 필수 버튼*/
+/*카드 전체 관련 css*/
+
+/*컨텐츠 관련 css*/
+
+/*객관식 옵션 css*/
+.j-select-optionBox {
+  margin-bottom: 2%;
+}
+.j-option-order {
+  width: 5%;
+  text-align: center;
+  font-weight: bold;
+  font-size: 25px;
+}
+.j-option-input-radio {
+  height: 40px;
+  width: 70%;
+  background-color: #eeeeee;
+  display: flex;
+  align-items: center;
+  border-radius: 5px;
+}
+.j-option-input-radio > input[type='text'] {
+  height: 100%;
+  margin-left: 1%;
+  width: 90%;
+  border: none;
+  background-color: #eeeeee;
+  border-radius: 5px;
+}
+.j-option-input-radio > input[type='text']::placeholder {
+  color: #aeaeae;
+  font-weight: bold;
+}
+.j-option-input-radio > input[type='radio'] {
+  margin-left: 4%;
+  background-color: #cdcdcd;
+  appearance: none;
+  width: 30px;
+  height: 30px;
+  border: 2px solid #cdcdcd;
+  border-radius: 50%;
+  outline: none;
+  cursor: pointer;
+}
+.j-option-input-radio > input[type='radio']:checked {
+  background-color: #005bac;
+}
+.j-xbutton {
+  width: 10%;
+  margin-left: 2%;
+}
+.j-xbutton > img {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+}
+
+.j-option-plus {
+  margin-top: 1%;
+  margin-bottom: 2%;
+  display: flex;
+  justify-content: flex-end;
+  width: 20%;
+  color: #005bac;
+  font-weight: bold;
+  font-size: 14px;
+}
+.j-op-name {
+  height: 25px;
+}
+.j-option-plus-img {
+  margin-left: 5%;
+}
+.j-option-plus-img > img {
+  width: 15px;
+  height: 15px;
+}
+
+/*객관식 css*/
+
+/*선형*/
+.j-line {
+  width: 80%;
+  height: 10px;
+  background-image: linear-gradient(
+    90deg,
+    #005bac 50%,
+    rgba(0, 91, 172, 0.4) 50%
+  );
+}
+.j-number {
+  width: 80%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 23px;
+  font-weight: bold;
+  margin-top: 1%;
+  margin-bottom: 2%;
+}
+.j-number-range {
+  margin-bottom: 2%;
+}
+.j-number-range > select {
+  width: 7%;
+  text-align: center;
+  border-radius: 5px;
+  margin-left: 1%;
+  margin-right: 1%;
+}
+.j-number > span {
+  font-weight: bold;
+  cursor: pointer;
+}
+/**/
+/*드롭다운*/
+.j-dropdwon {
+  height: 40px;
+  width: 75%;
+  background-color: #eeeeee;
+  border-radius: 5px;
+  margin-right: 3%;
+  margin-bottom: 1%;
+}
+.j-dropdwon > select {
+  border: none;
+  width: 100%;
+  height: 100%;
+  background-color: #eeeeee;
+  text-align: center;
+  color: #aeaeae;
+  font-weight: bold;
+  border-radius: 5px;
+}
+
+/*드롭다운*/
+
+/*단답형*/
+.j-short-inputBox {
+  height: 40px;
+  width: 75%;
+  background-color: #eeeeee;
+  border-radius: 5px;
+  margin-right: 3%;
+  margin-bottom: 3%;
+}
+
+.j-short-inputBox > input[type='text'] {
+  height: 100%;
+  margin-left: 1%;
+  width: 95%;
+  border: none;
+  background-color: #eeeeee;
+  border-radius: 5px;
+}
+.j-short-inputBox > input[type='text']::placeholder {
+  color: #aeaeae;
+  font-weight: bold;
+}
+/*단답형*/
+
+/*서술형*/
+.j-long-inputBox {
+  height: 90px;
+  width: 75%;
+  background-color: #eeeeee;
+  border-radius: 5px;
+  margin-right: 3%;
+  margin-bottom: 3%;
+}
+
+.j-long-inputBox > textarea {
+  height: 100%;
+  margin-left: 1%;
+  width: 95%;
+  border: none;
+  background-color: #eeeeee;
+  border-radius: 5px;
+  resize: none;
+}
+.j-long-inputBox > textarea::placeholder {
+  color: #aeaeae;
+  font-weight: bold;
+}
+textarea:focus {
+  outline: none;
+}
+input:focus {
+  outline: none;
+}
+
+/*서술형*/
+
+/*이메일*/
+.j-email-input-box > input {
+  width: 25%;
+  height: 50px;
+  border: none;
+  background-color: #eeeeee;
+  border-radius: 15px;
+  margin-left: 1%;
+  margin-right: 1%;
+  text-align: center;
+  font-weight: bold;
+}
+.j-email-input-box > span {
+  font-size: 25px;
+  font-weight: bold;
+  color: #eeeeee;
+}
+.j-email-input-box {
+  margin-bottom: 4%;
+}
+
+.j-email-select {
+  width: 10%;
+  height: 30px;
+  margin-left: 3%;
+}
+/*이메일*/
