@@ -1,3 +1,5 @@
+var hitsChart;
+
 $(document).ready(function () {
     const loadingElement = $("#loading");
     const contentElement = $("#content");
@@ -11,7 +13,7 @@ $(document).ready(function () {
 
         // 페이지 로그되었을 때 AJAX 요청 보냄
         $.ajax({
-            url: `/api/statistic/${surveyId}`,
+            url: `/api/statistic/${surveyId}?startDate=${postDate}&endDate=${endDate}&questionSeq=0&contents=`,
             type: 'GET',
             dataType: 'json',
             success: function (response) {
@@ -21,6 +23,8 @@ $(document).ready(function () {
                 updateHitsPage(response.data);
                 // 통계
                 updateStatisticPage(response.data);
+                // 질문, 문항 로드
+                updateSelectQuestion(response.data);
 
                 // 로딩 완료 후 로딩 화면 숨김
                 loadingElement.hide();
@@ -35,24 +39,50 @@ $(document).ready(function () {
         // (DOM이 로드된 이후에만 가능)
         document.getElementById('listViewButton').addEventListener('click', () => toggleView('table'));
         document.getElementById('carouselViewButton').addEventListener('click', () => toggleView('carousel'));
+
+        $('#search-input').on('click', function () {
+            var startDate = $('#startDate').val();
+            var endDate = $('#endDate').val();
+            var questionId = $('#questionSelect').val() === '' ? 0 : $('#questionSelect').val();
+            var itemContent = $('#itemSelect').val() === null ? '' : $('#itemSelect').val();
+
+            console.log(questionId + " : " + itemContent);
+
+            // 데이터 유효성 검사
+            if (!startDate || !endDate) {
+                alert('시작일, 종료일을 선택해주세요.');
+                return;
+            }
+
+            // AJAX 요청
+            $.ajax({
+                url: `/api/statistic/${surveyId}?startDate=${startDate}&endDate=${endDate}&questionSeq=${questionId}&contents=${itemContent}`,
+                type: 'GET',
+                dataType: 'json',
+                success: function (response) {
+                    // 참여자 수 그래프
+                    updateParticipantsPage(response.data);
+                    // 조회수 그래프
+                    updateHitsPage(response.data);
+                    // 통계
+                    updateStatisticPage(response.data);
+                    // 질문, 문항 로드
+                    updateSelectQuestion(response.data);
+
+                    // 로딩 완료 후 로딩 화면 숨김
+                    loadingElement.hide();
+                    contentElement.show();
+                },
+                error: function (error) {
+                    console.error("Error fetching initial data: ", error);
+                }
+            });
+        })
     }
 
     // 페이지 로드 시 데이터 불러오기
     loadData();
 })
-
-// document.addEventListener('DOMContentLoaded', function () {
-//     // 페이지 로그되었을 때 AJAX 요청 보냄
-//     fetchData();
-//
-//     // 버튼에 이벤트 리스너 추가
-//     // (DOM이 로드된 이후에만 가능)
-//     document.getElementById('listViewButton').addEventListener('click', () => toggleView('table'));
-//     document.getElementById('carouselViewButton').addEventListener('click', () => toggleView('carousel'));
-// });
-
-// 현재 페이지 url에서 surveyId 값 추출 후 끝에서 surveyId 추출
-// const surveyId = window.location.pathname.split('/').pop();
 
 
 function updateParticipantsPage(response) {
@@ -77,6 +107,11 @@ function updateHitsPage(response) {
         completedCount.push(hit.completedCount);
         labels.push(hit.occurDate);
     });
+
+    // 기존 차트가 있으면 제거
+    if (hitsChart) {
+        hitsChart.destroy();
+    }
 
     // Chart.js로 차트 업데이트
     const ctx = document.getElementById('statisticChart').getContext('2d');
@@ -137,13 +172,43 @@ function updateHitsPage(response) {
         }
     };
 
-    new Chart(ctx, config);  // 기존 차트를 업데이트하거나 새로운 차트를 생성
+    hitsChart = new Chart(ctx, config);  // 기존 차트를 업데이트하거나 새로운 차트를 생성
 
 }
 
 function updateStatisticPage(response) {
     // 처음엔 캐러셀 뷰로 렌더링
     renderData(response);
+}
+
+function updateSelectQuestion(response) {
+    const questionSelect = $(".form-select:eq(0)"); // 첫번째 select 박스
+    const itemSelect = $(".form-select:eq(1)"); // 두번째 select 박스
+
+    // 질문 셀렉트 박스 초기화
+    questionSelect.empty().append(new Option('질문을 선택해주세요', ''));
+    response.quantitativeResponseList.forEach((question) => {
+        questionSelect.append(new Option(question.questionName, question.questionOrder));
+    });
+
+    // 질문 선택 시 문항 셀렉트 박스 업데이트
+    questionSelect.on('change', function () {
+        const selectedQuestionOrder = $(this).val();
+        const selectedQuestion = response.quantitativeResponseList.find(q => q.questionOrder == selectedQuestionOrder);
+        console.log(selectedQuestion);
+
+        // 문항 셀렉트 박스 초기화
+        itemSelect.empty().append(new Option('문항을 선택해주세요', ''));
+
+        if (selectedQuestion) {
+            selectedQuestion.questionItems.forEach((item) => {
+                itemSelect.append(new Option(item.itemContent));
+            });
+        }
+
+        // 문항 선택 가능하게 활성화
+        itemSelect.prop('disabled', false);
+    });
 }
 
 // 테이블과 캐러셀 뷰 전환 함수
