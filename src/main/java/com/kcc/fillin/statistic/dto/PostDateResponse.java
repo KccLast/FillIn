@@ -13,9 +13,7 @@ import lombok.ToString;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class HitsDTO {
-	private LocalDate occurDate;
-	private Long totalViews;
-	private Long startCount;
-	private Long completedCount;
+public class PostDateResponse {
+	private LocalDate postDate;
+	private LocalDate endDate;
 }

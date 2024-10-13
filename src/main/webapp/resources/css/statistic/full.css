@@ -96,6 +96,19 @@ button {
     color: white;
 }
 
+.carousel-control-prev {
+    left: -6% !important;
+}
+
+.carousel-control-next {
+    right: -6% !important;
+}
+
+/*.carousel-control-prev !*, .carousel-indicators *!*/
+/*{*/
+/*    filter: invert(100%);*/
+/*}*/
+
 /*.carousel-inner {*/
 /*    height: auto; !* 또는 필요한 높이 설정 *!*/
 /*    overflow: hidden; !* 필요에 따라 *!*/
