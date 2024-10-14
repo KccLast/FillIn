@@ -4,7 +4,13 @@ $(function() {
 	if (!localStorage.getItem('updatedQuestionItemList')) {
         localStorage.setItem('updatedQuestionItemList', JSON.stringify([]));
     }
-
+    if(!localStorage.getItem('removeQuestionList')){
+		localStorage.setItem('removeQuestionList',JSON.stringify([]));
+	}
+	if(!localStorage.getItem('removeQuestionItemList')){
+		localStorage.setItem('removeQuestionItemList',JSON.stringify([]));
+	}
+	
 	$('.content').on('change','input[type="text"][class*="qi"], select[class*="qi"]',function(){
 		 let classList = $(this).attr('class') || '';
         let match = classList.match(/(\d+)/);  // 'qi' 뒤의 숫자 추출
@@ -12,10 +18,10 @@ $(function() {
         if (match) {
             let seq = match[1];  
             let content = $(this).val();  // 변경된 값 가져오기
-
+			seq = parseInt(seq);
             // 변경된 데이터를 객체로 만듦
-            let updatedItem = { seq: seq, content: content };
-            storeUpdateQuestionItemInLocal(updatedItem,seq);
+            let updatedItem = { seq: seq, content: content, dropdownOptionList: [] };
+            storeUpdateQuestionItemInLocal(updatedItem,seq,'updatedQuestionItemList');
 
         }
 	})
@@ -218,14 +224,30 @@ $(function() {
 	});
 
 
-
+	function storeItemChartListInLocal(target){
+		let classList = $(target).prev().attr('class');
+		let match = classList.match(/\d+/);
+		
+        let extractedNumber = parseInt(match[0], 10);  // 숫자로 변환
+          
+        
+        
+        let obj = {seq : extractedNumber };
+        storeUpdateQuestionItemInLocal(obj,extractedNumber,'removeQuestionItemList');
+	}
 
 	// Row의 삭제버튼을 눌렀을 때
 	$('.content').on('click', '.j-row-box .j-rowAndcol-input-xbutton', function() {
+		
+		
 		// 해당 row를 삭제
 		if ($(this).parent().parent().find('.j-rowAndcol-input-x-box').length === 1) {
 			return;
 		}
+		
+		
+		storeItemChartListInLocal(this);
+		
 		let $pp = $(this).parent().parent().parent();
 		$(this).parent().remove();
 
@@ -243,6 +265,7 @@ $(function() {
 		if ($(this).parent().parent().find('.j-rowAndcol-input-x-box').length === 1) {
 			return;
 		}
+		storeItemChartListInLocal(this);
 		let $pp = $(this).parent().parent().parent();
 		$(this).parent().remove();
 
@@ -433,14 +456,19 @@ $(function() {
 		// 'j-quorder' 이후 숫자를 추출
 		let idx = className.match(/j-quorder(\d+)/);
 		idx = idx[1];
-		console.log(idx);
+		
+		
 		$(this).parent().parent().remove();
 		$('.content').find('.j-question-card > .j-q-order').each(function() {
 			if ($(this).val() === idx) {
+				let seqVal = parseInt($(this).parent().find('.j-qseq').val());
+				let deleteQues = {seq : seqVal };
+			
+				storeUpdateQuestionItemInLocal(deleteQues,seqVal,'removeQuestionList');
 				$(this).parent().remove();
-
 			}
 		})
+		
 	})
 
 	//이미지 미리보기
@@ -604,7 +632,8 @@ $(function() {
 
 function saveDropDownInStorage(options,questionSeq){
     let optionListObject = {};
-    optionListObject.seq = questionSeq;
+    optionListObject.seq = parseInt(questionSeq);
+    optionListObject.content=" ";
     optionListObject.dropdownOptionList = [];
     let orderNum=1;
     options.forEach(function(option) {
@@ -613,17 +642,17 @@ function saveDropDownInStorage(options,questionSeq){
              optionObject.dropContent = option.trim();
              optionObject.questionSeq = questionSeq;
              optionObject.orderNum = orderNum++;
-             optionListObject.optionList.push(optionObject);
+             optionListObject.dropdownOptionList.push(optionObject);
     	}
     });
 
 
-      storeUpdateQuestionItemInLocal(optionListObject,questionSeq);
+      storeUpdateQuestionItemInLocal(optionListObject,questionSeq,'updatedQuestionItemList');
 }
 
-function storeUpdateQuestionItemInLocal(updateItem,seq){
+function storeUpdateQuestionItemInLocal(updateItem,seq,listId){
      //로컬 스토리지에서 꺼내오기
-     let updatedQuestionItemList = JSON.parse(localStorage.getItem('updatedQuestionItemList')) || [];
+     let updatedQuestionItemList = JSON.parse(localStorage.getItem(listId)) || [];
       //이미 있는 데이터인지 검사
       let index = updatedQuestionItemList.findIndex(item => item.seq === seq);
              //있으면 업데이트
@@ -634,7 +663,7 @@ function storeUpdateQuestionItemInLocal(updateItem,seq){
                  updatedQuestionItemList.push(updateItem);
              }
              console.log(updatedQuestionItemList);
-             localStorage.setItem('updatedQuestionItemList', JSON.stringify(updatedQuestionItemList));
+             localStorage.setItem(listId, JSON.stringify(updatedQuestionItemList));
 }
 
 async function setQiCheckBoxAndRadioName(html,prev,next,idx){
@@ -739,7 +768,7 @@ async function saveQuestion() {
          // 로컬 스토리지 데이터 가져오기
                 let localData = localStorage.getItem('updatedQuestionItemList'); // 로컬 스토리지의 특정 데이터 가져오기
                 if (localData) {
-                    await sendLocalStorageData(localData);
+                    await sendLocalStorageData(JSON.parse(localData));
                 }
          window.location.href ='/survey/82'; 
     } catch (error) {
@@ -749,10 +778,12 @@ async function saveQuestion() {
 
 
 async function sendLocalStorageData(data) {
+	console.log(JSON.stringify(data));
     return $.ajax({
         url: '/api/question/item',
         type: 'patch',
-        data: { localData: data },  // 서버로 보낼 데이터
+        contentType: 'application/json',
+        data: JSON.stringify(data),  // 서버로 보낼 데이터
         success: function(response) {
             console.log(response.data);
             localStorage.clear();

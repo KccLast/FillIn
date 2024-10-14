@@ -1,20 +1,21 @@
 package com.kcc.fillin.question.dto;
 
-import com.kcc.fillin.question.domain.QuestionItemVO;
+import java.util.ArrayList;
+import java.util.List;
+
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-
-import java.util.List;
 
 @Getter
 @Setter
 @ToString
+@NoArgsConstructor
 public class UpdateQuestionItemRequest {
-    private Long seq;
-    private String content;
+	private Long seq;
+	private String content;
 
-    private List<UpdateDropContent> dropList;
-
+	private List<UpdateDropContent> dropdownOptionList = new ArrayList<>();
 
 }

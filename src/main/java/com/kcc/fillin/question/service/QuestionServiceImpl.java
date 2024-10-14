@@ -2,8 +2,6 @@ package com.kcc.fillin.question.service;
 
 import java.util.List;
 
-import com.kcc.fillin.question.dto.UpdateDropContent;
-import com.kcc.fillin.question.dto.UpdateQuestionItemRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -11,6 +9,8 @@ import com.kcc.fillin.global.Exception.CannotCreateQuestionException;
 import com.kcc.fillin.question.dao.QuestionDao;
 import com.kcc.fillin.question.domain.QuestionItemVO;
 import com.kcc.fillin.question.domain.QuestionVO;
+import com.kcc.fillin.question.dto.UpdateDropContent;
+import com.kcc.fillin.question.dto.UpdateQuestionItemRequest;
 import com.kcc.fillin.question.dto.UpdateQuestionRequest;
 
 import lombok.RequiredArgsConstructor;
@@ -87,14 +87,18 @@ public class QuestionServiceImpl implements QuestionService {
 	@Override
 	@Transactional
 	public boolean updateQuestionItems(List<UpdateQuestionItemRequest> list) {
-		boolean updateResult=false;
-		for(UpdateQuestionItemRequest item : list){
+		boolean updateResult = false;
+		for (UpdateQuestionItemRequest item : list) {
 
-			if(item.getDropList() != null){
+			if (item.getDropdownOptionList().size() > 0) {
 				updateResult = updateDropItem(item);
-			}else updateResult = updateQuestionItem(item);
+			} else {
+				updateResult = updateQuestionItem(item);
+			}
 
-			if(updateResult == false) throw new RuntimeException("질문 항목 수정에 실패");
+			if (updateResult == false) {
+				throw new RuntimeException("질문 항목 수정에 실패");
+			}
 		}
 
 		return true;
@@ -103,19 +107,19 @@ public class QuestionServiceImpl implements QuestionService {
 	private boolean updateQuestionItem(UpdateQuestionItemRequest item) {
 		return questionDao.updateQuestionItem(item);
 	}
+
 	@Transactional
 	private boolean updateDropItem(UpdateQuestionItemRequest item) {
-		deleteQuestionItem(item);
+		deleteAllQuestionItemInQuestion(item.getSeq());
 
-		for(UpdateDropContent dr: item.getDropList()){
+		for (UpdateDropContent dr : item.getDropdownOptionList()) {
 			questionDao.insertQuestionItem(dr.transferQuestItemVO());
 		}
 		return true;
 	}
 
-	private <T> boolean  deleteQuestionItem(T item) {
-	return 	questionDao.deleteAllQuestionItem(item);
+	private boolean deleteAllQuestionItemInQuestion(Long item) {
+		return questionDao.deleteAllQuestionItem(item);
 	}
-
 
 }
