@@ -9,6 +9,8 @@ import com.kcc.fillin.global.Exception.CannotCreateQuestionException;
 import com.kcc.fillin.question.dao.QuestionDao;
 import com.kcc.fillin.question.domain.QuestionItemVO;
 import com.kcc.fillin.question.domain.QuestionVO;
+import com.kcc.fillin.question.dto.DeleteQuestionItemRequest;
+import com.kcc.fillin.question.dto.DeleteQuestionRequest;
 import com.kcc.fillin.question.dto.UpdateDropContent;
 import com.kcc.fillin.question.dto.UpdateQuestionItemRequest;
 import com.kcc.fillin.question.dto.UpdateQuestionRequest;
@@ -16,11 +18,11 @@ import com.kcc.fillin.question.dto.UpdateQuestionRequest;
 import lombok.RequiredArgsConstructor;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class QuestionServiceImpl implements QuestionService {
 	private final QuestionDao questionDao;
 
-	@Transactional
 	@Override
 	public boolean insertQuestionAndQuestionItem(List<QuestionVO> questionVOList) throws CannotCreateQuestionException {
 		//먼저 question을 넣고, questionItem이나 Condition을 차례로 넣으면됨
@@ -58,7 +60,6 @@ public class QuestionServiceImpl implements QuestionService {
 	}
 
 	@Override
-	@Transactional
 	public boolean updateQuestion(List<UpdateQuestionRequest> updateRequests) {
 
 		for (UpdateQuestionRequest up : updateRequests) {
@@ -74,7 +75,6 @@ public class QuestionServiceImpl implements QuestionService {
 	}
 
 	@Override
-	@Transactional
 	public boolean insertQuestionItems(List<QuestionItemVO> insertItems) {
 		int result = insertQuestionItem(insertItems.get(0).getQuestionSeq(), insertItems);
 
@@ -85,7 +85,6 @@ public class QuestionServiceImpl implements QuestionService {
 	}
 
 	@Override
-	@Transactional
 	public boolean updateQuestionItems(List<UpdateQuestionItemRequest> list) {
 		boolean updateResult = false;
 		for (UpdateQuestionItemRequest item : list) {
@@ -104,11 +103,38 @@ public class QuestionServiceImpl implements QuestionService {
 		return true;
 	}
 
+	@Override
+	public boolean deleteQuestion(List<DeleteQuestionRequest> deleteList) {
+		// TODO Auto-generated method stub
+		boolean deleteResult = false;
+		boolean ItemResult = false;
+		for (DeleteQuestionRequest dr : deleteList) {
+			ItemResult = questionDao.deleteAllQuestionItem(dr.getSeq());
+			deleteResult = questionDao.deleteQuestion(dr);
+			if (!deleteResult || !ItemResult) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	@Override
+	public boolean deleteQuestionItem(List<DeleteQuestionItemRequest> deleteList) {
+		boolean deleteResult = false;
+		for (DeleteQuestionItemRequest dr : deleteList) {
+			deleteResult = questionDao.deleteQuestionItem(dr);
+			if (!deleteResult) {
+				return false;
+			}
+		}
+
+		return true;
+	}
+
 	private boolean updateQuestionItem(UpdateQuestionItemRequest item) {
 		return questionDao.updateQuestionItem(item);
 	}
 
-	@Transactional
 	private boolean updateDropItem(UpdateQuestionItemRequest item) {
 		deleteAllQuestionItemInQuestion(item.getSeq());
 

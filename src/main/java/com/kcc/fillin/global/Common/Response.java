@@ -29,6 +29,11 @@ public class Response<T> {
 			.build();
 	}
 
+	public static Response<?> setMessage(Response<?> target, String message) {
+		target.message = message;
+		return target;
+	}
+
 	public static <T> Response<T> setSuccess(T data, int code, String message) {
 		return new ResponseBuilder<T>().message(message).data(data).status(SUCCESS).statusCode(code)
 			.build();

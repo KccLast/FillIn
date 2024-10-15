@@ -197,6 +197,29 @@ function type9Common(target,qi){
 /** 질문 조회 및 등록 관련 */
 
 
-/** 질문 업데이트 관련 제목, 내용, 타입이 수정될 수 있음 */
 
+/** 질문 업데이트 관련 제목, 내용, 타입이 수정될 수 있음 */
+// questionFrame.html 파일 불러오기
+async function fetchQuestionFrame() {
+	return $.ajax({
+		url: "/resources/html/question/questionFrame.html",
+		type: "GET"
+	});
+}
+
+// header 파일 불러오기
+async function fetchHeader(ccSeq) {
+	return $.ajax({
+		url: '/resources/html/question/header/header' + ccSeq + '.html',
+		type: "GET"
+	});
+}
+
+// content 파일 불러오기
+async function fetchContent(ccSeq) {
+	return $.ajax({
+		url: '/resources/html/question/content/content' + ccSeq + '.html',
+		type: "GET"
+	});
+}
 
