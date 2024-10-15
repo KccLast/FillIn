@@ -4,6 +4,8 @@ import org.apache.ibatis.annotations.Mapper;
 
 import com.kcc.fillin.question.domain.QuestionItemVO;
 import com.kcc.fillin.question.domain.QuestionVO;
+import com.kcc.fillin.question.dto.DeleteQuestionItemRequest;
+import com.kcc.fillin.question.dto.DeleteQuestionRequest;
 import com.kcc.fillin.question.dto.UpdateQuestionItemRequest;
 import com.kcc.fillin.question.dto.UpdateQuestionRequest;
 
@@ -19,4 +21,8 @@ public interface QuestionDao {
 	boolean deleteAllQuestionItem(Long item);
 
 	boolean updateQuestionItem(UpdateQuestionItemRequest item);
+
+	boolean deleteQuestion(DeleteQuestionRequest dr);
+
+	boolean deleteQuestionItem(DeleteQuestionItemRequest dr);
 }

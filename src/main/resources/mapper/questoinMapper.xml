@@ -70,5 +70,16 @@
 		SET content = #{content}
 		WHERE seq = #{seq}
 	</update>
-		
+	
+	<update id="deleteQuestionItem" parameterType="DeleteQuestionItemRequest">
+		UPDATE question_item
+		SET is_active = 'N'
+		WHERE seq = #{seq}
+	</update>
+	
+	<update id="deleteQuestion" parameterType="DeleteQuestionRequest">
+		UPDATE question
+		SET is_active = 'N'
+		WHERE seq = #{seq}
+	</update>		
 </mapper>

@@ -4,6 +4,8 @@ import java.util.List;
 
 import com.kcc.fillin.question.domain.QuestionItemVO;
 import com.kcc.fillin.question.domain.QuestionVO;
+import com.kcc.fillin.question.dto.DeleteQuestionItemRequest;
+import com.kcc.fillin.question.dto.DeleteQuestionRequest;
 import com.kcc.fillin.question.dto.UpdateQuestionItemRequest;
 import com.kcc.fillin.question.dto.UpdateQuestionRequest;
 
@@ -14,5 +16,9 @@ public interface QuestionService {
 
 	public boolean insertQuestionItems(List<QuestionItemVO> insertItems);
 
-    boolean updateQuestionItems(List<UpdateQuestionItemRequest> list);
+	boolean updateQuestionItems(List<UpdateQuestionItemRequest> list);
+
+	public boolean deleteQuestion(List<DeleteQuestionRequest> deleteList);
+
+	public boolean deleteQuestionItem(List<DeleteQuestionItemRequest> deleteList);
 }
