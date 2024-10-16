@@ -38,11 +38,21 @@ body {
   /* 헤더와 겹치지 않도록 설정 */
 
   box-shadow: 5px 5px 5px #e5e7eb;
+  overflow: hidden;
 }
 
 .j-question-box {
   min-height: 10%;
+  max-height: 670px;
+  overflow:auto;
   border-bottom: 2px solid #e7dfdf;
+}
+.j-deploy-box{
+  min-height: 10%;
+  max-height: 670px;
+  overflow:auto;
+  border-bottom: 2px solid #e7dfdf;
+  display: none;
 }
 .j-total-question-box {
   height: 30%;
@@ -127,4 +137,57 @@ body {
 	cursor: pointer;
 
 }
+
+.j-questionNav-tab-Box > div{
+	width: 50%;
+	text-align: center;
+	height: 40px;
+	box-sizing: border-box;
+	padding-top: 3%;
+	border-bottom: 1.5px solid #E7DFDF;
+	font-weight: bold;
+	cursor: pointer;
+	font-size: 14px;
+	color:rgba(66,82,110,0.5);
+	
+}
+.j-question-nav-tab{
+	border-right: 1.5px solid #E7DFDF;
+}
+.j-question-nav-color{
+	color: #42526e !important;
+	background-color: #F0F5FF !important;
+}
+
+
+.j-fix-height{
+	position: fixed;
+	 bottom: 120px; 
+	 left: 95px;
+	
+}
+
+.j-nav-input-button{
+	width: 200px;
+	 height: 40px;
+	 border-radius: 5px;
+	 border: none;
+	 background-color: #005BAC;
+	 color:white;
+	 font-weight: bold;
+}
+.j-depoly-button{
+	display: none;
+}
+.j-save-button{
+	
+}
+
+.j-fixSave-height{
+	position: fixed;
+	 bottom: 50px; 
+	 left: 95px;
+	
+}
+
 /* question navBar  */

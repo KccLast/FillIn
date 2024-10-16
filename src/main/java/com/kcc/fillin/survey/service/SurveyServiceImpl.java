@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import com.kcc.fillin.survey.Criteria;
 import com.kcc.fillin.survey.dao.SurveyDao;
+import com.kcc.fillin.survey.domain.SurveyVO;
 import com.kcc.fillin.survey.dto.CommonCodeResponse;
 import com.kcc.fillin.survey.dto.MultiSearchSurveyRequest;
 import com.kcc.fillin.survey.dto.MultiSearchSurveyResponse;
@@ -54,21 +55,22 @@ public class SurveyServiceImpl implements SurveyService {
 		List<CommonCodeResponse> allCodes = mapper.getCommonCodes();
 		List<CommonCodeResponse> progressStatus = new ArrayList<>();
 		List<CommonCodeResponse> selectPeriod = new ArrayList<>();
-		
-		for(CommonCodeResponse code : allCodes) {
-			if(code.getParentSeq() == 2) {
+
+		for (CommonCodeResponse code : allCodes) {
+			if (code.getParentSeq() == 2) {
 				progressStatus.add(code);
-			} else if(code.getParentSeq() == 8) {
+			} else if (code.getParentSeq() == 8) {
 				selectPeriod.add(code);
 			}
 		}
-		
+
 		Map<String, List<CommonCodeResponse>> resultMap = new HashMap<>();
 		resultMap.put("progressStatus", progressStatus);
 		resultMap.put("selectPeriod", selectPeriod);
-		
+
 		return resultMap;
 	}
+
 
 	// SurveyService 인터페이스의 메서드를 구현 (페이징 포함)(, int page, int size)
 	@Override
@@ -80,4 +82,18 @@ public class SurveyServiceImpl implements SurveyService {
 	}
 
 	
+
+	@Override
+	public boolean createNewSurvey(SurveyVO newSurvey) {
+
+		return mapper.insertNewSurvey(newSurvey);
+	}
+
+	@Override
+	public SurveyVO findSurveyBySurveySeq(Long surveySeq) {
+
+		return mapper.selectSurveyBySurveySeq(surveySeq);
+	}
+
+
 }

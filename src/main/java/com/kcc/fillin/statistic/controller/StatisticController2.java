@@ -6,18 +6,28 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.kcc.fillin.statistic.service.StatisticService;
+
+import lombok.RequiredArgsConstructor;
+
 @Controller
 @RequestMapping("/statistic")
+@RequiredArgsConstructor
 public class StatisticController2 {
-	// 키워드 분석 페이지로 이동
+  
+	private final StatisticService statisticService;
+  
 	@GetMapping("/keyword")
 	public String showKeywordAnalysisPage() {
 		return "/statistic/keyword";
 	}
 
 	@GetMapping("/{surveyId}")
-	public String getFull(@PathVariable int surveyId, Model model) {
+	public String getFull(@PathVariable Long surveyId, Model model) {
 		model.addAttribute("surveyId", surveyId);
+
+		// PostDateResponse postDateResponse = statisticService.getPostDate(surveyId);
+		model.addAttribute("postDateResponse", statisticService.getPostDate(surveyId));
 
 		return "/statistic/full";
 	}

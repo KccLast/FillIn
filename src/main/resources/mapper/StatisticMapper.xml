@@ -5,6 +5,12 @@
 
 <mapper namespace="com.kcc.fillin.statistic.dao.StatisticMapper">
 
+    <select id="selectPostDate" resultType="PostDateResponse">
+        SELECT post_date, end_date
+        FROM survey
+        WHERE seq = #{surveyId}
+    </select>
+
     <select id="selectTargetCount">
         SELECT target_people AS targetCount
         FROM survey
@@ -17,6 +23,7 @@
              answer a
         WHERE q.survey_seq = #{surveySeq}
           AND q.seq = a.question_seq
+          AND a.answer_date BETWEEN #{startDate} AND #{endDate}
     </select>
 
     <select id="selectHits" resultType="HitsDTO">
@@ -32,6 +39,7 @@
                         SUM(CASE WHEN cc_seq = 23 THEN 1 ELSE 0 END) AS total_starts -- 시작수
                  FROM survey_log
                  WHERE survey_seq = #{surveySeq}
+                   AND occur_date BETWEEN #{startDate} AND #{endDate}
                  GROUP BY TRUNC(occur_date)) survey_log_data
                  LEFT JOIN
              (
@@ -42,6 +50,7 @@
                           JOIN
                       question q ON a.question_seq = q.seq
                  WHERE q.survey_seq = #{surveySeq}
+                   AND a.answer_date BETWEEN #{startDate} AND #{endDate}
                  GROUP BY TRUNC(a.answer_date)) answer_data
              ON survey_log_data.occur_date = answer_data.answer_date
         ORDER BY occur_date
@@ -60,17 +69,29 @@
     <select id="selectQuantitativeList" resultMap="quantitativeResponse">
         SELECT q.order_num,
                q.name,
-               a.contents,
-               ROUND((COUNT(a.seq) * 100.0 / SUM(COUNT(a.seq)) OVER (PARTITION BY a.question_seq)), 2) AS itemRatio
+               i.content AS contents,
+               ROUND(
+                       (COUNT(a.seq) * 100.0 / NULLIF(total_answers.total_count, 0)), 2
+               )         AS itemRatio
         FROM (SELECT q.*
               FROM question q
-                       JOIN common_code c
-                            ON q.cc_seq = c.seq
+                       JOIN common_code c ON q.cc_seq = c.seq
               WHERE parent_seq = 3) q
-                 JOIN
-             answer a ON q.seq = a.question_seq
+                 JOIN question_item i ON q.seq = i.question_seq
+                 LEFT JOIN answer a ON q.seq = a.question_seq
+            AND i.content = a.contents
+            AND a.answer_date BETWEEN #{startDate} AND #{endDate}
+                 LEFT JOIN (SELECT question_seq, COUNT(*) AS total_count
+                            FROM answer
+                            WHERE answer_date BETWEEN #{startDate} AND #{endDate}
+                            GROUP BY question_seq) total_answers ON q.seq = total_answers.question_seq
         WHERE q.survey_seq = #{surveySeq}
-        GROUP BY q.order_num, q.name, a.contents, a.question_seq
+        GROUP BY q.order_num,
+                 q.name,
+                 i.content,
+                 total_answers.total_count
+        ORDER BY q.order_num,
+                 i.content -- 순서 보장을 위해 정렬
     </select>
 
     <resultMap id="qualitativeResponse" type="QualitativeResponse">
@@ -89,7 +110,8 @@
                  JOIN common_code c ON q.cc_seq = c.seq
                  JOIN answer a ON q.seq = a.question_seq
         WHERE c.parent_seq = 4
-          AND q.survey_seq = #{surveyId}
+          AND q.survey_seq = #{surveySeq}
+          AND answer_date BETWEEN #{startDate} AND #{endDate}
     </select>
 
 <!--    키워드 분석-->
