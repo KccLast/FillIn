@@ -3,9 +3,6 @@ package com.kcc.fillin.survey.controller;
 import java.util.List;
 import java.util.Map;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.kcc.fillin.survey.dto.PageDTO;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,6 +11,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kcc.fillin.survey.Criteria;
 import com.kcc.fillin.survey.domain.SurveyVO;
 import com.kcc.fillin.survey.dto.CommonCodeResponse;
@@ -80,11 +79,11 @@ public class SurveyController {
 		ObjectMapper objectMapper = new ObjectMapper();
 		String jsonString = "";
 		try {
-			 jsonString = objectMapper.writeValueAsString(findSurvey);
+			jsonString = objectMapper.writeValueAsString(findSurvey);
 		} catch (JsonProcessingException e) {
 			throw new RuntimeException(e);
 		}
-		model.addAttribute("surveyJson",jsonString);
+		model.addAttribute("surveyJson", jsonString);
 		return "/survey/project";
 	}
 
@@ -96,7 +95,10 @@ public class SurveyController {
 	}
 
 	@GetMapping("/url/{surveyUrl}")
-	public String getSurveyByParticipant(@PathVariable String surveyUrl, Model model){
+	public String getSurveyByParticipant(@PathVariable
+	String surveyUrl, Model model) {
+		//응답자 생성해야함
+		//surveyURL로 시작 로그 보내야함
 		return "/survey/participant";
 	}
 }

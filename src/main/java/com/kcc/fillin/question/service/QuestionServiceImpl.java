@@ -33,8 +33,6 @@ public class QuestionServiceImpl implements QuestionService {
 			questionItemInsertResult = 0;
 			questionInsertResult = questionDao.insertQuestion(questionVO);
 
-			System.out.println(questionInsertResult);
-
 			if (questionVO.isQuestionItemExist()) {
 				questionItemInsertResult = insertQuestionItem(questionVO.getSeq(), questionVO.getQuestionItems());
 

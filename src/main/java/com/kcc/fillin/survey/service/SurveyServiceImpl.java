@@ -5,8 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.kcc.fillin.survey.dto.PageDTO;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.kcc.fillin.survey.Criteria;
 import com.kcc.fillin.survey.dao.SurveyDao;
@@ -80,13 +80,21 @@ public class SurveyServiceImpl implements SurveyService {
 
 	/*@Override
 	public SurveyVO getSurveyByUrl(PageDTO pageDTO) {
-
+	
 		return mapper.selectSurveyByurl(pageDTO);
 	}*/
 	@Override
 	public SurveyVO getSurveyByUrl(String url) {
 
 		return mapper.selectSurveyByurl(url);
+	}
+
+	@Override
+	@Transactional
+	public Long createNewParticipant() {
+		// TODO Auto-generated method stub
+		//SurveyDao
+		return null;
 	}
 
 }
