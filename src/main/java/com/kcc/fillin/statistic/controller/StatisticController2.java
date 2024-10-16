@@ -9,8 +9,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 @RequestMapping("/statistic")
 public class StatisticController2 {
+	// 키워드 분석 페이지로 이동
 	@GetMapping("/keyword")
-	public String statistic() {
+	public String showKeywordAnalysisPage() {
 		return "/statistic/keyword";
 	}
 

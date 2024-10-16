@@ -60,4 +60,11 @@ public class SurveyController {
 	@GetMapping("/project")
 	public void newProject() {}
 
+
+	// 설문 로그 및 응답 시간 페이지를 반환하는 메서드
+	@GetMapping("/logs")
+	public String showSurveyLogsPage(Model model) {
+		// 필요시, Model에 추가 데이터를 전달할 수 있음
+		return "/survey/surveyLog";  // surveyLog.jsp 파일을 렌더링
+	}
 }

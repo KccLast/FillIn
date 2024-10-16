@@ -30,15 +30,16 @@ body {
 .navbar {
     width: 100%;
     background-color: #f8f9fa;
-    padding: 13px;
+    padding: 10px 20px; /* 편안한 패딩 */
     display: flex;
     justify-content: space-between;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* 상단에 그림자 추가 */
     align-items: center;
     border-bottom: 1px solid #ddd;
-    position: absolute;
+    position: fixed; /* navbar를 페이지 상단에 고정 */
     top: 0;
     left: 0;
-    right: 0;
+    z-index: 1000; /* 다른 요소 위에 표시되도록 */
 }
 
 .navbar a {
@@ -47,8 +48,8 @@ body {
     margin: 0 10px;
     display: flex;
     align-items: center;
-    font-size: 23px;
 }
+
 
 .logo {
     max-width: 68%;

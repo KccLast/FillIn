@@ -19,4 +19,6 @@ public interface SurveyDao {
 	public int getTotalSurveyCount();
 	
 	public List<CommonCodeResponse> getCommonCodes();
+
+
 }

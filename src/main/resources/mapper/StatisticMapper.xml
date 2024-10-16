@@ -92,4 +92,11 @@
           AND q.survey_seq = #{surveyId}
     </select>
 
+<!--    키워드 분석-->
+    <!-- 키워드로 contents 필드 검색 -->
+    <select id="findByContentsContaining" parameterType="string" resultType="AnswerDTO">
+        SELECT *
+        FROM answer
+        WHERE contents LIKE '%' || #{keyword} || '%'
+    </select>
 </mapper>

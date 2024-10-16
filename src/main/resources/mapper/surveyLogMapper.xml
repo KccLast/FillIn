@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kcc.fillin.survey.dao.SurveyLogMapper">
+
+    <select id="findSurveyLogs" parameterType="map" resultType="SurveyLogDTO">
+
+            SELECT
+                sl_start.seq AS logSeq,
+                sl_start.survey_seq AS surveySeq,
+                sl_start.occur_date AS startDate,
+                sl_end.occur_date AS endDate,
+                (sl_end.occur_date - sl_start.occur_date) * 24 * 60 * 60 AS responseTime  -- 응답 시간(초 단위)
+            FROM
+                survey_log sl_start
+                    JOIN
+                survey_log sl_end
+                ON sl_start.survey_seq = sl_end.survey_seq
+                    AND sl_start.cc_seq = 23  -- 시작일자
+                    AND sl_end.cc_seq = 31    -- 종료일자
+            ORDER BY
+               sl_start.survey_seq, sl_start.occur_date
+
+    </select>
+
+
+
+
+</mapper>
+
+<!--        offset: 10이면 11번째 행부터 시작해서 데이터를 가져오겠다.-->
+<!--        size: 한 번에 가져올 행의 개수를 나타낸다. size = 20이면 offset 위치부터 20개의 행을 가져온다.-->
