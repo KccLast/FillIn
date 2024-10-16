@@ -1,10 +1,13 @@
 package com.kcc.fillin.survey.service;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.kcc.fillin.survey.dao.SurveyLogMapper;
+import com.kcc.fillin.survey.dto.SurveyLogDTO;
 import org.springframework.stereotype.Service;
 
 import com.kcc.fillin.survey.Criteria;
@@ -20,6 +23,9 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class SurveyServiceImpl implements SurveyService {
 	private final SurveyDao mapper;
+
+	//설문 로그
+	private final SurveyLogMapper surveyLogMapper;
 
 	@Override
 	public List<MultiSearchSurveyResponse> getAllSurveys() {
@@ -65,6 +71,18 @@ public class SurveyServiceImpl implements SurveyService {
 		return resultMap;
 	}
 
+
+	// SurveyService 인터페이스의 메서드를 구현 (페이징 포함)(, int page, int size)
+	@Override
+	public List<SurveyLogDTO> getSurveyLogs(LocalDate startDate, LocalDate endDate) {
+//		int offset = (page - 1) * size;
+
+		// Mapper를 호출하여 데이터베이스에서 설문 로그를 조회 (offset과 size 포함), offset, size
+		return surveyLogMapper.findSurveyLogs(startDate, endDate);
+	}
+
+	
+
 	@Override
 	public boolean createNewSurvey(SurveyVO newSurvey) {
 
@@ -76,5 +94,6 @@ public class SurveyServiceImpl implements SurveyService {
 
 		return mapper.selectSurveyBySurveySeq(surveySeq);
 	}
+
 
 }

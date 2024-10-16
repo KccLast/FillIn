@@ -191,6 +191,7 @@
 			</if>
 		</if>
 	</select>
+
 	
 	<insert id="insertNewSurvey" parameterType="SurveyVO">
 		<selectKey order="BEFORE" resultType="long" keyProperty="seq"> 
@@ -221,5 +222,6 @@
 		
 	
 	</select>
-
 </mapper>
+
+

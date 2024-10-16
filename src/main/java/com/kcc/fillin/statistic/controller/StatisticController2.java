@@ -14,10 +14,11 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/statistic")
 @RequiredArgsConstructor
 public class StatisticController2 {
+  
 	private final StatisticService statisticService;
-
+  
 	@GetMapping("/keyword")
-	public String statistic() {
+	public String showKeywordAnalysisPage() {
 		return "/statistic/keyword";
 	}
 

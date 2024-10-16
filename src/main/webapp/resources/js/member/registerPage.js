@@ -268,6 +268,7 @@ $(document).ready(function() {
     const phoneRegex = /^\d{3}-\d{4}-\d{4}$/;
     let isSubmitting = false;  // 중복 제출 방지 변수
 
+
     // CSRF 토큰을 가져오는 함수
     const csrfToken = $("input[name='_csrf']").val();
     const csrfHeader = $("meta[name='_csrf_header']").attr("content");
