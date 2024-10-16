@@ -23,7 +23,9 @@ public interface SurveyDao {
 
 	public List<CommonCodeResponse> getCommonCodes();
 
+
 	public boolean insertNewSurvey(SurveyVO newSurvey);
 
 	public SurveyVO selectSurveyBySurveySeq(Long surveySeq);
+
 }

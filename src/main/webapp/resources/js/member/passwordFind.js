@@ -138,6 +138,9 @@ $(document).ready(function() {
 
 // 모달 적용 후(비밀번호 재설정 폼)
 $(document).ready(function() {
+    var timer = null;  // 타이머를 저장할 변수
+    var timerExpired = false; // 타이머 만료 상태 추적
+
     // 인증 코드 전송
     $('#sendCode').on('click', function() {
         var name = $('#name').val();
@@ -172,6 +175,11 @@ $(document).ready(function() {
 
     // 임시 비밀번호 인증
     $('#verifyTempPassword').on('click', function() {
+        if (timerExpired) {
+            alert('인증 시간이 만료되었습니다.');
+            return;
+        }
+
         var tempPassword = $('#tempPassword').val();
         var email = $('#email').val();  // 이메일도 함께 전송
 
@@ -185,40 +193,47 @@ $(document).ready(function() {
                     tempPassword: tempPassword
                 }),
                 success: function(response) {
-                    alert('임시 비밀번호 인증 완료');
-                    // $('#resetPasswordSection').show();  // 비밀번호 재설정 창 표시
+                    alert('임시코드 인증 완료');
+                    stopTimer();  // 타이머 종료
                     // 인증이 완료되면 모달 창을 띄워 비밀번호 재설정 가능하도록 함
-                    $('#resetPasswordModal').modal('show');
-                    $('#timer').hide();  // 타이머 숨기기
+                    $('#resetPasswordModal').modal('show');  // 모달 창 표시
                 },
+
+                // $('#timer').hide();  // 타이머 숨기기
                 error: function(xhr) {
                     alert('오류: ' + xhr.responseText);
                 }
             });
         } else {
-            alert('임시 비밀번호를 입력해주세요.');
+            alert('인증코드를 입력해주세요.');
         }
     });
 
     // 타이머 함수
     function startTimer(duration) {
-        var timer = duration, minutes, seconds;
-        var interval = setInterval(function() {
-            minutes = parseInt(timer / 60, 10);
-            seconds = parseInt(timer % 60, 10);
+        var seconds = duration;
+        timer = setInterval(function() {
+            var minutes = parseInt(seconds / 60, 10);
+            var secondsLeft = parseInt(seconds % 60, 10);
+            secondsLeft = secondsLeft < 10 ? "0" + secondsLeft : secondsLeft;
 
-            seconds = seconds < 10 ? "0" + seconds : seconds;
-
-            $('#timer').text(minutes + ":" + seconds);  // 타이머 업데이트
-
-            if (--timer < 0) {
-                clearInterval(interval);  // 타이머 종료
-                $('#tempPassword').prop('disabled', true);  // 입력창 비활성화
-                $('#verifyTempPassword').prop('disabled', true);  // 인증 버튼 비활성화
+            $('#timer').text(minutes + ":" + secondsLeft);
+            if (--seconds < 0) {
+                timerExpired = true;
+                stopTimer();
                 alert('인증 코드의 유효기간이 만료되었습니다. 다시 시도해주세요.');
-                $('#timer').text('시간 초과');  // 타이머 영역에 '시간 초과' 표시
+                $('#timer').text('시간 초과');
             }
-        }, 1000);  // 1초마다 업데이트
+        }, 1000);
+    }
+
+    // 타이머 중지
+    function stopTimer() {
+        clearInterval(timer);
+        $('#tempPassword').prop('disabled', true);
+        $('#verifyTempPassword').prop('disabled', true);
+        $('#verifyTempPassword').css('background-color', '#ccc'); // 버튼 색상 변경
+        $('#timer').hide();
     }
 
     // 비밀번호 재설정

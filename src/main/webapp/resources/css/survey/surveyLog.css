@@ -1,0 +1,86 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    padding: 20px;
+}
+
+/*스크롤 박스*/
+.table-section{
+    height: 400px; /* 원하는 높이 설정 */
+    overflow-y: auto; /* 세로 스크롤 활성화 */
+    border: 1px solid #ccc; /* 경계선 추가 */
+    margin-top: 20px;
+    padding: 10px;
+
+}
+
+
+.container {
+    background-color: #fff;
+    padding: 100px;
+    border-radius: 10px;
+
+    /*display: flex;*/
+    /*justify-content: center;*/
+    /*align-items: flex-start;*/
+    /*margin-left: 20%;*/
+    /*z-index: 1; !* 콘텐츠가 사이드바 밑으로 가는 것을 방지 *!*/
+
+    margin-top: 95px;
+    margin-left: calc(100vh - 650px)!important;
+    margin-right: 40px;
+    min-height: calc(100vh - 130px)!important;
+    box-sizing: border-box;
+
+    box-shadow: 5px 5px 5px #e5e7eb;
+}
+
+h2 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.filter-section {
+    margin-bottom: 20px;
+}
+
+.filter-section label {
+    margin-right: 10px;
+}
+
+.result-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.result-table th, .result-table td {
+    padding: 10px;
+    border: 1px solid #ccc;
+    text-align: left;
+}
+
+.result-table th {
+    background-color: #f2f2f2;
+}
+
+.result-table tbody tr:hover {
+    background-color: #f9f9f9;
+}
+
+#warning-message {
+    color: red;
+    font-weight: bold;
+    text-align: center;
+    margin-top: 10px;
+}
+
+/*화면작아질때 사이드바 숨김*/
+@media screen and (max-width: 768px ) {
+    .sidebar {
+        display: none;
+    }
+    .container {
+        width: 100%;
+        margin-left: 0;
+    }
+}
