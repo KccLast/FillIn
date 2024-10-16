@@ -2,10 +2,11 @@ package com.kcc.fillin.survey.controller;
 
 import java.util.List;
 
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import com.kcc.fillin.survey.domain.SurveyVO;
+import com.kcc.fillin.survey.dto.PageDTO;
+import com.kcc.fillin.survey.dto.SubmitPageResponseDTO;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
 
 import com.kcc.fillin.global.Common.Response;
 import com.kcc.fillin.survey.dto.MultiSearchSurveyRequest;
@@ -34,4 +35,28 @@ public class SurveyRestController {
 		    return Response.setSuccess(filteringSurveys, 200);
 	}
 
+/*	@GetMapping("/{surveyUrl}/{curPage}")
+	public Response<SubmitPageResponseDTO> getSurveyByParticipant(@PathVariable String surveyUrl, @PathVariable Integer curPage){
+
+
+		PageDTO page = new PageDTO(curPage,surveyUrl);
+		SurveyVO findSurvey = service.getSurveyByUrl(page);
+
+		page.setEnd(findSurvey.getTotalCnt());
+		SubmitPageResponseDTO responseDTO = new SubmitPageResponseDTO(findSurvey,page);
+		
+		return Response.setSuccess(responseDTO,200);
+	}*/
+	@GetMapping("/{surveyUrl}")
+	public Response<SurveyVO> getSurveyByParticipant(@PathVariable String surveyUrl){
+
+
+		//PageDTO page = new PageDTO(curPage,surveyUrl);
+		SurveyVO findSurvey = service.getSurveyByUrl(surveyUrl);
+
+//		page.setEnd(findSurvey.getTotalCnt());
+//		SubmitPageResponseDTO responseDTO = new SubmitPageResponseDTO(findSurvey,page);
+
+		return Response.setSuccess(findSurvey,200);
+	}
 }

@@ -2,6 +2,7 @@ package com.kcc.fillin.survey.dao;
 
 import java.util.List;
 
+import com.kcc.fillin.survey.dto.PageDTO;
 import org.apache.ibatis.annotations.Mapper;
 
 import com.kcc.fillin.survey.domain.SurveyVO;
@@ -26,4 +27,8 @@ public interface SurveyDao {
 	public boolean insertNewSurvey(SurveyVO newSurvey);
 
 	public SurveyVO selectSurveyBySurveySeq(Long surveySeq);
+
+	/*public SurveyVO selectSurveyByurl(PageDTO page);*/
+	public SurveyVO selectSurveyByurl(String url);
+	public int getTotalQuestionCount(String surveyUrl);
 }

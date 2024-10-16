@@ -73,13 +73,18 @@ body {
   min-height: 50px;
   box-sizing: border-box;
 }
-
+.j-div-break-word {
+  word-wrap: break-word; /* 긴 단어가 있을 때 자동 줄바꿈 */
+  white-space: normal; /* 일반적인 줄바꿈 */
+}
 .j-survey-name-input {
   width: 100%;
   font-size: 23px;
   font-weight: bold;
   padding-left: 3%;
   border: none;
+  word-wrap: break-word; /* 긴 단어가 있을 때 자동 줄바꿈 */
+  white-space: normal; /* 일반적인 줄바꿈 */
 }
 /*카드에 설문명*/
 
@@ -194,37 +199,23 @@ body {
 .j-option-input-radio > input[type='radio']:checked {
   background-color: #005bac;
 }
-.j-xbutton {
-  width: 10%;
-  margin-left: 2%;
-}
-.j-xbutton > img {
-  width: 20px;
-  height: 20px;
+
+
+.j-option-input-radio > input[type='checkbox'] {
+  margin-left: 4%;
+  background-color: #cdcdcd;
+  appearance: none;
+  width: 30px;
+  height: 30px;
+  border: 2px solid #cdcdcd;
+  border-radius: 50%;
+  outline: none;
   cursor: pointer;
 }
 
-.j-option-plus {
-  margin-top: 1%;
-  margin-bottom: 2%;
-  display: flex;
-  justify-content: flex-end;
-  width: 20%;
-  color: #005bac;
-  font-weight: bold;
-  font-size: 14px;
+.j-option-input-radio > input[type='checkbox']:checked {
+  background-color: #005bac;
 }
-.j-op-name {
-  height: 25px;
-}
-.j-option-plus-img {
-  margin-left: 5%;
-}
-.j-option-plus-img > img {
-  width: 15px;
-  height: 15px;
-}
-
 /*객관식 css*/
 
 /*선형*/

@@ -5,6 +5,7 @@ import java.util.Map;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.kcc.fillin.survey.dto.PageDTO;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -95,7 +96,7 @@ public class SurveyController {
 	}
 
 	@GetMapping("/url/{surveyUrl}")
-	public String getSurveyByParticipant(){
+	public String getSurveyByParticipant(@PathVariable String surveyUrl, Model model){
 		return "/survey/participant";
 	}
 }

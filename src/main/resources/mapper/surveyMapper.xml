@@ -33,9 +33,10 @@
     <result column="target_people" property="targetPeople"/>
     <result column="cc_seq" property="ccSeq"/>
     <result column="member_seq" property="memberSeq"/>
+	<result column="totalCnt" property="totalCnt"/>
 
     <!-- question List -->
-    <collection property="questions" ofType="QuestionVO">
+    <collection property="questions" ofType="QuestionVO" >
         <id column="question_seq" property="seq"/>
         <result column="survey_seq" property="surveySeq"/>
         <result column="tb_file_seq" property="tbFileSeq"/>
@@ -217,9 +218,100 @@
 		AND (qi.is_active != 'N' OR qi.is_active IS NULL)
 		AND (c.is_active != 'N' OR c.is_active IS NULL)
         ORDER BY q_order,qi_order
-	
-		
-	
+	</select>
+
+
+	<select id="selectSurveyByurl" resultMap="surveyInfo" parameterType="String">
+
+		SELECT s.seq, s.name, s.post_date, s.end_date, s.url, s.target_people,
+		q.seq AS question_seq, q.survey_seq, q.tb_file_seq, q.name AS question_name, q.description, q.order_num as q_order, q.is_essential, q.cc_seq AS question_cc_seq,
+		qi.seq AS question_item_seq, qi.question_seq AS qi_question_seq, qi.content, qi.order_num as qi_order,
+		c.seq AS condition_seq, c.question_seq as c_question_seq, c.next_question_seq, c.c_value, c.operation,
+		count(DISTINCT q.seq) over() AS totalCnt
+		FROM survey s
+		LEFT JOIN question q ON s.seq = q.survey_seq
+		LEFT JOIN question_item qi ON q.seq = qi.question_seq
+		LEFT JOIN condition c ON q.seq = c.question_seq
+		WHERE s.url = #{url}
+		AND  (q.is_active != 'N' OR q.is_active IS NULL)
+		AND (qi.is_active != 'N' OR qi.is_active IS NULL)
+		AND (c.is_active != 'N' OR c.is_active IS NULL)
+		ORDER BY q_order,qi_order
+
+	</select>
+
+	<!--<select id="selectSurveyByurl" resultMap="surveyInfo" parameterType="PageDTO">
+
+
+		WITH paged_questions AS (
+		SELECT
+		s.seq,
+		s.name,
+		s.post_date,
+		s.end_date,
+		s.url,
+		s.target_people,
+		q.seq AS question_seq,
+		q.survey_seq,
+		q.tb_file_seq,
+		q.name AS question_name,
+		q.description,
+		q.order_num AS q_order,
+		q.is_essential,
+		q.cc_seq AS question_cc_seq,
+		ROWNUM AS rm,
+		COUNT(DISTINCT q.seq) OVER() AS totalCnt
+		FROM survey s
+		JOIN question q ON s.seq = q.survey_seq
+		WHERE s.url = #{surveyUrl}
+		AND (q.is_active != 'N' OR q.is_active IS NULL)
+		ORDER BY q.order_num
+		)
+		SELECT f.*
+		FROM (
+		SELECT
+		pq.seq,
+		pq.name,
+		pq.post_date,
+		pq.end_date,
+		pq.url,
+		pq.target_people,
+		pq.question_seq,
+		pq.survey_seq,
+		pq.tb_file_seq,
+		pq.question_name,
+		pq.description,
+		pq.q_order,
+		pq.is_essential,
+		pq.question_cc_seq,
+		pq.rm AS row_num,
+		pq.totalCnt,
+		qi.seq AS question_item_seq,
+		qi.question_seq AS qi_question_seq,
+		qi.content,
+		qi.order_num AS qi_order,
+		c.seq AS condition_seq,
+		c.question_seq AS c_question_seq,
+		c.next_question_seq,
+		c.c_value,
+		c.operation
+		FROM paged_questions pq
+		LEFT JOIN question_item qi ON pq.question_seq = qi.question_seq
+		LEFT JOIN condition c ON pq.question_seq = c.question_seq
+		<![CDATA[ WHERE pq.rm <= #{curPage}*#{amount} ]]>
+		) f
+		<![CDATA[ WHERE f.row_num > (#{curPage}-1)*#{amount}]]>
+		ORDER BY f.q_order, f.qi_order
+
+
+	</select>
+-->
+	<select id="getTotalQuestionCount" resultType="int">
+		SELECT COUNT(q.seq)
+		FROM survey s
+		JOIN question q ON s.seq = q.survey_seq
+		WHERE s.url = #{surveyUrl}
+		AND (q.is_active != 'N' OR q.is_active IS NULL)
 	</select>
 
 </mapper>

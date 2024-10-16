@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.kcc.fillin.survey.dto.PageDTO;
 import org.springframework.stereotype.Service;
 
 import com.kcc.fillin.survey.Criteria;
@@ -75,6 +76,17 @@ public class SurveyServiceImpl implements SurveyService {
 	public SurveyVO findSurveyBySurveySeq(Long surveySeq) {
 
 		return mapper.selectSurveyBySurveySeq(surveySeq);
+	}
+
+	/*@Override
+	public SurveyVO getSurveyByUrl(PageDTO pageDTO) {
+
+		return mapper.selectSurveyByurl(pageDTO);
+	}*/
+	@Override
+	public SurveyVO getSurveyByUrl(String url) {
+
+		return mapper.selectSurveyByurl(url);
 	}
 
 }
