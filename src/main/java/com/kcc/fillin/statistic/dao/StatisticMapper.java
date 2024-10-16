@@ -7,6 +7,8 @@ import org.apache.ibatis.annotations.Mapper;
 
 import com.kcc.fillin.statistic.dto.HitsDTO;
 import com.kcc.fillin.statistic.dto.PostDateResponse;
+import com.kcc.fillin.statistic.dto.QualitativeAnswerDTO;
+import com.kcc.fillin.statistic.dto.QualitativeQuestionResponse;
 import com.kcc.fillin.statistic.dto.QualitativeResponse;
 import com.kcc.fillin.statistic.dto.QuantitativeResponse;
 
@@ -26,4 +28,7 @@ public interface StatisticMapper {
 	List<QualitativeResponse> selectQualitativeList(Long surveySeq, LocalDate startDate, LocalDate endDate,
 		Long questionSeq, String contents);
 
+	List<QualitativeQuestionResponse> selectQualitativeQuestions(Long surveySeq);
+
+	List<QualitativeAnswerDTO> selectQualitativeAnswerList(Long questionSeq);
 }

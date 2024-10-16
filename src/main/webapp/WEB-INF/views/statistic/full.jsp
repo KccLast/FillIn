@@ -1,6 +1,3 @@
-<%@ page import="com.kcc.fillin.statistic.dto.StatisticSurveyResponse" %>
-<%@ page import="com.kcc.fillin.statistic.dto.HitsDTO" %>
-<%@ page import="com.kcc.fillin.statistic.dto.QuantitativeResponse" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!DOCTYPE html>
@@ -10,6 +7,10 @@
     <title>Title</title>
     <link rel="stylesheet" type="text/css" href="/resources/common/nav.css">
     <link rel="stylesheet" type="text/css" href="/resources/css/statistic/full.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- 버전 맞춤 -->
 </head>
 <body>
 <%@include file="/resources/common/header.jsp" %>
@@ -132,7 +133,5 @@
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="/resources/js/statistic/full.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-..."
-            crossorigin="anonymous"></script>
 </body>
 </html>

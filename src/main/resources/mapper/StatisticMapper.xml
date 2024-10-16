@@ -114,4 +114,19 @@
           AND answer_date BETWEEN #{startDate} AND #{endDate}
     </select>
 
+    <select id="selectQualitativeQuestions" resultType="QualitativeQuestionResponse">
+        SELECT q.seq AS questionId, q.order_num AS questionOrder, q.name AS questionName
+        FROM question q,
+             common_code c
+        WHERE q.cc_seq = c.seq
+          AND q.survey_seq = #{surveySeq}
+          AND c.parent_seq = 4
+    </select>
+
+    <select id="selectQualitativeAnswerList" resultType="QualitativeAnswerDTO">
+        SELECT answer_date AS answerDate, contents AS answerContent
+        FROM answer
+        WHERE question_seq = #{questionSeq}
+    </select>
+
 </mapper>

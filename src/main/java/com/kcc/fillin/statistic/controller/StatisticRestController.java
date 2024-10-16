@@ -40,5 +40,19 @@ public class StatisticRestController {
 		return Response.setSuccess(
 			statisticService.getStatisticSurvey(surveyId, startDate, endDate, questionSeq, contents), 200);
 	}
+
+	@GetMapping("/clustering/{surveyId}")
+	public Response getQualitativeQuestions(@PathVariable Long surveyId) {
+		return Response.setSuccess(statisticService.getQualitativeQuestion(surveyId), 200);
+	}
+
+	/**
+	 * surveyId, questionId, cluster
+	 * List<QualitativeAnswerDTO>
+	 */
+	@GetMapping("/clustering")
+	public Response getQualitativeAnswers(@RequestParam Long questionId) {
+		return Response.setSuccess(statisticService.getQualitativeAnswer(questionId), 200);
+	}
 }
 

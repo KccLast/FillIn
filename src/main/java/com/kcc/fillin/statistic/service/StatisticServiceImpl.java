@@ -1,12 +1,15 @@
 package com.kcc.fillin.statistic.service;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.kcc.fillin.statistic.dao.StatisticMapper;
 import com.kcc.fillin.statistic.dto.PostDateResponse;
+import com.kcc.fillin.statistic.dto.QualitativeAnswerDTO;
+import com.kcc.fillin.statistic.dto.QualitativeQuestionResponse;
 import com.kcc.fillin.statistic.dto.StatisticSurveyResponse;
 
 import lombok.RequiredArgsConstructor;
@@ -43,6 +46,16 @@ public class StatisticServiceImpl implements StatisticService {
 			.qualitativeResponseList(
 				statisticMapper.selectQualitativeList(surveyId, startDate, endDate, questionSeq, contents))
 			.build();
+	}
+
+	@Override
+	public List<QualitativeQuestionResponse> getQualitativeQuestion(Long surveyId) {
+		return statisticMapper.selectQualitativeQuestions(surveyId);
+	}
+
+	@Override
+	public List<QualitativeAnswerDTO> getQualitativeAnswer(Long questionId) {
+		return statisticMapper.selectQualitativeAnswerList(questionId);
 	}
 
 	// @Override
