@@ -59,25 +59,18 @@ public class SurveyController {
 
 	@PostMapping("/project")
 	public String newProject(SurveyVO newSurvey) {
-
-		return null;
+		//test용으로 memberId 설정함 (추후 삭제 반드시 필요)
+		newSurvey.setMemberSeq(1);
+		boolean result = service.createNewSurvey(newSurvey);
+		//survey 등록 실패 관련 로직 필요
+		return "redirect:/survey/" + newSurvey.getSeq();
 	}
 
 	// 설문 로그 및 응답 시간 페이지를 반환하는 메서드
 	@GetMapping("/logs")
 	public String showSurveyLogsPage(Model model) {
-		/*//test용으로 memberId 설정함 (추후 삭제 반드시 필요)
-		newSurvey.setMemberSeq(1);
+		
 		return "/survey/surveyLog";  // surveyLog.jsp 파일을 렌더링
-		// 필요시, Model에 추가 데이터를 전달할 수 있음
-		return "/survey/surveyLog";  // surveyLog.jsp 파일을 렌더링
-
-		boolean result = service.createNewSurvey(newSurvey);
-
-		//survey 등록 실패 관련 로직 필요
-
-		return "redirect:/survey/" + newSurvey.getSeq();*/
-		return null;
 	}
 
 	@GetMapping("/{surveySeq}")
