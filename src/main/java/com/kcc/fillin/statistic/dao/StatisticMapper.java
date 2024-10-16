@@ -8,6 +8,8 @@ import org.apache.ibatis.annotations.Mapper;
 
 import com.kcc.fillin.statistic.dto.HitsDTO;
 import com.kcc.fillin.statistic.dto.PostDateResponse;
+import com.kcc.fillin.statistic.dto.QualitativeAnswerDTO;
+import com.kcc.fillin.statistic.dto.QualitativeQuestionResponse;
 import com.kcc.fillin.statistic.dto.QualitativeResponse;
 import com.kcc.fillin.statistic.dto.QuantitativeResponse;
 import org.apache.ibatis.annotations.Param;
@@ -34,4 +36,7 @@ public interface StatisticMapper {
    // 키워드를 포함하는 Answer 데이터 검색
    List<AnswerDTO> findByContentsContaining(@Param("keyword") String keyword);
 
+	List<QualitativeQuestionResponse> selectQualitativeQuestions(Long surveySeq);
+
+	List<QualitativeAnswerDTO> selectQualitativeAnswerList(Long questionSeq);
 }

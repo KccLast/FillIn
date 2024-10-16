@@ -31,4 +31,11 @@ public class StatisticController2 {
 
 		return "/statistic/full";
 	}
+
+	@GetMapping("/clustering/{surveyId}")
+	public String getClustering(@PathVariable Long surveyId, Model model) {
+		model.addAttribute("surveyId", surveyId);
+
+		return "/statistic/kmeans";
+	}
 }
