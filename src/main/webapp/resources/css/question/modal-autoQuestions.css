@@ -71,6 +71,8 @@ textarea {
 
 .select-add-questions {
 	padding-left: 20px;
+	overflow-y: auto;
+	max-height: 300px;
 }
 
 .checkbox-item {
@@ -87,6 +89,11 @@ textarea {
 .small-select {
 	margin-left: 10px;
 	width: 80px;
+}
+
+#questions-modal {
+	max-height: 800px;
+	overflow-y: auto; 
 }
 
 /* 추천 질문 목록 - js 동적 생성 */
@@ -143,6 +150,6 @@ textarea {
 	padding: 10px 0px;
 }
 
-.question-section {
+.select-question-section {
 	margin-bottom: 20px;
 }

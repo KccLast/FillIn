@@ -11,7 +11,7 @@
 	<!-- 질문지 자동 생성 모달 -->
 	<div class="modal fade" id="makeAutoQuestion-modal" tabindex="-1"
 		aria-labelledby="makeAutoQuestionModalLabel" aria-hidden="true">
-	    <div class="modal-dialog modal-dialog-centered modal-xl">
+	    <div class="modal-dialog modal-dialog-centered modal-lg">
 	        <div class="modal-content">
 	            <div class="modal-header">
 	                <h5 class="modal-title" id="makeAutoQuestionModalLabel">새로운 채움지 만들기</h5>
@@ -27,9 +27,9 @@
 	                        <textarea class="form-control" id="survey-description" placeholder="생성할 설문지에 대해 설명해주세요."></textarea>
 	                    </div>
 	                    <!-- 생성할 질문 유형 선택 체크박스 -->
-	                    <div class="select-question-type d-flex justify-content-between"> <!-- Flexbox 사용 -->
+	                    <div class="select-question-type d-flex justify-content-between">
 	                    	<div class="vertical-line"></div>
-	                        <div class="question-selection flex-grow-1">
+	                        <div class="select-question-selection flex-grow-1">
 	                            <p>질문 유형을 선택하세요.(복수 선택 가능)</p>
 	                            <p>- 원하는 질문 유형을 체크하여 질문을 생성하세요.</p>
 	                            <div class="checkbox-group" id="checkbox-group">
@@ -67,9 +67,9 @@
 	                                    </select>
 	                                </div>
 	                                <div class="checkbox-item">
-	                                    <input type="checkbox" id="descriptive-form" name="descriptive-form" onclick="toggleSelectBox(this, 'descriptive-form-count')" />
-	                                    <label for="descriptive-form" id="descriptive-form-label">주관식</label>
-	                                    <select class="form-select small-select" id="descriptive-form-count" name="descriptive-form-count" style="display: none;">
+	                                    <input type="checkbox" id="long-answer" name="long-answer" onclick="toggleSelectBox(this, 'long-answer-count')" />
+	                                    <label for="long-answer" id="long-answer-label">주관식</label>
+	                                    <select class="form-select small-select" id="long-answer-count" name="long-answer-count" style="display: none;">
 	                                        <option value="1">1개</option>
 	                                        <option value="2">2개</option>
 	                                        <option value="3">3개</option>
@@ -83,7 +83,6 @@
 	                        <!-- 추가된 질문 리스트 확인 -->
 	                        <div class="select-add-questions flex-grow-1 ms-3">
 	                            <p>추가된 질문 목록</p>
-	                            <p>예: 이 질문지는 학생들의 설문 조사로 활용됩니다.</p>
 	                        </div>
 	                    </div>
 	                   
@@ -91,7 +90,7 @@
 	            </div>
 	            <div class="modal-footer">
 	                <button type="button" class="btn btn-secondary" id="review-btn" onclick="showQuestionsModal()">추천 질문지 생성</button>
-	                <button type="button" class="btn btn-secondary" id="cancel-btn" data-bs-dismiss="modal">취소</button>
+	                <button type="button" class="btn btn-secondary" id="cancel-btn" data-bs-dismiss="modal">채움지 생성</button>
 	            </div>
 	        </div>
 	    </div>
@@ -124,9 +123,9 @@
 						<div id="short-answer-list" class="question-list"></div>
 					</div>
 					<!-- 주관식 질문 섹션 -->
-					<div id="descriptive-form-section" class="question-group">
+					<div id="long-answer-section" class="question-group">
 						<h6 class="question-type">주관식 질문</h6>
-						<div id="descriptive-form-list" class="question-list"></div>
+						<div id="long-answer-list" class="question-list"></div>
 					</div>
 				</div>
 				<div class="modal-footer">

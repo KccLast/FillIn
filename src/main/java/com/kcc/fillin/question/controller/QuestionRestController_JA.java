@@ -65,7 +65,7 @@ public class QuestionRestController_JA {
 
 					String variableName = questionType.equals("객관식") ? "multiple_choice"
 							: questionType.equals("체크박스") ? "checkbox"
-									: questionType.equals("단답형") ? "short_answer" : "descriptive_form";
+									: questionType.equals("단답형") ? "short_answer" : "long_answer";
 
 					gptInputBuilder.append("{").append("\"type\": \"").append(variableName).append("\", ")
 							.append("\"question\": \"질문명 ").append(i).append("\", ").append("\"description\": \"질문 설명 ")
@@ -107,8 +107,8 @@ public class QuestionRestController_JA {
 		return Response.setSuccess(response, 200);
 	}
 	
-	@GetMapping("/get-added-questions")
-	public Response getAddedQuestions() {
+	@PostMapping("/create-survey")
+	public Response createSurvey() {
 		
 		
 		return Response.setSuccess(null, 200);
