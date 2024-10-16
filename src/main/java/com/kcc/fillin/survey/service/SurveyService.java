@@ -8,6 +8,7 @@ import com.kcc.fillin.survey.domain.SurveyVO;
 import com.kcc.fillin.survey.dto.CommonCodeResponse;
 import com.kcc.fillin.survey.dto.MultiSearchSurveyRequest;
 import com.kcc.fillin.survey.dto.MultiSearchSurveyResponse;
+import com.kcc.fillin.survey.dto.SubmitRequest;
 
 public interface SurveyService {
 	public List<MultiSearchSurveyResponse> getAllSurveys();
@@ -28,4 +29,5 @@ public interface SurveyService {
 	SurveyVO getSurveyByUrl(String surveyUrl);
 
 	public Long createNewParticipant();
+
 }

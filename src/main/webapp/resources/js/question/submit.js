@@ -1,9 +1,14 @@
 var page = 1;
 var end;
+var participant_seq = 999;
 //var pageDTO;
 $(function () {
   setCard();
 
+  localStorage.clear();
+  if (!localStorage.getItem('submitList')) {
+    localStorage.setItem('submitList', JSON.stringify([]));
+  }
   //카드 클릭하면 스크롤 정렬 기본 이벤트
   $('.content').on('click', '.j-question-card', function (e) {
     changeFocus(this);
@@ -57,7 +62,181 @@ $(function () {
     setPageBtn();
     pageHideAndShow();
   });
+
+  $('.content').on(
+    'click',
+    '.j-option-input-radio > input[type="checkbox"]',
+    function () {
+      let $parentCard = $(this).parents('.j-question-card'); // 부모 .j-question-card 요소
+      let questionSeq = $parentCard.find('.j-qseq').val();
+      let cSeq = $parentCard.find('.j-cseq').val();
+      let currentDateTime = new Date().toISOString(); // 현재 시간
+      let checkedValues = [];
+
+      // 부모 .j-question-card 내에서 체크된 모든 체크박스의 앞에 있는 값을 가져옴
+      $parentCard
+        .find('.j-option-input-radio > input[type="checkbox"]:checked')
+        .each(function () {
+          let val = $(this).val(); // 체크된 체크박스 값을 가져옴
+          checkedValues.push(val); // 배열에 추가
+        });
+
+      // submitObject 생성
+      let submitObject = {
+        questionSeq: questionSeq,
+        participantSeq: participant_seq,
+        ccSeq: cSeq,
+        contents: checkedValues, // 체크된 값들의 배열
+        answerDate: currentDateTime,
+      };
+      console.log(submitObject);
+      storeCheckBoxsubmitInLocal(submitObject, questionSeq, 'submitList');
+    }
+  );
+
+  $('.content').on(
+    'click',
+    '.j-option-input-radio > input[type="radio"], .j-gender-radio',
+    function () {
+      getSubmitObject(this, $(this).val());
+
+      // storeCheckBoxsubmitInLocal(
+      //   submitObject,
+      //   submitObject.questionSeq,
+      //   'submitList'
+      // );
+    }
+  );
+
+  $('.content').on('click', '.j-number > span', function () {
+    getSubmitObject(this, $(this).text());
+    // storeCheckBoxsubmitInLocal(
+    //   submitObject,
+    //   submitObject.questionSeq,
+    //   'submitList'
+    // );
+  });
+
+  $('.content').on('change', '.qiBox', function () {
+    getSubmitObject(this, $(this).find('option:selected').text());
+  });
+
+  $('.content').on(
+    'change',
+    '.j-short-inputBox > input[type="text"], .j-long-input',
+    function () {
+      getSubmitObject(this, $(this).val());
+    }
+  );
+  $('.content').on('change', '.j-address-box>input[type="text"]', function () {
+    let $parent = $(this).parent();
+    let val = '';
+    $parent.find('input[type="text"]').each(function (index, item) {
+      if (index > 0) {
+        val += $(item).val();
+      }
+    });
+    getSubmitObject(this, val);
+  });
+
+  $('.content').on('change', '.j-dayBox > input[type="date"]', function () {
+    getSubmitObject(this, $(this).val());
+  });
+  $('.content').on('change', '.j-img-answerBox > textarea', function () {
+    getSubmitObject(this, $(this).val());
+  });
+  $('.content').on(
+    'change',
+    '.j-email-header-input, .j-email-tail-input',
+    function () {
+      // 이메일 주소를 결합 (헤더와 도메인 부분)
+      let email = '';
+
+      $(this)
+        .parent()
+        .find('input[type="text"]')
+        .each((index, item) => {
+          email += $(item).val();
+          if (index === 0) email += '@'; // 이메일 주소 형식으로 결합
+        });
+      console.log(email);
+
+      // 이메일 유효성 검사 (정규 표현식)
+      let emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // 이메일 형식 확인 정규식
+
+      // 이메일 형식이 맞을 때만 getSubmitObject 호출
+      if (emailRegex.test(email)) {
+        getSubmitObject(this, email); // 유효한 이메일일 때만 호출
+      }
+    }
+  );
+
+  $('.content').on('change', '.j-phone-inputBox > input', function () {
+    let phone = '';
+
+    $(this)
+      .parent()
+      .find('input[type="text"]')
+      .each((index, item) => {
+        phone += $(item).val();
+        if (index === 0 || index === 1) phone += '-'; // 이메일 주소 형식으로 결합
+      });
+    let phoneRegex = /^010-\d{4}-\d{4}$/; // 010-1234-1234 형식
+
+    // 휴대폰 번호가 형식에 맞는지 확인
+    if (phoneRegex.test(phone)) {
+      console.log(phone);
+      getSubmitObject(this, phone);
+    }
+  });
+
+  $('#j-submit').click(async function () {
+    // confirm 대화 상자를 통해 사용자 확인
+    if (
+      confirm('응답하시면 다시는 수정하실 수 없습니다. 계속 진행하시겠습니까?')
+    ) {
+      // 사용자가 '확인'을 클릭한 경우
+      submitResponse();
+      // 여기서 응답 제출 처리 (예: 폼 제출, AJAX 호출 등)
+    } else {
+      // 사용자가 '취소'를 클릭한 경우
+    }
+  });
 });
+function submitResponse() {
+  const localData = localStorage.getItem('submitList');
+
+  $.ajax({
+    url: '/api/question/submit',
+    type: 'post',
+    contentType: 'application/json',
+    data: localData,
+    success: function () {
+      alert('설문에 참여해주셔서 감사합니다.');
+    },
+    error: function (error) {
+      console.log(error);
+    },
+  });
+}
+function getSubmitObject(target, value) {
+  let $parentCard = $(target).parents('.j-question-card'); // 부모 .j-question-card 요소
+  let questionSeq = $parentCard.find('.j-qseq').val();
+  let cSeq = $parentCard.find('.j-cseq').val();
+  let currentDateTime = new Date().toISOString(); // 현재 시간
+  let submitObject = {
+    questionSeq: questionSeq,
+    ccSeq: cSeq,
+    participantSeq: participant_seq,
+    contents: [value], // 체크된 값들의 배열
+    answerDate: currentDateTime,
+  };
+  storeCheckBoxsubmitInLocal(
+    submitObject,
+    submitObject.questionSeq,
+    'submitList'
+  );
+}
 
 async function pageHideAndShow() {
   console.log('show' + page);
@@ -68,6 +247,7 @@ async function pageHideAndShow() {
     top: 0,
     behavior: 'smooth', // 부드럽게 스크롤 (필요에 따라 제거 가능)
   });
+  // map.relayout();
 }
 //카드 포커스 및 css
 function changeFocus(el) {
@@ -87,6 +267,37 @@ function updateLine(numRangeLine, clickedIndex, totalNumbers) {
         percentage +
         '%)'
     );
+}
+
+function storeCheckBoxsubmitInLocal(updateItem, questionSeq, listId) {
+  //로컬 스토리지에서 꺼내오기
+  let localStorageObject = JSON.parse(localStorage.getItem(listId)) || [];
+  //이미 있는 데이터인지 검사
+  let index = localStorageObject.findIndex(
+    (item) => item.questionSeq === questionSeq
+  );
+  //있으면 업데이트
+  if (index !== -1) {
+    localStorageObject[index] = updateItem;
+    //없으면 새로 넣기
+  } else {
+    localStorageObject.push(updateItem);
+  }
+  console.log(localStorageObject);
+  localStorage.setItem(listId, JSON.stringify(localStorageObject));
+}
+
+//위치 가져오기
+function createDefaultMap(mapdiv) {
+  let container = document.getElementById(mapdiv);
+
+  let options = {
+    //지도를 생성할 때 필요한 기본 옵션
+    center: new kakao.maps.LatLng(36.576, 128.0), //지도의 중심좌표.
+    level: 13, //지도의 레벨(확대, 축소 정도)
+  };
+  let map = new kakao.maps.Map(container, options);
+  return map;
 }
 
 function getMyPosittion(id) {
@@ -113,9 +324,36 @@ function createKaKaoMap(id, latitude, longitude) {
   var marker = new kakao.maps.Marker({
     position: markerPosition,
   });
-
+  getAddressFromCoords(latitude, longitude, function (response) {
+    getSubmitObject($('.content').find('.j-card-selected >div'), response);
+    //storeCheckBoxsubmitInLocal(submitObject);
+  });
   // 마커가 지도 위에 표시되도록 설정합니다
   marker.setMap(map);
+}
+
+function getAddressFromCoords(latitude, longitude, callback) {
+  var geocoder = new kakao.maps.services.Geocoder();
+  var coord = new kakao.maps.LatLng(latitude, longitude);
+
+  geocoder.coord2Address(
+    coord.getLng(),
+    coord.getLat(),
+    function (result, status) {
+      if (status === kakao.maps.services.Status.OK) {
+        if (result[0].road_address) {
+          // 도로명 주소를 콜백으로 전달
+          callback(result[0].road_address.address_name);
+        } else {
+          // 지번 주소를 콜백으로 전달
+          callback(result[0].address.address_name);
+        }
+      } else {
+        console.error('주소 변환 실패:', status);
+        callback(null); // 변환 실패 시 null 반환
+      }
+    }
+  );
 }
 
 //휴대폰 관련//
@@ -172,6 +410,7 @@ function execDaumPostcode(button) {
       $parent.find('.zipp_code_id').val(data.zonecode);
       $parent.find('.UserAdd1').val(addr + extraAddr);
       $parent.find('.UserAdd2').focus();
+      getSubmitObject($('.content').find('.j-card-selected'), addr + extraAddr);
       /*document.getElementById('zipp_code_id').value = data.zonecode;
 			document.getElementById("UserAdd1").value = addr;
 			document.getElementById("UserAdd1").value += extraAddr;
@@ -364,7 +603,7 @@ function type7Common(target, qi) {
   target.find('input[type="text"]').addClass('qi');
   target.find('input[type="text"]').addClass('' + qi.seq);
   target.find('.j-option-order').text(qi.orderNum);
-  target.find('.j-option-input-radio > input[type="text"]').val(qi.content);
+  target.find('.j-option-input-radio > input').val(qi.content);
   target.find('.j-chAndRa').attr('name', qi.questionSeq);
 }
 
@@ -430,5 +669,10 @@ function setPageBtn() {
   } else {
     $('#next-btn').show();
     $('#next-btn > img').show();
+  }
+  if (page === end) {
+    $('#j-submit').show();
+  } else {
+    $('#j-submit').hide();
   }
 }

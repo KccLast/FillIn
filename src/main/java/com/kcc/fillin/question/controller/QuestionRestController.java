@@ -2,6 +2,7 @@ package com.kcc.fillin.question.controller;
 
 import java.util.List;
 
+import com.kcc.fillin.survey.dto.SubmitRequest;
 import org.apache.ibatis.annotations.Delete;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -51,9 +52,10 @@ public class QuestionRestController {
 	@DeleteMapping("")
 	public Response<?> deleteQuestion(@RequestBody
 	List<DeleteQuestionRequest> deleteList) {
+		System.out.println("deleteList = " + deleteList);
 		boolean deleteResult = questionService.deleteQuestion(deleteList);
 
-		return Response.setSuccess("성공적으로 질문 항목을 등록했습니다.", 200);
+		return Response.setSuccess("성공적으로 질문 항목을 제거했습니다.", 200);
 	}
 
 	@PostMapping("/item")
@@ -76,7 +78,7 @@ public class QuestionRestController {
 		return Response.setSuccess("성공적으로 질문 항목을 수정했습니다.", 200);
 	}
 
-	@Delete("/item")
+	@DeleteMapping("/item")
 	public Response<?> deleteQuestionItem(@RequestBody
 	List<DeleteQuestionItemRequest> deleteList) {
 		boolean deleteResult = questionService.deleteQuestionItem(deleteList);
@@ -84,6 +86,12 @@ public class QuestionRestController {
 		return Response.setSuccess("성공적으로 질문 항목을 제거했습니다.", 200);
 	}
 
+	@PostMapping("/submit")
+	public Response<?> submitQuestion(@RequestBody List<SubmitRequest> requests){
+		System.out.println("requests = " + requests);
+		questionService.insertAnswer(requests);
+		return Response.setSuccess("응답 등록에 성고앴습니다",200);
+	}
 	private Response<String> getStringResponse(boolean result, String successMessage, String failMessage) {
 		if (result) {
 			return Response.setSuccess(successMessage, 200);

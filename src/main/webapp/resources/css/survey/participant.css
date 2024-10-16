@@ -200,7 +200,6 @@ body {
   background-color: #005bac;
 }
 
-
 .j-option-input-radio > input[type='checkbox'] {
   margin-left: 4%;
   background-color: #cdcdcd;
@@ -606,3 +605,17 @@ h5 {
   margin-bottom: 3%;
 }
 /*picture*/
+
+/*응답 제출 버튼 */
+#j-submit {
+  width: 15%;
+  height: 55px;
+  background-color: white !important;
+  color: #005bac;
+  border: 0.5px solid #005bac;
+  display: none;
+}
+#j-submit:hover {
+  background-color: #005bac !important;
+  color: white;
+}

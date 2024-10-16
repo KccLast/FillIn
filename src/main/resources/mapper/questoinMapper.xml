@@ -81,5 +81,10 @@
 		UPDATE question
 		SET is_active = 'N'
 		WHERE seq = #{seq}
-	</update>		
+	</update>
+
+	<insert id="insertAnswer" parameterType="java.util.List">
+		
+	</insert>
+
 </mapper>

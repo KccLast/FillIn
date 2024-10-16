@@ -2,6 +2,7 @@ package com.kcc.fillin.question.service;
 
 import java.util.List;
 
+import com.kcc.fillin.survey.dto.SubmitRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -109,9 +110,7 @@ public class QuestionServiceImpl implements QuestionService {
 		for (DeleteQuestionRequest dr : deleteList) {
 			ItemResult = questionDao.deleteAllQuestionItem(dr.getSeq());
 			deleteResult = questionDao.deleteQuestion(dr);
-			if (!deleteResult || !ItemResult) {
-				return false;
-			}
+
 		}
 		return true;
 	}
@@ -127,6 +126,11 @@ public class QuestionServiceImpl implements QuestionService {
 		}
 
 		return true;
+	}
+
+	@Override
+	public boolean insertAnswer(List<SubmitRequest> list) {
+		return questionDao.insertAnswer(list);
 	}
 
 	private boolean updateQuestionItem(UpdateQuestionItemRequest item) {

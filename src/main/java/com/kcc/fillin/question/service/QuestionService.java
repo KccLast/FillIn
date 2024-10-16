@@ -8,6 +8,7 @@ import com.kcc.fillin.question.dto.DeleteQuestionItemRequest;
 import com.kcc.fillin.question.dto.DeleteQuestionRequest;
 import com.kcc.fillin.question.dto.UpdateQuestionItemRequest;
 import com.kcc.fillin.question.dto.UpdateQuestionRequest;
+import com.kcc.fillin.survey.dto.SubmitRequest;
 
 public interface QuestionService {
 	public boolean insertQuestionAndQuestionItem(List<QuestionVO> questionVOList);
@@ -21,4 +22,5 @@ public interface QuestionService {
 	public boolean deleteQuestion(List<DeleteQuestionRequest> deleteList);
 
 	public boolean deleteQuestionItem(List<DeleteQuestionItemRequest> deleteList);
+	public boolean insertAnswer(List<SubmitRequest> list);
 }
