@@ -8,6 +8,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class QuestionTypeRequest {
-	private String questionType; // ccSeq로 변경 가능
+	private int ccSeq;
 	private int count;
 }

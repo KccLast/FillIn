@@ -83,7 +83,7 @@
 					</div>
 					<div class="form-group">
 						<label for="update-username">이메일</label> 
-						<input type="email" id="update-username" name="username" class="form-control" disabled>
+						<input type="text" id="update-username" name="username" class="form-control" autocomplete="username" disabled>
 					</div>
 					<!-- <div class="form-group">
 						<label for="update-password">비밀번호</label> 
@@ -99,7 +99,7 @@
 					</div>
 					<div class="form-group">
 						<label for="update-birth">생년월일</label> 
-						<input type="text" id="update-birth" name="birth" class="form-control" disabled>
+						<input type="text" id="update-birth" name="birth" class="form-control" autocomplete="birth" disabled>
 					</div>
 					<div class="form-group">
 						<label for="update-ccSeq">성별</label> 
@@ -107,18 +107,18 @@
 					</div>
 					<div class="form-group">
 						<label for="update-phone">휴대폰 번호</label>
-						<input type="text" id="update-phone" name="phone" class="form-control">
+						<input type="text" id="update-phone" name="phone" class="form-control" autocomplete="phone">
 						<div id="phone-error" class="error-message" style="display: none;"></div>
 					</div>
 					<div class="form-group">
 						<label for="update-address">주소</label> 
 						<div class="postalCode-group">
 							<input type="text" id="update-postalCode" name="postalCode"
-								class="form-control address-input" placeholder="우편번호">
+								class="form-control address-input" placeholder="우편번호" autocomplete="postal-code">
 							<button class="btn btn-primary" id="postalCodeSearchBtn" type="button" onclick="sample6_execDaumPostcode()">우편번호 검색</button>
 						</div>
 						<input type="text" id="update-address" name="address"
-							class="form-control address-input" placeholder="주소"> 
+							class="form-control address-input" placeholder="주소" autocomplete="name"> 
 						<input type="text" id="update-addressDetail" name="addressDetail"
 							class="form-control address-input" placeholder="상세주소">
 					</div>

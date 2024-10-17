@@ -1,4 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java"%>
+<%-- <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %> --%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -33,50 +34,6 @@
 	                            <p>질문 유형을 선택하세요.(복수 선택 가능)</p>
 	                            <p>- 원하는 질문 유형을 체크하여 질문을 생성하세요.</p>
 	                            <div class="checkbox-group" id="checkbox-group">
-	                                <div class="checkbox-item">
-	                                    <input type="checkbox" id="multiple-choice" name="multiple-choice" onclick="toggleSelectBox(this, 'multiple-choice-count')" />
-	                                    <label for="multiple-choice" id="multiple-choice-label">객관식</label>
-	                                    <select class="form-select small-select" id="multiple-choice-count" name="multiple-choice-count" style="display: none;">
-	                                        <option value="1">1개</option>
-	                                        <option value="2">2개</option>
-	                                        <option value="3">3개</option>
-	                                        <option value="5">5개</option>
-	                                        <option value="10">10개</option>
-	                                    </select>
-	                                </div>
-	                                <div class="checkbox-item">
-	                                    <input type="checkbox" id="check-box" name="check-box" onclick="toggleSelectBox(this, 'check-box-count')" />
-	                                    <label for="check-box" id="check-box-label">체크박스</label>
-	                                    <select class="form-select small-select" id="check-box-count" name="check-box-count" style="display: none;">
-	                                        <option value="1">1개</option>
-	                                        <option value="2">2개</option>
-	                                        <option value="3">3개</option>
-	                                        <option value="5">5개</option>
-	                                        <option value="10">10개</option>
-	                                    </select>
-	                                </div>
-	                                <div class="checkbox-item">
-	                                    <input type="checkbox" id="short-answer" name="short-answer" onclick="toggleSelectBox(this, 'short-answer-count')" />
-	                                    <label for="short-answer" id="short-answer-label">단답형</label>
-	                                    <select class="form-select small-select" id="short-answer-count" name="short-answer-count" style="display: none;">
-	                                        <option value="1">1개</option>
-	                                        <option value="2">2개</option>
-	                                        <option value="3">3개</option>
-	                                        <option value="5">5개</option>
-	                                        <option value="10">10개</option>
-	                                    </select>
-	                                </div>
-	                                <div class="checkbox-item">
-	                                    <input type="checkbox" id="long-answer" name="long-answer" onclick="toggleSelectBox(this, 'long-answer-count')" />
-	                                    <label for="long-answer" id="long-answer-label">주관식</label>
-	                                    <select class="form-select small-select" id="long-answer-count" name="long-answer-count" style="display: none;">
-	                                        <option value="1">1개</option>
-	                                        <option value="2">2개</option>
-	                                        <option value="3">3개</option>
-	                                        <option value="5">5개</option>
-	                                        <option value="10">10개</option>
-	                                    </select>
-	                                </div>
 	                            </div>
 	                        </div>
 	                        <!-- 질문 유형 선택 체크박스 end -->
@@ -90,7 +47,7 @@
 	            </div>
 	            <div class="modal-footer">
 	                <button type="button" class="btn btn-secondary" id="review-btn" onclick="showQuestionsModal()">추천 질문지 생성</button>
-	                <button type="button" class="btn btn-secondary" id="cancel-btn" data-bs-dismiss="modal">채움지 생성</button>
+	                <button type="button" class="btn btn-secondary" id="create-question-btn" data-bs-dismiss="modal">채움지 생성</button>
 	            </div>
 	        </div>
 	    </div>
@@ -124,7 +81,7 @@
 					</div>
 					<!-- 주관식 질문 섹션 -->
 					<div id="long-answer-section" class="question-group">
-						<h6 class="question-type">주관식 질문</h6>
+						<h6 class="question-type">장문형 질문</h6>
 						<div id="long-answer-list" class="question-list"></div>
 					</div>
 				</div>

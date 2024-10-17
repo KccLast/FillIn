@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Message {
-	private String role;
-	private String content;
+public class QuestionCommonCodeResonse {
+	private String seq;
+	private String name;
 }
