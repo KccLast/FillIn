@@ -1,17 +1,56 @@
-$(function() {
-	$('.content').on('click', '.j-question-card', function(e) {
+/*$(function() {
+		
+	 localStorage.clear();
+	if (!localStorage.getItem('updatedQuestionItemList')) {
+        localStorage.setItem('updatedQuestionItemList', JSON.stringify([]));
+    }
+    if(!localStorage.getItem('removeQuestionList')){
+		localStorage.setItem('removeQuestionList',JSON.stringify([]));
+	}
+	if(!localStorage.getItem('removeQuestionItemList')){
+		localStorage.setItem('removeQuestionItemList',JSON.stringify([]));
+	}
+	
+	$('.content').on('change','input[type="text"][class*="qi"], select[class*="qi"]',function(){
+		 let classList = $(this).attr('class') || '';
+        let match = classList.match(/(\d+)/);  // 'qi' 뒤의 숫자 추출
+
+        if (match) {
+            let seq = match[1];  
+            let content = $(this).val();  // 변경된 값 가져오기
+			seq = parseInt(seq);
+            // 변경된 데이터를 객체로 만듦
+            let updatedItem = { seq: seq, content: content, dropdownOptionList: [] };
+            storeUpdateQuestionItemInLocal(updatedItem,seq,'updatedQuestionItemList');
+
+        }
+	})
+	
+	
+	/*$('.content').on('click', '.j-question-card', function(e) {
 		changeFocus(this);
 		this.scrollIntoView({ behavior: 'smooth', block: 'center' });
-	})
+	})*/
 
-	$('.j-question-list').on('click', '.j-question', function() {
+	/*$('.j-question-list').on('click', '.j-question', function() {
 		let target = $('.content').children().eq($(this).index());
 		target[0].scrollIntoView({ behavior: 'smooth', block: 'center' });
 		changeFocus(target);
 	})
-
+*/
 	//필수버튼 클릭이벤트 
-	$('.content').on('click', '.j-essential', function() {
+	/*$('.content').on('click', '.j-essential', function() {
+		
+		
+		let card = $(this).parent().parent();
+		if(!card.hasClass('j-u-card')){
+			card.addClass('j-u-card')
+		}
+        let isEssential = $(this).data('essential') === 'N' ? 'Y' : 'N';
+    
+       $(this).data('essential', isEssential);
+  
+		
 		if ($(this).hasClass('j-es-seleted')) {
 			$(this).removeClass('j-es-seleted');
 		} else {
@@ -20,64 +59,76 @@ $(function() {
 	})
 
 	//객관식 옵션 추가하기 버튼 
-	$('.content').on('click', '.j-option-plus', function() {
-		let $prev = $(this).prev();
+	$('.content').on('click', '.j-op-name, .j-option-plus-img', async function() {
+		let $prev = $(this).parent().prev();
 		let number = $prev.find('.j-option-order').text();
+		let idx = $prev.parents('.j-question-card').index();
+		$prev.parents('.j-question-card').addClass('j-item-u');
 		let next = parseInt(number) + 1;
-		let html = '<div class="j-select-optionBox j-flex-row-center">' +
-			'<div class="j-option-order">' + next + '</div>' +
-			'<div class="j-option-input-radio">' +
-			'<input type="text" placeholder="옵션 입력란">' +
-			'<input type="checkbox">' +
-			'</div>' +
-			'<div class="j-xbutton">' +
-			'<img src="/resources/img/question/x-circle.png">' +
-			'</div></div>';
-		$prev.after(html);
+		let parentSeq = $(this).parent().parent().parent().next('.j-cseq').val();
+		let html = await fetchQuestionItem(parentSeq);
+		await setQiCheckBoxAndRadioName(html,$prev,next,idx);
+		
 	})
 
 
 	//옵션 삭제 order 다시 계산
 	$('.content').on('click', '.j-xbutton > img', function() {
 		let $parentDiv = $(this).parent().parent();
-		if ($parentDiv.index() === 0) {
+		let $higherParent = $parentDiv.parents('.j-select-question-type-box');
+		
+		if ($higherParent .children('.j-select-optionBox').length === 1) {
 			return;
 		}
-		let $higherParent = $parentDiv.parent();
+		
+		
+		
+		let inputBox = $(this).parent().prev().find('.qi');
+		let targetSeq = seqExtract(inputBox);
+		let questionSeq = $(this).parents('.j-question-card').find('.j-qseq').val();
+		questionSeq2 = parseInt(questionSeq);
+		let deleteObject = {
+			seq : targetSeq,
+			questionSeq : questionSeq2
+		}
+		storeUpdateQuestionItemInLocal(deleteObject,targetSeq,'removeQuestionItemList');
+		
 		$(this).parent().parent().remove();
 		$higherParent.find('.j-option-order').each(function(idx, el) {
 			$(el).text(idx + 1);
 		})
 	})
-
-	$('.content').on('click', '.j-dropdwon-modifiy', function() {
-
-	})
+	*/
+	
+	
 
 	//모달 바디 클릭하면, 
 
 	// 처음에 숫자 범위 설정
-	updateNumberRange();
+	//updateNumberRange($('.j-number-range'));
 
 	// 숫자를 클릭하면 해당 숫자만큼 선을 채우는 이벤트 설정
-	$('.content').on('click', '.j-number span', function(e) {
+	/*//$/*('.content').on('click', '.j-number span', function(e) {
 		var clickedIndex = $(this).index(); // 클릭된 숫자의 인덱스
-		var totalNumbers = $('.j-number span').length - 1; // 전체 숫자의 갯수 (인덱스 기준으로 -1)
-
+		var totalNumbers = $(this).parent().find('span').length - 1; // 전체 숫자의 갯수 (인덱스 기준으로 -1)
+		
+		console.log(clickedIndex);
+		console.log(totalNumbers);
 		// 선 채우기 업데이트
-		updateLine(clickedIndex, totalNumbers);
+		updateLine( $(this).parents('.j-LineAndnumber'),clickedIndex, totalNumbers);
 		e.stopPropagation();
 	});
 
 	// start와 end select 변경 시 숫자 범위 업데이트
 	$('.content').on('change', '.j-num-start, .j-num-end', function() {
-		updateNumberRange();
-	});
+		$(this).addClass('j-updated');
+		updateNumberRange($(this).parent());
+	});*/
 
 
-	/*모달관련*/
-	// 모달 열기
-	let currentCard;
+	/*드롭다운 모달관련*/
+	// 드롭다운 모달 모달 열기
+	/*let currentCard;
 	$(document).on('click', '.j-dropdwon-modifiy', function() {
 		currentCard = $(this).closest('.j-question-card'); // 현재 카드 저장
 		currSelect = $(this).prev().find('select > option');
@@ -109,12 +160,12 @@ $(function() {
 		modal.fadeIn();
 	});
 
-	// 모달 닫기
+	// 드롭다운 모달 닫기
 	$('.close').click(function() {
 		$('#optionModal').fadeOut(); // 모달 숨기기
 	});
 
-	// 옵션 추가 버튼 클릭 이벤트
+	// 드롭다운 모달 옵션 추가 버튼 클릭 이벤트
 	$('#addOptionsBtn').click(function() {
 		var optionsText = $('#optionTextarea').val(); // textarea 값 가져오기
 		var options = optionsText.split('\n'); // 줄바꿈으로 구분된 옵션 배열 생성
@@ -131,46 +182,51 @@ $(function() {
 				selectBox.append('<option>' + option.trim() + '</option>');
 			}
 		});
-
-		// 모달 닫기 및 입력 초기화
+		//DB에서 불라온 셀렉트 box일 경우
+		if(selectBox.hasClass('qiBox')){
+		    saveDropDownInStorage(options,currentCard.find('.j-qseq').val());
+		}
+		// 드롭다운 모달 닫기 및 입력 초기화
 		$('#optionModal').fadeOut();
 		$('#optionTextarea').val('');
-	});
-	/*모달 관련*/
+	});*/
+	/*드롭다운 모달 관련*/
 
-	/*객관식 표 관련*/
+	/*/*객관식 표 관련*/
 	/*row And col 추가*/
-	$('.content').on('click', '.j-row-plus-button', function(e) {
+	/*$('.content').on('click', '.j-row-plus-button', function(e) {
+		$(this).parents('.j-question-card').addClass('j-item-u');*/
 		/*<input class="j-rowAndcol-input" type="text" placeholder="&nbsp;&nbsp;Row 1">*/
-		let $row = $(this).parent().parent().find('.j-row-box');
+		/*let $row = $(this).parent().parent().find('.j-row-box');
 		let idx = ($row.find('input').length) + 1;
 
-		let inputHtml = '<div class="j-rowAndcol-input-x-box j-flex-row-center">' +
+		let inputHtml = '<div class="j-rowAndcol-input-x-box j-flex-row-center j-new-checkAndRadio">' +
 			'<input class="j-rowAndcol-input j-row-input" type="text" placeholder="&nbsp;&nbsp;Row ' + idx + '">' +
 			'<button class="j-rowAndcol-input-xbutton">x</button>' +
 			'</div>';
 		$row.append(inputHtml);
 
 		updateVerticalLine($(this).parent().parent());
-	})
-	$('.content').on('click', '.j-col-plus-button', function() {
+	})*/
+	/*$('.content').on('click', '.j-col-plus-button', function() {
+		$(this).parents('.j-question-card').addClass('j-item-u');
 		let $col = $(this).parent().parent().find('.j-col-box');
 		let idx = ($col.find('input').length) + 1;
 
-		let inputHtml = '<div class="j-rowAndcol-input-x-box j-flex-row-center">' +
+		let inputHtml = '<div class="j-rowAndcol-input-x-box j-flex-row-center j-new-checkAndRadio">' +
 			'<input class="j-rowAndcol-input j-col-input" type="text" placeholder="&nbsp;&nbsp;Col ' + idx + '">' +
 			'<button class="j-rowAndcol-input-xbutton">x</button>' +
 			'</div>';
 		$col.append(inputHtml);
 
 		updateVerticalLine($(this).parent().parent());
-	})
+	})*/
 
 	/*row And col 추가*/
 
 
 	/* row And col 삭제 */
-	$('.content').on('mouseenter', '.j-rowAndcol-input-x-box', function() {
+	/*$('.content').on('mouseenter', '.j-rowAndcol-input-x-box', function() {
 
 		$(this).find('.j-rowAndcol-input-xbutton').css('display', 'inline-block');
 	});
@@ -178,17 +234,34 @@ $(function() {
 	$('.content').on('mouseleave', '.j-rowAndcol-input-x-box', function() {
 
 		$(this).find('.j-rowAndcol-input-xbutton').css('display', 'none');
-	});
-
-
-
-
+	}); 
+	*/
+	//row랑 cal에 데이터 삭제시 removeQuestionItemList에 추가
+	/*function storeItemChartListInLocal(target){
+		
+		let questionSeqs = $(target).parents('.j-question-card').find('.j-qseq').val();
+		
+		questionSeqs = parseInt(questionSeqs);
+        let extractedNumber = seqExtract($(target).prev()); 
+          
+        
+        
+        let obj = {seq : extractedNumber, questionSeq:questionSeqs };
+        storeUpdateQuestionItemInLocal(obj,extractedNumber,'removeQuestionItemList');
+	}
+*/
 	// Row의 삭제버튼을 눌렀을 때
-	$('.content').on('click', '.j-row-box .j-rowAndcol-input-xbutton', function() {
+	/*$('.content').on('click', '.j-row-box .j-rowAndcol-input-xbutton', function() {
+		
+		
 		// 해당 row를 삭제
 		if ($(this).parent().parent().find('.j-rowAndcol-input-x-box').length === 1) {
 			return;
 		}
+		
+		
+		storeItemChartListInLocal(this);
+		
 		let $pp = $(this).parent().parent().parent();
 		$(this).parent().remove();
 
@@ -206,6 +279,7 @@ $(function() {
 		if ($(this).parent().parent().find('.j-rowAndcol-input-x-box').length === 1) {
 			return;
 		}
+		storeItemChartListInLocal(this);
 		let $pp = $(this).parent().parent().parent();
 		$(this).parent().remove();
 
@@ -215,12 +289,12 @@ $(function() {
 			$(this).attr('placeholder', '  Col ' + (index + 1));
 		});
 		updateVerticalLine($pp);
-	});
+	});*/
 
 
 	/*객관식 표 미리보기*/
 	// 미리보기 버튼 클릭 시 모달 띄우기
-	let currentCharCard;
+	/*let currentCharCard;
 	$('.content').on('click', '.j-preview-chart', function() {
 
 		currentCharCard = $(this).closest('.j-question-card'); // 현재 카드 저장
@@ -247,21 +321,23 @@ $(function() {
 		// 테이블 미리보기 생성
 		generatePreviewTable(this);
 	});
-
+*/
 	// 모달 닫기
-	$('.preview-modal-close').on('click', function() {
+	/*$('.preview-modal-close').on('click', function() {
 		$('#preview-modal').css('display', 'none');
-	});
+	});*/
 
 	/*객관식 표 미리보기*/
 
 	/*객관식 표 관련*/
 
 	/*위치 가져오기*/
-	$('.content').on('click', '.j-location', function() {
+	/*$('.content').on('click', '.j-location', function() {
 		let myId = $(this).prev().attr('id');
 		getMyPosittion(myId);
-	})
+	})*/
+	
+	/**새로운 질문 추가하는 모달  */
 
 	$('.j-question-plus-button').click(function() {
 		let modal = $('#add-type-modal');
@@ -303,7 +379,7 @@ $(function() {
 			modal.fadeOut();
 		}
 	});
-
+/**새로운 질문 추가하는 모달  */
 
 
 	// j-group-name과 j-goal에 입력 이벤트 리스너 추가
@@ -396,14 +472,20 @@ $(function() {
 		// 'j-quorder' 이후 숫자를 추출
 		let idx = className.match(/j-quorder(\d+)/);
 		idx = idx[1];
-		console.log(idx);
+		
+		
 		$(this).parent().parent().remove();
 		$('.content').find('.j-question-card > .j-q-order').each(function() {
 			if ($(this).val() === idx) {
+				let seqVal = parseInt($(this).parent().find('.j-qseq').val());
+				let deleteQues = {seq : seqVal };
+			
+				storeUpdateQuestionItemInLocal(deleteQues,seqVal,'removeQuestionList');
+				sendremoveQquestionItemLocalData(JSON.parse(localStorage.getItem('removeQuestionItemList')));
 				$(this).parent().remove();
-
 			}
 		})
+		
 	})
 
 	//이미지 미리보기
@@ -471,11 +553,7 @@ $(function() {
 		}
 	});
 	
-	//
-	$('.content').on('click', '.j-essential', function() {
-    let isEssential = $(this).data('essential') === 'Y' ? 'N' : 'Y';
-    $(this).data('essential', isEssential);
-    });
+	
 
 	$('#add-type-modal-container2 .j-typeAndImg-modal').on('click', async function() {
 		let ccSeq = $(this).find('input[type="hidden"').val();
@@ -483,6 +561,7 @@ $(function() {
 		let selectDiv = $('.content').find('.j-card-selected');
 		let idx = selectDiv.index();
 		
+		selectDiv.find('.j-cseq').val(ccSeq);
 		
 		let modalName = $(this).find('.j-type-name-modal').text();
 		let divTypeName = $(selectDiv).find('.j-tpye-name').text();
@@ -563,11 +642,60 @@ $(function() {
 		}
 	})
 
-	updateSurveyName(surveyName);
+/*	updateSurveyName(surveyName);
 
 	$('.j-nav-save-button').on('click', saveQuestion);
 })
+*/
+function saveDropDownInStorage(options,questionSeq){
+    let optionListObject = {};
+    optionListObject.seq = parseInt(questionSeq);
+    optionListObject.content=" ";
+    optionListObject.dropdownOptionList = [];
+    let orderNum=1;
+    options.forEach(function(option) {
+    if (option.trim()) { // 공백은 추가하지 않음
+            let optionObject = {};
+             optionObject.dropContent = option.trim();
+             optionObject.questionSeq = questionSeq;
+             optionObject.orderNum = orderNum++;
+             optionListObject.dropdownOptionList.push(optionObject);
+    	}
+    });
 
+
+      storeUpdateQuestionItemInLocal(optionListObject,questionSeq,'updatedQuestionItemList');
+}
+
+function storeUpdateQuestionItemInLocal(updateItem,seq,listId){
+     //로컬 스토리지에서 꺼내오기
+     let updatedQuestionItemList = JSON.parse(localStorage.getItem(listId)) || [];
+      //이미 있는 데이터인지 검사
+      let index = updatedQuestionItemList.findIndex(item => item.seq === seq);
+             //있으면 업데이트
+             if(index !== -1){
+                 updatedQuestionItemList[index] = updateItem;
+             //없으면 새로 넣기
+             }else{
+                 updatedQuestionItemList.push(updateItem);
+             }
+             
+             localStorage.setItem(listId, JSON.stringify(updatedQuestionItemList));
+}
+
+async function setQiCheckBoxAndRadioName(html,prev,next,idx){
+	let prevName = prev.find('.j-chAndRa').attr('name');
+	
+	prev.after(html);
+	prev.next().addClass('j-new-checkAndRadio');
+	prev.next().find('.j-option-order').text(next);
+	/*$(html).find('.j-option-order').text(next);*/
+	if(prevName === undefined || prevName === null )
+	prev.next().find('.j-option-input-radio > input').eq(1).attr('name',idx);
+	else{
+		prev.next().find('.j-option-input-radio > input').eq(1).attr('name',prevName);
+	}
+}
 
 const questionItemStrategies = {
 	7: function(target) {
@@ -591,97 +719,268 @@ const questionItemStrategies = {
 };
 /* question 넣는 함수 모음 */
 
-function insertQuestion(){
-	let surveySeq = $('#surveySeq').val();
-	let questions = [];
+async function insertQuestion(){
+	 let surveySeq = $('#surveySeq').val();
+    let questions = [];
 
-	$('.content').find('.j-new-card').each(function(index, item) {
-		//title, desciption부터 
-		let $item = $(item);
-		let ccSeq = $item.find('.j-cseq').val();
-		let isEssential = $item.find('.j-essential').data('essential'); 
-		let question = {};
-		let questionItem = {};
-		let questionItems = [];
-		question.surveySeq = surveySeq;
-		question.order = $item.index();
-		question.name = ($item.find('.j-survey-name-input').val() || ' ').trim() || ' ';
+    $('.content').find('.j-new-card').each(function(index, item) {
+        let $item = $(item);
+        let ccSeq = $item.find('.j-cseq').val();
+        let isEssential = $item.find('.j-essential').data('essential'); 
+        let question = {};
+        
+        question.surveySeq = surveySeq;
+        question.order = $item.index();
+        question.name = ($item.find('.j-survey-name-input').val() || ' ').trim() || ' ';
         question.description = ($item.find('.j-survey-content > textarea').val() || ' ').trim() || ' ';
-		question.ccSeq = ccSeq;
-		question.isEssential = isEssential;
-		if (ccSeq >= 7 && ccSeq <= 11) {
-
-			question.questionItems = getQuestionItemFunction(ccSeq, item);
-		}
-		questions.push(question);
-	})
-	saveQuestionInDB(questions)
-
-	return questions;
+        question.ccSeq = ccSeq;
+        question.isEssential = isEssential;
+        
+        if (ccSeq >= 7 && ccSeq <= 11) {
+            question.questionItems = getQuestionItemFunction(ccSeq, item);
+        }
+        
+        questions.push(question);
+    });
+    
+    
+    return saveQuestionInDB(questions);
 }
 
-function updateQuestion(){
-	let surveySeq = $('#surveySeq').val();
-	let updatedQuestions = [];
-	$('.content').find('.j-u-card').not('.j-new-card').each(function(index, item){
-		let $item = $(item);
-		let ccSeq = $item.find('.j-cseq').val();
-		let isEssential = $item.find('.j-essential').data('essential');
-		let updateQuestion = {};
-		let seq = $item.find('.j-qseq').val();
-		updateQuestion.seq = seq;
-		updateQuestion.surveySeq = surveySeq;
-		updateQuestion.order = $item.index();
-		updateQuestion.name = ($item.find('.j-survey-name-input').val() || ' ').trim() || ' ';
+
+
+async function updateQuestion(){
+	 let surveySeq = $('#surveySeq').val();
+    let updatedQuestions = [];
+    
+    $('.content').find('.j-u-card').not('.j-new-card').each(function(index, item) {
+        let $item = $(item);
+        let ccSeq = $item.find('.j-cseq').val();
+        let isEssential = $item.find('.j-essential').data('essential');
+        let updateQuestion = {};
+        
+        updateQuestion.seq = $item.find('.j-qseq').val();
+        updateQuestion.surveySeq = surveySeq;
+        updateQuestion.order = $item.index();
+        updateQuestion.name = ($item.find('.j-survey-name-input').val() || ' ').trim() || ' ';
         updateQuestion.description = ($item.find('.j-survey-content > textarea').val() || ' ').trim() || ' ';
-		updateQuestion.ccSeq = ccSeq;
-		updateQuestion.isEssential = isEssential;
-		updatedQuestions.push(updateQuestion);
-	})
-	updateQuestionInDB(updatedQuestions);
+        updateQuestion.ccSeq = ccSeq;
+        updateQuestion.isEssential = isEssential;
+        
+        
+        updatedQuestions.push(updateQuestion);
+    });
+    
+    
+    return updateQuestionInDB(updatedQuestions);
 	
 }
 
-function saveQuestion() {
+async function saveQuestion() {
 
-	insertQuestion();
-	updateQuestion();
-	location.reload(true);
+	 try {
+        await insertQuestion();  
+        await updateQuestion(); 
+        await updateAndInsertQuestionItem();
+         // 로컬 스토리지 데이터 가져오기
+                let updateQuestionItemlocalData = localStorage.getItem('updatedQuestionItemList'); // 로컬 스토리지의 특정 데이터 가져오기
+                if (updateQuestionItemlocalData) {
+                    await sendLocalStorageData(JSON.parse(updateQuestionItemlocalData));
+                }
+                let removeQuestionLocalData = localStroage.getItem('');
+                if(removeQuestionLocalData){
+					await sendremoveQeiostnLocalData(JSON.parse(removeQuestionLocalData));
+				}
+				let removeQuestionItemData = localStorage.getItem('');
+				if(removeQuestionItemData){
+					await sendremoveQquestionItemLocalData(JSON.parse(removeQuestionItemData));
+				}
+         window.location.href ='/survey/82'; 
+    } catch (error) {
+        console.error('오류 발생:', error);
+    }
 }
 
-function updateQuestionInDB(updatedQuestions){
-	$.ajax({
-		url: '/api/question',    // 서버 URL
-		type: 'patch',
-		contentType: 'application/json',  // JSON 형식으로 보낸다는 것을 명시
-		data: JSON.stringify(updatedQuestions), // 자바스크립트 객체를 JSON 형식으로 변환
-		success: function(response) {
-			console.log('서버 응답:', response);
-			
-		},
-		error: function(error) {
-			console.error('에러 발생:', error);
-		}
-	});
+function sendremoveQeiostnLocalData(localData){
+	
+    return $.ajax({
+        url: '/api/question',
+        type: 'delete',
+        contentType: 'application/json',
+        data: JSON.stringify(data),  // 서버로 보낼 데이터
+        success: function(response) {
+            console.log(response.data);
+        },
+        error: function(error) {
+            console.error('데이터 전송 오류:', error);
+        }
+    });
+}
+
+function sendremoveQquestionItemLocalData(localData){
+	 //question이 지워지면서 이미 n처리된 질문 제거
+	 let removeQeustionList = JSON.parse(localStorage.getItem('removeQuestionList'));
+	 //제거된 qeustionSeq 추출
+     const removeSeqs = removeQeustionList.map(item => item.seq);
+     //제거할 질문 항목 중 이미 제거된 것이 있다면 제외
+     localData = localData.filter(item => !removeSeqs.includes(item.questionSeq));
+	return $.ajax({
+        url: '/api/question/item',
+        type: 'delete',
+        contentType: 'application/json',
+        data: JSON.stringify(data),  // 서버로 보낼 데이터
+        success: function(response) {
+            console.log(response.data);
+            
+        },
+        error: function(error) {
+            console.error('데이터 전송 오류:', error);
+        }
+    });	
+}
+
+
+async function sendLocalStorageData(data) {
+	
+    return $.ajax({
+        url: '/api/question/item',
+        type: 'patch',
+        contentType: 'application/json',
+        data: JSON.stringify(data),  // 서버로 보낼 데이터
+        success: function(response) {
+            console.log(response.data);
+            
+        },
+        error: function(error) {
+            console.error('데이터 전송 오류:', error);
+        }
+    });
+}
+
+function seqExtract(target){
+		 const classValue = target.attr('class'); // 클래스 값 가져오기
+  		console.log(classValue);
+         // 정규표현식으로 숫자만 추출
+         const number = parseInt(classValue.match(/\d+/)[0], 10);
+
+  		return number;
+	}
+async function updateAndInsertQuestionItem() {
+    let tasks = [];
+
+    // 각각의 비동기 작업을 Promise로 저장
+    $('.content').find('.j-item-u').not('.j-new-card').each(function (idx, item) {
+        let questionSeq = $(item).find('.j-qseq').val();
+        let insertedItems = $(item).find('.j-new-checkAndRadio');
+        //let updatedItems = $(item).find('.j-u-item').not('.j-new-checkAndRadio');
+		let questionType = $(item).find('.j-cseq').val();
+        // 각각의 작업을 Promise에 추가
+        tasks.push(insertQuestionItem(questionType, questionSeq, insertedItems));
+        /*tasks.push(updateQuestionItem(questionType, questionSeq, updatedItems));*/
+    });
+
+    // 모든 비동기 작업이 완료될 때까지 대기
+    await Promise.all(tasks);
+}
+function isListExists(itemList){
+    if(!itemList || itemList.length === 0){
+            return false;
+     }
+     return true;
+}
+async function insertQuestionItem(questionType,questionSeq,insertedItems){
+       if(isListExists(insertedItems)){
+        return;
+       }
+
+	  let itemList = [];
+
+    insertedItems.each(function (idx, item) {
+		
+        let insertItem = {};
+        let order;
+        let content;
+        
+        if(questionType == '11'){
+			let rowAndcol = $(item).find('.j-rowAndcol-input');
+			let orderString = rowAndcol.attr('placeholder');
+			order = parseInt(orderString.match(/\d+/)[0]);
+			if(rowAndcol.hasClass('j-col-input')){
+			order += 85;	 	
+			}
+			content = rowAndcol.val();
+		}else{
+        order = $(item).find('.j-option-order').text();
+        content = $(item).find('.j-option-input-radio > input[type="text"]').val();
+        }
+       
+        
+        insertItem.orderNum = order;
+        insertItem.content = content;
+        insertItem.questionSeq = questionSeq;
+        itemList.push(insertItem);
+    });
+
+    
+    return new Promise((resolve, reject) => {
+        $.ajax({
+            url: "/api/question/item",
+            type: "post",
+            contentType: 'application/json',
+            data: JSON.stringify(itemList),
+            success: function (response) {
+                console.log(response.data);
+                resolve(response);
+            },
+            error: function (error) {
+                console.error('에러 발생:', error);
+                reject(error);
+            }
+        });
+    });
+}
+
+
+async function updateQuestionInDB(updatedQuestions) {
+    if(isListExists(updatedQuestions));
+    return new Promise((resolve, reject) => {
+        $.ajax({
+            url: '/api/question',    // 서버 URL
+            type: 'PATCH',
+            contentType: 'application/json',  // JSON 형식으로 보낸다는 것을 명시
+            data: JSON.stringify(updatedQuestions), // 자바스크립트 객체를 JSON 형식으로 변환
+            success: function(response) {
+                console.log('서버 응답:', response);
+                resolve(response);  // 요청이 완료되면 Promise 해결
+            },
+            error: function(error) {
+                console.error('에러 발생:', error);
+                reject(error);  // 오류 발생 시 Promise 거부
+            }
+        });
+    });
 }
 
 
 function saveQuestionInDB(questions) {
-	$.ajax({
-		url: '/api/question',    // 서버 URL
-		type: 'POST',
-		contentType: 'application/json',  // JSON 형식으로 보낸다는 것을 명시
-		data: JSON.stringify(questions), // 자바스크립트 객체를 JSON 형식으로 변환
-		success: function(response) {
-			console.log('서버 응답:', response);
-			
-		},
-		error: function(error) {
-			console.error('에러 발생:', error);
-		}
-	});
+   if(isListExists(questions));
+    return new Promise((resolve, reject) => {
+        $.ajax({
+            url: '/api/question',    // 서버 URL
+            type: 'POST',
+            contentType: 'application/json',  // JSON 형식으로 보낸다는 것을 명시
+            data: JSON.stringify(questions), // 자바스크립트 객체를 JSON 형식으로 변환
+            success: function(response) {
+                console.log('서버 응답:', response);
+                resolve(response);  // 요청이 완료되면 Promise 해결
+            },
+            error: function(error) {
+                console.error('에러 발생:', error);
+                reject(error);  // 오류 발생 시 Promise 거부
+            }
+        });
+    });
 }
-
 function removeUpdatedCardClass(){
  $('.content div.j-u-card').removeClass('j-u-card');
 }
@@ -855,27 +1154,29 @@ function updateVerticalLine(target) {
 
 	target.find('.j-vertical-line').outerHeight(row > col ? row : col);
 }
-function updateNumberRange() {
-	var start = parseInt($('.j-num-start').val()); // 시작 값
-	var end = parseInt($('.j-num-end').val()); // 끝 값
-
+function updateNumberRange(target) {
+	
+	var start = parseInt($(target).find('.j-num-start').val()); // 시작 값
+	var end = parseInt($(target).find('.j-num-end').val()); // 끝 값
+	
+	let numRangeLine = $(target).prev();
+	let numRange = numRangeLine.find('.j-number');
 	// 숫자 범위 표시 초기화
-	$('.j-number').empty();
+	numRange.empty();
 
 	// start에서 end까지 span으로 숫자를 동적으로 추가
 	for (var i = start; i <= end; i++) {
-		$('.j-number').append('<span>' + i + '</span>');
+		numRange.append('<span>' + i + '</span>');
 	}
 
 	// 선 초기화
-	updateLine(0, end - start); // 첫 클릭 전 초기화
+	updateLine(numRangeLine,0, end - start); // 첫 클릭 전 초기화
 }
 
 // 클릭한 숫자에 따라 선 채우기
-function updateLine(clickedIndex, totalNumbers) {
+function updateLine(numRangeLine,clickedIndex,totalNumbers) {
 	var percentage = (clickedIndex / totalNumbers) * 100; // 클릭한 비율 계산
-	console.log('clickedIndex:', clickedIndex, 'totalNumbers:', totalNumbers, 'percentage:', percentage); // 값 확인용 로그
-	$('.j-line').css('background-image', 'linear-gradient(90deg, #005bac ' + percentage + '%, rgba(0, 91, 172, 0.4) ' + percentage + '%)');
+	numRangeLine.find('.j-line').css('background-image', 'linear-gradient(90deg, #005bac ' + percentage + '%, rgba(0, 91, 172, 0.4) ' + percentage + '%)');
 }
 
 function changeFocus(el) {

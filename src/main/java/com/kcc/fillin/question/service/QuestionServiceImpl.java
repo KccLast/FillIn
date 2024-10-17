@@ -5,19 +5,26 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.kcc.fillin.global.Common.CommonCodeType;
 import com.kcc.fillin.global.Exception.CannotCreateQuestionException;
 import com.kcc.fillin.question.dao.QuestionDao;
 import com.kcc.fillin.question.domain.QuestionItemVO;
 import com.kcc.fillin.question.domain.QuestionVO;
+import com.kcc.fillin.question.dto.DeleteQuestionItemRequest;
+import com.kcc.fillin.question.dto.DeleteQuestionRequest;
+import com.kcc.fillin.question.dto.UpdateDropContent;
+import com.kcc.fillin.question.dto.UpdateQuestionItemRequest;
+import com.kcc.fillin.question.dto.UpdateQuestionRequest;
+import com.kcc.fillin.survey.dto.SubmitRequest;
 
 import lombok.RequiredArgsConstructor;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class QuestionServiceImpl implements QuestionService {
 	private final QuestionDao questionDao;
 
-	@Transactional
 	@Override
 	public boolean insertQuestionAndQuestionItem(List<QuestionVO> questionVOList) throws CannotCreateQuestionException {
 		//먼저 question을 넣고, questionItem이나 Condition을 차례로 넣으면됨
@@ -27,8 +34,6 @@ public class QuestionServiceImpl implements QuestionService {
 		for (QuestionVO questionVO : questionVOList) {
 			questionItemInsertResult = 0;
 			questionInsertResult = questionDao.insertQuestion(questionVO);
-
-			System.out.println(questionInsertResult);
 
 			if (questionVO.isQuestionItemExist()) {
 				questionItemInsertResult = insertQuestionItem(questionVO.getSeq(), questionVO.getQuestionItems());
@@ -53,4 +58,119 @@ public class QuestionServiceImpl implements QuestionService {
 		}
 		return result;
 	}
+
+	@Override
+	public boolean updateQuestion(List<UpdateQuestionRequest> updateRequests) {
+
+		for (UpdateQuestionRequest up : updateRequests) {
+
+			boolean result = questionDao.updateQuestion(up);
+
+			if (result == false) {
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	@Override
+	public boolean insertQuestionItems(List<QuestionItemVO> insertItems) {
+		int result = insertQuestionItem(insertItems.get(0).getQuestionSeq(), insertItems);
+
+		if (result < 1) {
+			return false;
+		}
+		return true;
+	}
+
+	@Override
+	public boolean updateQuestionItems(List<UpdateQuestionItemRequest> list) {
+		boolean updateResult = false;
+		for (UpdateQuestionItemRequest item : list) {
+
+			if (item.getDropdownOptionList().size() > 0) {
+				updateResult = updateDropItem(item);
+			} else {
+				updateResult = updateQuestionItem(item);
+			}
+
+			if (updateResult == false) {
+				throw new RuntimeException("질문 항목 수정에 실패");
+			}
+		}
+
+		return true;
+	}
+
+	@Override
+	public boolean deleteQuestion(List<DeleteQuestionRequest> deleteList) {
+		// TODO Auto-generated method stub
+		boolean deleteResult = false;
+		boolean ItemResult = false;
+		for (DeleteQuestionRequest dr : deleteList) {
+			ItemResult = questionDao.deleteAllQuestionItem(dr.getSeq());
+			deleteResult = questionDao.deleteQuestion(dr);
+
+		}
+		return true;
+	}
+
+	@Override
+	public boolean deleteQuestionItem(List<DeleteQuestionItemRequest> deleteList) {
+		boolean deleteResult = false;
+		for (DeleteQuestionItemRequest dr : deleteList) {
+			deleteResult = questionDao.deleteQuestionItem(dr);
+			if (!deleteResult) {
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	@Override
+	@Transactional
+	public boolean insertAnswer(List<SubmitRequest> list) {
+		//ccseq가 14,15,16이면 응답이 아니라 설문참여자의 데이터 업데이트 해야함
+
+		list.stream().forEach(item -> {
+			Long participant = item.getParticipantSeq();
+			if (CommonCodeType.isParticipantPersonalAnswer(item.getCcSeq())) {
+
+				questionDao.updateParticipantData(CommonCodeType.personalDataTypeName(item.getCcSeq()),
+					item.getContents().get(0), participant);
+			} else {
+				for (String val : item.getContents()) {
+					questionDao.insertAnswer(item, val);
+				}
+			}
+
+		});
+
+		return true;
+	}
+
+	private boolean answerIsContactData(SubmitRequest item) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	private boolean updateQuestionItem(UpdateQuestionItemRequest item) {
+		return questionDao.updateQuestionItem(item);
+	}
+
+	private boolean updateDropItem(UpdateQuestionItemRequest item) {
+		deleteAllQuestionItemInQuestion(item.getSeq());
+
+		for (UpdateDropContent dr : item.getDropdownOptionList()) {
+			questionDao.insertQuestionItem(dr.transferQuestItemVO());
+		}
+		return true;
+	}
+
+	private boolean deleteAllQuestionItemInQuestion(Long item) {
+		return questionDao.deleteAllQuestionItem(item);
+	}
+
 }

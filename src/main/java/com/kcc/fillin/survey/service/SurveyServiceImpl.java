@@ -6,16 +6,18 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.kcc.fillin.survey.dao.SurveyLogMapper;
-import com.kcc.fillin.survey.dto.SurveyLogDTO;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.kcc.fillin.survey.Criteria;
 import com.kcc.fillin.survey.dao.SurveyDao;
+import com.kcc.fillin.survey.dao.SurveyLogMapper;
+import com.kcc.fillin.survey.domain.ParticipantVO;
 import com.kcc.fillin.survey.domain.SurveyVO;
 import com.kcc.fillin.survey.dto.CommonCodeResponse;
 import com.kcc.fillin.survey.dto.MultiSearchSurveyRequest;
 import com.kcc.fillin.survey.dto.MultiSearchSurveyResponse;
+import com.kcc.fillin.survey.dto.SurveyLogDTO;
 
 import lombok.RequiredArgsConstructor;
 
@@ -71,17 +73,14 @@ public class SurveyServiceImpl implements SurveyService {
 		return resultMap;
 	}
 
-
 	// SurveyService 인터페이스의 메서드를 구현 (페이징 포함)(, int page, int size)
 	@Override
 	public List<SurveyLogDTO> getSurveyLogs(LocalDate startDate, LocalDate endDate) {
-//		int offset = (page - 1) * size;
+		//		int offset = (page - 1) * size;
 
 		// Mapper를 호출하여 데이터베이스에서 설문 로그를 조회 (offset과 size 포함), offset, size
 		return surveyLogMapper.findSurveyLogs(startDate, endDate);
 	}
-
-	
 
 	@Override
 	public boolean createNewSurvey(SurveyVO newSurvey) {
@@ -95,5 +94,28 @@ public class SurveyServiceImpl implements SurveyService {
 		return mapper.selectSurveyBySurveySeq(surveySeq);
 	}
 
+	/*@Override
+	public SurveyVO getSurveyByUrl(PageDTO pageDTO) {
+
+		return mapper.selectSurveyByurl(pageDTO);
+	}*/
+	@Override
+	public SurveyVO getSurveyByUrl(String url) {
+
+		return mapper.selectSurveyByurl(url);
+	}
+
+	@Override
+	@Transactional
+	public boolean createNewParticipant(ParticipantVO newParticipantVO) {
+		return mapper.insertNewParticipant(newParticipantVO);
+
+	}
+
+	@Override
+	public boolean createCheckLog(String surveyUrl) {
+
+		return mapper.insertCheckLog(surveyUrl);
+	}
 
 }

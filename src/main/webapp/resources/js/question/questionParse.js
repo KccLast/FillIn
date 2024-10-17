@@ -53,7 +53,9 @@ async function appendQuestionCard(question,index){
         	$newContainer.find('.j-survey-content > textarea').val(question.description.trim());
             }
             if(question.isEssential === "Y"){
-
+				let es = $newContainer.find('.j-essential');
+            	es.data('essential', 'Y');
+            	es.addClass('j-es-seleted');
             }
             $('.content').append($newContainer);
 
@@ -107,23 +109,30 @@ async function setQuestionItem(question, container) {
                 let fetchContent = await fetchQuestionItem(question.ccSeq);
                 container.find('.j-option-plus').before(fetchContent);
                 let cur = container.find('.j-select-optionBox').eq(index);
-                $(cur).addClass(qi.seq + ' ' + qi.questionSeq);
+               
+                /*$(cur).addClass(''+qi.seq);*/
                 type7Common($(cur),qi);
 
             }
         }
         if(question.ccSeq === 9){
 			if(index === 0 ){
+		    container.find('.j-num-start').addClass('qi '+qi.seq);
 			container.find('.j-num-start').val(qi.content);
 			}else{
+			 container.find('.j-num-end').addClass('qi '+qi.seq);
 			 container.find('.j-num-end').val(qi.content);
 			}
         }
 
         if(question.ccSeq === 10){
 			
-			let html = `<option value="${qi.content}" class="${qi.seq}">${qi.content}</option>`;
+			let html = `<option value="${qi.content}" class="qi${qi.seq}">${qi.content}</option>`;
+			//let questionSeq = `<input type="hidden" value="${qi.questionSeq}" class="j-qseq"/>`;
+			container.find('.j-dropdwon > select').addClass('qiBox');
 			container.find('.j-dropdwon > select').append(html);
+			
+        	
         }
 
         if(question.ccSeq === 11){
@@ -131,11 +140,11 @@ async function setQuestionItem(question, container) {
 			let col = $(container.find('.j-col-box'));
 			if(qi.orderNum === 1){
 				row.find('.j-row-input').eq(0).val(qi.content);
-				row.find('.j-row-input').eq(0).addClass('qi'+qi.seq);
+				row.find('.j-row-input').eq(0).addClass('qi '+qi.seq);
 			}else if(qi.orderNum > 1 && qi.orderNum <85){
 				let html = `
 <div class="j-rowAndcol-input-x-box j-flex-row-center">
-    <input class="j-rowAndcol-input j-row-input qi${qi.seq}" type="text" value="${qi.content}" placeholder="&nbsp;&nbsp;Row 1">
+    <input class="j-rowAndcol-input j-row-input qi ${qi.seq}" type="text" value="${qi.content}" placeholder="&nbsp;&nbsp;Row 1">
     <button class="j-rowAndcol-input-xbutton j-flex-row-center">
         <span>x</span>
     </button>
@@ -144,11 +153,11 @@ async function setQuestionItem(question, container) {
 			row.append(html); 
 			}else if(qi.orderNum == 85){
 				col.find('.j-col-input').eq(0).val(qi.content);
-				col.find('.j-col-input').eq(0).addClass('qi'+qi.seq);
+				col.find('.j-col-input').eq(0).addClass('qi '+qi.seq);
 			}else{
 								let html = `
 <div class="j-rowAndcol-input-x-box j-flex-row-center">
-    <input class="j-rowAndcol-input j-col-input qi${qi.seq}" type="text" value="${qi.content}" placeholder="&nbsp;&nbsp;Col 1">
+    <input class="j-rowAndcol-input j-col-input qi ${qi.seq}" type="text" value="${qi.content}" placeholder="&nbsp;&nbsp;Col 1">
     <button class="j-rowAndcol-input-xbutton j-flex-row-center">
         <span>x</span>
     </button>
@@ -161,6 +170,9 @@ async function setQuestionItem(question, container) {
 
 
     }
+    if(question.ccSeq === 9){
+		updateNumberRange(container.find('.j-number-range'));
+	}
 }
 
 async function fetchQuestionItem(seq){
@@ -172,6 +184,8 @@ async function fetchQuestionItem(seq){
 
 function type7Common(target,qi){
     target.find('.j-select-optionBox').addClass(qi.seq + ' ' + qi.questionSeq);
+    target.find('input[type="text"]').addClass('qi');
+    target.find('input[type="text"]').addClass(''+qi.seq);
     target.find('.j-option-order').text(qi.orderNum);
      target.find('.j-option-input-radio > input[type="text"]').val(qi.content);
      target.find('.j-chAndRa').attr('name',qi.questionSeq);
@@ -183,6 +197,29 @@ function type9Common(target,qi){
 /** 질문 조회 및 등록 관련 */
 
 
-/** 질문 업데이트 관련 제목, 내용, 타입이 수정될 수 있음 */
 
+/** 질문 업데이트 관련 제목, 내용, 타입이 수정될 수 있음 */
+// questionFrame.html 파일 불러오기
+async function fetchQuestionFrame() {
+	return $.ajax({
+		url: "/resources/html/question/questionFrame.html",
+		type: "GET"
+	});
+}
+
+// header 파일 불러오기
+async function fetchHeader(ccSeq) {
+	return $.ajax({
+		url: '/resources/html/question/header/header' + ccSeq + '.html',
+		type: "GET"
+	});
+}
+
+// content 파일 불러오기
+async function fetchContent(ccSeq) {
+	return $.ajax({
+		url: '/resources/html/question/content/content' + ccSeq + '.html',
+		type: "GET"
+	});
+}
 

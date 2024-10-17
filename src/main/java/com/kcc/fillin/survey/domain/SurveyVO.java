@@ -24,6 +24,7 @@ public class SurveyVO {
 	private int ccSeq;
 	private long memberSeq;
 
+	private int totalCnt;
 	private List<QuestionVO> questions;
 
 }

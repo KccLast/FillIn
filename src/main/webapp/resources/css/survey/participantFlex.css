@@ -1,0 +1,182 @@
+@media screen and (max-width: 430px) {
+  body {
+    max-width: 430px;
+    height: 100vh;
+    overflow-x: hidden;
+  }
+  .navbar {
+    width: 50%;
+  }
+  .titleAndProgressBar {
+    width: 100vh;
+  }
+  .j-question-card {
+    display: none; /* 기본적으로 모든 카드는 숨김 */
+    margin: 0 auto;
+    width: 100%;
+    min-height: 50%;
+  }
+  .j-question-card.active {
+    display: block; /* 현재 활성화된 카드만 보임 */
+  }
+
+  .content {
+    margin: 0 auto;
+    margin-top: 30px;
+    min-height: 230px;
+    width: 90%;
+    box-sizing: border-box;
+  }
+  /*설문 설명*/
+  .j-survey-content > textarea {
+    height: 50px;
+    box-sizing: border-box;
+    padding-left: 2%;
+  }
+
+  .j-survey-input {
+    width: 100%;
+    border: none;
+    resize: none;
+    color: black;
+    font-weight: bold;
+    font-size: large;
+    padding-left: 2%;
+  }
+  .j-survey-es-type {
+    justify-content: flex-end;
+  }
+  .j-essential {
+    width: 20%;
+    margin-top: 2%;
+  }
+  /*설문 아이템 박스*/
+  .j-question-content-box{
+  	margin-top: 10%;
+  	margin-bottom: 10%;
+  }
+  /*설문 아이템 박스*/
+  /*다음 버튼*/
+  .nextBtn {
+    box-sizing: border-box;
+    padding-top: 2%;
+    gap: 20px;
+    margin-top: 5%;
+  }
+  .nextBtn img {
+    width: 25px;
+    height: 25px;
+  }
+  .nextBtn > button {
+    border: none;
+    background-color: #f5f5f5;
+  }
+  /*다음 버튼*/
+
+  /*item 객관식 box*/
+  .j-select-optionBox {
+    margin-top: 5%;
+    margin-bottom: 5%;
+  }
+  .j-option-order {
+    margin-right: 4%;
+  }
+
+  /*선형*/
+  .j-number-range > select {
+    width: 20%;
+  }
+  /*선형*/
+
+  /*드롭다운*/
+  .j-dropdwon-box {
+    margin-top: 10%;
+  }
+  .j-dropdwon {
+    margin-bottom: 10%;
+  }
+  /*드롭다운*/
+
+  /*단답형*/
+  .j-short-box {
+    margin-top: 10%;
+  }
+  .j-short-inputBox {
+    margin-bottom: 10%;
+  }
+  /*단답형*/
+
+  /*서술형*/
+  .j-long-box {
+   margin-top: 10%;
+  }
+  .j-long-inputBox {
+    margin-bottom: 10%;
+  }
+  /*서술형*/
+  
+  
+  /*이메일*/
+  .j-email-input-box{
+      width: 100%;
+      
+ }
+ .j-email-input-box > input{
+    height:30px;
+ 	width: 30%;
+ }
+ .j-email-input-box > select{
+ 	width: 20%;
+ }
+  /*이메일*/
+  
+  /*주소입력*/
+  .j-address{
+  width: 100%;
+  height: 150px;
+  }
+  .j-address-box{
+  
+     width: 100%;
+     height:80%;
+ 	box-sizing: border-box;
+ 	padding-left:8%;
+ 	margin-bottom: 10%;
+ 
+  }
+  .j-address-box > input{
+  	margin-top:2%;
+  	font-size: 15px;
+  }
+  .invalid-feedback{
+  font-size:small;
+  }
+  #zipp_btn{
+  	margin-left: 2%;
+  }
+  .form-control{
+  	width: 88.2%;
+  }
+  
+  /*주소입력*/
+  
+  /*위치기록*/
+  .j-map-container{
+    width: 80%;
+	height: 200px;
+  }
+  
+  /*날짜*/
+  .j-dayBox > input[type="date"]{
+	width: 60%;
+}
+  /*날짜*/
+  
+  /*사진*/
+  .j-img-preview{
+  	width: 80%;
+  	height: 180px;
+  }
+  /*사진*/
+  /*item box*/
+}

@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
 
+import com.kcc.fillin.survey.domain.ParticipantVO;
 import com.kcc.fillin.survey.domain.SurveyVO;
 import com.kcc.fillin.survey.dto.CommonCodeResponse;
 import com.kcc.fillin.survey.dto.MultiSearchSurveyRequest;
@@ -23,9 +24,17 @@ public interface SurveyDao {
 
 	public List<CommonCodeResponse> getCommonCodes();
 
-
 	public boolean insertNewSurvey(SurveyVO newSurvey);
 
 	public SurveyVO selectSurveyBySurveySeq(Long surveySeq);
+
+	/*public SurveyVO selectSurveyByurl(PageDTO page);*/
+	public SurveyVO selectSurveyByurl(String url);
+
+	public int getTotalQuestionCount(String surveyUrl);
+
+	public boolean insertNewParticipant(ParticipantVO newParticipantVO);
+
+	public boolean insertCheckLog(String surveyUrl);
 
 }
