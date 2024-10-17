@@ -18,4 +18,5 @@ public class MemberResponse {
 	private String phone;
 	private String postalCode;
 	private String address;
+	private String addressDetail;
 }

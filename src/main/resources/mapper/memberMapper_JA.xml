@@ -5,7 +5,7 @@
 <mapper namespace="com.kcc.fillin.member.dao.MemberDao_JA">
 	<!-- 이메일로 회원 조회 -->
 	<select id="getMemberByUsername" parameterType="String">
-		SELECT username, name, birth, cc_seq, phone, postal_code, address
+		SELECT username, name, birth, cc_seq, phone, postal_code, address, address_detail
 		FROM member
 		WHERE username = #{username}
 	</select>
@@ -14,9 +14,9 @@
 	<update id="updateMemberByUsername" parameterType="MemberRequest">
 	    UPDATE member
 	    <set>
-	        <if test="password != null and password != ''">
+	        <!-- <if test="password != null and password != ''">
 	            password = #{password},
-	        </if>
+	        </if> -->
 	        <if test="phone != null">
 	            phone = #{phone},
 	        </if>
@@ -24,7 +24,10 @@
 	            postal_code = #{postalCode},
 	        </if>
 	        <if test="address != null">
-	            address = #{address}
+	            address = #{address},
+	        </if>
+	        <if test="addressDetail != null">
+	            address_detail = #{addressDetail}
 	        </if>
 	    </set>
 	    WHERE username = #{username}

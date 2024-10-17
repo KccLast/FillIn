@@ -18,11 +18,13 @@ $(document).ready(function() {
 			$('#phone').val(response.data.phone);
 			$('#postalCode').val(response.data.postalCode);
 			$('#address').val(response.data.address);
+			$('#addressDetail').val(response.data.addressDetail);
 		}
 	});
 	
 	// 회원 정보 수정 버튼 클릭
 	$('#updateMemberInfoBtn').click(function() {
+		$('#phone-error').hide().text('');
 		$.ajax({
 			url: '/api/member/mypage',
 			type: 'GET',
@@ -41,6 +43,7 @@ $(document).ready(function() {
 				$('#update-phone').val(response.data.phone);
 				$('#update-postalCode').val(response.data.postalCode);
 				$('#update-address').val(response.data.address);
+				$('#update-addressDetail').val(response.data.addressDetail);
 			}
 		});
 	});
@@ -65,7 +68,8 @@ $(document).ready(function() {
 			passwordConfirm: $('#update-password-confirm').val(),*/
 			phone: $('#update-phone').val(),
 			postalCode: $('#update-postalCode').val(),
-            address: $('#update-address').val() + ' ' + $('#update-detailAddress').val() // 주소와 상세주소
+            address: $('#update-address').val(),
+            addressDetail: $('#update-addressDetail').val()
 		};
 		
 		console.log(updateData);
@@ -82,6 +86,7 @@ $(document).ready(function() {
 				$('#phone').val(updateData.phone);
 				$('#postalCode').val(updateData.postalCode);
 				$('#address').val(updateData.address);
+				$('#addressDetail').val(updateData.addressDetail);
 				
 				alert('회원 정보 수정이 완료되었습니다.');
 				
@@ -143,7 +148,8 @@ function sample6_execDaumPostcode() {
                 document.getElementById('update-postalCode').value = data.zonecode;
                 document.getElementById('update-address').value = addr;
                 // 커서를 상세주소 필드로 이동한다.
-                document.getElementById('update-detailAddress').focus();
+                document.getElementById('update-addressDetail').value = '';
+                document.getElementById('update-addressDetail').focus();
             }
         }).open();
     }

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kcc.fillin.question.dao.QuestionDao_JA">
+	<select id="getCommonCode">
+		SELECT seq, name 
+		FROM common_code
+		WHERE seq IN (7, 8, 12, 13)
+	</select>
+</mapper>
