@@ -117,6 +117,12 @@
 <body>
 <%@include file="/resources/common/header.jsp" %>
 <%@ include file="/resources/common/nav.jsp" %>
+<script>
+    <%--console.log('${}')// 콘솔에 clusteringData 출력--%>
+    // 서버에서 전달된 clusteringData를 JSON으로 변환하여 JavaScript 변수에 저장
+    var clusteringData = ${clusteringData};
+    console.log("Received Clustering Data: ", clusteringData);
+</script>
 
 <div class="content">
     <div class="container">
