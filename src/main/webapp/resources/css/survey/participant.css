@@ -2,21 +2,25 @@
 body {
   background-color: #f8f9fa !important;
 }
+
 * {
   font-family: 'Raleway', sans-serif;
 }
+
 .j-flex-row-center {
   display: flex;
   flex-direction: row;
   justify-content: center;
   align-items: center;
 }
+
 .j-flex-col-center {
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
   align-items: center;
 }
+
 .j-survey-input {
   width: 100%;
   border: none;
@@ -31,6 +35,7 @@ body {
   margin-bottom: 1%;
   box-sizing: border-box;
 }
+
 .j-title {
   font-size: 20px;
   font-weight: bold;
@@ -39,14 +44,13 @@ body {
   margin-top: 1%;
   margin-bottom: 1%;
 }
+
 .j-progress-line {
   width: 100%;
   height: 10px;
-  background-image: linear-gradient(
-    90deg,
-    #005bac 50%,
-    rgba(0, 91, 172, 0.4) 50%
-  );
+  background-image: linear-gradient(90deg,
+      #005bac 50%,
+      rgba(0, 91, 172, 0.4) 50%);
 }
 
 /*카드 전체 관련 css*/
@@ -63,29 +67,37 @@ body {
   border: 1px solid #005bac;
   border-radius: 15px;
   margin: 0 auto;
-  margin-top: 5%;
-  margin-bottom: 10%;
+  margin-top: 3%;
+  margin-bottom: 1%;
   box-shadow: 5px 5px 5px #e5e7eb;
 }
+
 /*카드에 설문명*/
 .j-survey-name {
   width: 95%;
   min-height: 50px;
   box-sizing: border-box;
 }
+
 .j-div-break-word {
-  word-wrap: break-word; /* 긴 단어가 있을 때 자동 줄바꿈 */
-  white-space: normal; /* 일반적인 줄바꿈 */
+  word-wrap: break-word;
+  /* 긴 단어가 있을 때 자동 줄바꿈 */
+  white-space: normal;
+  /* 일반적인 줄바꿈 */
 }
+
 .j-survey-name-input {
   width: 100%;
   font-size: 23px;
   font-weight: bold;
   padding-left: 3%;
   border: none;
-  word-wrap: break-word; /* 긴 단어가 있을 때 자동 줄바꿈 */
-  white-space: normal; /* 일반적인 줄바꿈 */
+  word-wrap: break-word;
+  /* 긴 단어가 있을 때 자동 줄바꿈 */
+  white-space: normal;
+  /* 일반적인 줄바꿈 */
 }
+
 /*카드에 설문명*/
 
 /*카드의 질문내용*/
@@ -108,6 +120,7 @@ body {
   width: 100%;
   min-height: 50px;
 }
+
 /*카드 컨텐츠 박스*/
 
 /*카드 필수 버튼*/
@@ -119,6 +132,7 @@ body {
   box-sizing: border-box;
   padding-right: 3%;
 }
+
 .j-essential {
   margin-right: 2%;
   border: 2px solid #cccccc;
@@ -129,11 +143,13 @@ body {
   width: 6%;
   height: 39px;
 }
+
 .j-es-seleted {
   color: white !important;
   background-color: #005bac !important;
   border: 2px solid rgba(0, 91, 172, 0.4) !important;
 }
+
 /*카드 필수 버튼*/
 
 /*다음버튼*/
@@ -142,14 +158,17 @@ body {
   gap: 40px;
   margin-bottom: 4%;
 }
+
 .nextBtn img {
   width: 50px;
   height: 50px;
 }
-.nextBtn > button {
+
+.nextBtn>button {
   border: none;
   background-color: #f5f5f5;
 }
+
 /*다음버튼*/
 /*카드 전체 관련 css*/
 
@@ -159,12 +178,14 @@ body {
 .j-select-optionBox {
   margin-bottom: 3%;
 }
+
 .j-option-order {
   width: 5%;
   text-align: center;
   font-weight: bold;
   font-size: 25px;
 }
+
 .j-option-input-radio {
   height: 40px;
   width: 70%;
@@ -173,7 +194,8 @@ body {
   align-items: center;
   border-radius: 5px;
 }
-.j-option-input-radio > input[type='text'] {
+
+.j-option-input-radio>input[type='text'] {
   height: 100%;
   margin-left: 1%;
   width: 90%;
@@ -181,26 +203,13 @@ body {
   background-color: #eeeeee;
   border-radius: 5px;
 }
-.j-option-input-radio > input[type='text']::placeholder {
+
+.j-option-input-radio>input[type='text']::placeholder {
   color: #aeaeae;
   font-weight: bold;
 }
-.j-option-input-radio > input[type='radio'] {
-  margin-left: 4%;
-  background-color: #cdcdcd;
-  appearance: none;
-  width: 30px;
-  height: 30px;
-  border: 2px solid #cdcdcd;
-  border-radius: 50%;
-  outline: none;
-  cursor: pointer;
-}
-.j-option-input-radio > input[type='radio']:checked {
-  background-color: #005bac;
-}
 
-.j-option-input-radio > input[type='checkbox'] {
+.j-option-input-radio>input[type='radio'] {
   margin-left: 4%;
   background-color: #cdcdcd;
   appearance: none;
@@ -212,21 +221,37 @@ body {
   cursor: pointer;
 }
 
-.j-option-input-radio > input[type='checkbox']:checked {
+.j-option-input-radio>input[type='radio']:checked {
   background-color: #005bac;
 }
+
+.j-option-input-radio>input[type='checkbox'] {
+  margin-left: 4%;
+  background-color: #cdcdcd;
+  appearance: none;
+  width: 30px;
+  height: 30px;
+  border: 2px solid #cdcdcd;
+  border-radius: 50%;
+  outline: none;
+  cursor: pointer;
+}
+
+.j-option-input-radio>input[type='checkbox']:checked {
+  background-color: #005bac;
+}
+
 /*객관식 css*/
 
 /*선형*/
 .j-line {
   width: 80%;
   height: 10px;
-  background-image: linear-gradient(
-    90deg,
-    #005bac 50%,
-    rgba(0, 91, 172, 0.4) 50%
-  );
+  background-image: linear-gradient(90deg,
+      #005bac 50%,
+      rgba(0, 91, 172, 0.4) 50%);
 }
+
 .j-number {
   width: 80%;
   display: flex;
@@ -237,14 +262,17 @@ body {
   margin-top: 1%;
   margin-bottom: 2%;
 }
-.j-number > span {
+
+.j-number>span {
   font-weight: bold;
   cursor: pointer;
 }
+
 .j-dropdown-box {
   margin-top: 5%;
   margin-bottom: 5%;
 }
+
 /**/
 /*드롭다운*/
 .j-dropdwon {
@@ -255,7 +283,8 @@ body {
   margin-right: 3%;
   margin-bottom: 1%;
 }
-.j-dropdwon > select {
+
+.j-dropdwon>select {
   border: none;
   width: 100%;
   height: 100%;
@@ -265,9 +294,11 @@ body {
   font-weight: bold;
   border-radius: 5px;
 }
+
 select option[value=''][disabled] {
   display: none;
 }
+
 /*드롭다운*/
 
 /*단답형*/
@@ -275,6 +306,7 @@ select option[value=''][disabled] {
   margin-top: 1%;
   margin-bottom: 1%;
 }
+
 .j-short-inputBox {
   height: 60px;
   width: 75%;
@@ -284,7 +316,7 @@ select option[value=''][disabled] {
   margin-bottom: 3%;
 }
 
-.j-short-inputBox > input[type='text'] {
+.j-short-inputBox>input[type='text'] {
   height: 100%;
   margin-left: 1%;
   width: 95%;
@@ -292,10 +324,12 @@ select option[value=''][disabled] {
   background-color: #eeeeee;
   border-radius: 5px;
 }
-.j-short-inputBox > input[type='text']::placeholder {
+
+.j-short-inputBox>input[type='text']::placeholder {
   color: #aeaeae;
   font-weight: bold;
 }
+
 /*단답형*/
 
 /*서술형*/
@@ -303,6 +337,7 @@ select option[value=''][disabled] {
   margin-top: 1%;
   margin-bottom: 1%;
 }
+
 .j-long-inputBox {
   height: 110px;
   width: 75%;
@@ -312,7 +347,7 @@ select option[value=''][disabled] {
   margin-bottom: 3%;
 }
 
-.j-long-inputBox > textarea {
+.j-long-inputBox>textarea {
   height: 90%;
   margin-left: 1%;
   width: 95%;
@@ -321,13 +356,16 @@ select option[value=''][disabled] {
   border-radius: 5px;
   resize: none;
 }
-.j-long-inputBox > textarea::placeholder {
+
+.j-long-inputBox>textarea::placeholder {
   color: #aeaeae;
   font-weight: bold;
 }
+
 textarea:focus {
   outline: none;
 }
+
 input:focus {
   outline: none;
 }
@@ -335,7 +373,7 @@ input:focus {
 /*서술형*/
 
 /*이메일*/
-.j-email-input-box > input {
+.j-email-input-box>input {
   width: 25%;
   height: 50px;
   border: none;
@@ -346,11 +384,13 @@ input:focus {
   text-align: center;
   font-weight: bold;
 }
-.j-email-input-box > span {
+
+.j-email-input-box>span {
   font-size: 25px;
   font-weight: bold;
   color: #eeeeee;
 }
+
 .j-email-input-box {
   margin-bottom: 4%;
 }
@@ -360,6 +400,7 @@ input:focus {
   height: 30px;
   margin-left: 3%;
 }
+
 /*이메일*/
 
 /*주소입력 위치기록*/
@@ -369,10 +410,12 @@ input:focus {
   background: #005bac !important;
   font-weight: bold !important;
 }
+
 .j-address-box {
   margin-bottom: 5%;
   margin-top: 2%;
 }
+
 /*주소입력*/
 
 /*위치기록*/
@@ -393,6 +436,7 @@ input:focus {
   font-weight: bold;
   background-color: #005bac;
 }
+
 /*위치기록*/
 
 /*주소입력 위치기록*/
@@ -417,21 +461,25 @@ input:focus {
   justify-content: space-between;
   border-radius: 5px;
 }
+
 .j-phone-line-box {
   width: 20px;
   height: 100%;
 }
+
 .j-phone-line {
   border-top: 2px solid black;
   width: 100%;
   height: 5px;
 }
+
 /* phone */
 
 /* gender */
 .gender-selection {
   display: flex;
-  gap: 10%; /* 남자, 여자 버튼 간격 조정 */
+  gap: 10%;
+  /* 남자, 여자 버튼 간격 조정 */
   margin-bottom: 4%;
 }
 
@@ -440,11 +488,14 @@ input:focus {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 100px; /* 버튼의 너비 조정 */
-  height: 100px; /* 버튼의 높이 조정 */
+  width: 100px;
+  /* 버튼의 너비 조정 */
+  height: 100px;
+  /* 버튼의 높이 조정 */
   background-color: #eeeeee;
 
-  border-radius: 100%; /* 라운드 버튼 모양 조정 */
+  border-radius: 100%;
+  /* 라운드 버튼 모양 조정 */
   cursor: pointer;
   transition: background-color 0.3s ease, box-shadow 0.3s ease;
   overflow: hidden;
@@ -452,25 +503,30 @@ input:focus {
 }
 
 .radio-container:hover {
-  background: linear-gradient(
-    45deg,
-    #005bac,
-    #66b2ff
-  ) !important; /* hover 시 배경 그라데이션 */
-  box-shadow: 0 4px 15px rgba(0, 91, 172, 0.5); /* hover 시 약간의 그림자 */
+  background: linear-gradient(45deg,
+      #005bac,
+      #66b2ff) !important;
+  /* hover 시 배경 그라데이션 */
+  box-shadow: 0 4px 15px rgba(0, 91, 172, 0.5);
+  /* hover 시 약간의 그림자 */
 }
 
 .radio-container input {
-  display: none; /* 기본 라디오 버튼 숨김 */
+  display: none;
+  /* 기본 라디오 버튼 숨김 */
 }
+
 .radio-text {
-  font-size: 18px; /* 버튼 안에 글씨 크기 조정 */
+  font-size: 18px;
+  /* 버튼 안에 글씨 크기 조정 */
   color: white;
-  transition: transform 0.3s ease, color 0.3s ease; /* hover 시 애니메이션 효과 */
+  transition: transform 0.3s ease, color 0.3s ease;
+  /* hover 시 애니메이션 효과 */
 }
 
 .radio-container:hover .radio-text {
-  transform: translateY(-5px); /* hover 시 글씨가 위로 떠다니는 효과 */
+  transform: translateY(-5px);
+  /* hover 시 글씨가 위로 떠다니는 효과 */
 }
 
 .clicked-radio-css {
@@ -480,10 +536,11 @@ input:focus {
 /* gender */
 
 /* day */
-.j-dayBox > input[type='date'] {
+.j-dayBox>input[type='date'] {
   width: 35%;
   height: 40px;
 }
+
 /* day */
 
 /*personal data*/
@@ -494,6 +551,7 @@ h5 {
   box-sizing: border-box;
   padding-left: 5%;
 }
+
 .j-group-name {
   width: 70px;
   border: none;
@@ -502,6 +560,7 @@ h5 {
   padding-left: 1%;
   padding-right: 1%;
 }
+
 .j-goal {
   min-width: 70px;
   border: none;
@@ -510,26 +569,32 @@ h5 {
   padding-left: 1%;
   padding-right: 1%;
 }
+
 .j-groupName {
   box-sizing: border-box;
   padding: 3%;
   text-align: center;
 }
-.j-groupName > input {
+
+.j-groupName>input {
   background-color: #fbf3f3;
 }
-.j-groupName > input::placeholder {
+
+.j-groupName>input::placeholder {
   color: #b44437;
 }
-.j-ok-box > div {
+
+.j-ok-box>div {
   margin-top: 1%;
   margin-bottom: 1%;
   margin-left: 2%;
   font-weight: bold;
 }
+
 .j-ok-box thead {
   background-color: white !important;
 }
+
 .j-ok-box th {
   text-align: center !important;
   background-color: white !important;
@@ -537,36 +602,45 @@ h5 {
   width: 20%;
   height: 40px;
 }
+
 .j-ok-box td {
   width: 20%;
   height: 50px;
   border: 1px solid black;
 }
+
 .j-ok-box input {
   width: 100%;
   border: none;
 }
+
 .j-ok-box input:focus {
   outline: none;
 }
+
 .j-ok-box input:hover {
   outline: none;
 }
+
 .j-ok-box .j-td:hover {
   background-color: white !important;
 }
+
 .j-ok-box tr:hover {
   background-color: white !important;
 }
+
 .j-plus-ok-info {
   text-align: center;
   margin-top: 2%;
   margin-bottom: 2%;
 }
-.j-plus-ok-info > span {
+
+.j-plus-ok-info>span {
   background-color: #fbf3f3;
   color: #b44437;
 }
+
 .j-bottom-buttom {
   margin-top: 3%;
   margin-bottom: 3%;
@@ -579,9 +653,11 @@ h5 {
   margin-top: 1%;
   margin-bottom: 1%;
 }
+
 .j-file-input {
   display: none;
 }
+
 .j-img-preview {
   width: 50%;
   height: 400px;
@@ -589,21 +665,26 @@ h5 {
   background-color: rgba(217, 217, 217, 0.2);
   border-radius: 5px;
 }
+
 .j-file-up-img {
   width: 40px;
   height: 40px;
 }
+
 .j-img-answerBox {
   margin-top: 3%;
 }
+
 .j-img-answerBox {
   width: 50%;
 }
-.j-img-answerBox > textarea {
+
+.j-img-answerBox>textarea {
   width: 100%;
   resize: none;
   margin-bottom: 3%;
 }
+
 /*picture*/
 
 /*응답 제출 버튼 */
@@ -615,6 +696,7 @@ h5 {
   border: 0.5px solid #005bac;
   display: none;
 }
+
 #j-submit:hover {
   background-color: #005bac !important;
   color: white;

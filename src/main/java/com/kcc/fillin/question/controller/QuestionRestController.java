@@ -2,8 +2,6 @@ package com.kcc.fillin.question.controller;
 
 import java.util.List;
 
-import com.kcc.fillin.survey.dto.SubmitRequest;
-import org.apache.ibatis.annotations.Delete;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,6 +17,7 @@ import com.kcc.fillin.question.dto.DeleteQuestionRequest;
 import com.kcc.fillin.question.dto.UpdateQuestionItemRequest;
 import com.kcc.fillin.question.dto.UpdateQuestionRequest;
 import com.kcc.fillin.question.service.QuestionService;
+import com.kcc.fillin.survey.dto.SubmitRequest;
 
 import lombok.RequiredArgsConstructor;
 
@@ -87,11 +86,13 @@ public class QuestionRestController {
 	}
 
 	@PostMapping("/submit")
-	public Response<?> submitQuestion(@RequestBody List<SubmitRequest> requests){
+	public Response<?> submitQuestion(@RequestBody
+	List<SubmitRequest> requests) {
 		System.out.println("requests = " + requests);
 		questionService.insertAnswer(requests);
-		return Response.setSuccess("응답 등록에 성고앴습니다",200);
+		return Response.setSuccess("응답 등록에 성고앴습니다", 200);
 	}
+
 	private Response<String> getStringResponse(boolean result, String successMessage, String failMessage) {
 		if (result) {
 			return Response.setSuccess(successMessage, 200);

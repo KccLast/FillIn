@@ -22,5 +22,6 @@ public interface QuestionService {
 	public boolean deleteQuestion(List<DeleteQuestionRequest> deleteList);
 
 	public boolean deleteQuestionItem(List<DeleteQuestionItemRequest> deleteList);
+
 	public boolean insertAnswer(List<SubmitRequest> list);
 }

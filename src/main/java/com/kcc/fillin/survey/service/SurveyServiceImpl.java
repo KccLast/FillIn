@@ -5,12 +5,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.kcc.fillin.survey.dto.SubmitRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.kcc.fillin.survey.Criteria;
 import com.kcc.fillin.survey.dao.SurveyDao;
+import com.kcc.fillin.survey.domain.ParticipantVO;
 import com.kcc.fillin.survey.domain.SurveyVO;
 import com.kcc.fillin.survey.dto.CommonCodeResponse;
 import com.kcc.fillin.survey.dto.MultiSearchSurveyRequest;
@@ -92,12 +92,15 @@ public class SurveyServiceImpl implements SurveyService {
 
 	@Override
 	@Transactional
-	public Long createNewParticipant() {
-		// TODO Auto-generated method stub
-		//SurveyDao
-		return null;
+	public boolean createNewParticipant(ParticipantVO newParticipantVO) {
+		return mapper.insertNewParticipant(newParticipantVO);
+
 	}
 
+	@Override
+	public boolean createCheckLog(String surveyUrl) {
 
+		return mapper.insertCheckLog(surveyUrl);
+	}
 
 }

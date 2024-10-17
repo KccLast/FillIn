@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kcc.fillin.survey.Criteria;
+import com.kcc.fillin.survey.domain.ParticipantVO;
 import com.kcc.fillin.survey.domain.SurveyVO;
 import com.kcc.fillin.survey.dto.CommonCodeResponse;
 import com.kcc.fillin.survey.dto.MultiSearchSurveyResponse;
@@ -98,7 +99,12 @@ public class SurveyController {
 	public String getSurveyByParticipant(@PathVariable
 	String surveyUrl, Model model) {
 		//응답자 생성해야함
+		ParticipantVO participant = new ParticipantVO();
+		service.createNewParticipant(participant);
 		//surveyURL로 시작 로그 보내야함
+		service.createCheckLog(surveyUrl);
+
+		model.addAttribute("partSeq", participant.getSeq());
 		return "/survey/participant";
 	}
 }

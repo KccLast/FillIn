@@ -1,7 +1,7 @@
 package com.kcc.fillin.question.dao;
 
-import com.kcc.fillin.survey.dto.SubmitRequest;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import com.kcc.fillin.question.domain.QuestionItemVO;
 import com.kcc.fillin.question.domain.QuestionVO;
@@ -9,8 +9,7 @@ import com.kcc.fillin.question.dto.DeleteQuestionItemRequest;
 import com.kcc.fillin.question.dto.DeleteQuestionRequest;
 import com.kcc.fillin.question.dto.UpdateQuestionItemRequest;
 import com.kcc.fillin.question.dto.UpdateQuestionRequest;
-
-import java.util.List;
+import com.kcc.fillin.survey.dto.SubmitRequest;
 
 @Mapper
 public interface QuestionDao {
@@ -29,5 +28,13 @@ public interface QuestionDao {
 
 	boolean deleteQuestionItem(DeleteQuestionItemRequest dr);
 
-    boolean insertAnswer(List<SubmitRequest> list);
+	boolean insertAnswer(@Param("submit")
+	SubmitRequest list, @Param("insertVal")
+	String val);
+
+	void updateParticipantData(@Param("colName")
+	String personalDataTypeName, @Param("content")
+	String content, @Param("participantSeq")
+	Long participant);
+
 }

@@ -2,10 +2,10 @@ package com.kcc.fillin.question.service;
 
 import java.util.List;
 
-import com.kcc.fillin.survey.dto.SubmitRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.kcc.fillin.global.Common.CommonCodeType;
 import com.kcc.fillin.global.Exception.CannotCreateQuestionException;
 import com.kcc.fillin.question.dao.QuestionDao;
 import com.kcc.fillin.question.domain.QuestionItemVO;
@@ -15,6 +15,7 @@ import com.kcc.fillin.question.dto.DeleteQuestionRequest;
 import com.kcc.fillin.question.dto.UpdateDropContent;
 import com.kcc.fillin.question.dto.UpdateQuestionItemRequest;
 import com.kcc.fillin.question.dto.UpdateQuestionRequest;
+import com.kcc.fillin.survey.dto.SubmitRequest;
 
 import lombok.RequiredArgsConstructor;
 
@@ -129,8 +130,30 @@ public class QuestionServiceImpl implements QuestionService {
 	}
 
 	@Override
+	@Transactional
 	public boolean insertAnswer(List<SubmitRequest> list) {
-		return questionDao.insertAnswer(list);
+		//ccseq가 14,15,16이면 응답이 아니라 설문참여자의 데이터 업데이트 해야함
+
+		list.stream().forEach(item -> {
+			Long participant = item.getParticipantSeq();
+			if (CommonCodeType.isParticipantPersonalAnswer(item.getCcSeq())) {
+
+				questionDao.updateParticipantData(CommonCodeType.personalDataTypeName(item.getCcSeq()),
+					item.getContents().get(0), participant);
+			} else {
+				for (String val : item.getContents()) {
+					questionDao.insertAnswer(item, val);
+				}
+			}
+
+		});
+
+		return true;
+	}
+
+	private boolean answerIsContactData(SubmitRequest item) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 	private boolean updateQuestionItem(UpdateQuestionItemRequest item) {

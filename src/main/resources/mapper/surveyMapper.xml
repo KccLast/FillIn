@@ -313,5 +313,23 @@
 		WHERE s.url = #{surveyUrl}
 		AND (q.is_active != 'N' OR q.is_active IS NULL)
 	</select>
+	
+	<insert id="insertNewParticipant" parameterType="ParticipantVO">
+		<selectKey keyColumn="seq" keyProperty="seq" order="BEFORE" resultType="long">
+			SELECT participant_seq.nextval FROM dual
+		</selectKey>
+		INSERT INTO participant(seq)
+		VALUES(#{seq})
+	</insert>
+	
+	<insert id="insertCheckLog" parameterType="String">
+		INSERT INTO survey_log (seq, survey_seq, occur_date, cc_seq)
+        VALUES (
+        survey_log_seq.nextval,
+        (SELECT seq FROM survey WHERE url = #{surveyUrl}),
+        sysdate,
+        22
+        )
+	</insert>
 
 </mapper>

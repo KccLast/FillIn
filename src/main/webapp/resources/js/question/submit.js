@@ -1,14 +1,16 @@
 var page = 1;
 var end;
-var participant_seq = 999;
+var participant_seq;
+var totalCount;
 //var pageDTO;
 $(function () {
   setCard();
-
+  setParticipantSeq();
   localStorage.clear();
   if (!localStorage.getItem('submitList')) {
     localStorage.setItem('submitList', JSON.stringify([]));
   }
+  updateLineProgressBar();
   //카드 클릭하면 스크롤 정렬 기본 이벤트
   $('.content').on('click', '.j-question-card', function (e) {
     changeFocus(this);
@@ -89,8 +91,9 @@ $(function () {
         contents: checkedValues, // 체크된 값들의 배열
         answerDate: currentDateTime,
       };
-      console.log(submitObject);
       storeCheckBoxsubmitInLocal(submitObject, questionSeq, 'submitList');
+      $parentCard.addClass('j-ans');
+      updateLineProgressBar();
     }
   );
 
@@ -203,6 +206,10 @@ $(function () {
     }
   });
 });
+
+function setParticipantSeq() {
+  participant_seq = $('#j-participant-seq').val();
+}
 function submitResponse() {
   const localData = localStorage.getItem('submitList');
 
@@ -236,6 +243,8 @@ function getSubmitObject(target, value) {
     submitObject.questionSeq,
     'submitList'
   );
+  $parentCard.addClass('j-ans');
+  updateLineProgressBar();
 }
 
 async function pageHideAndShow() {
@@ -262,10 +271,10 @@ function updateLine(numRangeLine, clickedIndex, totalNumbers) {
     .css(
       'background-image',
       'linear-gradient(90deg, #005bac ' +
-        percentage +
-        '%, rgba(0, 91, 172, 0.4) ' +
-        percentage +
-        '%)'
+      percentage +
+      '%, rgba(0, 91, 172, 0.4) ' +
+      percentage +
+      '%)'
     );
 }
 
@@ -410,11 +419,11 @@ function execDaumPostcode(button) {
       $parent.find('.zipp_code_id').val(data.zonecode);
       $parent.find('.UserAdd1').val(addr + extraAddr);
       $parent.find('.UserAdd2').focus();
-      getSubmitObject($('.content').find('.j-card-selected'), addr + extraAddr);
+      getSubmitObject($('.content').find('.j-card-selected > div'), addr + extraAddr);
       /*document.getElementById('zipp_code_id').value = data.zonecode;
-			document.getElementById("UserAdd1").value = addr;
-			document.getElementById("UserAdd1").value += extraAddr;
-			document.getElementById("UserAdd2").focus(); // 우편번호 + 주소 입력이 완료되었음으로 상세주소로 포커스 이동*/
+      document.getElementById("UserAdd1").value = addr;
+      document.getElementById("UserAdd1").value += extraAddr;
+      document.getElementById("UserAdd2").focus(); // 우편번호 + 주소 입력이 완료되었음으로 상세주소로 포커스 이동*/
     },
   }).open();
 }
@@ -430,8 +439,7 @@ function setCard() {
     url: requestUrl,
     type: 'GET',
     success: async function (response) {
-      console.log(response);
-      console.log(response.data);
+
       if (page === undefined || page === null) page = 1;
       //pageDTO = response.data.pageDTO;
       setEnd(response.data.totalCnt);
@@ -449,6 +457,7 @@ function setCard() {
 }
 
 function setEnd(totalCnt) {
+  totalCount = totalCnt;
   end = Math.ceil(totalCnt / 5);
 }
 
@@ -630,10 +639,10 @@ function updateLine(numRangeLine, clickedIndex, totalNumbers) {
     .css(
       'background-image',
       'linear-gradient(90deg, #005bac ' +
-        percentage +
-        '%, rgba(0, 91, 172, 0.4) ' +
-        percentage +
-        '%)'
+      percentage +
+      '%, rgba(0, 91, 172, 0.4) ' +
+      percentage +
+      '%)'
     );
 }
 function updateNumberRange(target) {
@@ -675,4 +684,21 @@ function setPageBtn() {
   } else {
     $('#j-submit').hide();
   }
+}
+
+
+// 선형 배율
+function updateLineProgressBar() {
+  let len = $('.content').find('.j-ans').length;
+  console.log(len);
+  var percentage = (len / totalCount) * 100; // 클릭한 비율 계산
+  if (!percentage) percentage = 0;
+  $('.j-progress-line').css(
+    'background-image',
+    'linear-gradient(90deg, #005bac ' +
+    percentage +
+    '%, rgba(0, 91, 172, 0.4) ' +
+    percentage +
+    '%)'
+  );
 }

@@ -151,7 +151,7 @@
     </head>
 
     <body>
-
+	 <input type="hidden" id='j-participant-seq' value="${partSeq}" />
       <div class="navbar">
         <div class="nav-left">
           <a href="#">

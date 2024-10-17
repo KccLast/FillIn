@@ -83,8 +83,36 @@
 		WHERE seq = #{seq}
 	</update>
 
-	<insert id="insertAnswer" parameterType="java.util.List">
-		
-	</insert>
+	<!-- <insert id="insertAnswer" parameterType="map">
+		INSERT ALL
+    <foreach collection="contents" item="content">
+        INTO ANSWER (SEQ, QUESTION_SEQ, PARTICIPANT_SEQ, CONTENTS, ANSWER_DATE)
+        VALUES (answer_seq.nextval, #{questionSeq}, #{participantSeq}, #{content}, #{answerDate})
+    </foreach>
+    SELECT * FROM dual
+	</insert> -->
+	<insert id="insertAnswer" parameterType="map">
+		INSERT INTO answer
+		VALUES(answer_seq.nextval,#{submit.questionSeq},#{submit.participantSeq},#{insertVal},#{submit.answerDate})
+	</insert> 
+	
+	<update id="updateParticipantData" parameterType="map">
+	UPDATE participant
+    <trim prefix="SET" suffixOverrides=",">
+        <if test="colName == 'GENDER'">
+            gender = #{content},
+        </if>
+        <if test="colName == 'ADDRESS'">
+            address = #{content},
+        </if>
+        <if test="colName == 'EMAIL'">
+            email = #{content},
+        </if>
+        <if test="colName == 'PHONE'">
+            phone = #{content},
+        </if>
+    </trim>
+    WHERE seq = #{participantSeq}
+</update>
 
 </mapper>

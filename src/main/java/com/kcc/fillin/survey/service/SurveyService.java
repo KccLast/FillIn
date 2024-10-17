@@ -4,11 +4,11 @@ import java.util.List;
 import java.util.Map;
 
 import com.kcc.fillin.survey.Criteria;
+import com.kcc.fillin.survey.domain.ParticipantVO;
 import com.kcc.fillin.survey.domain.SurveyVO;
 import com.kcc.fillin.survey.dto.CommonCodeResponse;
 import com.kcc.fillin.survey.dto.MultiSearchSurveyRequest;
 import com.kcc.fillin.survey.dto.MultiSearchSurveyResponse;
-import com.kcc.fillin.survey.dto.SubmitRequest;
 
 public interface SurveyService {
 	public List<MultiSearchSurveyResponse> getAllSurveys();
@@ -28,6 +28,8 @@ public interface SurveyService {
 	/*SurveyVO getSurveyByUrl(PageDTO surveyUrl);*/
 	SurveyVO getSurveyByUrl(String surveyUrl);
 
-	public Long createNewParticipant();
+	public boolean createNewParticipant(ParticipantVO participant);
+
+	public boolean createCheckLog(String surveyUrl);
 
 }
