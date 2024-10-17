@@ -34,17 +34,15 @@
 
 
 
-.navbar {
-    width: 100%;
-    background-color: #f8f9fa;
-    padding: 13px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-bottom: 1px solid #ddd;
-    /* navbar가 페이지 흐름에 맞게 배치되도록 position 설정 */
-    position: relative;
-}
+ .navbar {
+     background-color: #f8f9fa; /* 밝은 회색 계열의 배경 */
+     padding: 10px 20px; /* 편안한 패딩 */
+     box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* 상단에 그림자 추가 */
+     display: flex;
+     justify-content: space-between; /* 내부 요소 좌우 정렬 */
+     align-items: center;
+ }
+
 
 .navbar a {
     text-decoration: none;
@@ -106,6 +104,23 @@ label {
     display: block;
     margin-bottom: 5px;
 }
+
+ .links a {
+     color: #007bff; /* 밝은 파란색으로 링크 색상 변경 */
+     text-decoration: none; /* 밑줄 제거 */
+     font-size: 16px; /* 폰트 크기 조정 */
+     font-weight: bold; /* 폰트 두께 */
+     padding: 8px 16px; /* 주변 패딩 */
+     border: 2px solid #007bff; /* 테두리 추가 */
+     border-radius: 5px; /* 둥근 모서리 */
+     transition: all 0.3s ease; /* 부드러운 전환 효과 */
+ }
+
+ .links a:hover {
+     background-color: #007bff; /* 호버 시 배경 색상 변경 */
+     color: #ffffff; /* 호버 시 텍스트 색상 변경 */
+     cursor: pointer; /* 마우스 포인터 변경 */
+ }
 
 /* input[type="text"],
 input[type="email"],

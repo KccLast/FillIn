@@ -1,26 +1,35 @@
-/*
- * package com.kcc.fillin.member.auth;
- * 
- * import org.springframework.security.core.userdetails.UserDetails; import
- * org.springframework.security.core.userdetails.UserDetailsService; import
- * org.springframework.security.core.userdetails.UsernameNotFoundException;
- * import org.springframework.stereotype.Service;
- * 
- * import com.kcc.fillin.member.dto.MemberDTO; import
- * com.kcc.fillin.member.service.MemberService;
- * 
- * import lombok.RequiredArgsConstructor;
- * 
- * @Service
- * 
- * @RequiredArgsConstructor public class PrincipalDetailService implements
- * UserDetailsService {
- * 
- * private final MemberService memberService;
- * 
- * @Override public UserDetails loadUserByUsername(String username) throws
- * UsernameNotFoundException { // 이메일을 이용해 회원 정보를 가져옴 MemberDTO member =
- * memberService.findByEmail(username); if (member != null) { return new
- * PrincipalDetail(member); } throw new
- * UsernameNotFoundException("User not found with email: " + username); } }
- */
+package com.kcc.fillin.member.auth;
+
+
+import com.kcc.fillin.member.dao.MemberMapper;
+import com.kcc.fillin.member.domain.MemberVO;
+import com.kcc.fillin.member.dto.MemberDTO;
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.stereotype.Service;
+
+@Service
+@RequiredArgsConstructor
+public class PrincipalDetailService implements UserDetailsService {
+
+    private final MemberMapper memberMapper;
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        // 회원있는지체크
+        int memberExists = memberMapper.emailExists(username);
+
+        if (memberExists == 0) {  // 0이면 사용자 없음
+            throw new UsernameNotFoundException("User not found with username: " + username);
+        }
+
+        // 이메일로 사용자 정보 가져오기
+        MemberDTO member = memberMapper.getMemberByEmail(username);
+
+        // PrincipalDetail 객체로 반환하여 Spring Security 인증에 사용
+        return new PrincipalDetail(member);
+    }
+}
+

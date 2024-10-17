@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kcc.fillin.question.dao.QuestionDao">
+
+	<insert id="insertQuestion" parameterType="QuestionVO">
+		<selectKey keyProperty="seq" resultType="long" order="BEFORE">
+			SELECT question_seq.nextval
+			FROM dual
+		</selectKey>
+
+		INSERT INTO question (seq, survey_seq, name, description, order_num, is_essential, cc_seq
+		<if test="tbFileSeq != null">
+			, tb_file_seq
+		</if>)
+		VALUES (#{seq}, #{surveySeq}, #{name}, #{description}, #{order}, #{isEssential}, #{ccSeq}
+		<if test="tbFileSeq != null">
+			, #{tbFileSeq}
+		</if>)
+	</insert>
+
+	<insert id="insertQuestionItem" parameterType="QuestionItemVO">
+
+		<selectKey keyProperty="seq" resultType="long" order="BEFORE">
+			SELECT question_item_seq.nextval
+			FROM dual
+		</selectKey>
+
+		INSERT INTO question_item(seq,question_seq,content,order_num)
+		VALUES(#{seq},#{questionSeq},#{content},#{orderNum})
+
+	</insert>
+	
+	<update id="updateQuestion" parameterType="UpdateQuestionRequest">
+		UPDATE question
+		<set>
+		
+        <if test="name != null and name != ''">
+            name = #{name},
+        </if>
+        
+        <if test="description != null and description != ''">
+            description = #{description},
+        </if>
+        
+        <if test="order != null">
+            order_num = #{order},
+        </if>
+        
+        <if test="isEssential != null">
+            is_essential = #{isEssential},
+        </if>
+        
+        <if test="ccSeq != null">
+            cc_seq = #{ccSeq},
+        </if>
+		</set>
+		WHERE seq = #{seq}
+	</update>
+	
+	<update id="deleteAllQuestionItem" parameterType="long">
+		UPDATE question_item 
+		SET is_active = 'N'
+		WHERE question_seq = #{seq}
+	</update>
+	
+	<update id="updateQuestionItem" parameterType="UpdateQuestionItemRequest">
+		UPDATE question_item
+		SET content = #{content}
+		WHERE seq = #{seq}
+	</update>
+	
+	<update id="deleteQuestionItem" parameterType="DeleteQuestionItemRequest">
+		UPDATE question_item
+		SET is_active = 'N'
+		WHERE seq = #{seq}
+	</update>
+	
+	<update id="deleteQuestion" parameterType="DeleteQuestionRequest">
+		UPDATE question
+		SET is_active = 'N'
+		WHERE seq = #{seq}
+	</update>
+
+	<!-- <insert id="insertAnswer" parameterType="map">
+		INSERT ALL
+    <foreach collection="contents" item="content">
+        INTO ANSWER (SEQ, QUESTION_SEQ, PARTICIPANT_SEQ, CONTENTS, ANSWER_DATE)
+        VALUES (answer_seq.nextval, #{questionSeq}, #{participantSeq}, #{content}, #{answerDate})
+    </foreach>
+    SELECT * FROM dual
+	</insert> -->
+	<insert id="insertAnswer" parameterType="map">
+		INSERT INTO answer
+		VALUES(answer_seq.nextval,#{submit.questionSeq},#{submit.participantSeq},#{insertVal},#{submit.answerDate})
+	</insert> 
+	
+	<update id="updateParticipantData" parameterType="map">
+	UPDATE participant
+    <trim prefix="SET" suffixOverrides=",">
+        <if test="colName == 'GENDER'">
+            gender = #{content},
+        </if>
+        <if test="colName == 'ADDRESS'">
+            address = #{content},
+        </if>
+        <if test="colName == 'EMAIL'">
+            email = #{content},
+        </if>
+        <if test="colName == 'PHONE'">
+            phone = #{content},
+        </if>
+    </trim>
+    WHERE seq = #{participantSeq}
+</update>
+
+</mapper>

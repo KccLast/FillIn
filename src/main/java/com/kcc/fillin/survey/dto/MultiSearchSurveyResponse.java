@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class MultiSearchSurveyResponse {
+
 	private Long seq;
 	private int ccSeq;
 	private String name;

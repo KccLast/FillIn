@@ -1,6 +1,9 @@
 package com.kcc.fillin.survey.domain;
 
 import java.time.LocalDateTime;
+import java.util.List;
+
+import com.kcc.fillin.question.domain.QuestionVO;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -20,5 +23,8 @@ public class SurveyVO {
 	private int targetPeople;
 	private int ccSeq;
 	private long memberSeq;
+
+	private int totalCnt;
+	private List<QuestionVO> questions;
 
 }

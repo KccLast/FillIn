@@ -1,6 +1,6 @@
 package com.kcc.fillin.statistic.dto;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -14,7 +14,7 @@ import lombok.ToString;
 @NoArgsConstructor
 @ToString
 public class HitsDTO {
-	private LocalDateTime occurDate;
+	private LocalDate occurDate;
 	private Long totalViews;
 	private Long startCount;
 	private Long completedCount;

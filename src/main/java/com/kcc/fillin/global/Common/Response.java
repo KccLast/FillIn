@@ -25,7 +25,17 @@ public class Response<T> {
 	private String requestUrl;
 
 	public static <T> Response<T> setSuccess(T data, int code) {
-		return new ResponseBuilder<T>().message("").data(data).status(SUCCESS).statusCode(code).message("")
+		return new ResponseBuilder<T>().message("").data(data).status(SUCCESS).statusCode(code)
+			.build();
+	}
+
+	public static Response<?> setMessage(Response<?> target, String message) {
+		target.message = message;
+		return target;
+	}
+
+	public static <T> Response<T> setSuccess(T data, int code, String message) {
+		return new ResponseBuilder<T>().message(message).data(data).status(SUCCESS).statusCode(code)
 			.build();
 	}
 
@@ -33,7 +43,7 @@ public class Response<T> {
 		return new ResponseBuilder<>().status(ERROR).message(errorMessage).statusCode(code).build();
 	}
 
-	public static Response<?> setFail(BindingResult bindingResult, int code) {
+	public static Response<?> setFailWithBindingResult(BindingResult bindingResult, int code) {
 		Map<String, String> fails = new HashMap<>();
 
 		List<ObjectError> allErrors = bindingResult.getAllErrors();
@@ -45,6 +55,16 @@ public class Response<T> {
 			}
 		}
 		return new ResponseBuilder<>().data(fails).status(FAIL).statusCode(code).message("").build();
+	}
+
+	public static <T> Response<T> setFail(T data, int code, String message) {
+		return new ResponseBuilder<T>().message(message).data(data).status(FAIL).statusCode(code)
+			.build();
+	}
+
+	public static <T> Response<T> setFail(T data, int code) {
+		return new ResponseBuilder<T>().message("").data(data).status(FAIL).statusCode(code)
+			.build();
 	}
 
 	public static Response<?> setError(String errorMessage, int code, String uri) {

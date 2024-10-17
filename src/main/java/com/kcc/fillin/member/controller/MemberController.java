@@ -3,8 +3,11 @@ package com.kcc.fillin.member.controller;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,6 +21,7 @@ import com.kcc.fillin.member.dto.MemberResponse;
 import com.kcc.fillin.member.service.MemberService;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.servlet.ModelAndView;
 
 @Controller
 @RequestMapping("/member")
@@ -25,83 +29,90 @@ import lombok.RequiredArgsConstructor;
 public class MemberController {
 
 	private final MemberService memberService;
+	private final PasswordEncoder passwordEncoder;
 
-	// 이메일 찾기, 비밀번호 찾기 등은 로그인 없이 접근 가능하게 설정
+	// 이메일 찾기 페이지
 	@GetMapping("/email")
 	public String emailFind() {
 		return "/member/emailFind";
 	}
 
+	// 로그인 페이지 이동
 	@GetMapping("/login")
 	public String showLoginPage() {
-		return "/member/loginPage"; // 로그인 페이지
+		return "/member/loginPage";  // 로그인 페이지
 	}
 
+	// 비밀번호 찾기 페이지
 	@GetMapping("/password")
-	public String passwordFind() {
+	public String passwordFind(@RequestParam(required = false) String code, Model model) {
+		model.addAttribute("code", code);
 		return "/member/passwordFind";
 	}
+
+
+
 
 	// 회원가입 폼 화면 이동
 	@GetMapping("/register")
 	public String showRegisterPage() {
-		return "/member/registerPage"; // 회원가입 폼 JSP 경로
+		return "/member/registerPage";  // 회원가입 폼 JSP 경로
 	}
 
-	// 회원가입 처리
+	// 회원가입 처리 (POST 요청)
 	@PostMapping("/register")
-	public String registerMember(@ModelAttribute
-	MemberDTO memberDTO, @RequestParam("gender")
-	String gender,
-		@RequestParam("address")
-		String address, @RequestParam("detailed-address")
-		String detailedAddress,
-		@RequestParam("birth")
-		String birth) {
-
-		// 생년월일을 java.sql.Date로 변환
-		try {
-			SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-			java.sql.Date birthDate = new java.sql.Date(format.parse(birth).getTime());
-			memberDTO.setBirth(birthDate);
-		} catch (ParseException e) {
-			e.printStackTrace();
-		}
-
-		// 주소와 상세 주소를 합침
-		String fullAddress = address + " " + detailedAddress;
-		memberDTO.setAddress(fullAddress);
-
-		// 성별 처리: 남성일 경우 1, 여성일 경우 2
-		if ("male".equals(gender)) {
-			memberDTO.setCcSeq(1);
-		} else if ("female".equals(gender)) {
-			memberDTO.setCcSeq(2);
-		}
-
-		// 회원 등록 서비스 호출
-		memberService.registerMember(memberDTO); // 회원 정보 저장
-
-		// 회원가입 후 로그인 페이지로 리다이렉트
-		return "redirect:/member/login";
+	public String registerMember(@ModelAttribute MemberDTO memberDTO) {
+		// 비밀번호 암호화 후 회원 저장
+		memberDTO.setPassword(passwordEncoder.encode(memberDTO.getPassword()));
+		memberService.registerMember(memberDTO);
+		return "redirect:/member/login";  // 회원가입 완료 후 로그인 페이지로 리다이렉트
 	}
 
-	// 그 외의 페이지는 로그인 후 접근 가능하도록 설정
+	// 로그인 처리 (POST 요청)
+//	@PostMapping("/login")
+//	public String login(@RequestParam String username, @RequestParam String password, Model model) {
+//		MemberDTO member = memberService.findByEmail(username);
+//
+//		if (member != null && passwordEncoder.matches(password, member.getPassword())) {
+//			// 로그인 성공 시 대시보드로 리다이렉트
+//			model.addAttribute("member", member);
+//			return "redirect:/survey/dashboard";
+//		} else {
+//			// 로그인 실패 시 에러 메시지와 함께 로그인 페이지로 리턴
+//			model.addAttribute("error", "이메일 또는 비밀번호가 잘못되었습니다.");
+//			return "/member/login";
+//		}
+//	}
+
+
+//	@PostMapping("/login")
+//	public String login(@RequestParam String username, @RequestParam String password, Model model) {
+//		// 로그인 처리는 SecurityConfig에서 처리하므로 여기에 추가 로직이 필요 없음.
+//		return "redirect:/survey/dashboard";
+//	}
+
+
+	// 마이페이지 접근 (로그인 후 접근 가능)
 	@GetMapping("/mypage")
 	public String myPage() {
-		return "/member/myPage"; // 예: 마이페이지
+		return "/member/myPage";  // 마이페이지 경로
 	}
 
-	@PostMapping("/mypage")
-	public ResponseEntity<MemberResponse> getMember(@RequestBody
-	LoginMemberRequest request) {
-		MemberResponse member = memberService.getMemberByEmail(request.getUsername());
+	// 마이페이지 데이터 가져오기
+//	@PostMapping("/mypage")
+//	public ResponseEntity<MemberResponse> getMember(@RequestBody LoginMemberRequest request) {
+//		MemberResponse member = memberService.getMemberByEmail(request.getUsername());
+//		return ResponseEntity.ok(member);
+//	}
 
-		return ResponseEntity.ok(member);
-	}
+	// 로그아웃 처리 (SecurityConfig에서 처리 중)
+//	@GetMapping("/logout")
+//	public void logOut() {
+//		// 로그아웃 로직은 Spring Security가 자동 처리
+//	}
 
-	@GetMapping("/logout")
-	public void logOut() {
 
-	}
+
+
 }
+
