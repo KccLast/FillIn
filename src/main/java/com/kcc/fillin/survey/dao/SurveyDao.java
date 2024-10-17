@@ -36,4 +36,5 @@ public interface SurveyDao {
 	public boolean insertNewParticipant(ParticipantVO newParticipantVO);
 
 	public boolean insertCheckLog(String surveyUrl);
+
 }

@@ -123,9 +123,9 @@ public class MemberRestController {
         if (memberService.validateMemberDetails(memberDTO.getName(), memberDTO.getUsername())) {
 
 
-            //수신자 email
+            //수신자 email, 나중에 "dhsong11@gmail.com -> 실제 팀원들 메일 주소로 바꿔야 함"
             //String tempCode = emailService.sendEmail(memberDTO.getUsername(),"임시비밀번호 발급","임시 비밀번호는 ");
-            String tempCode = emailService.sendEmail(memberDTO.getUsername(),"임시비밀번호 발급","임시 비밀번호는 ");
+            String tempCode = emailService.sendEmail("dhsong11@gmail.com","임시비밀번호 발급","임시 비밀번호는 ");
             session.setAttribute("tempCode", tempCode);
             session.setMaxInactiveInterval(60);
             return ResponseEntity.ok("임시 비밀번호가 이메일로 전송되었습니다.");
