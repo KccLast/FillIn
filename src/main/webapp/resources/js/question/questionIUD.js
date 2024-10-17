@@ -147,7 +147,7 @@ function saveQuestionInDB(questions) {
   });
 }
 async function insertQuestionItem(questionType, questionSeq, insertedItems) {
-  if (isListExists(insertedItems)) {
+  if (!isListExists(insertedItems)) {
     return;
   }
 

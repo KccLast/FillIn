@@ -1,4 +1,31 @@
+var dragInstance;
 $(function () {
+
+  /**/
+  let moved = false; // 초기 상태 설정
+
+  // .j-que-con-card 클릭 시 모달 열기
+  $('.j-que-con-card').on('click', function (e) {
+    e.stopPropagation(); // 이벤트 버블링 방지 (바깥 클릭 이벤트와 구분)
+    $('.j-que-con-card').removeClass('j-que-con-selectd-card');
+    $(this).addClass('j-que-con-selectd-card'); // 클래스 추가
+    $('#j-con-modal').css('left', '1300px'); // 모달 이동
+    moved = true; // 상태 변경
+    e.stopPropagation();
+  });
+
+  // 바깥을 클릭하면 모달 닫기
+  $(document).on('click', function () {
+    if (moved) {
+      $('.j-que-con-card').removeClass('j-que-con-selectd-card'); // 클래스 제거
+      $('#j-con-modal').css('left', '1650px'); // 원래 위치로 이동
+      moved = false; // 상태 초기화
+    }
+  });
+
+
+
+  /**/
   let contentShow = true;
   localStorage.clear();
   if (!localStorage.getItem('updatedQuestionItemList')) {
@@ -15,16 +42,21 @@ $(function () {
   setCardPositions(cards); // 카드 위치 설정
 
   //초기 연결 선 설정
-  const dragInstance = defaultConditionLine();
+  dragInstance = defaultConditionLine();
+  $('.j-condition-box').hide();
+  $('#j-con-modal').hide();
   //초기 연결 선 설정
   $('.j-nav-input-button').click(function () {
     if (contentShow) {
       $('.content').hide(); // 숨기기
-      dragInstance.repaintEverything();
+
       $('.j-condition-box').show(); // 보이기
+      $('#j-con-modal').show();
+      dragInstance.repaintEverything();
     } else {
       $('.content').show(); // 보이기
       $('.j-condition-box').hide(); // 숨기기
+      $('#j-con-modal').hide();
     }
 
     contentShow = !contentShow; // 상태 반전
@@ -718,6 +750,7 @@ function defaultConditionLine() {
 
   // 초기 연결선 그리기
   instance.repaintEverything();
+
   return instance;
 }
 
@@ -777,10 +810,10 @@ function updateLine(numRangeLine, clickedIndex, totalNumbers) {
     .css(
       'background-image',
       'linear-gradient(90deg, #005bac ' +
-        percentage +
-        '%, rgba(0, 91, 172, 0.4) ' +
-        percentage +
-        '%)'
+      percentage +
+      '%, rgba(0, 91, 172, 0.4) ' +
+      percentage +
+      '%)'
     );
 }
 function updateNumberRange(target) {
@@ -904,9 +937,9 @@ function execDaumPostcode(button) {
       $parent.find('.UserAdd1').val(addr + extraAddr);
       $parent.find('.UserAdd2').focus();
       /*document.getElementById('zipp_code_id').value = data.zonecode;
-			document.getElementById("UserAdd1").value = addr;
-			document.getElementById("UserAdd1").value += extraAddr;
-			document.getElementById("UserAdd2").focus(); // 우편번호 + 주소 입력이 완료되었음으로 상세주소로 포커스 이동*/
+      document.getElementById("UserAdd1").value = addr;
+      document.getElementById("UserAdd1").value += extraAddr;
+      document.getElementById("UserAdd2").focus(); // 우편번호 + 주소 입력이 완료되었음으로 상세주소로 포커스 이동*/
     },
   }).open();
 }

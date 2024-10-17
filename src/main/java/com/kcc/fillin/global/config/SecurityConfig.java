@@ -167,9 +167,9 @@ public class SecurityConfig {
 				return uri.equals("/member/login") || uri.equals("/member/register");
 			}));
 		http.authorizeHttpRequests(authz -> authz
-			.requestMatchers("/question/**").authenticated()
+			.requestMatchers("/question/**").permitAll()
 			.requestMatchers("/statistic/**").authenticated()
-			.requestMatchers("/survey/**").authenticated()
+			.requestMatchers("/survey/**").permitAll()
 			.anyRequest().permitAll()
 		//                  .requestMatchers("/member/login", "/member/register", "/resources/**").permitAll() // 정적 리소스나 로그인 관련 경로 인증 없이 허용
 		//                  .anyRequest().authenticated() // 그 외 모든 요청은 인증 필요
