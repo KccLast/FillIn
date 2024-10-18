@@ -85,7 +85,8 @@
 		<div class="cards-container">
 			<div class="card h-100">
 				<div class="add-survey-card">
-					<img alt="plusBtn" src="/resources/img/common/plusButton.png">
+					<img alt="plusBtn" src="/resources/img/common/plusButton.png"
+					data-bs-toggle="modal" data-bs-target="#makeAutoQuestion-modal">
 				</div>
 			</div>
 
@@ -169,6 +170,8 @@
 	
 	
 	<script type="text/javascript" src="/resources/js/survey/multiSearch.js"></script>
-	<script type="text/javascript" src="/resources/js/survey/surveymodal.js"></script>
+
+	<%@include file="/WEB-INF/views/question/modal-autoQuestions.jsp"%>
+
 </body>
 </html>

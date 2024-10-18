@@ -11,6 +11,9 @@
 	href="/resources/css/question/questionNav.css">
 <link rel="stylesheet" type="text/css"
 	href="/resources/css/question/question.css">
+	<link rel="stylesheet" type="text/css"
+	href="/resources/css/question/condition.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jsPlumb/2.15.6/js/jsplumb.min.js"></script>	
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script
 	src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
@@ -18,12 +21,17 @@
 	src="//dapi.kakao.com/v2/maps/sdk.js?appkey=f7372f613dea5dbd8f49b7be0a73bbb8"></script>
 
 <script type="text/javascript">
-	let surveyName = "${survey.name}";
-	console.log("surveyName In jsp"+surveyName);
+	$(function(){
+		let surveyName = "${survey.name}";
+		updateSurveyName(surveyName);
+		console.log("surveyName In jsp"+surveyName);
+	})
+	
 </script>
-
-<script src="/resources/js/question/question.js"></script>
+<script src="/resources/js/question/questionIUD.js"></script>
+<script src="/resources/js/question/questionEvent.js"></script>
 <script src="/resources/js/question/questionParse.js"></script>
+
 <script type="text/javascript">
 	
 	$(function(){
@@ -1044,7 +1052,93 @@
 		</div>
 	</div>
 	<!-- add type 모달창2 -->
-
+	<div class="j-condition-box">
+		
+		<div class="j-condition-card-container">
+			
+			<div class="j-que-con-card j-flex-row-center" id="card1">
+				<div class="j-corder j-flex-row-center">1</div>
+				<div class="j-type-con-img j-flex-row-center">
+					<img src="/resources/img/question/checkBox.png"/>
+				</div>
+				<div class="j-con-que-name">질문명</div>
+			</div>
+	    
+	    
+	    
+	    
+			<div class="j-que-con-card j-flex-row-center" id="card2">
+				<div class="j-corder j-flex-row-center">2</div>
+				<div class="j-type-con-img j-flex-row-center">
+					<img src="/resources/img/question/checkBox.png"/>
+				</div>
+				<div class="j-con-que-name">질문명</div>
+			</div>
+	   
+	    
+	    
+			<div class="j-que-con-card j-flex-row-center" id="card3">
+				<div class="j-corder j-flex-row-center">3</div>
+				<div class="j-type-con-img j-flex-row-center">
+					<img src="/resources/img/question/checkBox.png"/>
+				</div>
+				<div class="j-con-que-name">질문명</div>
+			</div>
+	    </div>
+	  </div>
+	  
+	  <div id="j-con-modal">
+	  	<div id="j-con-modal-hader" class="j-flex-row-center">
+	  		<div id="j-nextQuestion" class="j-flex-row-center j-con-modal-h-select">
+	  			<span>이어지는 질문</span>
+	  		</div>
+	  		<div id="j-subQuestion" class="j-flex-row-center">
+	  			<span>대체 질문 등록</span>
+	  		</div>
+	  	</div>
+	  	<div id="j-con-modal-body">
+	  		<div class="j-basic-move">
+	  			<div>기본이동</div>
+	  			<select class="form-select">
+	  				<option value="" disabled>다음질문</option>
+	  			</select>
+	  		</div>
+	  		<div class="j-condition-move">
+	  			<div class="j-condition-plus j-flex-row-center">
+	  				<span>로직 추가하기</span>
+	  				<div class="j-con-plus-button j-flex-row-center">
+	  					<span>+</span>
+	  				</div>
+	  			</div>
+	  			<div class="j-condition-content-box">
+	  				
+	  				<div class="j-condition">
+	  					
+	  					<div class="j-condition-header j-flex-row-center">
+	  						<div class="j-arrow j-flex-row-center">
+	  							<img src="/resources/img/question/arrow-up.png">
+	  						</div>
+	  						<div class="j-con-sur-name">로직 1</div>
+	  					</div>
+	  					
+	  					<div class="j-condition-c">
+	  						<div>조건</div>
+	  						<input type="text" class="form-control" placeholder="조건 값을 입력해주세요">
+	  						<select class="operations form-select">
+	  							<option value="" disabled="disabled">조건</option>
+	  						</select>
+	  						<div>결과</div>
+	  						<select class="next-ques form-select">
+	  							<option value="" disabled="disabled">다음질문</option>
+	  						</select>
+	  					</div>
+	  					
+	  				</div>
+	  			
+	  			</div>
+	  		</div>
+	  	</div>
+	  </div>
 </body>
 
 </html>

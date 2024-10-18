@@ -20,7 +20,9 @@ public class MemberVO {
 	private String address;
 	private Timestamp createdAt;
 	private Timestamp updateAt;
-	private int status;
-	private int postalCode;
+	private char status;
+	private String postalCode;
 	private String phone;
+	private int ccSeq;
+	private String addressDetail;
 }

@@ -70,6 +70,20 @@
 
     <div id="chart"></div>
 
+    <div>
+        <table class="table">
+            <thead>
+            <tr>
+                <th scope="col">Date</th>
+                <th scope="col">Cluster</th>
+                <th scope="col">Answer</th>
+            </tr>
+            </thead>
+            <tbody id="table-body"></tbody>
+        </table>
+    </div>
+
+    <button id="next-btn" class="btn c-gray">다음 페이지</button>
 </div>
 
 
