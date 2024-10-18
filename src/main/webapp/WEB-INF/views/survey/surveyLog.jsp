@@ -57,7 +57,9 @@
     <div id="warning-message" style="display:none; color: red; margin-top: 10px;">응답 시간이 너무 짧습니다 (3초 미만)</div>
 
     <!-- 응답 시간 분석 시각화 -->
+    <div id = "chart-container" style="margin-top: 20px;">
     <canvas id="responseTimeChart" width="400" height="200"></canvas>
+    </div>
 </div>
 
 </body>

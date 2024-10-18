@@ -293,6 +293,18 @@ button:active {
     background-color: #004494;
 }
 
+/*검색창등부트스트랩*/
+.btn-block {
+    display: block;
+    width: 100%;
+}
+
+.form-select,
+.form-control {
+    width: 100%; /* 모든 선택 상자와 입력 필드를 컨테이너 폭에 맞게 조정 */
+}
+
+
 /* 결과 테이블 */
 .result-section {
     max-height: 300px;
@@ -328,77 +340,30 @@ button:active {
 }
 
 /* 단계 바 */
-#parent-bar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0;
-    margin: 20px 0;
-    flex-direction: row;
+.progress {
+    height: 20px; /* 진행 막대의 높이 조정 */
+    border-radius: 50px; /* 모서리를 둥글게 */
+    overflow: hidden; /* 둥근 모서리가 잘리지 않도록 처리 */
 }
 
-.step {
+.progress-bar {
+    font-size: 15px; /* 텍스트 크기 조정 */
+    line-height: 20px; /* 높이에 맞춰 라인 높이 조정 */
+    color: white; /* 텍스트 색상을 흰색으로 */
     display: flex;
-    flex-direction: column;
+    align-items: center;
     justify-content: center;
-    align-items: center;
-    color: gray;
-    position: relative;
-    flex: 1;
-    text-align: center;
 }
 
-.step::before,
-.step::after {
-    content: '';
-    position: absolute;
-    height: 3px;
-    width: 40%;
-    background: gray;
-    top: 50%;
-    transform: translateY(-50%);
+.progress-bar.bg-success {
+    background-color: #007BFF !important; /* 완료된 단계의 색상 */
 }
 
-.step::before {
-    left: 0;
+.progress-bar.bg-secondary {
+    background-color: #6c757d; /* 대기 중 또는 진행 중 단계의 색상 */
 }
 
-.step::after {
-    right: 0;
-}
 
-.step:first-child::before {
-    display: none;
-}
-
-.step:last-child::after {
-    display: none;
-}
-
-.step.done .icon,
-.step.active .icon {
-    color: white;
-    background-color: blue;
-}
-
-.step.done::after,
-.step.active::after {
-    background-color: blue;
-}
-
-.step .icon {
-    width: 32px;
-    height: 32px;
-    line-height: 32px;
-    border-radius: 50%;
-    border: 2px solid blue;
-    background-color: white;
-    display: block;
-}
-
-.step .text {
-    margin-top: 5px;
-}
 
 /*감정분석부분*/
 .emotion-analysis {
