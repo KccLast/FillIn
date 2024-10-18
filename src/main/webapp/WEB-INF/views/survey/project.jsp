@@ -100,7 +100,7 @@
 		</div>
 		
 		<div class="j-condition-button j-flex-row-center j-fix-height">
-			<input type="button" value="질문 고급조건" class="j-nav-input-button">
+			<input type="button" value="질문 고급조건" class="j-nav-input-button j-con-btn">
 		</div>
 		
 		<div class="j-depoly-button j-flex-row-center j-fix-height">

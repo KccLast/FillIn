@@ -377,7 +377,7 @@ $(document).ready(function() {
 				ccSeq: ccSeq,
 				name: title,
 				description: description,
-				options: options.length > 0 ? options : null
+				options: options.length > 0 ? options : []
 			});
 
 			console.log('addedQuestions: ' + JSON.stringify(addedQuestions));
@@ -455,7 +455,11 @@ $(document).ready(function() {
 	// 선택된 질문 - 질문지 만드는 페이지로 보내기
 	$('#create-question-btn').on('click', function() {
 		let questions = [];
-
+        let surveyName ='';
+        surveyNames = $('#survey-name').val();
+        let aiSurveyObject = {
+            surveyName : surveyNames
+        }
 		$('.added-question-checkbox:checked').each(function() {
 			const ccSeq = $(this).attr('id').split('-')[1];
 
@@ -477,12 +481,13 @@ $(document).ready(function() {
 			alert("선택된 질문이 없습니다.");
 			return;
 		}
-		console.log('Request Payload: ', JSON.stringify(questions));
+		aiSurveyObject.questions = questions;
+		console.log('Request Payload 222: ', JSON.stringify(aiSurveyObject));
 		$.ajax({
 			url: '/api/question/create-survey',
 			type: 'POST',
 			contentType: 'application/json',
-			data: JSON.stringify(questions),
+			data: JSON.stringify(aiSurveyObject),
 			success: function(response) {
 				console.log(response);
 			},

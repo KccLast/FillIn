@@ -46,7 +46,7 @@ $(function () {
   $('.j-condition-box').hide();
   $('#j-con-modal').hide();
   //초기 연결 선 설정
-  $('.j-nav-input-button').click(function () {
+  $('.j-con-btn').click(function () {
     if (contentShow) {
       $('.content').hide(); // 숨기기
 
