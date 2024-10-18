@@ -2,6 +2,9 @@ package com.kcc.fillin.question.service;
 
 import java.util.List;
 
+import com.kcc.fillin.question.dto.*;
+import com.kcc.fillin.survey.dao.SurveyDao;
+import com.kcc.fillin.survey.domain.SurveyVO;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -10,11 +13,6 @@ import com.kcc.fillin.global.Exception.CannotCreateQuestionException;
 import com.kcc.fillin.question.dao.QuestionDao;
 import com.kcc.fillin.question.domain.QuestionItemVO;
 import com.kcc.fillin.question.domain.QuestionVO;
-import com.kcc.fillin.question.dto.DeleteQuestionItemRequest;
-import com.kcc.fillin.question.dto.DeleteQuestionRequest;
-import com.kcc.fillin.question.dto.UpdateDropContent;
-import com.kcc.fillin.question.dto.UpdateQuestionItemRequest;
-import com.kcc.fillin.question.dto.UpdateQuestionRequest;
 import com.kcc.fillin.survey.dto.SubmitRequest;
 
 import lombok.RequiredArgsConstructor;
@@ -24,6 +22,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class QuestionServiceImpl implements QuestionService {
 	private final QuestionDao questionDao;
+	private final SurveyDao surveyDao;
 
 	@Override
 	public boolean insertQuestionAndQuestionItem(List<QuestionVO> questionVOList) throws CannotCreateQuestionException {
@@ -151,6 +150,18 @@ public class QuestionServiceImpl implements QuestionService {
 		return true;
 	}
 
+	@Override
+	@Transactional
+	public boolean createAutoQuestion(CreateAutoQuestionRequest selectedQuestions) {
+		SurveyVO convertedVO = convertAutoQuestionToSurveyVO(selectedQuestions);
+		//surveyDao.insertNewSurvey()
+		surveyDao.insertNewSurvey(convertedVO);
+		selectedQuestions.setSeq(convertedVO.getSeq());
+
+
+		return false;
+	}
+
 	private boolean answerIsContactData(SubmitRequest item) {
 		// TODO Auto-generated method stub
 		return false;
@@ -171,6 +182,15 @@ public class QuestionServiceImpl implements QuestionService {
 
 	private boolean deleteAllQuestionItemInQuestion(Long item) {
 		return questionDao.deleteAllQuestionItem(item);
+	}
+	private SurveyVO convertAutoQuestionToSurveyVO(CreateAutoQuestionRequest target){
+		return SurveyVO.getSurveyVOFromNameAndMemberSeq(target.getSurveyName(),target.getMemberSeq());
+	}
+
+	private List<QuestionVO> convertAutoQuestionToQuestionVOList(CreateAutoQuestionRequest target){
+			final Long surveySeq = target.getSeq();
+
+		return null;
 	}
 
 }

@@ -39,6 +39,22 @@ public class StatisticController2 {
 		return "/statistic/keyword";
 	}
 
+	@GetMapping("/keyword")
+	public String showKeywordAnalysisPage() {
+		// System.out.println(clusteringData);
+
+		// clusteringData를 파싱하여 모델에 추가
+		ObjectMapper objectMapper = new ObjectMapper();
+		List<Map<String, Object>> parsedData;
+
+		/*model.addAttribute("surveySeq", surveySeq);
+		model.addAttribute("questionSeq", questionSeq);
+		model.addAttribute("clusteringData", clusteringData);*/
+
+		return "/statistic/keyword";
+	}
+
+
 	@GetMapping("/{surveyId}")
 	public String getFull(@PathVariable Long surveyId, Model model) {
 		model.addAttribute("surveyId", surveyId);

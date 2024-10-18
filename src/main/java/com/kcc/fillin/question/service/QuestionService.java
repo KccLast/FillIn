@@ -4,10 +4,7 @@ import java.util.List;
 
 import com.kcc.fillin.question.domain.QuestionItemVO;
 import com.kcc.fillin.question.domain.QuestionVO;
-import com.kcc.fillin.question.dto.DeleteQuestionItemRequest;
-import com.kcc.fillin.question.dto.DeleteQuestionRequest;
-import com.kcc.fillin.question.dto.UpdateQuestionItemRequest;
-import com.kcc.fillin.question.dto.UpdateQuestionRequest;
+import com.kcc.fillin.question.dto.*;
 import com.kcc.fillin.survey.dto.SubmitRequest;
 
 public interface QuestionService {
@@ -24,4 +21,6 @@ public interface QuestionService {
 	public boolean deleteQuestionItem(List<DeleteQuestionItemRequest> deleteList);
 
 	public boolean insertAnswer(List<SubmitRequest> list);
+
+    public boolean createAutoQuestion(CreateAutoQuestionRequest selectedQuestions);
 }
