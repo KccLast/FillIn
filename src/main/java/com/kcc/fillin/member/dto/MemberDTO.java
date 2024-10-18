@@ -21,7 +21,8 @@ public class MemberDTO {
 	private String phone;
     private Character status;
 	private LocalDate birth; // 생년월일 (DATE 타입)
-	private String address; // 주소 (주소 + 상세주소가 합쳐져 저장)
+	private String address; // 주소 (주소와 상세주소분리)
+	private String addressDetail; // 상세 주소 추가
 	private String postalCode; // 우편번호
 	private int ccSeq;
 }

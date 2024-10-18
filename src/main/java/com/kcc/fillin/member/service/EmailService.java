@@ -72,19 +72,33 @@ public class EmailService {
             helper.setSubject(subject);  // 이메일 제목
 
             // HTML 형식으로 본문 작성
-            String htmlContent = "<html>" +
+            String htmlContent = "<!DOCTYPE html>" +
+                    "<html lang='en'>" +
+                    "<head>" +
+                    "<meta charset='UTF-8'>" +
+                    "<meta name='viewport' content='width=device-width, initial-scale=1.0'>" +
+                    "<style>" +
+                    "body { font-family: Arial, sans-serif; background-color: #f4f4f4; color: #333; padding: 20px; }" +
+                    "h2 { color: #4A90E2; }" +
+                    ".content { background-color: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }" +
+                    "a.button { background-color: #4A90E2; color: #ffffff; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block; }" +
+                    ".footer { font-size: 12px; color: #777; margin-top: 20px; }" +
+                    "</style>" +
+                    "</head>" +
                     "<body>" +
+                    "<div class='content'>" +
                     "<h2>인증 코드 발급</h2>" +
                     "<p>안녕하세요,</p>" +
                     "<p>귀하의 인증 코드는 <strong style='color:blue;'>" + tempCode + "</strong> 입니다.</p>" +
                     "<p>인증 코드는 <strong>1분 동안 유효</strong>합니다.</p>" +
-//                    "<p>아래 버튼을 클릭하여 화면으로 돌아가세요:</p>" +
-//                    "<a href='http://localhost:8085/member/password?code="+tempCode +"'style='display:inline-block; padding:10px 20px; background-color:#4CAF50; color:white; text-decoration:none; border-radius:5px;'>인증 페이지로 이동</a>" +
-                    "<p>감사합니다.</p>" +
+                    "<a href='http://localhost:8085/member/password?code=" + tempCode + "' class='button'>재인증 페이지로 이동</a>" +
+                    "<p class='footer'>감사합니다.</p>" +
                     "<hr>" +
-                    "<p style='font-size:12px;color:gray;'>본 이메일은 자동 생성된 메시지입니다. 회신하지 마세요.</p>" +
+                    "<p class='footer'>본 이메일은 자동 생성된 메시지입니다. 회신하지 마세요.</p>" +
+                    "</div>" +
                     "</body>" +
                     "</html>";
+
 
             helper.setText(htmlContent, true);  // 두 번째 파라미터는 HTML 사용 여부
 
