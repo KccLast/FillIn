@@ -14,6 +14,7 @@ import org.springframework.boot.autoconfigure.domain.EntityScan;
 @NoArgsConstructor
 @EntityScan
 public class MemberDTO {
+	private Long seq;
 	private String username;
 	private String password;
 	private String name;

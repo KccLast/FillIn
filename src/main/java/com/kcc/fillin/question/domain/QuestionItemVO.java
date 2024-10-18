@@ -22,4 +22,11 @@ public class QuestionItemVO extends CommonVO {
 		this.content = dropContent;
 		this.orderNum = orderNum;
 	}
+
+	public static QuestionItemVO getInstanceFromContentOrderNum(String content, int orderNum){
+		QuestionItemVO questionItemVO = new QuestionItemVO();
+		questionItemVO.content = content;
+		questionItemVO.orderNum = orderNum;
+		return questionItemVO;
+	}
 }

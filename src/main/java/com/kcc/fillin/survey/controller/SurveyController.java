@@ -3,6 +3,7 @@ package com.kcc.fillin.survey.controller;
 import java.util.List;
 import java.util.Map;
 
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -81,6 +82,7 @@ public class SurveyController {
 		SurveyVO findSurvey = service.findSurveyBySurveySeq(surveySeq);
 		model.addAttribute("survey", findSurvey);
 		ObjectMapper objectMapper = new ObjectMapper();
+		objectMapper.registerModule(new JavaTimeModule());
 		String jsonString = "";
 		try {
 			jsonString = objectMapper.writeValueAsString(findSurvey);

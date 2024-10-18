@@ -34,4 +34,12 @@ public class QuestionVO extends CommonVO {
 	public boolean compareQuestionItemCnt(int questionItemInsertResult) {
 		return questionItems.size() == questionItemInsertResult;
 	}
+
+	public static QuestionVO getQuestionVOFrom(String name, String description, Long seq){
+		QuestionVO converted = new QuestionVO();
+		converted.name = name;
+		converted.description = description;
+		converted.seq=seq;
+		return converted;
+	}
 }
