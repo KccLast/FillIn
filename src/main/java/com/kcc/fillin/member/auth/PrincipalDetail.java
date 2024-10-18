@@ -51,6 +51,8 @@ public class PrincipalDetail implements UserDetails {
         return member.getAddress();
     }
 
+//    public Long getSeq() { return member.getSeq(); }
+
     @Override
     public boolean isAccountNonExpired() {
         return true;  // 계정 만료 여부

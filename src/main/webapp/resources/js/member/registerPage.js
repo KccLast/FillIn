@@ -401,6 +401,8 @@ $(document).ready(function() {
         const birthMonth = $("#birth-month").val().padStart(2, '0');  // 두 자리 월
         const birthDay = $("#birth-day").val().padStart(2, '0');  // 두 자리 일
 
+        console.log($("#detailed-address").val());
+
         const formData = {
             username: $("#email").val(),
             password: $("#password").val(),
@@ -443,8 +445,8 @@ $(document).ready(function() {
     window.execDaumPostcode = function() {
         new daum.Postcode({
             oncomplete: function(data) {
-                var address = '';
-                var extraAddress = '';
+                var address = ''; // 기본 주소를 저장할 변수
+                var extraAddress = ''; // 추가 주소 정보
 
                 if (data.userSelectedType === 'R') { // 도로명 주소 선택
                     address = data.roadAddress;
@@ -452,11 +454,12 @@ $(document).ready(function() {
                     address = data.jibunAddress;
                 }
 
-                // 우편번호와 주소를 입력 필드에 넣음
+                // 우편번호와 기본 주소를 입력 필드에 넣음
                 document.getElementById('zipcode').value = data.zonecode;
                 document.getElementById('address').value = address;
-                // document.getElementById('detailed-address').value = detailed-address;
+                document.getElementById('detailed-address').value = ""; // 상세 주소 필드 초기화
 
+                // 추가 주소 정보를 생성 (예를 들어 동/로/가 정보 및 건물 이름)
                 if (data.userSelectedType === 'R') {
                     if (data.bname !== '' && /[동|로|가]$/g.test(data.bname)) {
                         extraAddress += data.bname;
@@ -467,14 +470,17 @@ $(document).ready(function() {
                     if (extraAddress !== '') {
                         extraAddress = ' (' + extraAddress + ')';
                     }
-                    document.getElementById("address").value += extraAddress;
+                    document.getElementById("address").value += extraAddress; // 추가 주소 정보 필드에 값을 넣음
                 }
 
-                // 상세주소 필드에 포커스
-                document.getElementById("detailed-address").focus();
+                console.log(extraAddress);
+
+                // 상세주소 필드에 포커스 설정하여 사용자가 상세 주소를 입력할 수 있도록 함
+                // document.getElementById("detailed-address").focus();
             }
         }).open();
     };
+
 
     // 프로필 이미지 미리보기
     function previewProfileImage(event) {
