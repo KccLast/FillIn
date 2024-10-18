@@ -43,7 +43,7 @@
 				<div class="d-flex align-items-center">
 					<li class="px-2 alarm-item"><img alt="alarm" src="/resources/img/common/alarm.png" width="25" height="23">
 						<div class="circle"></div></li>
-					<li class="px-2 username">송동호</li>
+					<li class="px-2 username"></li>
 					<li class="px-2">
 						<!-- 모달 연결 --> 
 						<img class="profile" alt="profile"
