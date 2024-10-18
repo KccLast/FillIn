@@ -149,29 +149,7 @@
 			</c:if>
 		</div>
 	</div>
-	
-	
-	
-	<!-- 질문 추가 모달 -->
-     <div id="survey-plus-modal" class="survey-p-modal">
-        <div class="j-survey-modal-content">
-          <span class="j-survey-close" id="survey-closeModal">&times;</span>
-          <div>새로운 채움지 만들기</div>
-          <form action="/survey/project" method="post"> 
-          <div class="j-surveyName-box">
-          	<input type="text" class="j-surveyName-input-box" name="name">
-          </div>
-          <input type="submit" id="createSurveyBtn">설문지 생성</input>
-          </form>
-     </div>
-    </div>
-    <!-- 질문 추가 모달  -->
-	
-	
-	
 	<script type="text/javascript" src="/resources/js/survey/multiSearch.js"></script>
-
 	<%@include file="/WEB-INF/views/question/modal-autoQuestions.jsp"%>
-
 </body>
 </html>

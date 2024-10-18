@@ -50,6 +50,10 @@ public class PrincipalDetail implements UserDetails {
     public String getAddress(){
         return member.getAddress();
     }
+    
+    public String getPhone() {
+    	return member.getPhone();
+    }
 
     @Override
     public boolean isAccountNonExpired() {

@@ -10,7 +10,7 @@ $(document).ready(function() {
 			} else {
 				ccSeq = '남성';
 			}
-			console.log(response.data);
+			console.log('data: ' , response.data);
 			$('#username').val(response.data.username);
 			$('#name').val(response.data.name);
 			$('#birth').val(response.data.birth);
