@@ -26,7 +26,7 @@
 
     <!--이메일 찾기 검증-->
     <select id="getMemberByEmail" parameterType="String">
-        SELECT username, password, name, birth, postal_code, address
+        SELECT seq,username, password, name, birth, postal_code, address
         FROM member
         WHERE username = #{username}
     </select>

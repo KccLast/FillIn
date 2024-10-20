@@ -1,5 +1,6 @@
 package com.kcc.fillin.question.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.kcc.fillin.question.dto.*;
@@ -152,14 +153,20 @@ public class QuestionServiceImpl implements QuestionService {
 
 	@Override
 	@Transactional
-	public boolean createAutoQuestion(CreateAutoQuestionRequest selectedQuestions) {
+	public Long createAutoQuestion(CreateAutoQuestionRequest selectedQuestions) {
 		SurveyVO convertedVO = convertAutoQuestionToSurveyVO(selectedQuestions);
-		//surveyDao.insertNewSurvey()
-		surveyDao.insertNewSurvey(convertedVO);
+
+		//새로운 survey를 일단 만들기
+		boolean surveyInserResult = surveyDao.insertNewSurvey(convertedVO);
+		//새로운 survey만들고 seq받아와서 update
 		selectedQuestions.setSeq(convertedVO.getSeq());
+		//이제 새로운 questions를 채워야함
+		List<QuestionVO> questionVOList = convertAutoQuestionToQuestionVOList(selectedQuestions);
+		System.out.println("questionVOList = " + questionVOList);
+		boolean questionVoResult = insertQuestionAndQuestionItem(questionVOList);
 
 
-		return false;
+		return selectedQuestions.getSeq();
 	}
 
 	private boolean answerIsContactData(SubmitRequest item) {
@@ -188,9 +195,8 @@ public class QuestionServiceImpl implements QuestionService {
 	}
 
 	private List<QuestionVO> convertAutoQuestionToQuestionVOList(CreateAutoQuestionRequest target){
-			final Long surveySeq = target.getSeq();
 
-		return null;
+		return target.getConvertedCreateQuestionToQuestionVO();
 	}
 
 }
