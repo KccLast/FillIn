@@ -110,6 +110,15 @@ $(function () {
       // );
     }
   );
+  //라디오 버튼 눌렀을 때 이벤트 성별
+    $('.content').on('click', '.radio-container', function () {
+      let $thisRadio = $(this).find('input[type="radio"]');
+      let $sibling = $(this).siblings();
+
+      $thisRadio.prop('checked', true);
+      $(this).addClass('clicked-radio-css');
+      $sibling.removeClass('clicked-radio-css');
+    });
 
   $('.content').on('click', '.j-number > span', function () {
     getSubmitObject(this, $(this).text());

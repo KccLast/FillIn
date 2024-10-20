@@ -490,6 +490,7 @@ $(document).ready(function() {
 			data: JSON.stringify(aiSurveyObject),
 			success: function(response) {
 				console.log(response);
+				location.href = response.data;
 			},
 			error: function(xhr) {
 				console.error('Error:', xhr.responseText);

@@ -139,12 +139,19 @@ public class QuestionRestController_JA {
 	// 테스트용
 	@PostMapping("/create-survey")
 	public Response createSurvey(@RequestBody CreateAutoQuestionRequest selectedQuestions, @AuthenticationPrincipal PrincipalDetail userDetails) {
+
 		Long memberSeq = userDetails.getSeq();
+
 		selectedQuestions.setMemberSeq(memberSeq);
 
 		System.out.println("Received questions: " + selectedQuestions);
-		questionService2.createAutoQuestion(selectedQuestions);
-		return Response.setSuccess(selectedQuestions, 200);
+		Long surveySeq = questionService2.createAutoQuestion(selectedQuestions);
+
+		if(surveySeq != null){
+			String redirectUrl = "/survey/"+surveySeq;
+			return Response.setSuccess(redirectUrl,200,"질문을 성공적으로 자동 생성했습니다.");
+		}
+		return Response.setError("질문 자동 생성 중 오류가 발생했습니다.", 500);
 	}
 
 }

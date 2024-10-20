@@ -477,61 +477,50 @@ input:focus {
 
 /* gender */
 .gender-selection {
-  display: flex;
-  gap: 10%;
-  /* 남자, 여자 버튼 간격 조정 */
-  margin-bottom: 4%;
+    display: flex;
+    gap: 10%; /* 남자, 여자 버튼 간격 조정 */
+	margin-bottom: 4%;
 }
 
 .radio-container {
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100px;
-  /* 버튼의 너비 조정 */
-  height: 100px;
-  /* 버튼의 높이 조정 */
-  background-color: #eeeeee;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100px; /* 버튼의 너비 조정 */
+    height: 100px; /* 버튼의 높이 조정 */
+    background-color: #EEEEEE;
 
-  border-radius: 100%;
-  /* 라운드 버튼 모양 조정 */
-  cursor: pointer;
-  transition: background-color 0.3s ease, box-shadow 0.3s ease;
-  overflow: hidden;
-  font-weight: bold;
+    border-radius: 100%; /* 라운드 버튼 모양 조정 */
+    cursor: pointer;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    overflow: hidden;
+    font-weight: bold;
 }
 
 .radio-container:hover {
-  background: linear-gradient(45deg,
-      #005bac,
-      #66b2ff) !important;
-  /* hover 시 배경 그라데이션 */
-  box-shadow: 0 4px 15px rgba(0, 91, 172, 0.5);
-  /* hover 시 약간의 그림자 */
+    background: linear-gradient(45deg, #005BAC, #66B2FF); /* hover 시 배경 그라데이션 */
+    box-shadow: 0 4px 15px rgba(0, 91, 172, 0.5); /* hover 시 약간의 그림자 */
 }
 
 .radio-container input {
-  display: none;
-  /* 기본 라디오 버튼 숨김 */
+   display: none; /* 기본 라디오 버튼 숨김 */
 }
-
 .radio-text {
-  font-size: 18px;
-  /* 버튼 안에 글씨 크기 조정 */
-  color: white;
-  transition: transform 0.3s ease, color 0.3s ease;
-  /* hover 시 애니메이션 효과 */
+    font-size: 18px; /* 버튼 안에 글씨 크기 조정 */
+    color:white;
+    transition: transform 0.3s ease, color 0.3s ease; /* hover 시 애니메이션 효과 */
 }
 
 .radio-container:hover .radio-text {
-  transform: translateY(-5px);
-  /* hover 시 글씨가 위로 떠다니는 효과 */
+    transform: translateY(-5px); /* hover 시 글씨가 위로 떠다니는 효과 */
+
 }
 
-.clicked-radio-css {
-  background-color: #005bac;
+.clicked-radio-css{
+	background-color: #005BAC;
 }
+
 
 /* gender */
 

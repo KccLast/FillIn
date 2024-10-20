@@ -183,9 +183,12 @@ async function fetchQuestionItem(seq){
 }
 
 function type7Common(target,qi){
+
     target.find('.j-select-optionBox').addClass(qi.seq + ' ' + qi.questionSeq);
-    target.find('input[type="text"]').addClass('qi');
-    target.find('input[type="text"]').addClass(''+qi.seq);
+    target.find('.j-option-input-radio > input[type="text"]').each((idx,item)=>{
+        $(item).addClass('qi '+qi.seq);
+    })
+
     target.find('.j-option-order').text(qi.orderNum);
      target.find('.j-option-input-radio > input[type="text"]').val(qi.content);
      target.find('.j-chAndRa').attr('name',qi.questionSeq);

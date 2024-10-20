@@ -218,6 +218,7 @@ $(function () {
     'change',
     'input[type="text"][class*="qi"], select[class*="qi"]',
     function () {
+    console.log("에?");
       let classList = $(this).attr('class') || '';
       let match = classList.match(/(\d+)/); // 'qi' 뒤의 숫자 추출
 
@@ -239,7 +240,7 @@ $(function () {
       }
     }
   );
-  //라디오 버튼 눌렀을 때 이벤트
+  //라디오 버튼 눌렀을 때 이벤트 성별
   $('.content').on('click', '.radio-container', function () {
     let $thisRadio = $(this).find('input[type="radio"]');
     let $sibling = $(this).siblings();
@@ -274,6 +275,8 @@ $(function () {
     }
 
     let inputBox = $(this).parent().prev().find('.qi');
+    if(inputBox.length !== 0){
+    console.log(inputBox);
     let targetSeq = seqExtract(inputBox);
     let questionSeq = $(this).parents('.j-question-card').find('.j-qseq').val();
     questionSeq2 = parseInt(questionSeq);
@@ -286,6 +289,7 @@ $(function () {
       targetSeq,
       'removeQuestionItemList'
     );
+    }
 
     $(this).parent().parent().remove();
     $higherParent.find('.j-option-order').each(function (idx, el) {
@@ -672,6 +676,9 @@ $(function () {
           }
         }
         selectDiv.addClass('j-u-card');
+        //list에 이미지 바꾸기
+        let newSrc = selectDiv.find('.j-typeAndImg > img').attr('src');
+        $('.j-question-list').find('.j-question').eq(idx).find('.question-img > img').attr('src',newSrc);
       } catch (error) {
         console.error('AJAX 요청 실패:', error);
       }
