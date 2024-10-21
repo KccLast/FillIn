@@ -22,5 +22,5 @@ public interface QuestionService {
 
 	public boolean insertAnswer(List<SubmitRequest> list);
 
-    public boolean createAutoQuestion(CreateAutoQuestionRequest selectedQuestions);
+    public Long createAutoQuestion(CreateAutoQuestionRequest selectedQuestions);
 }

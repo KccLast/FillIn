@@ -80,6 +80,7 @@ public class QuestionRestController {
 	@DeleteMapping("/item")
 	public Response<?> deleteQuestionItem(@RequestBody
 	List<DeleteQuestionItemRequest> deleteList) {
+		System.out.println("deleteList = " + deleteList);
 		boolean deleteResult = questionService.deleteQuestionItem(deleteList);
 
 		return Response.setSuccess("성공적으로 질문 항목을 제거했습니다.", 200);
