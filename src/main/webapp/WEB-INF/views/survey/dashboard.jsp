@@ -7,18 +7,82 @@
 <head>
 <meta charset="UTF-8">
 <title>DashBoard</title>
-<link rel="stylesheet" type="text/css" href="/resources/common/dashBoardNav.css">
-<link rel="stylesheet" type="text/css" href="/resources/css/survey/dashboard.css">
+<!-- <link rel="stylesheet" type="text/css" href="/resources/common/dashBoardNav.css"> -->
+<link rel="stylesheet" type="text/css"
+	href="/resources/common/statisticsNav.css">
+<link rel="stylesheet" type="text/css"
+	href="/resources/css/survey/dashboard.css">
 </head>
 <body>
 	<%@include file="/resources/common/header.jsp"%>
-	<%@ include file="/resources/common/dashBoardNav.jsp"%>
+	<%-- <%@ include file="/resources/common/dashBoardNav.jsp"%> --%>
+	<%@ include file="/resources/common/statisticsNav.jsp"%>
 
 	<!-- 컨텐트 내용 -->
 	<div class="content">
+		<%-- <table class="table table-bordered align-middle">
+	  <tbody>
+	    <tr>
+	      <td>진행 상태</td>
+	      <td>
+	        <select class="selectpicker" id="progress-ccSeq" name="ccSeq">
+	          <option value="">전체</option>
+	          <c:forEach var="status" items="${progressStatus}">
+	            <option value="${status.seq}">${status.name}</option>
+	          </c:forEach>
+	        </select>
+	      </td>
+	    </tr>
+	    <tr>
+	      <td >생성일</td>
+	      <td>
+	        <input type="date" id="startCreatedAt" name="startCreatedAt"> - 
+	        <input type="date" id="endCreatedAt" name="endCreatedAt">
+	        <c:forEach var="status" items="${selectPeriod}">
+	          <span class="date-badge created-at fs-6" data-period="${status.name}">
+	            ${status.name}
+	          </span>
+	        </c:forEach>
+	      </td>
+	    </tr>
+	    <tr>
+	      <td>수정일</td>
+	      <td>
+	        <input type="date" id="startUpdatedAt" name="startUpdatedAt"> - 
+	        <input type="date" id="endUpdatedAt" name="endUpdatedAt">
+	        <c:forEach var="status" items="${selectPeriod}">
+	          <span class="date-badge updated-at fs-6" data-period="${status.name}">
+	            ${status.name}
+	          </span>
+	        </c:forEach>
+	      </td>
+	    </tr>
+	    <tr>
+	      <td>제목</td>
+	      <td>
+	        <input type="text" id="title" name="title" placeholder="제목">
+	      </td>
+	    </tr>
+	    <tr>
+	      <td>응답 수</td>
+	      <td>
+	        <input type="text" id="minAnswerCount" name="minAnswerCount" oninput="this.value = this.value.replace(/[^0-9]/g,'')"> - 
+	        <input type="text" id="maxAnswerCount" name="maxAnswerCount" oninput="this.value = this.value.replace(/[^0-9]/g,'')">
+	        <p class="limit-num">* 숫자만 입력</p>
+	      </td>
+	    </tr>
+	    <tr>
+	      <td colspan="2">
+	        <button class="btn search-btn" id="searchBtn">검색</button>
+	        <button class="btn initial-btn" id="initialBtn">초기화</button>
+	      </td>
+	    </tr>
+	  </tbody>
+	</table> --%>
+
 		<!-- 다중 검색창 -->
-		<div class="filter-section">
-			<div class="filter-row">
+		<%-- <div class="container filter-section">
+			<div class="col-2 filter-row">
 				<p>진행 상태</p>
 				<div class="filter-input">
 					<select class="selectpicker" id="progress-ccSeq" name="ccSeq">
@@ -78,7 +142,87 @@
 				<button class="search-btn" id="searchBtn">조회하기</button>
 				<button class="initial-btn" id="initialBtn">초기화</button>
 			</div>
-		</div>
+		</div> --%>
+
+<div class="custom-card mt-3">
+    <div class="custom-card-body">
+        <div class="container custom-filter-section">
+            <div class="row mb-3">
+                <div class="col-md-6 col-lg-4">
+                    <div class="d-flex align-items-center">
+                        <p class="mb-0 me-2">진행 상태</p>
+                        <div class="filter-input">
+                            <select class="selectpicker form-select" id="progress-ccSeq" name="ccSeq">
+                                <option value="">전체</option>
+                                <c:forEach var="status" items="${progressStatus}">
+                                    <option value="${status.seq}">${status.name}</option>
+                                </c:forEach>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-6 col-lg-4">
+                    <div class="d-flex align-items-center">
+                        <p class="mb-0 me-2">생성일</p>
+                        <div class="filter-input d-flex align-items-center flex-nowrap">
+                            <input type="date" class="form-control me-2" id="startCreatedAt" name="startCreatedAt" style="min-width: 120px; height: 38px;">
+                            <span class="me-2">-</span>
+                            <input type="date" class="form-control me-2" id="endCreatedAt" name="endCreatedAt" style="min-width: 120px; height: 38px;">
+                            <c:forEach var="status" items="${selectPeriod}">
+                                <span class="date-badge created-at" data-period="${status.name}">${status.name}</span>
+                            </c:forEach>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-6 col-lg-4">
+                    <div class="d-flex align-items-center">
+                        <p class="mb-0 me-2">수정일</p>
+                        <div class="filter-input d-flex align-items-center flex-nowrap">
+                            <input type="date" class="form-control me-2" id="startUpdatedAt" name="startUpdatedAt" style="min-width: 120px; height: 38px;">
+                            <span class="me-2">-</span>
+                            <input type="date" class="form-control me-2" id="endUpdatedAt" name="endUpdatedAt" style="min-width: 120px; height: 38px;">
+                            <c:forEach var="status" items="${selectPeriod}">
+                                <span class="date-badge updated-at" data-period="${status.name}">${status.name}</span>
+                            </c:forEach>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-6 col-lg-4">
+                    <div class="d-flex align-items-center">
+                        <p class="mb-0 me-2">응답 수</p>
+                        <div class="filter-input d-flex align-items-center flex-nowrap">
+                            <input type="text" class="form-control me-2" id="minAnswerCount" name="minAnswerCount"
+                                oninput="this.value = this.value.replace(/[^0-9]/g,'')" style="min-width: 60px; height: 38px;">
+                            <span class="me-2">-</span>
+                            <input type="text" class="form-control me-2" id="maxAnswerCount" name="maxAnswerCount"
+                                oninput="this.value = this.value.replace(/[^0-9]/g,'')" style="min-width: 60px; height: 38px;">
+                        </div>
+                        <p class="limit-num text-muted mt-1">* 숫자만 입력</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 col-lg-4">
+                    <button class="btn btn-primary w-100 mb-2" id="searchBtn">조회하기</button>
+                    <button class="btn btn-secondary w-100" id="initialBtn">초기화</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
 		<!-- 다중 검색 end -->
 
 		<!-- 설문지 생성하는 카드  -->
@@ -86,7 +230,7 @@
 			<div class="card h-100">
 				<div class="add-survey-card">
 					<img alt="plusBtn" src="/resources/img/common/plusButton.png"
-					data-bs-toggle="modal" data-bs-target="#makeAutoQuestion-modal">
+						data-bs-toggle="modal" data-bs-target="#makeAutoQuestion-modal">
 				</div>
 			</div>
 
@@ -96,14 +240,14 @@
 					<div class="card-body">
 						<c:forEach var="status" items="${progressStatus }">
 							<c:if test="${survey.ccSeq == status.seq }">
-								<span class="badge rounded-pill mb-1 px-2 py-1
+								<span
+									class="badge rounded-pill mb-1 px-2 py-1
 									<c:choose>
 										<c:when test="${status.seq == 3 }">bg-warning</c:when>
 										<c:when test="${status.seq == 4 }">bg-primary</c:when>
 										<c:when test="${status.seq == 5 }">bg-secondary</c:when>
 									</c:choose>">
-									${status.name }
-								</span>
+									${status.name } </span>
 							</c:if>
 						</c:forEach>
 						<p>${survey.name }</p>
@@ -117,11 +261,11 @@
 						</div>
 						<div class="date-info">
 							<p>설문 기간:</p>
-							<p>${survey.postDate } ~ ${survey.endDate }</p>
+							<p>${survey.postDate }~${survey.endDate }</p>
 						</div>
 					</div>
 					<div class="card-footer">
-						<p>${survey.answerCount}개 응답</p>
+						<p>${survey.answerCount}개응답</p>
 					</div>
 				</div>
 			</c:forEach>
@@ -149,29 +293,8 @@
 			</c:if>
 		</div>
 	</div>
-	
-	
-	
-	<!-- 질문 추가 모달 -->
-     <div id="survey-plus-modal" class="survey-p-modal">
-        <div class="j-survey-modal-content">
-          <span class="j-survey-close" id="survey-closeModal">&times;</span>
-          <div>새로운 채움지 만들기</div>
-          <form action="/survey/project" method="post"> 
-          <div class="j-surveyName-box">
-          	<input type="text" class="j-surveyName-input-box" name="name">
-          </div>
-          <input type="submit" id="createSurveyBtn">설문지 생성</input>
-          </form>
-     </div>
-    </div>
-    <!-- 질문 추가 모달  -->
-	
-	
-	
-	<script type="text/javascript" src="/resources/js/survey/multiSearch.js"></script>
-
+	<script type="text/javascript"
+		src="/resources/js/survey/multiSearch.js"></script>
 	<%@include file="/WEB-INF/views/question/modal-autoQuestions.jsp"%>
-
 </body>
 </html>
