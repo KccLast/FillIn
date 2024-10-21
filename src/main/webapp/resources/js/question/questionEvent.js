@@ -33,8 +33,41 @@ $(function () {
     if (!localStorage.getItem('removeQuestionList')) {
         localStorage.setItem('removeQuestionList', JSON.stringify([]));
     }
-    if (!localStorage.getItem('removeQuestionItemList')) {
-        localStorage.setItem('removeQuestionItemList', JSON.stringify([]));
+
+
+
+  /**/
+  let contentShow = true;
+  localStorage.clear();
+  if (!localStorage.getItem('updatedQuestionItemList')) {
+    localStorage.setItem('updatedQuestionItemList', JSON.stringify([]));
+  }
+  if (!localStorage.getItem('removeQuestionList')) {
+    localStorage.setItem('removeQuestionList', JSON.stringify([]));
+  }
+  if (!localStorage.getItem('removeQuestionItemList')) {
+    localStorage.setItem('removeQuestionItemList', JSON.stringify([]));
+  }
+
+  const cards = $('.j-que-con-card'); // 모든 카드 선택
+  setCardPositions(cards); // 카드 위치 설정
+
+  //초기 연결 선 설정
+  dragInstance = defaultConditionLine();
+  $('.j-condition-box').hide();
+  $('#j-con-modal').hide();
+  //초기 연결 선 설정
+  $('.j-con-btn').click(function () {
+    if (contentShow) {
+      $('.content').hide(); // 숨기기
+
+      $('.j-condition-box').show(); // 보이기
+      $('#j-con-modal').show();
+      dragInstance.repaintEverything();
+    } else {
+      $('.content').show(); // 보이기
+      $('.j-condition-box').hide(); // 숨기기
+      $('#j-con-modal').hide();
     }
 
     const cards = $('.j-que-con-card'); // 모든 카드 선택
@@ -204,87 +237,66 @@ $(function () {
 
         $(this).data('essential', isEssential);
 
-        if ($(this).hasClass('j-es-seleted')) {
-            $(this).removeClass('j-es-seleted');
-        } else {
-            $(this).addClass('j-es-seleted');
-        }
-    });
-    //카드 기본 이벤트
 
-    //객관식 관련 이벤트
-    $('.content').on(
-        'change',
-        'input[type="text"][class*="qi"], select[class*="qi"]',
-        function () {
-            let classList = $(this).attr('class') || '';
-            let match = classList.match(/(\d+)/); // 'qi' 뒤의 숫자 추출
+    if ($(this).hasClass('j-es-seleted')) {
+      $(this).removeClass('j-es-seleted');
+    } else {
+      $(this).addClass('j-es-seleted');
+    }
+  });
+  //카드 기본 이벤트
 
-            if (match) {
-                let seq = match[1];
-                let content = $(this).val(); // 변경된 값 가져오기
-                seq = parseInt(seq);
-                // 변경된 데이터를 객체로 만듦
-                let updatedItem = {
-                    seq: seq,
-                    content: content,
-                    dropdownOptionList: [],
-                };
-                storeUpdateQuestionItemInLocal(
-                    updatedItem,
-                    seq,
-                    'updatedQuestionItemList'
-                );
-            }
-        }
-    );
-    //라디오 버튼 눌렀을 때 이벤트
-    $('.content').on('click', '.radio-container', function () {
-        let $thisRadio = $(this).find('input[type="radio"]');
-        let $sibling = $(this).siblings();
+  //객관식 관련 이벤트
+  $('.content').on(
+    'change',
+    'input[type="text"][class*="qi"], select[class*="qi"]',
+    function () {
+    console.log("에?");
+      let classList = $(this).attr('class') || '';
+      let match = classList.match(/(\d+)/); // 'qi' 뒤의 숫자 추출
 
-        $thisRadio.prop('checked', true);
-        $(this).addClass('clicked-radio-css');
-        $sibling.removeClass('clicked-radio-css');
-    });
-    //객관식 옵션 추가하기 버튼
-    $('.content').on(
-        'click',
-        '.j-op-name, .j-option-plus-img',
-        async function () {
-            let $prev = $(this).parent().prev();
-            let number = $prev.find('.j-option-order').text();
-            let idx = $prev.parents('.j-question-card').index();
-            $prev.parents('.j-question-card').addClass('j-item-u');
-            let next = parseInt(number) + 1;
-            let parentSeq = $(this).parent().parent().parent().next('.j-cseq').val();
-            let html = await fetchQuestionItem(parentSeq);
-            await setQiCheckBoxAndRadioName(html, $prev, next, idx);
-        }
-    );
-
-    //객관식 옵션 삭제 order 다시 계산
-    $('.content').on('click', '.j-xbutton > img', function () {
-        let $parentDiv = $(this).parent().parent();
-        let $higherParent = $parentDiv.parents('.j-select-question-type-box');
-
-        if ($higherParent.children('.j-select-optionBox').length === 1) {
-            return;
-        }
-
-        let inputBox = $(this).parent().prev().find('.qi');
-        let targetSeq = seqExtract(inputBox);
-        let questionSeq = $(this).parents('.j-question-card').find('.j-qseq').val();
-        questionSeq2 = parseInt(questionSeq);
-        let deleteObject = {
-            seq: targetSeq,
-            questionSeq: questionSeq2,
+      if (match) {
+        let seq = match[1];
+        let content = $(this).val(); // 변경된 값 가져오기
+        seq = parseInt(seq);
+        // 변경된 데이터를 객체로 만듦
+        let updatedItem = {
+          seq: seq,
+          content: content,
+          dropdownOptionList: [],
         };
         storeUpdateQuestionItemInLocal(
             deleteObject,
             targetSeq,
             'removeQuestionItemList'
         );
+      }
+    }
+  );
+  //라디오 버튼 눌렀을 때 이벤트 성별
+  $('.content').on('click', '.radio-container', function () {
+    let $thisRadio = $(this).find('input[type="radio"]');
+    let $sibling = $(this).siblings();
+
+    $thisRadio.prop('checked', true);
+    $(this).addClass('clicked-radio-css');
+    $sibling.removeClass('clicked-radio-css');
+  });
+  //객관식 옵션 추가하기 버튼
+  $('.content').on(
+    'click',
+    '.j-op-name, .j-option-plus-img',
+    async function () {
+      let $prev = $(this).parent().prev();
+      let number = $prev.find('.j-option-order').text();
+      let idx = $prev.parents('.j-question-card').index();
+      $prev.parents('.j-question-card').addClass('j-item-u');
+      let next = parseInt(number) + 1;
+      let parentSeq = $(this).parent().parent().parent().next('.j-cseq').val();
+      let html = await fetchQuestionItem(parentSeq);
+      await setQiCheckBoxAndRadioName(html, $prev, next, idx);
+    }
+  );
 
         $(this).parent().parent().remove();
         $higherParent.find('.j-option-order').each(function (idx, el) {
@@ -344,114 +356,23 @@ $(function () {
             left: cardOffset.left + cardWidth / 2 - modalWidth / 2 + 'px',
         });
 
-        // 모달 표시
-        modal.fadeIn();
-    });
 
-    // 드롭다운 모달 닫기
-    $('.close').click(function () {
-        $('#optionModal').fadeOut(); // 모달 숨기기
-    });
-
-    // 드롭다운 모달 옵션 추가 버튼 클릭 이벤트
-    $('#addOptionsBtn').click(function () {
-        var optionsText = $('#optionTextarea').val(); // textarea 값 가져오기
-        var options = optionsText.split('\n'); // 줄바꿈으로 구분된 옵션 배열 생성
-
-        // 해당 카드의 select 요소 찾기
-        var selectBox = currentCard.find('select');
-
-        // 기존 옵션 초기화
-        selectBox.find('option:not([disabled])').remove();
-
-        // 새로운 옵션 추가
-        options.forEach(function (option) {
-            if (option.trim()) {
-                // 공백은 추가하지 않음
-                selectBox.append('<option>' + option.trim() + '</option>');
-            }
-        });
-        //DB에서 불라온 셀렉트 box일 경우
-        if (selectBox.hasClass('qiBox')) {
-            saveDropDownInStorage(options, currentCard.find('.j-qseq').val());
-        }
-        // 드롭다운 모달 닫기 및 입력 초기화
-        $('#optionModal').fadeOut();
-        $('#optionTextarea').val('');
-    });
-    /*드롭다운 모달 관련*/
-
-    /*객관식 표 관련*/
-    /*row And col 추가*/
-    $('.content').on('click', '.j-row-plus-button', function (e) {
-        $(this).parents('.j-question-card').addClass('j-item-u');
-        /*<input class="j-rowAndcol-input" type="text" placeholder="&nbsp;&nbsp;Row 1">*/
-        let $row = $(this).parent().parent().find('.j-row-box');
-        let idx = $row.find('input').length + 1;
-
-        let inputHtml =
-            '<div class="j-rowAndcol-input-x-box j-flex-row-center j-new-checkAndRadio">' +
-            '<input class="j-rowAndcol-input j-row-input" type="text" placeholder="&nbsp;&nbsp;Row ' +
-            idx +
-            '">' +
-            '<button class="j-rowAndcol-input-xbutton">x</button>' +
-            '</div>';
-        $row.append(inputHtml);
-
-        updateVerticalLine($(this).parent().parent());
-    });
-    $('.content').on('click', '.j-col-plus-button', function () {
-        $(this).parents('.j-question-card').addClass('j-item-u');
-        let $col = $(this).parent().parent().find('.j-col-box');
-        let idx = $col.find('input').length + 1;
-
-        let inputHtml =
-            '<div class="j-rowAndcol-input-x-box j-flex-row-center j-new-checkAndRadio">' +
-            '<input class="j-rowAndcol-input j-col-input" type="text" placeholder="&nbsp;&nbsp;Col ' +
-            idx +
-            '">' +
-            '<button class="j-rowAndcol-input-xbutton">x</button>' +
-            '</div>';
-        $col.append(inputHtml);
-
-        updateVerticalLine($(this).parent().parent());
-    });
-
-    /*row And col 추가*/
-
-    /* row And col 삭제 */
-    $('.content').on('mouseenter', '.j-rowAndcol-input-x-box', function () {
-        $(this).find('.j-rowAndcol-input-xbutton').css('display', 'inline-block');
-    });
-
-    $('.content').on('mouseleave', '.j-rowAndcol-input-x-box', function () {
-        $(this).find('.j-rowAndcol-input-xbutton').css('display', 'none');
-    });
-
-    // Row의 삭제버튼을 눌렀을 때
-    $('.content').on(
-        'click',
-        '.j-row-box .j-rowAndcol-input-xbutton',
-        function () {
-            // 해당 row를 삭제
-            if (
-                $(this).parent().parent().find('.j-rowAndcol-input-x-box').length === 1
-            ) {
-                return;
-            }
-
-            storeItemChartListInLocal(this);
-
-            let $pp = $(this).parent().parent().parent();
-            $(this).parent().remove();
-
-            // 남아있는 Row들의번호를 다시 계산
-            $('.j-row-box .j-rowAndcol-input').each(function (index) {
-                $(this).attr('placeholder', '  Row ' + (index + 1));
-            });
-            updateVerticalLine($pp);
-        }
+    let inputBox = $(this).parent().prev().find('.qi');
+    if(inputBox.length !== 0){
+    console.log(inputBox);
+    let targetSeq = seqExtract(inputBox);
+    let questionSeq = $(this).parents('.j-question-card').find('.j-qseq').val();
+    questionSeq2 = parseInt(questionSeq);
+    let deleteObject = {
+      seq: targetSeq,
+      questionSeq: questionSeq2,
+    };
+    storeUpdateQuestionItemInLocal(
+      deleteObject,
+      targetSeq,
+      'removeQuestionItemList'
     );
+    }
 
     // Col의 삭제버튼을 눌렀을 때
     $('.content').on(
@@ -675,27 +596,35 @@ $(function () {
                 console.error('AJAX 요청 실패:', error);
             }
         }
-    );
-    /**아이템에 타입 클릭해서 타입변경 */
+        selectDiv.addClass('j-u-card');
+        //list에 이미지 바꾸기
+        let newSrc = selectDiv.find('.j-typeAndImg > img').attr('src');
+        $('.j-question-list').find('.j-question').eq(idx).find('.question-img > img').attr('src',newSrc);
+      } catch (error) {
+        console.error('AJAX 요청 실패:', error);
+      }
+    }
+  );
+  /**아이템에 타입 클릭해서 타입변경 */
 
-    /** */
-    //question nav 탭 누르면 하단 변화
-    $('.j-questionNav-tab-Box > div').on('click', function () {
-        $('.j-questionNav-tab-Box > div').removeClass('j-question-nav-color');
-        $(this).addClass('j-question-nav-color');
+  /** */
+  //question nav 탭 누르면 하단 변화
+  $('.j-questionNav-tab-Box > div').on('click', function () {
+    $('.j-questionNav-tab-Box > div').removeClass('j-question-nav-color');
+    $(this).addClass('j-question-nav-color');
 
-        if ($(this).hasClass('j-question-nav-tab')) {
-            $('.j-question-box').show();
-            $('.j-condition-button').show();
-            $('.j-deploy-box').hide();
-            $('.j-depoly-button').hide();
-        } else {
-            $('.j-question-box').hide();
-            $('.j-condition-button').hide();
-            $('.j-deploy-box').show();
-            $('.j-depoly-button').show();
-        }
-    });
+    if ($(this).hasClass('j-question-nav-tab')) {
+      $('.j-question-box').show();
+      $('.j-condition-button').show();
+      $('.j-deploy-box').hide();
+      $('.j-depoly-button').hide();
+    } else {
+      $('.j-question-box').hide();
+      $('.j-condition-button').hide();
+      $('.j-deploy-box').show();
+      $('.j-depoly-button').show();
+    }
+  });
 
     $('.j-nav-save-button').on('click', saveQuestion);
 

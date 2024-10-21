@@ -51,8 +51,6 @@ public class MemberController {
 	}
 
 
-
-
 	// 회원가입 폼 화면 이동
 	@GetMapping("/register")
 	public String showRegisterPage() {

@@ -4,13 +4,14 @@ import java.util.List;
 
 import com.kcc.fillin.global.Common.CommonVO;
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 @Getter
 @Setter
 @ToString
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class QuestionVO extends CommonVO {
 	private Long seq;
 	private Long surveySeq;
@@ -33,5 +34,15 @@ public class QuestionVO extends CommonVO {
 
 	public boolean compareQuestionItemCnt(int questionItemInsertResult) {
 		return questionItems.size() == questionItemInsertResult;
+	}
+
+	public static QuestionVO getQuestionVOFrom(Long surveySeq,String name, String description, Long ccSeq){
+		QuestionVO converted = new QuestionVO();
+		converted.surveySeq = surveySeq;
+		converted.name = name;
+		converted.description = description;
+		converted.ccSeq=ccSeq;
+
+		return converted;
 	}
 }

@@ -9,12 +9,16 @@ function removeUpdatedCardClass() {
 
 /**class에서 seq 추출 */
 function seqExtract(target) {
+  if(target.hasClass('qi')){
   const classValue = target.attr('class'); // 클래스 값 가져오기
   console.log(classValue);
   // 정규표현식으로 숫자만 추출
+
   const number = parseInt(classValue.match(/\d+/)[0], 10);
 
   return number;
+  }
+  return null;
 }
 
 //다양한 로컬스토리지에 값을 넣기 위한 함수
@@ -30,8 +34,7 @@ function storeUpdateQuestionItemInLocal(updateItem, seq, listId) {
   } else {
     updatedQuestionItemList.push(updateItem);
   }
-  console.log(updateItem);
-  console.log(updatedQuestionItemList);
+
   localStorage.setItem(listId, JSON.stringify(updatedQuestionItemList));
 }
 //다양한 로컬스토리지에 값을 넣기 위한 함수
@@ -106,10 +109,11 @@ async function insertQuestion() {
       let $item = $(item);
       let ccSeq = $item.find('.j-cseq').val();
       let isEssential = $item.find('.j-essential').data('essential');
+      let questionOrder = ($item.index())+1;
       let question = {};
 
       question.surveySeq = surveySeq;
-      question.order = $item.index();
+      question.order = questionOrder;
       question.name =
         ($item.find('.j-survey-name-input').val() || ' ').trim() || ' ';
       question.description =
@@ -299,11 +303,12 @@ async function updateQuestion() {
       let $item = $(item);
       let ccSeq = $item.find('.j-cseq').val();
       let isEssential = $item.find('.j-essential').data('essential');
+      let questionOrder = $item.find('.j-q-order').val();
       let updateQuestion = {};
 
       updateQuestion.seq = $item.find('.j-qseq').val();
       updateQuestion.surveySeq = surveySeq;
-      updateQuestion.order = $item.index();
+      updateQuestion.order = questionOrder;
       updateQuestion.name =
         ($item.find('.j-survey-name-input').val() || ' ').trim() || ' ';
       updateQuestion.description =

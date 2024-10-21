@@ -27,4 +27,11 @@ public class SurveyVO {
 	private int totalCnt;
 	private List<QuestionVO> questions;
 
+	public static SurveyVO getSurveyVOFromNameAndMemberSeq(String name, Long memberSeq){
+		SurveyVO surveyVO = new SurveyVO();
+		surveyVO.name = name;
+		surveyVO.memberSeq = memberSeq;
+		return surveyVO;
+	}
+
 }

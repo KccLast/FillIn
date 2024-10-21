@@ -52,6 +52,7 @@
 </head>
 
 <body>
+
 <input type="hidden" id="surveySeq" value="${survey.seq}"/>
 <%@include file="/resources/common/header.jsp" %>
 <%-- <%@ include file="/resources/common/miniNav.jsp" %> --%>

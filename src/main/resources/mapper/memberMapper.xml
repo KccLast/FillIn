@@ -26,7 +26,7 @@
 
     <!--이메일 찾기 검증-->
     <select id="getMemberByEmail" parameterType="String">
-        SELECT username, password, name, birth, postal_code, address
+        SELECT seq,username, password, name, birth, postal_code, address
         FROM member
         WHERE username = #{username}
     </select>
@@ -62,10 +62,10 @@
     <!-- 회원 등록 -->
     <insert id="insertMember" parameterType="MemberDTO">
         INSERT INTO MEMBER
-        (seq, username, name, password, phone, birth, address, postal_code, cc_seq, created_at, updated_at)
+        (seq, username, name, password, phone, birth, address, postal_code, cc_seq, created_at, updated_at,role)
         VALUES (member_seq.nextval, #{username}, #{name}, #{password}, #{phone}, #{birth}, #{address}, #{postalCode},
                 #{ccSeq},
-                sysdate, sysdate)
+                sysdate, sysdate, 'ROLE_USER')
 
     </insert>
 

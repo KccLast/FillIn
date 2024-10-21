@@ -20,6 +20,7 @@ public class PrincipalDetail implements UserDetails {
         this.member = member;
     }
 
+    public Long getSeq(){return member.getSeq();}
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of();  // 권한 정보가 필요하면 이곳에 추가할 수 있습니다.
@@ -50,6 +51,8 @@ public class PrincipalDetail implements UserDetails {
     public String getAddress(){
         return member.getAddress();
     }
+
+//    public Long getSeq() { return member.getSeq(); }
 
     @Override
     public boolean isAccountNonExpired() {

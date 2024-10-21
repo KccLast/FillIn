@@ -14,7 +14,15 @@
 		<if test="tbFileSeq != null">
 			, tb_file_seq
 		</if>)
-		VALUES (#{seq}, #{surveySeq}, #{name}, #{description}, #{order}, #{isEssential}, #{ccSeq}
+		VALUES (
+		#{seq}
+		,#{surveySeq}
+		,#{name}
+		,#{description},
+		(SELECT NVL(MAX(ORDER_NUM), 0) + 1
+		FROM question
+		WHERE survey_seq = #{surveySeq})
+		,#{isEssential},#{ccSeq}
 		<if test="tbFileSeq != null">
 			, #{tbFileSeq}
 		</if>)

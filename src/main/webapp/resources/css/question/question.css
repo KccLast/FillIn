@@ -129,6 +129,22 @@
 .j-option-input-radio > input[type='radio']:checked{
 	background-color: #005BAC;
 }
+.j-option-input-radio>input[type='checkbox']:checked {
+  background-color: #005bac;
+}
+.j-option-input-radio>input[type='checkbox'] {
+  margin-left: 4%;
+  background-color: #cdcdcd;
+  appearance: none;
+  width: 30px;
+  height: 30px;
+  border: 2px solid #cdcdcd;
+  border-radius: 50%;
+  outline: none;
+  cursor: pointer;
+}
+
+
 .j-xbutton {
   width: 10%;
   margin-left: 2%;
