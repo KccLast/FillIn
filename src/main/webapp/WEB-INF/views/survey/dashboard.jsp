@@ -7,17 +7,85 @@
 <head>
 <meta charset="UTF-8">
 <title>DashBoard</title>
-<link rel="stylesheet" type="text/css" href="/resources/common/dashBoardNav.css">
+<!-- <link rel="stylesheet" type="text/css" href="/resources/common/dashBoardNav.css"> -->
+<link rel="stylesheet" type="text/css" href="/resources/common/fixNav.css">
 <link rel="stylesheet" type="text/css" href="/resources/css/survey/dashboard.css">
 </head>
 <body>
 	<%@include file="/resources/common/header.jsp"%>
-	<%@ include file="/resources/common/dashBoardNav.jsp"%>
+	<%-- <%@ include file="/resources/common/dashBoardNav.jsp"%> --%>
+	<%@ include file="/resources/common/fixNav.jsp"%>
 
 	<!-- 컨텐트 내용 -->
 	<div class="content">
+	<table class="table">
+	 <!--  <thead>
+	    <tr>
+	      <th scope="col">항목</th>
+	      <th scope="col">필터</th>
+	    </tr>
+	  </thead> -->
+	  <tbody>
+	    <tr>
+	      <td>진행 상태</td>
+	      <td>
+	        <select class="selectpicker" id="progress-ccSeq" name="ccSeq">
+	          <option value="">전체</option>
+	          <c:forEach var="status" items="${progressStatus}">
+	            <option value="${status.seq}">${status.name}</option>
+	          </c:forEach>
+	        </select>
+	      </td>
+	    </tr>
+	    <tr>
+	      <td>생성일</td>
+	      <td>
+	        <input type="date" id="startCreatedAt" name="startCreatedAt"> - 
+	        <input type="date" id="endCreatedAt" name="endCreatedAt">
+	        <c:forEach var="status" items="${selectPeriod}">
+	          <span class="date-badge created-at" data-period="${status.name}">
+	            ${status.name}
+	          </span>
+	        </c:forEach>
+	      </td>
+	    </tr>
+	    <tr>
+	      <td>수정일</td>
+	      <td>
+	        <input type="date" id="startUpdatedAt" name="startUpdatedAt"> - 
+	        <input type="date" id="endUpdatedAt" name="endUpdatedAt">
+	        <c:forEach var="status" items="${selectPeriod}">
+	          <span class="date-badge updated-at" data-period="${status.name}">
+	            ${status.name}
+	          </span>
+	        </c:forEach>
+	      </td>
+	    </tr>
+	    <tr>
+	      <td>제목</td>
+	      <td>
+	        <input type="text" id="title" name="title" placeholder="제목">
+	      </td>
+	    </tr>
+	    <tr>
+	      <td>응답 수</td>
+	      <td>
+	        <input type="text" id="minAnswerCount" name="minAnswerCount" oninput="this.value = this.value.replace(/[^0-9]/g,'')"> - 
+	        <input type="text" id="maxAnswerCount" name="maxAnswerCount" oninput="this.value = this.value.replace(/[^0-9]/g,'')">
+	        <p class="limit-num">* 숫자만 입력</p>
+	      </td>
+	    </tr>
+	    <tr>
+	      <td colspan="2">
+	        <button class="search-btn" id="searchBtn">검색</button>
+	        <button class="initial-btn" id="initialBtn">초기화</button>
+	      </td>
+	    </tr>
+	  </tbody>
+	</table>
+	
 		<!-- 다중 검색창 -->
-		<div class="filter-section">
+		<%-- <div class="filter-section">
 			<div class="filter-row">
 				<p>진행 상태</p>
 				<div class="filter-input">
@@ -78,7 +146,7 @@
 				<button class="search-btn" id="searchBtn">조회하기</button>
 				<button class="initial-btn" id="initialBtn">초기화</button>
 			</div>
-		</div>
+		</div> --%>
 		<!-- 다중 검색 end -->
 
 		<!-- 설문지 생성하는 카드  -->

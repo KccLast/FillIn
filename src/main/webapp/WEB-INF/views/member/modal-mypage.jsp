@@ -132,7 +132,7 @@
 					</div>
 				</div>
 				<div class="modal-footer">
-					<button class="btn btn-primary" data-bs-target="#mypage-modal"
+					<button class="btn btn-primary" data-bs-target="#mypage-modal" id="saveBtn"
 						data-bs-toggle="modal" >저장하기</button>
 					<button class="btn btn-secondary logoutBtn" data-bs-target="#mypage-modal"
 					data-bs-toggle="modal">취소하기</button>

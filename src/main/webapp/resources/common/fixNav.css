@@ -1,0 +1,68 @@
+.sidebar {
+	height: calc(100vh - 60px); /* 헤더 높이만큼 뺀 높이 */
+	background-color: #005BAC;
+	padding: 15px 0;
+	position: fixed;
+	width: 200px;
+	overflow-x: hidden;
+	white-space: nowrap;
+	top: 60px;
+	z-index: 1; /* 헤더와 겹치지 않도록 설정 */
+}
+
+.nav {
+	margin-top: 10px;
+}
+
+.nav-link {
+	color: #fff;
+	display: flex;
+	align-items: center;
+	padding: 17px 10px !important;
+	transition: all 0.3s ease;
+	font-weight: bold;
+	position: relative;
+	margin-bottom: 30px;
+}
+
+.nav-link:hover {
+	background-color: #0074CD;
+	color: #fff;
+	box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.nav-link img {
+	width: 20px;
+	height: 20px;
+	margin-right: 10px;
+}
+
+.menu-text {
+	color: #fff;
+	display: inline;
+}
+
+.nav-link:hover .menu-text {
+	color: #fff;
+	text-decoration: underline;
+	text-underline-offset:10px;
+	font-weight: bold;
+}
+
+.sidebar:hover .nav-link img {
+	margin-right: 10px;
+}
+
+.arrow-icon {
+	width: 10px !important;
+	height: 10px !important;
+	margin-left: auto;
+	display: none;
+	opacity: 1;
+	transition: opacity 0.3s;
+}
+
+.nav-link:hover .arrow-icon {
+	display: inline;
+	opacity: 1;
+}

@@ -13,6 +13,7 @@ import com.kcc.fillin.global.Common.Response;
 import com.kcc.fillin.member.auth.PrincipalDetail;
 import com.kcc.fillin.member.dto.MemberDTO;
 import com.kcc.fillin.member.dto.MemberRequest;
+import com.kcc.fillin.member.dto.MemberResponse;
 import com.kcc.fillin.member.service.MemberService_JA;
 
 import jakarta.validation.Valid;
@@ -33,7 +34,9 @@ public class MemberRestController_JA {
 			return Response.setError("로그인한 회원 정보를 찾을 수 없습니다.", 404);
 		}
 		
-		return Response.setSuccess(loginMember, 200);
+		MemberResponse member = memberService.getMemberByUsername(loginMember.getUsername());
+		
+		return Response.setSuccess(member, 200);
 	}
 	
 	@PatchMapping("/mypage")
@@ -44,11 +47,11 @@ public class MemberRestController_JA {
 			return Response.setError(bindingResult.getFieldError().getDefaultMessage(), 400);
 		}
 		
-		String loginMember = principalDetail.getUsername();
-		System.out.println("회원정보수정 로그인 멤버: " + loginMember);
-		System.out.println(request);
+		String username = principalDetail.getUsername();
+		System.out.println("회원정보수정 로그인 멤버: " + username);
+		System.out.println("요청 데이터" + request);
 		
-		memberService.updateMemberByUsername(loginMember, request);
+		memberService.updateMemberByUsername(username, request);
 		return Response.setSuccess(request, 204);
 	}
 	
