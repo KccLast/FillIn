@@ -88,24 +88,26 @@
 									추가하기
 								</button>
 							</div>
-						</div>
-
-						<div class="j-deploy-box">
-
 
 						</div>
+					</div>
 
-						<div class="j-condition-button j-flex-row-center j-fix-height btn">
-							<input type="button" value="질문 고급조건" class="j-nav-input-button j-con-btn">
-						</div>
+					<div class="j-deploy-box">
 
-						<div class="j-depoly-button j-flex-row-center j-fix-height btn">
-							<input type="button" value="게시" class="j-nav-input-button">
-						</div>
 
-						<div class="j-save-button j-flex-row-center j-fixSave-height btn">
-							<input type="button" value="저장" class="j-nav-input-button j-nav-save-button">
-						</div>
+					</div>
+
+					<div class="j-condition-button j-flex-row-center j-fix-height btn">
+						<input type="button" value="질문 고급조건" class="j-nav-input-button j-con-btn">
+					</div>
+
+					<div class="j-depoly-button j-flex-row-center j-fix-height btn">
+						<input type="button" value="게시" class="j-nav-input-button">
+					</div>
+
+					<div class="j-save-button j-flex-row-center j-fixSave-height btn">
+						<input type="button" value="저장" class="j-nav-input-button j-nav-save-button">
+					</div>
 
 					</div>
 					<div class="content">
@@ -761,12 +763,15 @@
 					<div id="optionModal" class="modifiy-modal">
 						<div class="modal-content">
 							<div class="modal-header">
-								<h4>옵션 추가</h4>
+
 							</div>
 							<div class="modal-body j-flex-col-center">
-								<div>옵션을 입력하고 엔터로 구분해주세요</div>
-								<textarea id="optionTextarea" rows="5" cols="50" style="resize: none;"
-									placeholder="옵션1&#10;옵션2&#10;옵션3"></textarea>
+								<div class="form-floating">
+									<textarea id="optionTextarea" class="form-control" placeholder="" id="floatingTextarea2"
+										style="height: 180px" rows="5" cols="50" style="resize: none !important;"
+										placeholder="옵션1&#10;옵션2&#10;옵션3"></textarea>
+									<label for="floatingTextarea2" class="j-drop-comment">옵션을 엔터로 구분해서 넣어주세요</label>
+								</div>
 							</div>
 							<div class="modal-btn">
 								<button id="addOptionsBtn">옵션 저장</button>

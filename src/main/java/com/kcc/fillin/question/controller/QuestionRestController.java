@@ -31,7 +31,7 @@ public class QuestionRestController {
 	@PostMapping("")
 	public Response<String> insertQuestion(@RequestBody
 	List<QuestionVO> questionVOList) {
-
+		System.out.println("questionVOList = " + questionVOList);
 		questionService.insertQuestionAndQuestionItem(questionVOList);
 		return Response.setSuccess("성공적으로 질문을 등록했습니다.", 200);
 	}

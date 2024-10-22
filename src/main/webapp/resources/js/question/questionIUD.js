@@ -9,14 +9,14 @@ function removeUpdatedCardClass() {
 
 /**class에서 seq 추출 */
 function seqExtract(target) {
-  if(target.hasClass('qi')){
-  const classValue = target.attr('class'); // 클래스 값 가져오기
-  console.log(classValue);
-  // 정규표현식으로 숫자만 추출
+  if (target.hasClass('qi')) {
+    const classValue = target.attr('class'); // 클래스 값 가져오기
+    console.log(classValue);
+    // 정규표현식으로 숫자만 추출
 
-  const number = parseInt(classValue.match(/\d+/)[0], 10);
+    const number = parseInt(classValue.match(/\d+/)[0], 10);
 
-  return number;
+    return number;
   }
   return null;
 }
@@ -109,15 +109,25 @@ async function insertQuestion() {
       let $item = $(item);
       let ccSeq = $item.find('.j-cseq').val();
       let isEssential = $item.find('.j-essential').data('essential');
-      let questionOrder = ($item.index())+1;
+      let questionOrder = $item.index() + 1;
       let question = {};
 
       question.surveySeq = surveySeq;
       question.order = questionOrder;
-      question.name =
-        ($item.find('.j-survey-name-input').val() || ' ').trim() || ' ';
-      question.description =
-        ($item.find('.j-survey-content > textarea').val() || ' ').trim() || ' ';
+
+      if ($item.find('.j-survey-name-input').length === 0) {
+        question.name = '개인정보동의항목';
+      } else {
+        question.name =
+          ($item.find('.j-survey-name-input').val() || ' ').trim() || ' ';
+      }
+      if ($item.find('.j-survey-content > textarea').length === 0) {
+        question.description = '개인정보동의항목';
+      } else {
+        question.description =
+          ($item.find('.j-survey-content > textarea').val() || ' ').trim() ||
+          ' ';
+      }
       question.ccSeq = ccSeq;
       question.isEssential = isEssential;
 

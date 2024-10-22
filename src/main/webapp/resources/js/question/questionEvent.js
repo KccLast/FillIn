@@ -1,6 +1,15 @@
 var dragInstance;
 $(function () {
+  // x버튼 숨기기
+  // jQuery로 이벤트 위임 설정
+  $(document).on('mouseenter', '.j-question', function () {
+    $(this).find('.j-list-xbutton').css('visibility', 'visible'); // hover 시 이미지 보이기
+  });
+  //이벤트에 x버튼 숨기기
 
+  $(document).on('mouseleave', '.j-question', function () {
+    $(this).find('.j-list-xbutton').css('visibility', 'hidden'); // hover 해제 시 이미지 숨기기
+  });
   /**/
   let moved = false; // 초기 상태 설정
 
@@ -22,8 +31,6 @@ $(function () {
       moved = false; // 상태 초기화
     }
   });
-
-
 
   /**/
   let contentShow = true;
@@ -179,9 +186,15 @@ $(function () {
         $newContainer.find('.j-question-content-box').append(contentData);
 
         // 이미지 src 값을 추출하고 setQuestionNav 호출
-        let src = $newContainer.find('.j-typeAndImg > img').attr('src');
+        if (ccSeq <= 11)
+          $newContainer.find('.j-typeAndImg').addClass('j-quancolor');
+        else if (ccSeq <= 13)
+          $newContainer.find('.j-typeAndImg').addClass('j-qualcolor');
+        else if (ccSeq <= 16)
+          $newContainer.find('.j-typeAndImg').addClass('j-contactcolor');
+        else $newContainer.find('.j-typeAndImg').addClass('j-datacolor');
 
-        setQuestionNav(idx, src);
+        let nav = setQuestionNav(idx, ccSeq);
 
         if (ccSeq === '17') {
           $newContainer.find('.j-map-container').attr('id', 'map' + idx);
@@ -218,7 +231,7 @@ $(function () {
     'change',
     'input[type="text"][class*="qi"], select[class*="qi"]',
     function () {
-    console.log("에?");
+      console.log('에?');
       let classList = $(this).attr('class') || '';
       let match = classList.match(/(\d+)/); // 'qi' 뒤의 숫자 추출
 
@@ -275,20 +288,23 @@ $(function () {
     }
 
     let inputBox = $(this).parent().prev().find('.qi');
-    if(inputBox.length !== 0){
-    console.log(inputBox);
-    let targetSeq = seqExtract(inputBox);
-    let questionSeq = $(this).parents('.j-question-card').find('.j-qseq').val();
-    questionSeq2 = parseInt(questionSeq);
-    let deleteObject = {
-      seq: targetSeq,
-      questionSeq: questionSeq2,
-    };
-    storeUpdateQuestionItemInLocal(
-      deleteObject,
-      targetSeq,
-      'removeQuestionItemList'
-    );
+    if (inputBox.length !== 0) {
+      console.log(inputBox);
+      let targetSeq = seqExtract(inputBox);
+      let questionSeq = $(this)
+        .parents('.j-question-card')
+        .find('.j-qseq')
+        .val();
+      questionSeq2 = parseInt(questionSeq);
+      let deleteObject = {
+        seq: targetSeq,
+        questionSeq: questionSeq2,
+      };
+      storeUpdateQuestionItemInLocal(
+        deleteObject,
+        targetSeq,
+        'removeQuestionItemList'
+      );
     }
 
     $(this).parent().parent().remove();
@@ -331,7 +347,7 @@ $(function () {
         mbody += $(item).text() + '\n';
       }
     });
-    $('.modal-body > textarea').val(mbody);
+    $('.modal-body  textarea').val(mbody);
 
     // 현재 카드의 위치 및 크기 계산
     var cardOffset = currentCard.offset(); // 카드의 화면에서의 위치
@@ -627,7 +643,7 @@ $(function () {
   $('#add-type-modal-container2 .j-typeAndImg-modal').on(
     'click',
     async function () {
-      let ccSeq = $(this).find('input[type="hidden"').val();
+      let ccSeq = $(this).find('input[type="hidden"]').val();
 
       let selectDiv = $('.content').find('.j-card-selected');
       let idx = selectDiv.index();
@@ -676,9 +692,22 @@ $(function () {
           }
         }
         selectDiv.addClass('j-u-card');
+
+        if (ccSeq <= 11)
+          selectDiv.find('.j-typeAndImg').addClass('j-quancolor');
+        else if (ccSeq <= 13)
+          selectDiv.find('.j-typeAndImg').addClass('j-qualcolor');
+        else if (ccSeq <= 16)
+          selectDiv.find('.j-typeAndImg').addClass('j-contactcolor');
+        else selectDiv.find('.j-typeAndImg').addClass('j-datacolor');
+
         //list에 이미지 바꾸기
         let newSrc = selectDiv.find('.j-typeAndImg > img').attr('src');
-        $('.j-question-list').find('.j-question').eq(idx).find('.question-img > img').attr('src',newSrc);
+        $('.j-question-list')
+          .find('.j-question')
+          .eq(idx)
+          .find('.question-img > img')
+          .attr('src', newSrc);
       } catch (error) {
         console.error('AJAX 요청 실패:', error);
       }
@@ -787,26 +816,29 @@ function changeFocus(el) {
 }
 
 //질문 추가될 때 nav에 추가하기
-function setQuestionNav(idx, src) {
-  let html =
-    '<div class="j-question j-flex-row-center j-quorder' +
-    idx +
-    '">' +
-    '<div class="question-img j-flex-row-center">' +
-    '<img src="' +
-    src +
-    '">' +
-    '</div>' +
-    '<div class="question-name">' +
-    '<span>질문명</span>' +
-    '</div>' +
-    '<div class="j-list-xbutton j-flex-row-center">' +
-    '<img src="/resources/img/question/x-circle.png">' +
-    '</div>' +
-    '</div>';
+async function setQuestionNav(idx, ccSeq) {
+  let navList = $('.j-question-list');
+  let navFrame = await getNavFrame();
+  let nav = await getNav(ccSeq);
 
-  $('.j-question-list').append(html);
-  return $('.j-question-list');
+  navList.append(navFrame);
+  let target = navList.find('.j-question').eq(idx);
+  target.prepend(nav);
+  target.find('.question-nav-order').text(idx + 1);
+
+  return navList;
+}
+async function getNav(ccSeq) {
+  return $.ajax({
+    url: '/resources/html/question/questionNav/nav' + ccSeq + '.html',
+    type: 'GET',
+  });
+}
+async function getNavFrame() {
+  return $.ajax({
+    url: '/resources/html/question/questionNavFrame.html',
+    type: 'GET',
+  });
 }
 
 // 선형 배율
@@ -817,10 +849,10 @@ function updateLine(numRangeLine, clickedIndex, totalNumbers) {
     .css(
       'background-image',
       'linear-gradient(90deg, #005bac ' +
-      percentage +
-      '%, rgba(0, 91, 172, 0.4) ' +
-      percentage +
-      '%)'
+        percentage +
+        '%, rgba(0, 91, 172, 0.4) ' +
+        percentage +
+        '%)'
     );
 }
 function updateNumberRange(target) {
