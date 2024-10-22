@@ -31,21 +31,21 @@
 <!-- 컨텐츠 내용 -->
 <div id="content" class="content" style="display: none;">
     <!-- 날짜 조회 및 질문 선택 -->
-    <div class="container">
+    <div class="container mx-2">
         <div class="row m-2">
             <div class="col-md-6 d-flex align-items-center">
-                <label for="startDate" class="form-label me-2" style="flex-basis: 70px;">시작일</label>
+                <label for="startDate" class="form-label fw-bold me-2" style="flex-basis: 70px;">시작일</label>
                 <input type="date" class="form-control" id="startDate" value='${postDateResponse.postDate}'>
             </div>
             <div class="col-md-6 d-flex align-items-center">
-                <label for="endDate" class="form-label me-2" style="flex-basis: 70px;">종료일</label>
+                <label for="endDate" class="form-label fw-bold me-2" style="flex-basis: 70px;">종료일</label>
                 <input type="date" class="form-control" id="endDate" value='${postDateResponse.endDate}'>
             </div>
         </div>
 
         <div class="row m-2">
             <div class="col-md-6 d-flex align-items-center">
-                <label for="questionSelect" class="form-label me-2" style="flex-basis: 70px;">그룹화</label>
+                <label for="questionSelect" class="form-label fw-bold me-2" style="flex-basis: 70px;">그룹화</label>
                 <select id="questionSelect" class="form-select">
                     <%--                    <option>질문을 선택해주세요</option>--%>
                 </select>
