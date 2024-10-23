@@ -28,7 +28,7 @@
 								<p class="fw-bold mt-2">진행 상태</p>
 							</div>
 							<div class="col-2">
-								<select class="selectpicker form-select" id="progress-ccSeq"
+								<select class="selectpicker form-select mx-0" id="progress-ccSeq"
 									name="ccSeq">
 									<option value="">전체</option>
 									<c:forEach var="status" items="${progressStatus}">
@@ -48,7 +48,7 @@
 								<p class="mb-0 me-2 fw-bold mt-2 ml-2">응답 수</p>
 							</div>
 							<div class="col-2">
-								<div class="d-flex align-items-center flex-nowrap">
+								<div class="d-flex align-items-center flex-nowrap mr-1">
 									<input type="text" class="form-control me-2"
 										id="minAnswerCount" name="minAnswerCount"
 										oninput="this.value = this.value.replace(/[^0-9]/g,'')">
@@ -217,11 +217,18 @@
 
 			<!-- 페이지 네비게이션 -->
 			<div class="pagination">
+				<!-- 처음으로 버튼 -->
 				<c:if test="${pageNum > 1 }">
-					<a href="?pageNum=${pageNum - 1 }&amount=${amount}">이전</a>
+					<a href="?pageNum=1&amount=${amount}"> << </a>
 				</c:if>
-
-				<c:forEach var="i" begin="1" end="${totalPages }">
+			
+				<!-- 이전 버튼 -->
+				<c:if test="${pageNum > 1 }">
+					<a href="?pageNum=${pageNum - 1 }&amount=${amount}"> < </a>
+				</c:if>
+				
+				<!-- 페이지 번호 반복 -->
+				<c:forEach var="i" begin="${startPage }" end="${endPage }">
 					<c:choose>
 						<c:when test="${i == pageNum }">
 							<strong>${i }</strong>
@@ -231,9 +238,15 @@
 						</c:otherwise>
 					</c:choose>
 				</c:forEach>
-
+				
+				<!-- 다음 페이지 버튼 추가 -->
 				<c:if test="${pageNum < totalPages }">
-					<a href="?pageNum=${pageNum + 1 }&amount=${amount}">다음</a>
+					<a href="?pageNum=${pageNum + 1 }&amount=${amount}"> > </a>
+				</c:if>
+				
+				<!-- 맨 마지막으로 버튼 추가 -->
+				<c:if test="${pageNum < totalPages }">
+					<a href="?pageNum=${totalPages }&amount=${amount}"> >> </a>
 				</c:if>
 			</div>
 		</div>

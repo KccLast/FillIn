@@ -256,11 +256,26 @@ $(document).ready(function() {
 	function setupPagination() {
 		$('.pagination').empty(); // 페이지네이션 초기화
 		const totalPage = Math.ceil(surveysData.length / pageSize); // 총 페이지 수 계산
+		const pageBlock = 10;
+		const startPage = Math.floor((currentPage - 1) / pageBlock) * pageBlock + 1;
+		const endPage = Math.min(startPage + pageBlock - 1, totalPage);
 
+		// 처음으로 버튼 추가
+		if (currentPage > 1) {
+			$('.pagination').append($('<div class="page-item"></div>')
+				.append($('<a class="page-link" href="#"> << </a>')
+					.on('click', function(e) {
+						e.preventDefault();
+						currentPage = 1; // 첫 페이지로 이동
+						filteringSurveyCards();
+						setupPagination();
+					})));
+		}
+		
 		// 이전 버튼 추가
 		if (currentPage > 1) {
 			$('.pagination').append($('<div class="page-item"></div>')
-				.append($('<a class="page-link" href="#">이전</a>')
+				.append($('<a class="page-link" href="#"> < </a>')
 					.on('click', function(e) {
 						e.preventDefault();
 						if (currentPage > 1) {
@@ -272,7 +287,7 @@ $(document).ready(function() {
 		}
 
 		// 페이지 링크 추가
-		for (let i = 1; i <= totalPage; i++) {
+		for (let i = startPage; i <= endPage; i++) {
 			const pageLink = $('<div class="page-item"></div>')
 				.append($('<a class="page-link" href="#"></a>')
 					.text(i)
@@ -293,7 +308,7 @@ $(document).ready(function() {
 		// 다음 버튼 추가
 		if (currentPage < totalPage) {
 			$('.pagination').append($('<div class="page-item"></div>')
-				.append($('<a class="page-link" href="#">다음</a>')
+				.append($('<a class="page-link" href="#"> > </a>')
 					.on('click', function(e) {
 						e.preventDefault();
 						if (currentPage < totalPage) {
@@ -301,6 +316,18 @@ $(document).ready(function() {
 							filteringSurveyCards();
 							setupPagination();
 						}
+					})));
+		}
+
+		// 맨 마지막으로 버튼 추가
+		if (currentPage < totalPage) {
+			$('.pagination').append($('<div class="page-item"></div>')
+				.append($('<a class="page-link" href="#"> >> </a>')
+					.on('click', function(e) {
+						e.preventDefault();
+						currentPage = totalPage; // 마지막 페이지로 이동
+						filteringSurveyCards();
+						setupPagination();
 					})));
 		}
 	}
@@ -371,7 +398,7 @@ $(document).ready(function() {
 				if (surveysData.length < pageSize) {
 					surveyCount = surveysData.length;
 				}
-				
+
 				$('#surveyCount').text(surveyCount);
 				$('#surveyCountContainer').hide();
 
