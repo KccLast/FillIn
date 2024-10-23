@@ -41,8 +41,14 @@ public class SurveyServiceImpl implements SurveyService {
 
 	@Override
 	public List<MultiSearchSurveyResponse> getSurveyListWithPaging(Criteria cri) {
-		int startRow = cri.getStartRow();
-		int endRow = cri.getEndRow();
+		int pageNum = cri.getPageNum();
+		int amount = cri.getAmount();
+		
+		// 1페이지라면 amount에서 1을 뺀 값으로 조정
+	    int newAmount = (pageNum == 1) ? amount - 1 : amount;
+	    
+		int startRow = (pageNum - 1) * newAmount + 1; 
+	    int endRow = pageNum * newAmount;
 
 		return mapper.getSurveyListWithPaging(startRow, endRow);
 	}

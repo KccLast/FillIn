@@ -35,6 +35,7 @@ public class SurveyController {
 		System.out.println("Criteria: " + cri);
 		int pageNum = cri.getPageNum();
 		int amount = cri.getAmount();
+		
 		List<MultiSearchSurveyResponse> pagedSurveys = service.getSurveyListWithPaging(cri);
 
 		Map<String, List<CommonCodeResponse>> commonCodes = service.getCommonCodes();
