@@ -83,9 +83,9 @@
 
 				<div class="modal-body">
 					<div class="profile-container">
-						<img alt="profile" class="profile-image"
-							src="/resources/img/common/profile.png">
-						<button type="button" class="btn btn-primary">프로필 변경</button>
+						<img alt="profile" class="profile-image" src="/resources/img/common/profile.png">
+						<input type="file" id="profile-image-input" name="profile-image-input" style="display: none;">
+						<button type="button" class="btn btn-primary" id="change-profile">프로필 변경</button>
 					</div>
 					<div class="form-group">
 

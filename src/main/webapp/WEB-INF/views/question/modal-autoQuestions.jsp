@@ -44,7 +44,6 @@
 	                            <p class="fw-bold" style="display: none;">추가된 질문 목록</p>
 	                        </div>
 	                    </div>
-	                   
 	                </form>
 	            </div>
 	            <div class="modal-footer">
