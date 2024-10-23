@@ -53,6 +53,14 @@ $(document).ready(function() {
 		validatePhone();
 	});
 
+	// 프로필 변경 버튼 클릭 시 파일 선택 창 열기
+	$('#change-profile').on('click', function() {
+		$("#profile-image-input").click();
+	});
+
+	// 파일 선택 시 변경 처리
+	$('#profile-image-input').on('change', changeProfile);
+
 	// 회원 정보 저장 버튼 클릭
 	$('#saveBtn').click(function() {
 		// 에러 메시지 초기화
@@ -91,8 +99,16 @@ $(document).ready(function() {
 				// 수정 모달 닫기 후 조회 모달 열기
 				$('#update-member-modal').modal('hide');
 				$('#mypage-modal').modal('show');
-				
-				alert('회원 정보 수정이 완료되었습니다.');
+
+				/*alert('회원 정보 수정이 완료되었습니다.');*/
+				Swal.fire({
+					position: "top",
+					icon: "success",
+					title: "회원 정보 수정이 완료되었습니다.",
+					showConfirmButton: false,
+					timer: 1700
+				});
+
 			},
 			error: function(xhr, status, error) {
 				console.error('Error message:', xhr.responseText || error);
@@ -108,16 +124,44 @@ $(document).ready(function() {
 	});
 });
 
+// 파일 선택 시 변경 처리
+function changeProfile(event) {
+	var file = event.target.files[0];
+	var fileSizeLimit = 2 * 1024 * 1024; // 2MB 제한
+
+	if (!file.type.startsWith('image/')) {
+		Swal.fire({
+			icon: "error",
+			text: "이미지 파일만 업로드할 수 있습니다.",
+		});
+		return;
+	}
+
+	if (file.size > fileSizeLimit) {
+		Swal.fire({
+			icon: "error",
+			text: "파일 크기가 너무 큽니다. 2MB 이하로 업로드해주세요.",
+		});
+		return;
+	}
+
+	var reader = new FileReader();
+	reader.onload = function(e) {
+		$('.profile-image').attr('src', e.target.result);
+	};
+	reader.readAsDataURL(file);
+}
+
 function validatePhone() {
 	const phoneInput = $('#update-phone').val();
 	const phonePattern = /^\d{3}-\d{4}-\d{4}$/;
 
 	// 입력 값이 없으면 에러 메시지 표시하지 않음
-	if(phoneInput === '') {
+	if (phoneInput === '') {
 		$('#phone-error').hide().text('');
 		return true;
 	}
-	
+
 	// 전화번호 패턴 유효성 검사
 	if (!phonePattern.test(phoneInput)) {
 		$('#phone-error').text('휴대폰 번호는 000-0000-0000 형식이어야 합니다.').show();

@@ -3,7 +3,6 @@ body {
 }
 
 .content {
-	min-height: calc(100vh - 60px);
 	margin-top: 100px;
 	margin-left: 240px;
 	margin-right: 40px;
@@ -11,98 +10,18 @@ body {
 	gap: 10px;
 	flex-wrap: wrap;
 	align-items: flex-start;
-}
-
-.table {
-	border: lpx solid #000;
-}
-
-.custom-card {
-	width: 100%;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    padding: 20px;
-    background-color: #f9f9f9;
-}
-
-.custom-card-body {
-    padding: 15px;
-}
-
-.custom-filter-section {
-    margin: 0;
-}
-
-.custom-card .filter-input {
-    margin-bottom: 15px;
+	overflow: auto;
 }
 
 /* 다중 검색 스타일 */
-.filter-section {
-	display: flex;
-	flex-direction: column;
-	gap: 10px;
-	padding: 10px;
-	border: 1px solid #a0a0a0;
-	border-radius: 10px;
-	width: 97%;
-	margin-left: 10px;
-	margin-bottom: 20px;
-}
-
-.filter-row {
-	display: flex;
-	align-items: center;
-	gap: 10px;
-	padding-bottom: 20px;
-	margin: 10px 10px 0 10px;
-	font-size: 17px;
-}
-
-.filter-row p {
-	width: 120px; /* p 태그의 고정 너비를 설정하여 input과 줄 맞춤 */
-	margin: 0;
-	text-align: left; /* 오른쪽 정렬로 input과 더 가깝게 */
-}
-
-.filter-row:nth-child(6) {
-	margin-top: 0px;
-}
-
-.filter-input {
-	display: flex;
-	align-items: center;
-	gap: 5px;
-	flex: 1; /* 남은 공간을 차지 */
-}
-
-.filter-input span {
-	margin-left: 10px;
-	font-size: 13px;
-}
-
-.filter-row:nth-child(5) .filter-input input {
-	width: 60px;
-}
-
 .limit-num {
 	color: red;
-}
-
-.filter-row:nth-child(4) .filter-input input {
-	width: 300px;
-}
-
-input[type="date"], input[type="text"], .selectpicker {
-	padding: 5px;
-	border: 1px solid #ccc;
-	border-radius: 10px;
 }
 
 #searchBtn {
 	background-color: #005BAC;
 	color: white;
-	border-color: #005BAC; 
+	border-color: #005BAC;
 	padding: 5px 15px;
 	cursor: pointer;
 }
@@ -115,22 +34,18 @@ input[type="date"], input[type="text"], .selectpicker {
 	cursor: pointer;
 }
 
-.filter-row:last-child {
-	display: flex;
-	justify-content: center;
-}
-
 .date-badge {
-	padding: 5px 10px;
+	text-align: center; padding : 3px 8px;
 	border: 1px solid #000;
 	font-weight: 500;
 	border-radius: 20px;
 	cursor: pointer;
 	margin-left: 5px;
+	padding: 3px 8px;
 }
 
 .selected-badge {
-	padding: 5px 10px;
+	padding: 3px 8px;
 	background-color: #005BAC;
 	color: #fff;
 	border-color: #005BAC;
@@ -138,49 +53,25 @@ input[type="date"], input[type="text"], .selectpicker {
 	margin-left: 5px;
 }
 
+.search-card {
+	box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+	border-radius: 10px;
+}
+
 /* card 스타일 */
-.cards-container {
-	display: flex;
-	gap: 10px;
-	flex-wrap: wrap;
-	align-items: flex-start;
-	padding-bottom: 15px;
+.each-survey-card {
+	box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
-
-.card {
-	border: 1px solid #ddd;
-	border-radius: 0;
-	box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
-	width: 250px;
-	max-height: 205px;
-	margin: 10px;
-	display: flex;
-	flex-direction: column;
-	overflow: hidden;
-}
-
-.card:hover {
+.each-survey-card:hover {
 	cursor: pointer;
 	background-color: #f2f2f2;
 }
 
-.card-header {
-	background-color: #007bff;
-	color: white;
-	padding: 5px 8px;
-	font-weight: bold;
-	font-size: 13px;
-	border-top-left-radius: 5px;
-	border-top-right-radius: 5px;
-}
-
-.card-body {
-	font-size: 14px;
-	max-height: 170px;
+.each-survey-card .card-body {
+	min-height: 160px !important;
 }
 
 .card-body img {
-	width: 50px;
 	justify-content: center;
 	align-items: center;
 }
@@ -190,11 +81,12 @@ input[type="date"], input[type="text"], .selectpicker {
 	justify-content: center;
 	align-items: center;
 	height: 200px;
+	box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
 .add-survey-card img {
 	width: 50px;
-	max-height: 100%;
+	height: 100%;
 	object-fit: contain;
 }
 
@@ -203,15 +95,15 @@ input[type="date"], input[type="text"], .selectpicker {
 }
 
 .add-survey-card:hover {
-	background-color: #f0f1f2;
+	background-color: #E9ECEF;
 	cursor: pointer;
+	padding: 0 !important;
 }
 
 .date-info {
 	display: flex;
 	justify-content: space-between;
 	margin-bottom: 2px;
-	/*     font-size: 12px; */
 }
 
 .date-info p {
@@ -221,10 +113,11 @@ input[type="date"], input[type="text"], .selectpicker {
 .card-footer {
 	background-color: #f8f9fa;
 	text-align: left;
-	border-bottom-left-radius: 5px;
-	border-bottom-right-radius: 5px;
-	font-weight: bold;
-	font-size: 12px;
+}
+
+.card-footer p {
+	line-height: 40px !important;
+	margin-bottom: 0 !important;
 }
 
 /* 페이지 네비게이션 */
@@ -232,7 +125,7 @@ input[type="date"], input[type="text"], .selectpicker {
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	margin: 20px auto;
+	margin-top: 20px;
 }
 
 .pagination a {
@@ -269,45 +162,6 @@ input[type="date"], input[type="text"], .selectpicker {
 	margin: 0 5px;
 }
 
-/*모달 css */
-/* 모달 배경 */
-.survey-p-modal {
-	display: none; /* 모달이 기본적으로 숨겨져 있음 */
-	position: fixed;
-	z-index: 1;
-	left: 0;
-	top: 0;
-	width: 100%;
-	height: 100%;
-	background-color: rgba(0, 0, 0, 0.4); /* 어두운 반투명 배경 */
-}
-
-/* 모달 콘텐츠 */
-.j-survey-modal-content {
-	background-color: #fefefe;
-	margin: 15% auto; /* 화면 중간에 위치 */
-	padding: 20px;
-	border: 1px solid #888;
-	width: 50%; /* 너비 */
-	border-radius: 8px;
-	box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
-}
-
-/* 닫기 버튼 */
-.j-survey-close {
-	color: #aaa;
-	float: right;
-	font-size: 28px;
-	font-weight: bold;
-	cursor: pointer;
-}
-
-.j-survey-close:hover, .j-survey-close:focus {
-	color: black;
-	text-decoration: none;
-	cursor: pointer;
-}
-
 /* 설문지 생성 버튼 */
 #createSurveyBtn {
 	background-color: #4CAF50;
@@ -321,4 +175,3 @@ input[type="date"], input[type="text"], .selectpicker {
 #createSurveyBtn:hover {
 	background-color: #45a049;
 }
-/*모달 css*/

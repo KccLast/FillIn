@@ -8,7 +8,11 @@
 
 <link rel="stylesheet" type="text/css" href="/resources/css/member/mypage.css">
 <script type="text/javascript" src="/resources/js/member/mypage.js"></script>
+<!-- 카카오 주소 api -->
 <script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+<!-- SweetAlert2 -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.2.0/sweetalert2.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.2.0/sweetalert2.all.min.js"></script>
 </head>
 <body>
  	<!-- 마이페이지 조회 Modal -->
@@ -79,9 +83,9 @@
 
 				<div class="modal-body">
 					<div class="profile-container">
-						<img alt="profile" class="profile-image"
-							src="/resources/img/common/profile.png">
-						<button type="button" class="btn btn-primary">프로필 변경</button>
+						<img alt="profile" class="profile-image" src="/resources/img/common/profile.png">
+						<input type="file" id="profile-image-input" name="profile-image-input" style="display: none;">
+						<button type="button" class="btn btn-primary" id="change-profile">프로필 변경</button>
 					</div>
 					<div class="form-group">
 
