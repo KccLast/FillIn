@@ -8,7 +8,11 @@
 
 <link rel="stylesheet" type="text/css" href="/resources/css/member/mypage.css">
 <script type="text/javascript" src="/resources/js/member/mypage.js"></script>
+<!-- 카카오 주소 api -->
 <script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+<!-- SweetAlert2 -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.2.0/sweetalert2.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.2.0/sweetalert2.all.min.js"></script>
 </head>
 <body>
  	<!-- 마이페이지 조회 Modal -->

@@ -91,8 +91,16 @@ $(document).ready(function() {
 				// 수정 모달 닫기 후 조회 모달 열기
 				$('#update-member-modal').modal('hide');
 				$('#mypage-modal').modal('show');
-				
-				alert('회원 정보 수정이 완료되었습니다.');
+
+				/*alert('회원 정보 수정이 완료되었습니다.');*/
+				Swal.fire({
+					position: "top",
+					icon: "success",
+					title: "회원 정보 수정이 완료되었습니다.",
+					showConfirmButton: false,
+					timer: 1700
+				});
+
 			},
 			error: function(xhr, status, error) {
 				console.error('Error message:', xhr.responseText || error);
@@ -113,11 +121,11 @@ function validatePhone() {
 	const phonePattern = /^\d{3}-\d{4}-\d{4}$/;
 
 	// 입력 값이 없으면 에러 메시지 표시하지 않음
-	if(phoneInput === '') {
+	if (phoneInput === '') {
 		$('#phone-error').hide().text('');
 		return true;
 	}
-	
+
 	// 전화번호 패턴 유효성 검사
 	if (!phonePattern.test(phoneInput)) {
 		$('#phone-error').text('휴대폰 번호는 000-0000-0000 형식이어야 합니다.').show();
