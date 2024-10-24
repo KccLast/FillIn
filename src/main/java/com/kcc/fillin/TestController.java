@@ -2,13 +2,14 @@ package com.kcc.fillin;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-@Controller
+@RestController
 public class TestController {
 	
 	@GetMapping("/")
 	public String test() {
-		return "index";
+		return "이거면 진짜 JSP문제임";
 	}
 
 }
