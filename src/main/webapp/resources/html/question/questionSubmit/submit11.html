@@ -1,10 +1,26 @@
-<div class="j-dropdown-box j-flex-col-center">
-  <div class="j-dropdwon">
-    <select>
-      <option value="" disabled selected>옵션을 선택해주세요</option>
-      <option value="옵션내용">옵션내용</option>
-      <option value="옵션내용">옵션내용</option>
-      <option value="옵션내용">옵션내용</option>
-      <option value="옵션내용">옵션내용</option>
-    </select>
-  </div>
+<table class="table">
+  <thead class="table-light">
+    <tr>
+      <th class="j-col-name-th"></th>
+      <!--열로 추가 된 값 출력 모양-->
+      <th class="j-col-name-th" scope="col">
+        <span class="j-col-name">Column X<span>
+      </th>
+      <!--열로 추가 된 값 출력 모양-->
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <!--행으로 추가된 것 출력 모양 td radio는 열 수만큼 가져오면됨 -->
+      <th scope="row">Row 1</th>
+      <td>
+        <input type="radio" name="row-0" value="Row 1">
+      </td>
+      <td>
+        <input type="radio" name="row-0" value="Row 1">
+      </td>
+    </tr>
+    <!-- 열은 큰 질문에 귀속되고, 행은 작은 질문으로 추가합시다 -->
+
+  </tbody>
+</table>

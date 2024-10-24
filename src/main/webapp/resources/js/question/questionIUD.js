@@ -102,7 +102,7 @@ function getQuestionItemFunction(ccSeq, target) {
 async function insertQuestion() {
   let surveySeq = $('#surveySeq').val();
   let questions = [];
-
+  console.log(surveySeq);
   $('.content')
     .find('.j-new-card')
     .each(function (index, item) {
@@ -128,8 +128,9 @@ async function insertQuestion() {
           ($item.find('.j-survey-content > textarea').val() || ' ').trim() ||
           ' ';
       }
+      console.log(isEssential);
       question.ccSeq = ccSeq;
-      question.isEssential = isEssential;
+      question.isEssential = isEssential !== undefined ? isEssential : 'Y';
 
       if (ccSeq >= 7 && ccSeq <= 11) {
         question.questionItems = getQuestionItemFunction(ccSeq, item);
@@ -185,6 +186,7 @@ async function insertQuestionItem(questionType, questionSeq, insertedItems) {
       content = $(item)
         .find('.j-option-input-radio > input[type="text"]')
         .val();
+      console.log('content = ' + content);
     }
 
     insertItem.orderNum = order;

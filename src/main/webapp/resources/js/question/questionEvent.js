@@ -18,7 +18,7 @@ $(function () {
     e.stopPropagation(); // 이벤트 버블링 방지 (바깥 클릭 이벤트와 구분)
     $('.j-que-con-card').removeClass('j-que-con-selectd-card');
     $(this).addClass('j-que-con-selectd-card'); // 클래스 추가
-    $('#j-con-modal').css('left', '1300px'); // 모달 이동
+    $('#j-con-modal').css('left', '1523px'); // 모달 이동
     moved = true; // 상태 변경
     e.stopPropagation();
   });
@@ -27,7 +27,7 @@ $(function () {
   $(document).on('click', function () {
     if (moved) {
       $('.j-que-con-card').removeClass('j-que-con-selectd-card'); // 클래스 제거
-      $('#j-con-modal').css('left', '1650px'); // 원래 위치로 이동
+      $('#j-con-modal').css('left', '1910px'); // 원래 위치로 이동
       moved = false; // 상태 초기화
     }
   });
@@ -53,20 +53,18 @@ $(function () {
   $('.j-condition-box').hide();
   $('#j-con-modal').hide();
   //초기 연결 선 설정
-  $('.j-con-btn').click(function () {
-    if (contentShow) {
-      $('.content').hide(); // 숨기기
-
-      $('.j-condition-box').show(); // 보이기
-      $('#j-con-modal').show();
-      dragInstance.repaintEverything();
-    } else {
-      $('.content').show(); // 보이기
-      $('.j-condition-box').hide(); // 숨기기
-      $('#j-con-modal').hide();
-    }
-
-    contentShow = !contentShow; // 상태 반전
+  $('.j-arrow-right').click(function () {
+    $('.content').hide(); // 숨기기
+    $('.j-condition-box').show(); // 보이기
+    $('#j-con-modal').show();
+    dragInstance.repaintEverything();
+    $('.j-arrow-right').hide();
+  });
+  $('.j-arrow-left').click(function () {
+    $('.content').show(); // 보이기
+    $('.j-condition-box').hide(); // 숨기기
+    $('#j-con-modal').hide();
+    $('.j-arrow-right').show();
   });
 
   //카드 클릭하면 스크롤 정렬 기본 이벤트
@@ -84,31 +82,22 @@ $(function () {
   //navbar로 질문 삭제
   //list를 통해 질문 삭제
   $('.j-question-list').on('click', '.j-list-xbutton > img', function () {
-    let className = $(this).parent().parent().attr('class');
-
-    // 'j-quorder' 이후 숫자를 추출
-    let idx = className.match(/j-quorder(\d+)/);
-    idx = idx[1];
+    let idx = $(this).parents('.j-question').index();
 
     $(this).parent().parent().remove();
-    $('.content')
-      .find('.j-question-card > .j-q-order')
-      .each(function () {
-        if ($(this).val() === idx) {
-          let seqVal = parseInt($(this).parent().find('.j-qseq').val());
-          let deleteQues = { seq: seqVal };
 
-          storeUpdateQuestionItemInLocal(
-            deleteQues,
-            seqVal,
-            'removeQuestionList'
-          );
-          sendremoveQquestionItemLocalData(
-            JSON.parse(localStorage.getItem('removeQuestionItemList'))
-          );
-          $(this).parent().remove();
-        }
-      });
+    let targetCard = $('.content').find('.j-question-card').eq(idx);
+
+    let seqVal = targetCard.find('.j-qseq').val();
+
+    if (seqVal !== undefined) {
+      let deleteQues = { seq: seqVal };
+      storeUpdateQuestionItemInLocal(deleteQues, seqVal, 'removeQuestionList');
+      sendremoveQquestionItemLocalData(
+        JSON.parse(localStorage.getItem('removeQuestionItemList'))
+      );
+    }
+    targetCard.remove();
   });
 
   /**새로운 질문 추가하는 모달  */
@@ -500,31 +489,35 @@ $(function () {
   /*객관식 표 미리보기*/
   // 미리보기 버튼 클릭 시 모달 띄우기
   let currentCharCard;
-  $('.content').on('click', '.j-preview-chart', function () {
-    currentCharCard = $(this).closest('.j-question-card'); // 현재 카드 저장
+  $('.content').on(
+    'click',
+    '.j-preview-chart > img, .j-preview-chart > div ',
+    function () {
+      currentCharCard = $(this).parent().closest('.j-question-card'); // 현재 카드 저장
 
-    // 현재 카드의 위치 및 크기 계산
-    let cardOffset = currentCharCard.offset(); // 카드의 화면에서의 위치
-    let cardHeight = currentCharCard.outerHeight(); // 카드의 높이
-    let cardWidth = currentCharCard.outerWidth(); // 카드의 너비
+      // 현재 카드의 위치 및 크기 계산
+      let cardOffset = currentCharCard.offset(); // 카드의 화면에서의 위치
+      let cardHeight = currentCharCard.outerHeight(); // 카드의 높이
+      let cardWidth = currentCharCard.outerWidth(); // 카드의 너비
 
-    // 모달의 위치 설정 (카드 중앙에 위치)
-    let modal = $('#preview-modal');
-    let modalHeight = modal.outerHeight();
-    let modalWidth = modal.outerWidth();
+      // 모달의 위치 설정 (카드 중앙에 위치)
+      let modal = $('#preview-modal');
+      let modalHeight = modal.outerHeight();
+      let modalWidth = modal.outerWidth();
 
-    // 카드 중앙에 모달을 배치
-    modal.css({
-      top: cardOffset.top + cardHeight / 2 - modalHeight / 2 + 'px', // 카드 중앙 기준
-      left: cardOffset.left + cardWidth / 2 - modalWidth / 2 + 'px',
-    });
+      // 카드 중앙에 모달을 배치
+      modal.css({
+        top: cardOffset.top + cardHeight / 2 - modalHeight / 2 + 'px', // 카드 중앙 기준
+        left: cardOffset.left + cardWidth / 2 - modalWidth / 2 + 'px',
+      });
 
-    // 모달 표시
-    modal.fadeIn();
+      // 모달 표시
+      modal.fadeIn();
 
-    // 테이블 미리보기 생성
-    generatePreviewTable(this);
-  });
+      // 테이블 미리보기 생성
+      generatePreviewTable(this);
+    }
+  );
 
   // 객관식표 모달 닫기
   $('.preview-modal-close').on('click', function () {
@@ -886,12 +879,14 @@ function updateVerticalLine(target) {
 function generatePreviewTable(target) {
   let rows = $(target)
     .parent()
+    .parent()
     .find('.j-row-input')
     .map(function () {
       return $(this).val();
     })
     .get(); // 모든 행 이름 가져오기
   let cols = $(target)
+    .parent()
     .parent()
     .find('.j-col-input')
     .map(function () {
@@ -900,12 +895,12 @@ function generatePreviewTable(target) {
     .get(); // 모든 열 이름 가져오기
 
   let tableHtml =
-    '<table class="j-chart-table" border="1"><thead><tr><th></th>'; // 테이블 시작
+    '<table class="table" border="1"><thead class = "table-light"><tr><th class="j-col-name-th"></th>'; // 테이블 시작
 
   // 열 헤더 생성
   cols.forEach(function (colName) {
     tableHtml +=
-      '<th class="j-col-name-th"><span class="j-col-name">' +
+      '<th class="j-col-name-th" scope="col"><span class="j-col-name">' +
       colName +
       '<span></th>';
   });
@@ -913,7 +908,7 @@ function generatePreviewTable(target) {
 
   // 각 행마다 열 생성
   rows.forEach(function (rowName, rowIndex) {
-    tableHtml += '<tr><td>' + rowName + '</td>'; // 행 헤더
+    tableHtml += '<tr><th scope="row">' + rowName + '</th>'; // 행 헤더
 
     cols.forEach(function (colName, colIndex) {
       // 라디오 버튼을 각 셀에 추가
