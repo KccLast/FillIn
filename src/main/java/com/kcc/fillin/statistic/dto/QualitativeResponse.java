@@ -16,5 +16,9 @@ import lombok.ToString;
 public class QualitativeResponse {
 	private Long questionOrder;
 	private String questionName;
+	private String questionDescription;
+	private Long ccSeq;
+	private String ccName;
+	private Long parentSeq;
 	private List<QualitativeAnswerDTO> answerList;
 }
