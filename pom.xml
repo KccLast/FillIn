@@ -213,5 +213,15 @@
 				</configuration>
 			</plugin>
 		</plugins>
+		<!--JSP관련 빌드설정 -->
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+			</resource>
+			<resource>
+				<directory>src/main/webapp</directory>
+			</resource>
+		</resources>
+		<!--JSP관련 빌드설정 -->
 	</build>
 </project>
