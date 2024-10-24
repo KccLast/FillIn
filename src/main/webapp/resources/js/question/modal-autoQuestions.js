@@ -6,6 +6,9 @@ function toggleSelectBox(checkbox, selectId) {
 
 // 추천 질문 모달창
 function showQuestionsModal() {
+	$('#load').show(); // 로딩 화면 표시
+	console.log('로딩 화면 표시됨');
+
 	$('#multiple-choice-list').empty();
 	$('#checkbox-list').empty();
 	$('#short-answer-list').empty();
@@ -69,6 +72,8 @@ function showQuestionsModal() {
 		data: JSON.stringify(requestData),
 		success: function(response) {
 			console.log('서버 응답:', response);
+
+			$('#load').hide();
 
 			let jsonData = response.data;
 
@@ -171,8 +176,10 @@ function showQuestionsModal() {
 				});
 
 				// 모달 열기
+				buttonEvent();
 				const questionsModal = new bootstrap.Modal($('#questions-modal')[0]);
 				questionsModal.show();
+				/*$('#makeAutoQuestion-modal').hide();*/
 
 				// 질문 접기/펼치기 기능
 				$('.question-toggle').off('click').on('click', function(e) {
@@ -188,7 +195,9 @@ function showQuestionsModal() {
 			}
 		},
 		error: function(xhr, status, error) {
+			$('#load').hide();
 			console.error('에러 발생: ' + xhr.responseText);
+
 		}
 	});
 }
@@ -213,22 +222,6 @@ function createQuestionSection(queIndex, index, title, count, name, isHidden = f
 	section += `<div class="question-content" style="${isHidden ? 'display:none;' : ''}">`;
 	section += `<p>${description}</p>`;
 
-	/*if (options && options.length > 0) {
-		options.forEach((option, optionIndex) => {
-			// 객관식인 경우 라디오 버튼으로 생성
-			if (type === '7') {
-				section += `<div>
-					<input type="radio" id="${name}-${optionIndex}" name="${name}" value="${option}">
-					<label for="${name}-${optionIndex}">${option}</label>
-				</div>`;
-			} else {
-				// 체크박스일 경우 체크박스로 생성
-				section += `<div>
-					<input type="checkbox" id="${name}-${optionIndex}" name="${name}" class="${name}-option" value="${option}">
-					<label for="${name}-${optionIndex}">${option}</label>
-				</div>`;
-			}
-		});*/
 	if (options && options.length > 0) {
 		options.forEach((option, optionIndex) => {
 			// 객관식인 경우 텍스트로 생성
@@ -265,6 +258,22 @@ document.addEventListener('click', function(event) {
 		});
 	}
 });
+
+function buttonEvent() {
+	const oldModal = document.getElementById("makeAutoQuestion-modal");
+	oldModal.classList.remove('show'); // 기존 모달 숨기기
+	oldModal.style.display = 'none';
+
+	const backdrop = document.querySelector('.modal-backdrop');
+	if (backdrop) {
+		backdrop.remove(); // 모달 배경 제거
+	}
+
+	const newModal = document.getElementById("questions-modal");
+	newModal.style.display = 'block'; // 새로운 모달 보이기
+	newModal.classList.add('show');
+
+}
 
 $(document).ready(function() {
 	$.ajax({
@@ -341,8 +350,8 @@ $(document).ready(function() {
 				hasChecked = true;
 			}
 		});
-		
-		if(!hasChecked) {
+
+		if (!hasChecked) {
 			/*alert('하나 이상의 질문을 선택해주세요.');*/
 			Swal.fire({
 				icon: "error",
@@ -468,6 +477,9 @@ $(document).ready(function() {
 			});
 
 			$('#questions-modal').modal('hide');
+			const questionList = new bootstrap.Modal($('#makeAutoQuestion-modal')[0]);
+			questionList.show();
+			/*$('#makeAutoQuestion-modal').modal('show');*/
 
 		});
 	});
@@ -524,4 +536,3 @@ $(document).ready(function() {
 	});
 
 });
-

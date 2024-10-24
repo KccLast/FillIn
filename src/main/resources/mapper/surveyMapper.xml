@@ -149,13 +149,13 @@
 			<choose>
 				<when test="startCreatedAt != null and endCreatedAt != null">
 					AND s.created_at BETWEEN #{startCreatedAt} AND
-					#{endCreatedAt}
+					#{endCreatedAt} + 1
 				</when>
 				<when test="startCreatedAt != null">
             <![CDATA[AND s.created_at >= #{startCreatedAt} ]]>
 				</when>
 				<when test="endCreatedAt != null">
-            <![CDATA[AND s.created_at <= #{endCreatedAt}]]>
+            <![CDATA[AND s.created_at < #{endCreatedAt}]]>
 				</when>
 			</choose>
 			<!-- 수정일 필터 -->

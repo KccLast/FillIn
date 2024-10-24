@@ -9,6 +9,7 @@
 <!-- SweetAlert2 -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.2.0/sweetalert2.min.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.2.0/sweetalert2.all.min.js"></script>
+<link rel="stylesheet" type="text/css" href="/resources/common/loading.css">
 </head>
 <body>
 	<!-- 질문지 자동 생성 모달 -->
@@ -16,6 +17,7 @@
 		aria-labelledby="makeAutoQuestionModalLabel" aria-hidden="true">
 	    <div class="modal-dialog modal-dialog-centered modal-lg">
 	        <div class="modal-content">
+	        	<%@ include file="/resources/common/loading.jsp"%>
 	            <div class="modal-header">
 	                <h5 class="modal-title" id="makeAutoQuestionModalLabel">새로운 채움지 만들기</h5>
 	                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -47,13 +49,13 @@
 	                </form>
 	            </div>
 	            <div class="modal-footer">
-	                <button type="button" class="btn btn-secondary" id="review-btn" onclick="showQuestionsModal()">추천 질문지 생성</button>
+	                <button type="button" class="btn btn-secondary" id="create-auto-question-btn" onclick="showQuestionsModal()">추천 질문지 생성</button>
 	                <button type="button" class="btn btn-secondary" id="create-question-btn" data-bs-dismiss="modal">채움지 생성</button>
 	            </div>
 	        </div>
 	    </div>
 	</div>
-
+	
 	<!-- 선택한 추천 질문 목록 모달창 -->
 	<div class="modal fade" id="questions-modal" tabindex="-1"
 		aria-labelledby="questionsModalLabel" aria-hidden="true">
@@ -95,8 +97,7 @@
 		</div>
 	</div>
 
-	<script type="text/javascript"
-		src="/resources/js/question/modal-autoQuestions.js"></script>
+	<script type="text/javascript" src="/resources/js/question/modal-autoQuestions.js"></script>
 		<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </body>
 </html>
