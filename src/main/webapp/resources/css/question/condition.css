@@ -1,231 +1,222 @@
 body {
-	overflow-x: hidden;
+  overflow-x: hidden;
 }
 
 .j-condition-box {
-
-	margin-top: 100px;
-	margin-left: calc(100vh - 510px);
-	margin-right: 40px;
-	min-height: calc(100vh - 130px);
-	box-sizing: border-box;
-	background-color: white;
-	box-shadow: 5px 5px 5px #e5e7eb;
-	position: relative;
-	/* 부모 컨테이너는 relative */
-	overflow: auto;
-	/* 컨테이너 밖 요소를 숨김 */
+  margin-top: 100px;
+  margin-left: calc(100vh - 510px);
+  margin-right: 40px;
+  min-height: calc(100vh - 130px);
+  box-sizing: border-box;
+  background-color: white;
+  box-shadow: 5px 5px 5px #e5e7eb;
+  position: relative;
+  /* 부모 컨테이너는 relative */
+  overflow: auto;
+  /* 컨테이너 밖 요소를 숨김 */
 }
 
 .j-condition-card-container {
-	width: 100%;
-	height: 100%;
-	/* position: relative; */
-	/* 부모 컨테이너에 position 설정 */
+  width: 100%;
+  height: 100%;
+  /* position: relative; */
+  /* 부모 컨테이너에 position 설정 */
 }
 
 /* 질문 카드 css */
 .j-que-con-card {
-	border: 1.5px solid #dfdfdf;
-	width: 33%;
-	height: 110px;
-	border-radius: 15px;
-	margin-bottom: 5%;
-	position: absolute;
-	/* 절대 위치로 드래그 가능하게 설정 */
-	cursor: move;
-	/* 드래그 시 마우스 커서 변경 */
-	box-shadow: 5px 5px 5px #e5e7eb;
-	cursor: pointer;
+  border: 1.5px solid #dfdfdf;
+  width: 33%;
+  height: 110px;
+  border-radius: 15px;
+  margin-bottom: 5%;
+  position: absolute;
+  /* 절대 위치로 드래그 가능하게 설정 */
+  cursor: move;
+  /* 드래그 시 마우스 커서 변경 */
+  box-shadow: 5px 5px 5px #e5e7eb;
+  cursor: pointer;
 }
 
 .j-que-con-selectd-card {
-	border-color: #DC3545;
+  border-color: #dc3545;
 }
 
 .j-corder {
-	width: 10%;
-	font-weight: bold;
-	font-size: 25px;
+  width: 10%;
+  font-weight: bold;
+  font-size: 25px;
 }
 
 .j-type-con-img {
-
-	width: 15%;
+  width: 15%;
 }
 
-.j-type-con-img>img {
-	width: 35px;
-	height: 35px;
+.j-type-con-img > img {
+  width: 35px;
+  height: 35px;
 }
 
 .j-con-que-name {
-	width: 70%;
-	font-size: 20px;
-	box-sizing: border-box;
-	font-weight: bold;
-	padding-left: 3%;
+  width: 70%;
+  font-size: 20px;
+  box-sizing: border-box;
+  font-weight: bold;
+  padding-left: 3%;
 }
 
 /* 질문 카드 css */
 
-
 /*condition 모달*/
 #j-con-modal {
-	background-color: white;
-	width: 380px;
-	height: 700px;
-	position: relative;
-	top: -750px;
-	left: 1650px;
-	border: 1px solid black;
-	box-shadow: 5px 5px 5px #e5e7eb;
-	transition: left 0.5s ease-in-out;
+  background-color: white;
+  width: 380px;
+  height: 700px;
+  position: relative;
+  top: -750px;
+  left: 1910px;
+  border: 1px solid black;
+  box-shadow: 5px 5px 5px #e5e7eb;
+  transition: left 0.5s ease-in-out;
 }
 
-#j-con-modal-hader>div {
-	width: 50%;
-	text-align: center;
-	border: 1px solid #7A8699;
-	border-top: none;
-	height: 40px;
-	background-color: #005BAC;
-	color: rgba(255, 255, 255, 0.7);
-	font-weight: bold;
+#j-con-modal-hader > div {
+  width: 50%;
+  text-align: center;
+  border: 1px solid #7a8699;
+  border-top: none;
+  height: 40px;
+  background-color: #005bac;
+  color: rgba(255, 255, 255, 0.7);
+  font-weight: bold;
 }
 
 .j-con-modal-h-select {
-	color: white !important;
+  color: white !important;
 }
 
 .j-condition-plus {
-	align-items: center !important;
-	justify-content: flex-start;
-	width: 100%;
+  align-items: center !important;
+  justify-content: flex-start;
+  width: 100%;
 }
 
 #j-con-modal-body {
-	box-sizing: border-box;
-	padding-left: 5%;
+  box-sizing: border-box;
+  padding-left: 5%;
 }
 
 .j-basic-move {
-	margin-top: 8%;
-	font-size: 18px;
-	font-weight: bold;
-	color: #6B6B6B;
+  margin-top: 8%;
+  font-size: 18px;
+  font-weight: bold;
+  color: #6b6b6b;
 }
 
-.j-basic-move>select {
-	width: 70%;
-	color: #7A8699;
-	border-color: #7A8699;
-	margin-top: 5%;
-	height: 33px;
+.j-basic-move > select {
+  width: 70%;
+  color: #7a8699;
+  border-color: #7a8699;
+  margin-top: 5%;
+  height: 33px;
 }
 
 .j-condition-move {
-	margin-top: 30%;
-	color: #6B6B6B;
-	font-size: 18px;
-	font-weight: bold;
-
+  margin-top: 30%;
+  color: #6b6b6b;
+  font-size: 18px;
+  font-weight: bold;
 }
 
 .j-condition-plus {
-	gap: 20px;
+  gap: 20px;
 }
 
 .j-con-plus-button {
-
-	width: 20px;
-	height: 21px;
-	color: white;
-	border-radius: 50%;
-	font-weight: bord;
-	background-color: #005BAC;
-	text-align: center;
-
-
+  width: 20px;
+  height: 21px;
+  color: white;
+  border-radius: 50%;
+  font-weight: bord;
+  background-color: #005bac;
+  text-align: center;
 }
 
-.j-con-plus-button>span {
-	display: inline-block;
-	line-height: 24px;
+.j-con-plus-button > span {
+  display: inline-block;
+  line-height: 24px;
 }
 
 /*condition 모달*/
 
-
 /*컨디션 카드 안에 편집*/
-.j-condition-header {}
+.j-condition-header {
+}
 
 .j-condition {
-	width: 100%;
+  width: 100%;
 }
 
 .j-condition-content-box {
-	padding-top: 6%;
-	width: 100%;
-	height: 80%;
-	box-sizing: border-box;
-	display: flex;
-	flex-direction: column;
-	justify-content: space-around;
-	align-items: center;
+  padding-top: 6%;
+  width: 100%;
+  height: 80%;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
 }
 
 .j-arrow {
-	width: 20%;
+  width: 20%;
 }
 
-.j-arrow>img {
-	width: 20px;
-	height: 20px;
+.j-arrow > img {
+  width: 20px;
+  height: 20px;
 }
 
 .j-con-sur-name {
-	width: 80%;
+  width: 80%;
 }
 
 /*조건내용*/
 .j-condition-c {
-	box-sizing: border-box;
-	padding-left: 5%;
-	font-size: 17px;
-	border: 1px solid black;
-	width: 95%;
-	margin-top: 2%;
+  box-sizing: border-box;
+  padding-left: 5%;
+  font-size: 17px;
+  border: 1px solid black;
+  width: 95%;
+  margin-top: 2%;
 }
 
-.j-condition-c>div {
-	margin-top: 3%;
-	margin-bottom: 3%;
-
+.j-condition-c > div {
+  margin-top: 3%;
+  margin-bottom: 3%;
 }
 
-.j-condition-c>input {
-	margin-top: 3%;
-	margin-bottom: 3%;
-	width: 80%;
+.j-condition-c > input {
+  margin-top: 3%;
+  margin-bottom: 3%;
+  width: 80%;
 }
 
-.j-condition-c>select {
-	margin-top: 3%;
-	margin-bottom: 8%;
-	height: 31px;
-	width: 79%;
+.j-condition-c > select {
+  margin-top: 3%;
+  margin-bottom: 8%;
+  height: 31px;
+  width: 79%;
 }
 
 .operations {
-	display: block;
-	width: 181px;
-
+  display: block;
+  width: 181px;
 }
 
 .next-ques {
-	display: block;
-	width: 181px;
+  display: block;
+  width: 181px;
 }
 
 /*조건내용*/

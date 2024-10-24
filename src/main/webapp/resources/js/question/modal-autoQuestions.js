@@ -6,6 +6,9 @@ function toggleSelectBox(checkbox, selectId) {
 
 // 추천 질문 모달창
 function showQuestionsModal() {
+	$('#load').show(); // 로딩 화면 표시
+	console.log('로딩 화면 표시됨');
+
 	$('#multiple-choice-list').empty();
 	$('#checkbox-list').empty();
 	$('#short-answer-list').empty();
@@ -69,6 +72,8 @@ function showQuestionsModal() {
 		data: JSON.stringify(requestData),
 		success: function(response) {
 			console.log('서버 응답:', response);
+
+			$('#load').hide();
 
 			let jsonData = response.data;
 
@@ -171,8 +176,10 @@ function showQuestionsModal() {
 				});
 
 				// 모달 열기
+				buttonEvent();
 				const questionsModal = new bootstrap.Modal($('#questions-modal')[0]);
 				questionsModal.show();
+				/*$('#makeAutoQuestion-modal').hide();*/
 
 				// 질문 접기/펼치기 기능
 				$('.question-toggle').off('click').on('click', function(e) {
@@ -188,7 +195,9 @@ function showQuestionsModal() {
 			}
 		},
 		error: function(xhr, status, error) {
+			$('#load').hide();
 			console.error('에러 발생: ' + xhr.responseText);
+
 		}
 	});
 }
@@ -213,22 +222,6 @@ function createQuestionSection(queIndex, index, title, count, name, isHidden = f
 	section += `<div class="question-content" style="${isHidden ? 'display:none;' : ''}">`;
 	section += `<p>${description}</p>`;
 
-	/*if (options && options.length > 0) {
-		options.forEach((option, optionIndex) => {
-			// 객관식인 경우 라디오 버튼으로 생성
-			if (type === '7') {
-				section += `<div>
-					<input type="radio" id="${name}-${optionIndex}" name="${name}" value="${option}">
-					<label for="${name}-${optionIndex}">${option}</label>
-				</div>`;
-			} else {
-				// 체크박스일 경우 체크박스로 생성
-				section += `<div>
-					<input type="checkbox" id="${name}-${optionIndex}" name="${name}" class="${name}-option" value="${option}">
-					<label for="${name}-${optionIndex}">${option}</label>
-				</div>`;
-			}
-		});*/
 	if (options && options.length > 0) {
 		options.forEach((option, optionIndex) => {
 			// 객관식인 경우 텍스트로 생성
@@ -265,6 +258,22 @@ document.addEventListener('click', function(event) {
 		});
 	}
 });
+
+function buttonEvent() {
+	const oldModal = document.getElementById("makeAutoQuestion-modal");
+	oldModal.classList.remove('show'); // 기존 모달 숨기기
+	oldModal.style.display = 'none';
+
+	const backdrop = document.querySelector('.modal-backdrop');
+	if (backdrop) {
+		backdrop.remove(); // 모달 배경 제거
+	}
+
+	const newModal = document.getElementById("questions-modal");
+	newModal.style.display = 'block'; // 새로운 모달 보이기
+	newModal.classList.add('show');
+
+}
 
 $(document).ready(function() {
 	$.ajax({
@@ -332,6 +341,25 @@ $(document).ready(function() {
 	let addedQuestions = [];
 	// 선택한 질문지 추가
 	$('#add-questions-btn').off('click').on('click', function() {
+		let hasChecked = false;
+
+		// 선택된 체크박스가 있는지 확인
+		$('.select-question-section').each(function() {
+			const checkbox = $(this).find('.question-select');
+			if (checkbox.is(':checked')) {
+				hasChecked = true;
+			}
+		});
+
+		if (!hasChecked) {
+			/*alert('하나 이상의 질문을 선택해주세요.');*/
+			Swal.fire({
+				icon: "error",
+				text: "하나 이상의 질문을 선택해주세요.",
+			});
+			return;
+		}
+
 		$('.select-question-section').each(function() {
 			const checkbox = $(this).find('.question-select');
 			// 체크박스가 선택되지 않았으면 다음으로 넘어감
@@ -366,7 +394,7 @@ $(document).ready(function() {
 			if (ccSeq === 7 || ccSeq === 8) {  // 객관식 또는 체크박스일 경우에만 옵션을 수집
 				$(this).find('.question-content div').each(function() { // 모든 <div> 선택
 					const optionText = $(this).text().trim(); // div의 텍스트 가져오기
-					
+
 					// 정규 표현식으로 번호와 점 제거
 					const option = optionText.replace(/^\d+\.\s*/, '')
 					options.push(option); // 텍스트를 options 배열에 추가
@@ -377,7 +405,7 @@ $(document).ready(function() {
 				ccSeq: ccSeq,
 				name: title,
 				description: description,
-				options: options.length > 0 ? options : null
+				options: options.length > 0 ? options : []
 			});
 
 			console.log('addedQuestions: ' + JSON.stringify(addedQuestions));
@@ -394,7 +422,8 @@ $(document).ready(function() {
 			});
 
 			const questionListContainer = $('.select-add-questions');
-			questionListContainer.html('<p>추가된 질문 목록</p>');
+			$('.vertical-line').show();
+			questionListContainer.html('<p class="fw-bold">추가된 질문 목록</p>');
 
 			// 그룹별로 출력
 			for (const type in groupedQuestions) {
@@ -448,6 +477,9 @@ $(document).ready(function() {
 			});
 
 			$('#questions-modal').modal('hide');
+			const questionList = new bootstrap.Modal($('#makeAutoQuestion-modal')[0]);
+			questionList.show();
+			/*$('#makeAutoQuestion-modal').modal('show');*/
 
 		});
 	});
@@ -455,7 +487,11 @@ $(document).ready(function() {
 	// 선택된 질문 - 질문지 만드는 페이지로 보내기
 	$('#create-question-btn').on('click', function() {
 		let questions = [];
-
+		let surveyName = '';
+		surveyNames = $('#survey-name').val();
+		let aiSurveyObject = {
+			surveyName: surveyNames
+		}
 		$('.added-question-checkbox:checked').each(function() {
 			const ccSeq = $(this).attr('id').split('-')[1];
 
@@ -474,17 +510,24 @@ $(document).ready(function() {
 		console.log('questions: ' + JSON.stringify(questions, null, 2));
 
 		if (questions.length === 0) {
-			alert("선택된 질문이 없습니다.");
+			// alert("선택된 질문이 없습니다.");
+			Swal.fire({
+				icon: "error",
+				text: "선택된 질문이 없습니다.",
+			});
 			return;
+
 		}
-		console.log('Request Payload: ', JSON.stringify(questions));
+		aiSurveyObject.questions = questions;
+		console.log('Request Payload 222: ', JSON.stringify(aiSurveyObject));
 		$.ajax({
 			url: '/api/question/create-survey',
 			type: 'POST',
 			contentType: 'application/json',
-			data: JSON.stringify(questions),
+			data: JSON.stringify(aiSurveyObject),
 			success: function(response) {
 				console.log(response);
+				location.href = response.data;
 			},
 			error: function(xhr) {
 				console.error('Error:', xhr.responseText);
@@ -493,4 +536,3 @@ $(document).ready(function() {
 	});
 
 });
-

@@ -1,12 +1,19 @@
 package com.kcc.fillin.question.controller;
 
+import java.security.Principal;
 import java.util.List;
 
+
+import com.kcc.fillin.member.auth.PrincipalDetail;
+import com.kcc.fillin.question.dto.*;
+import com.kcc.fillin.question.service.QuestionService;
 import org.springframework.ai.chat.messages.Message;
 import org.springframework.ai.chat.messages.UserMessage;
 import org.springframework.ai.chat.model.ChatModel;
 import org.springframework.ai.chat.prompt.PromptTemplate;
 import org.springframework.ai.openai.OpenAiChatModel;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -14,10 +21,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.kcc.fillin.global.Common.Response;
-import com.kcc.fillin.question.dto.ChatGptRequest;
-import com.kcc.fillin.question.dto.CreateQuestionRequest;
-import com.kcc.fillin.question.dto.QuestionCommonCodeResonse;
-import com.kcc.fillin.question.dto.QuestionTypeRequest;
 import com.kcc.fillin.question.service.QuestionService_JA;
 import com.kcc.fillin.util.jina.QuestionType;
 
@@ -31,6 +34,7 @@ public class QuestionRestController_JA {
 	private final QuestionService_JA questionService;
 	private final ChatModel chatModel;
 
+	private final QuestionService questionService2;
 //	@PostMapping("/make-auto-question")
 //	public ChatGptResponse makeChatGptQuestion(@RequestBody ChatGptRequest chatGptRequest) {
 //		String response = openAiChatModel.call(chatGptRequest.getPrompt());
@@ -134,10 +138,20 @@ public class QuestionRestController_JA {
 
 	// 테스트용
 	@PostMapping("/create-survey")
-	public Response createSurvey(@RequestBody List<CreateQuestionRequest> selectedQuestions) {
-		System.out.println("Received questions: " + selectedQuestions);
+	public Response createSurvey(@RequestBody CreateAutoQuestionRequest selectedQuestions, @AuthenticationPrincipal PrincipalDetail userDetails) {
 
-		return Response.setSuccess(selectedQuestions, 200);
+		Long memberSeq = userDetails.getSeq();
+
+		selectedQuestions.setMemberSeq(memberSeq);
+
+		System.out.println("Received questions: " + selectedQuestions);
+		Long surveySeq = questionService2.createAutoQuestion(selectedQuestions);
+
+		if(surveySeq != null){
+			String redirectUrl = "/survey/"+surveySeq;
+			return Response.setSuccess(redirectUrl,200,"질문을 성공적으로 자동 생성했습니다.");
+		}
+		return Response.setError("질문 자동 생성 중 오류가 발생했습니다.", 500);
 	}
 
 }

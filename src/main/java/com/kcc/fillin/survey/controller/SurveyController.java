@@ -3,6 +3,7 @@ package com.kcc.fillin.survey.controller;
 import java.util.List;
 import java.util.Map;
 
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -34,6 +35,7 @@ public class SurveyController {
 		System.out.println("Criteria: " + cri);
 		int pageNum = cri.getPageNum();
 		int amount = cri.getAmount();
+		
 		List<MultiSearchSurveyResponse> pagedSurveys = service.getSurveyListWithPaging(cri);
 
 		Map<String, List<CommonCodeResponse>> commonCodes = service.getCommonCodes();
@@ -54,7 +56,15 @@ public class SurveyController {
 
 		int totalPages = (int)Math.ceil((double)totalSurveyCount / amount);
 		model.addAttribute("totalPages", totalPages);
+		
+		int pageBlock = 10; // 한 번에 보여줄 페이지
+		int startPage = ((pageNum - 1) / pageBlock) * pageBlock + 1; // 시작 페이지
+		int endPage = Math.min(startPage + pageBlock - 1, totalPages); // 마지막 페이지
 
+		model.addAttribute("pageBlock", pageBlock);
+		model.addAttribute("startPage", startPage);
+		model.addAttribute("endPage", endPage);
+		
 		return "/survey/dashboard";
 	}
 
@@ -80,7 +90,9 @@ public class SurveyController {
 
 		SurveyVO findSurvey = service.findSurveyBySurveySeq(surveySeq);
 		model.addAttribute("survey", findSurvey);
+		System.out.println("findSurvey = " + findSurvey);
 		ObjectMapper objectMapper = new ObjectMapper();
+		objectMapper.registerModule(new JavaTimeModule());
 		String jsonString = "";
 		try {
 			jsonString = objectMapper.writeValueAsString(findSurvey);

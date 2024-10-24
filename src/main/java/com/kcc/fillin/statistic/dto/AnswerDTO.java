@@ -14,12 +14,9 @@ import java.util.Date;
 @NoArgsConstructor
 @ToString
 public class AnswerDTO {
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd a h:mm:ss")
     private Long seq;
     private Long questionSeq;
     private Long participantSeq;
     private String contents;
     private LocalDateTime answerDate;
-
-
 }
