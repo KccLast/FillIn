@@ -215,11 +215,20 @@
 		</plugins>
 		<!--JSP관련 빌드설정 -->
 		<resources>
+			<!-- src/main/resources 하위의 모든 파일과 폴더 포함 -->
 			<resource>
 				<directory>src/main/resources</directory>
+				<includes>
+					<include>**/*</include> <!-- 모든 파일과 폴더 포함 -->
+				</includes>
 			</resource>
+
+			<!-- src/main/webapp 하위의 모든 파일과 폴더 포함 -->
 			<resource>
 				<directory>src/main/webapp</directory>
+				<includes>
+					<include>**/*</include> <!-- 모든 파일과 폴더 포함 -->
+				</includes>
 			</resource>
 		</resources>
 		<!--JSP관련 빌드설정 -->
