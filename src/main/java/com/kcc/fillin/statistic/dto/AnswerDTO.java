@@ -12,12 +12,9 @@ import java.util.Date;
 @NoArgsConstructor
 @ToString
 public class AnswerDTO {
-
     private Long seq;
     private Long questionSeq;
     private Long participantSeq;
     private String contents;
     private Date answerDate;
-
-
 }
