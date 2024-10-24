@@ -29,11 +29,11 @@
     <%--console.log('${}')// 콘솔에 clusteringData 출력--%>
     // 서버에서 전달된 clusteringData를 JSON으로 변환하여 JavaScript 변수에 저장
 
-var clusteringData = ${clusteringData};
+    var clusteringData = ${clusteringData};
 
-    console.log("Received Clustering Data: " + ${clusteringData});
+    <%--console.log("Received Clustering Data: " + ${clusteringData});--%>
 
-    // console.log("Received Clustering Data: ", clusteringData);
+    console.log("Received Clustering Data: ", clusteringData);
 </script>
 <!-- 단계 바 -->
 
@@ -93,7 +93,8 @@ var clusteringData = ${clusteringData};
                 <div class="col-md-4">
                     <div class="search-filter mb-3">
                         <label for="result-count" class="d-block">군집 갯수</label>
-                        <input type="range" id="result-count" min="2" max="20" value="5" oninput="updateResultValue(this.value)" class="form-range">
+                        <input type="range" id="result-count" min="2" max="20" value="5"
+                               oninput="updateResultValue(this.value)" class="form-range">
                         <div class="d-flex justify-content-between mt-1" style="width:50%;">
                             <span id="rangeMinValue">2</span>
                             <span id="rangeValue">5</span>
@@ -111,18 +112,22 @@ var clusteringData = ${clusteringData};
                 <div class="col-md-6">
                     <div class="keyword-search">
                         <label for="keyword-input" class="d-block">검색 키워드 입력</label>
-                        <input type="text" id="keyword-input" class="form-control mb-2" placeholder="ex) 질문, 추가 등의 키워드를 입력하세요">
-                        <button id="table-search-btn" class="btn btn-primary custom-btn" data-bs-toggle="tooltip" data-bs-placement="top" title="키워드를 검색하여 테이블을 필터링합니다;">
+                        <input type="text" id="keyword-input" class="form-control mb-2"
+                               placeholder="ex) 질문, 추가 등의 키워드를 입력하세요">
+                        <button id="table-search-btn" class="btn btn-primary custom-btn" data-bs-toggle="tooltip"
+                                data-bs-placement="top" title="키워드를 검색하여 테이블을 필터링합니다;">
                             <i class="fas fa-search"></i> 검색
                         </button>
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="d-flex flex-column align-items-end">
-                        <button id="wordcloud-btn" class="btn btn-primary custom-btn mb-2" data-bs-toggle="tooltip" data-bs-placement="top" title="키워드로 워드 클라우드를 만듭니다;">
+                        <button id="wordcloud-btn" class="btn btn-primary custom-btn mb-2" data-bs-toggle="tooltip"
+                                data-bs-placement="top" title="키워드로 워드 클라우드를 만듭니다;">
                             <i class="fas fa-cloud"></i> 워드 클라우드 생성
                         </button>
-                        <button id="analyze-emotion-btn" class="btn btn-primary custom-btn" data-bs-toggle="tooltip" data-bs-placement="top" title="텍스트 감정을 분석합니다;" style="width:30%;">
+                        <button id="analyze-emotion-btn" class="btn btn-primary custom-btn" data-bs-toggle="tooltip"
+                                data-bs-placement="top" title="텍스트 감정을 분석합니다;" style="width:30%;">
                             <i class="fas fa-smile"></i> 감정 분석
                         </button>
                         <small class="text-muted d-block mt-2">- 워드 클라우드 생성: 입력된 키워드를 바탕으로 자주 사용된 단어를 시각화합니다.</small>
@@ -132,7 +137,8 @@ var clusteringData = ${clusteringData};
             </div>
 
             <!-- 워드 클라우드 컨테이너 -->
-            <div id="wordCloudContainer" style="width: 100%; height: 400px; background-color: rgb(248, 249, 252); margin-top: 30px; justify-content: center;"></div>
+            <div id="wordCloudContainer"
+                 style="width: 100%; height: 400px; background-color: rgb(248, 249, 252); margin-top: 30px; justify-content: center;"></div>
 
             <!-- 감정분석 차트 -->
             <div id="emotionChartContainer">
@@ -144,7 +150,8 @@ var clusteringData = ${clusteringData};
             </div>
 
             <!-- 검색 결과 테이블 -->
-            <div class="result-section" style="max-height: 300px; overflow-y: scroll; margin-top: 20px; border: 1px solid #ccc;">
+            <div class="result-section"
+                 style="max-height: 300px; overflow-y: scroll; margin-top: 20px; border: 1px solid #ccc;">
                 <table class="result-table" style="width: 100%; border-collapse: collapse;" aria-label="검색 결과 테이블">
                     <thead>
                     <tr>
@@ -160,16 +167,16 @@ var clusteringData = ${clusteringData};
         </div>
 
 
-    <%--<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>--%>
-<%--<script src="https://cdnjs.cloudflare.com/ajax/libs/wordcloud2.js/1.1.0/wordcloud2.min.js"></script>--%>
-<%--<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>--%>
-<%--<script src="/resources/js/statistic/keyword.js"></script>--%>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
-<script src="/resources/js/statistic/keyword.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/wordcloud2.js/1.1.0/wordcloud2.js"></script>
+        <%--<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>--%>
+        <%--<script src="https://cdnjs.cloudflare.com/ajax/libs/wordcloud2.js/1.1.0/wordcloud2.min.js"></script>--%>
+        <%--<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>--%>
+        <%--<script src="/resources/js/statistic/keyword.js"></script>--%>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+        <script src="/resources/js/statistic/keyword.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/wordcloud2.js/1.1.0/wordcloud2.js"></script>
 </body>
 
 </html>
