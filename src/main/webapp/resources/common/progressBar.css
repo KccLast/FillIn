@@ -1,0 +1,50 @@
+.step-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.step {
+    width: 113px;
+    height: 108px;
+    border-radius: 50%;
+    background-color: #6c757d;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.step.active {
+    background-color: #005bac;
+    transform: scale(1.1);
+}
+
+.step i {
+    font-size: 24px;
+    margin-bottom: 5px;
+}
+
+.step p {
+    font-size: 13px;
+    margin: 0;
+}
+
+.step-divider {
+    width: 80px;
+    height: 6px;
+    background-color: #6c757d;
+    margin: 0 10px;
+    transition: background-color 0.3s ease;
+}
+
+.step-divider.active {
+    background-color: #005bac;
+}
+
+.step:hover {
+    background-color: #3d3d3d;
+}
