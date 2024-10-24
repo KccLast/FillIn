@@ -7,7 +7,7 @@
 			<div class="logo-border mt-2"></div>
 		</div>
 		<div class="nav-menu">
-			<p class="workspace">송동호's workspace</p>
+			<p class="workspace"><sec:authentication property="principal.member.name"/>'s workspace</p>
 			<img class="arrow-icon" alt="arrow" src="/resources/img/common/arrow.png">
 		</div>
 	</nav>

@@ -11,9 +11,12 @@ $(function () {
 
 /** 질문 조회 및 등록 관련 */
 function parseJson(jsonString) {
+  if (jsonString === 'null') {
+    return;
+  }
+
   const surveyObject = JSON.parse(jsonString);
   const questions = surveyObject.questions;
-
   console.log(questions);
 
   // 비동기 함수로 질문을 순차적으로 처리하기 위해 async/await 사용
@@ -81,7 +84,7 @@ async function appendQuestionCard(question, index) {
     }
     $(nav)
       .find('.j-question')
-      .eq(index)
+      .eq(idx)
       .find('.question-name > span')
       .text(question.name);
     let ccSeq = parseInt(question.ccSeq);

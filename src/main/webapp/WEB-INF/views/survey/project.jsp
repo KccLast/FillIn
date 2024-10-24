@@ -86,6 +86,22 @@
 							</div>
 
 						</div>
+
+						<div class="j-nav-button-box j-flex-row-center">
+
+							<!-- <input type="button" value="저장" class="j-nav-input-button j-nav-save-button fs-6 btn"> -->
+							<button class="btn btn-primary j-nav-input-button j-nav-save-button fs-6">저장</button>
+
+							<!-- <input type="button" value="게시" class="j-nav-input-button j-depoly-button  fs-6 btn"> -->
+							<button class="btn btn-primary j-nav-input-button j-depoly-button fs-6">게시</button>
+
+							<!-- <input type="button" value="질문 고급조건" class="j-nav-input-button j-condition-button j-con-btn fs-6 btn"> -->
+
+							<!-- <button class="btn btn-primary j-nav-input-button j-condition-button j-con-btn fs-6">응답 로직</button> -->
+
+						</div>
+
+
 					</div>
 
 					<div class="j-deploy-box">
@@ -93,21 +109,10 @@
 
 					</div>
 
-					<div class="j-condition-button j-flex-row-center j-fix-height btn">
-						<input type="button" value="질문 고급조건" class="j-nav-input-button j-con-btn">
-					</div>
 
-					<div class="j-depoly-button j-flex-row-center j-fix-height btn">
-						<input type="button" value="게시" class="j-nav-input-button">
-					</div>
+					<img class="j-arrow-content j-arrow-right" src="/resources/img/question/arrow-right.png">
 
-					<div class="j-save-button j-flex-row-center j-fixSave-height btn">
-						<input type="button" value="저장" class="j-nav-input-button j-nav-save-button">
-					</div>
-
-					</div>
 					<div class="content">
-
 
 
 					</div>
@@ -116,7 +121,7 @@
 					<div id="optionModal" class="modifiy-modal">
 						<div class="modal-content">
 							<div class="modal-header">
-
+								<span class="add-type-modal-close modal-close close">&times;</span>
 							</div>
 							<div class="modal-body j-flex-col-center">
 								<div class="form-floating">
@@ -127,8 +132,8 @@
 								</div>
 							</div>
 							<div class="modal-btn">
-								<button id="addOptionsBtn">옵션 저장</button>
-								<button class="close">닫기</button>
+
+								<button id="addOptionsBtn" type="button" class="btn btn-primary">옵션 저장</button>
 							</div>
 						</div>
 					</div>
@@ -137,8 +142,10 @@
 					<!-- chart 모달창 -->
 					<div id="preview-modal" class="modifiy-modal" style="display: none;">
 						<div class="preview-modal-content">
-							<span class="preview-modal-close">&times;</span>
-							<h3>표 미리보기</h3>
+							<span class="preview-modal-close fs-6">
+								&times;
+							</span>
+							<!-- <div class="fs-4">표 미리보기</div> -->
 							<div id="preview-table-container"></div>
 						</div>
 					</div>
@@ -147,7 +154,7 @@
 					<!-- add type 모달창 -->
 					<div id="add-type-modal" class="add-type-modal-class">
 						<div class="add-type-modal-content">
-							<span class="add-type-modal-close">&times;</span>
+							<span class="add-type-modal-close modal-close">&times;</span>
 							<div id="add-type-modal-container" class="j-flex-row-center">
 								<div class="j-quantity-box j-flex-col-center">
 									<span>Quantity</span>
@@ -407,7 +414,7 @@
 					</div>
 					<!-- add type 모달창2 -->
 					<div class="j-condition-box">
-
+						<img class="j-arrow-content j-arrow-left" src="/resources/img/question/arrow-left.png">
 						<div class="j-condition-card-container">
 
 							<div class="j-que-con-card j-flex-row-center" id="card1">

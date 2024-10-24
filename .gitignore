@@ -96,3 +96,5 @@ node_modules/
 
 # Eclipse 관련
 .metadata
+
+additional-spring-configuration-metadata.json

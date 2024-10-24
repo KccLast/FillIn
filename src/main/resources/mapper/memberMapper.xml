@@ -62,8 +62,8 @@
     <!-- 회원 등록 -->
     <insert id="insertMember" parameterType="MemberDTO">
         INSERT INTO MEMBER
-        (seq, username, name, password, phone, birth, address, postal_code, cc_seq, created_at, updated_at,role)
-        VALUES (member_seq.nextval, #{username}, #{name}, #{password}, #{phone}, #{birth}, #{address}, #{postalCode},
+        (seq, username, name, password, phone, birth, address, address_detail, postal_code, cc_seq, created_at, updated_at,role)
+        VALUES (member_seq.nextval, #{username}, #{name}, #{password}, #{phone}, #{birth}, #{address},#{detailedAddress}, #{postalCode},
                 #{ccSeq},
                 sysdate, sysdate, 'ROLE_USER')
 

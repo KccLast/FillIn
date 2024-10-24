@@ -1,45 +1,3 @@
-<%--<%@ page contentType="text/html;charset=UTF-8" language="java" %>
-
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Find Password</title>
-  <link rel="stylesheet" href="/resources/css/member/passwordFind.css">
-</head>
-<body>
-<div class="navbar">
-        <div class="nav-left">
-            <a href="#"><img src="/resources/img/common/logo.png" alt="Logo" class="logo"></a>
-        </div>
-
-    <div class="links">
-        <a href="/member/login" id="login-page">로그인 페이지</a>
-    </div>
-
-    </div>
-
-<div class="form-container">
-  <h2>비밀번호 찾기</h2>
-  <form id="emailForm">
-    <input type="text" id="name" name="name" placeholder="이름" required><br>
-    <input type="text" id="phoneNumber" placeholder="전화번호" required>
-
-    <div class="phone-input">
-      <input type="text" id="email" name="username" placeholder="이메일" required><br>
-      <button type="button" id="sendCode">전송</button>
-    </div>
-    <button type="submit" id="verifyButton">인증</button>
-  </form>
-</div>
-
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="/resources/js/member/passwordFind.js"></script>
-</body>
-</html>--%>
-
-
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <!DOCTYPE html>
 <html lang="en">
@@ -69,24 +27,22 @@
 
 <div class="form-container">
     <h2>비밀번호 찾기</h2>
-    <form id="emailForm">
-        <input type="text" id="name" name="name" placeholder="이름" required><br>
-<%--        <input type="text" id="phoneNumber" placeholder="전화번호" required><br>--%>
-        <div class="phone-input">
-            <input type="text" id="email" name="username" placeholder="이메일" required><br>
-            <button type="button" id="sendCode">전송</button>
-        </div>
+    <form id="passwordForm">
+
+        <div class="input-group">
+            <input type="text" id="name" name="name" placeholder="이름 입력" required>
+
+            <div class="phone-input">
+                <input type="text" id="email" name="username" placeholder="이메일" required>
+                <button type="button" id="sendCode">전송</button>
+            </div>
+
         <div id="verificationSection" style="display:none;">
-            <input type="text" id="tempPassword" placeholder="인증코드 입력" required><br>
+            <input type="text" id="tempPassword" placeholder="인증코드 입력" required>
             <button type="button" id="verifyTempPassword">인증</button>
-            <!-- 타이머 표시 영역 -->
             <div id="timer" style="display:none; font-size:23px; color:red; margin-top:10px;"></div>
         </div>
-        <%--<div id="resetPasswordSection" style="display:none;">
-            <input type="password" id="newPassword" placeholder="새 비밀번호 입력" required><br>
-            <input type="password" id="confirmNewPassword" placeholder="새 비밀번호 확인" required><br>
-            <button type="button" id="resetPassword">비밀번호 재설정</button>
-        </div>--%>
+
     </form>
 </div>
 

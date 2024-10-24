@@ -8,7 +8,11 @@
 
 <link rel="stylesheet" type="text/css" href="/resources/css/member/mypage.css">
 <script type="text/javascript" src="/resources/js/member/mypage.js"></script>
+<!-- 카카오 주소 api -->
 <script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+<!-- SweetAlert2 -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.2.0/sweetalert2.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.2.0/sweetalert2.all.min.js"></script>
 </head>
 <body>
  	<!-- 마이페이지 조회 Modal -->
@@ -59,8 +63,11 @@
 						<button type="button" id="updateMemberInfoBtn" class="btn btn-primary updateBtn"
 							data-bs-target="#update-member-modal" data-bs-toggle="modal"
 							data-bs-dismiss="modal">회원 정보 수정</button>
-						<button type="button" class="btn btn-secondary logoutBtn">로그아웃</button>
 					</div>
+						<form method="post" action="/logout">
+							<input type="submit" class="btn btn-secondary logoutBtn" value="로그아웃">
+						</form>
+
 				</div>
 			</div>
 		</div>
@@ -79,9 +86,9 @@
 
 				<div class="modal-body">
 					<div class="profile-container">
-						<img alt="profile" class="profile-image"
-							src="/resources/img/common/profile.png">
-						<button type="button" class="btn btn-primary">프로필 변경</button>
+						<img alt="profile" class="profile-image" src="/resources/img/common/profile.png">
+						<input type="file" id="profile-image-input" name="profile-image-input" style="display: none;">
+						<button type="button" class="btn btn-primary" id="change-profile">프로필 변경</button>
 					</div>
 					<div class="form-group">
 
