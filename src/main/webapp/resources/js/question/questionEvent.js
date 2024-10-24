@@ -1,4 +1,37 @@
 var dragInstance;
+
+var config = {
+  container: '#conditionCardCon', // 트리 컨테이너 설정
+  rootOrientation: 'NORTH', // 트리 방향 설정 (위에서 아래로)
+  nodeAlign: 'CENTER', // 노드 정렬
+  levelSeparation: 40, // 레벨 간 간격
+  siblingSeparation: 30, // 형제 노드 간 간격
+  subTeeSeparation: 30, // 서브 트리 간 간격
+  connectors: {
+    type: 'bCurve', // 연결선 모양
+    style: {
+      stroke: 'black', // 연결선 색상
+      'stroke-width': 2, // 연결선 두께
+    },
+  },
+  node: {
+    HTMLclass: 'mini-card', // 노드의 CSS 클래스
+    collapsable: true, // 노드 접기 가능 여부
+    drawLineThrough: true, // 노드를 가로지르는 선
+    stackChildren: true,
+  },
+  // 커스터마이즈된 노드 템플릿 사용
+  nodeTemplate: function (data) {
+    return `
+          <div class="node-content">
+              <div class="node-order">${data.text.order}</div>
+              <img src="${data.image}" alt="Node Image" class="node-img">
+              <div class="node-name">${data.text.name}</div>
+          </div>
+      `;
+  },
+};
+
 $(function () {
   // x버튼 숨기기
   // jQuery로 이벤트 위임 설정
@@ -45,11 +78,11 @@ $(function () {
     localStorage.setItem('removeQuestionItemList', JSON.stringify([]));
   }
 
-  const cards = $('.j-que-con-card'); // 모든 카드 선택
-  setCardPositions(cards); // 카드 위치 설정
+  // const cards = $('.j-que-con-card'); // 모든 카드 선택
+  // setCardPositions(cards); // 카드 위치 설정
 
   //초기 연결 선 설정
-  dragInstance = defaultConditionLine();
+  // dragInstance = defaultConditionLine();
   $('.j-condition-box').hide();
   $('#j-con-modal').hide();
   //초기 연결 선 설정
@@ -57,7 +90,64 @@ $(function () {
     $('.content').hide(); // 숨기기
     $('.j-condition-box').show(); // 보이기
     $('#j-con-modal').show();
-    dragInstance.repaintEverything();
+
+    var chart_structure = {
+      chart: config,
+      nodeStructure: {
+        text: {
+          name: 'Root Node',
+          title: 'Root Card',
+          desc: 'This is the root node',
+        },
+        HTMLid: 'root-node',
+        children: [
+          {
+            text: {
+              order: '1',
+              name: '질문명',
+            },
+            image: '/resources/img/question/type/type7.png', // 질문 유형 이미지를 표시할 경로
+            HTMLid: 'card1',
+          },
+          {
+            text: {
+              order: '2',
+              name: '질문명',
+            },
+            image: '/resources/img/question/type/type7.png',
+            HTMLid: 'card2',
+            children: [
+              {
+                text: {
+                  order: '3',
+                  name: '질문명',
+                },
+                HTMLid: 'card3',
+                image: '/resources/img/question/type/type7.png',
+              },
+              {
+                text: {
+                  order: '3',
+                  name: '질문명',
+                },
+                HTMLid: 'card3',
+                image: '/resources/img/question/type/type7.png',
+                innerHTML: ` <div class="node-content j-flex-row-center" value="208">
+                  <input type="hidden" class="con-questionSeq">
+                  <div class="node-order">1</div>
+                  <img src="/resources/img/question/type/type7.png" alt="Node Image" class="node-img">
+                  <div class="node-name">질문명</div>
+              </div>`,
+              },
+            ],
+          },
+        ],
+      },
+    };
+
+    var my_chart = new Treant(chart_structure);
+    // dragInstance.repaintEverything();
+
     $('.j-arrow-right').hide();
   });
   $('.j-arrow-left').click(function () {
@@ -737,51 +827,51 @@ $(function () {
   });
   /** 조건 카드 선택시 border이벤트 */
 });
-function setCardPositions(cards, startTop = 20, left = 20, gap = 140) {
-  // cards: 배치할 카드 목록 (jQuery 객체)
-  // startTop: 첫 번째 카드의 상단 시작 위치
-  // left: 모든 카드의 왼쪽 위치
-  // gap: 각 카드 간의 세로 간격
+// function setCardPositions(cards, startTop = 20, left = 20, gap = 140) {
+//   // cards: 배치할 카드 목록 (jQuery 객체)
+//   // startTop: 첫 번째 카드의 상단 시작 위치
+//   // left: 모든 카드의 왼쪽 위치
+//   // gap: 각 카드 간의 세로 간격
 
-  cards.each(function (index) {
-    const topPosition = startTop + index * gap; // 각 카드의 Y축 위치 계산
-    $(this).css({
-      top: `${topPosition}px`,
-      left: `${left}px`,
-      position: 'absolute', // 위치 고정
-    });
-  });
-}
+//   cards.each(function (index) {
+//     const topPosition = startTop + index * gap; // 각 카드의 Y축 위치 계산
+//     $(this).css({
+//       top: `${topPosition}px`,
+//       left: `${left}px`,
+//       position: 'absolute', // 위치 고정
+//     });
+//   });
+// }
 
-//시작하면 연결하기!
-function defaultConditionLine() {
-  const instance = jsPlumb.getInstance({
-    Connector: ['Straight'],
-    Endpoint: ['Dot', { radius: 5 }],
-    PaintStyle: { stroke: 'black', strokeWidth: 2 },
-    EndpointStyle: { fill: 'blue' },
-    Overlays: [['Arrow', { width: 10, length: 10, location: 1 }]],
-    Anchors: ['Bottom', 'Top'],
-    Container: document.querySelector('.j-condition-box'),
-  });
+// //시작하면 연결하기!
+// function defaultConditionLine() {
+//   const instance = jsPlumb.getInstance({
+//     Connector: ['Straight'],
+//     Endpoint: ['Dot', { radius: 5 }],
+//     PaintStyle: { stroke: 'black', strokeWidth: 2 },
+//     EndpointStyle: { fill: 'blue' },
+//     Overlays: [['Arrow', { width: 10, length: 10, location: 1 }]],
+//     Anchors: ['Bottom', 'Top'],
+//     Container: document.querySelector('.j-condition-box'),
+//   });
 
-  $('.j-que-con-card').draggable({
-    containment: '.j-condition-box', // 부모 컨테이너 내부로 제한
-    scroll: false, // 스크롤 시 움직임 방지
-    drag: function () {
-      instance.repaintEverything(); // 드래그 중 연결선 갱신
-    },
-  });
+//   $('.j-que-con-card').draggable({
+//     containment: '.j-condition-box', // 부모 컨테이너 내부로 제한
+//     scroll: false, // 스크롤 시 움직임 방지
+//     drag: function () {
+//       instance.repaintEverything(); // 드래그 중 연결선 갱신
+//     },
+//   });
 
-  // 카드 연결 설정
-  instance.connect({ source: 'card1', target: 'card2', detachable: false });
-  instance.connect({ source: 'card2', target: 'card3', detachable: false });
+//   // 카드 연결 설정
+//   instance.connect({ source: 'card1', target: 'card2', detachable: false });
+//   instance.connect({ source: 'card2', target: 'card3', detachable: false });
 
-  // 초기 연결선 그리기
-  instance.repaintEverything();
+//   // 초기 연결선 그리기
+//   instance.repaintEverything();
 
-  return instance;
-}
+//   return instance;
+// }
 
 //생성된 input에 name부여
 async function setQiCheckBoxAndRadioName(html, prev, next, idx) {
