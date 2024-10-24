@@ -13,6 +13,9 @@ import org.springframework.security.web.firewall.HttpFirewall;
 import org.springframework.security.web.firewall.StrictHttpFirewall;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.cors.CorsConfiguration;
+
+import java.util.List;
 
 //@Configuration
 //@EnableWebSecurity
@@ -188,6 +191,13 @@ public class SecurityConfig {
 				.invalidateHttpSession(true)
 				.permitAll());
 
+		http.cors(cors -> cors.configurationSource(request -> {
+			CorsConfiguration config = new CorsConfiguration();
+			config.setAllowedOrigins(List.of("*")); // 모든 도메인 허용 (필요시 제한 가능)
+			config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+			config.setAllowedHeaders(List.of("*"));
+			return config;
+		}));
 		return http.build();
 	}
 
