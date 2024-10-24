@@ -67,8 +67,9 @@ $(function () {
 
   $('.content').on(
     'click',
-    '.j-option-input-radio > input[type="checkbox"]',
+    '.j-option-input-radio  input[type="checkbox"]',
     function () {
+      console.log('hi');
       let $parentCard = $(this).parents('.j-question-card'); // 부모 .j-question-card 요소
       let questionSeq = $parentCard.find('.j-qseq').val();
       let cSeq = $parentCard.find('.j-cseq').val();
@@ -77,7 +78,7 @@ $(function () {
 
       // 부모 .j-question-card 내에서 체크된 모든 체크박스의 앞에 있는 값을 가져옴
       $parentCard
-        .find('.j-option-input-radio > input[type="checkbox"]:checked')
+        .find('.j-option-input-radio  input[type="checkbox"]:checked')
         .each(function () {
           let val = $(this).val(); // 체크된 체크박스 값을 가져옴
           checkedValues.push(val); // 배열에 추가
@@ -99,7 +100,7 @@ $(function () {
 
   $('.content').on(
     'click',
-    '.j-option-input-radio > input[type="radio"], .j-gender-radio',
+    '.j-option-input-radio  input[type="radio"], .j-gender-radio',
     function () {
       getSubmitObject(this, $(this).val());
 
@@ -111,14 +112,14 @@ $(function () {
     }
   );
   //라디오 버튼 눌렀을 때 이벤트 성별
-    $('.content').on('click', '.radio-container', function () {
-      let $thisRadio = $(this).find('input[type="radio"]');
-      let $sibling = $(this).siblings();
+  $('.content').on('click', '.radio-container', function () {
+    let $thisRadio = $(this).find('input[type="radio"]');
+    let $sibling = $(this).siblings();
 
-      $thisRadio.prop('checked', true);
-      $(this).addClass('clicked-radio-css');
-      $sibling.removeClass('clicked-radio-css');
-    });
+    $thisRadio.prop('checked', true);
+    $(this).addClass('clicked-radio-css');
+    $sibling.removeClass('clicked-radio-css');
+  });
 
   $('.content').on('click', '.j-number > span', function () {
     getSubmitObject(this, $(this).text());
@@ -280,10 +281,10 @@ function updateLine(numRangeLine, clickedIndex, totalNumbers) {
     .css(
       'background-image',
       'linear-gradient(90deg, #005bac ' +
-      percentage +
-      '%, rgba(0, 91, 172, 0.4) ' +
-      percentage +
-      '%)'
+        percentage +
+        '%, rgba(0, 91, 172, 0.4) ' +
+        percentage +
+        '%)'
     );
 }
 
@@ -428,7 +429,10 @@ function execDaumPostcode(button) {
       $parent.find('.zipp_code_id').val(data.zonecode);
       $parent.find('.UserAdd1').val(addr + extraAddr);
       $parent.find('.UserAdd2').focus();
-      getSubmitObject($('.content').find('.j-card-selected > div'), addr + extraAddr);
+      getSubmitObject(
+        $('.content').find('.j-card-selected > div'),
+        addr + extraAddr
+      );
       /*document.getElementById('zipp_code_id').value = data.zonecode;
       document.getElementById("UserAdd1").value = addr;
       document.getElementById("UserAdd1").value += extraAddr;
@@ -448,7 +452,6 @@ function setCard() {
     url: requestUrl,
     type: 'GET',
     success: async function (response) {
-
       if (page === undefined || page === null) page = 1;
       //pageDTO = response.data.pageDTO;
       setEnd(response.data.totalCnt);
@@ -565,41 +568,7 @@ async function setQuestionItem(question, newCard) {
     }
 
     if (question.ccSeq === 11) {
-      let row = $($contentBox.find('.j-row-box'));
-      let col = $($contentBox.find('.j-col-box'));
-      if (qi.orderNum === 1) {
-        row.find('.j-row-input').eq(0).val(qi.content);
-        row
-          .find('.j-row-input')
-          .eq(0)
-          .addClass('qi ' + qi.seq);
-      } else if (qi.orderNum > 1 && qi.orderNum < 85) {
-        let html = `
-<div class="j-rowAndcol-input-x-box j-flex-row-center">
-    <input class="j-rowAndcol-input j-row-input qi ${qi.seq}" type="text" value="${qi.content}" placeholder="&nbsp;&nbsp;Row 1">
-    <button class="j-rowAndcol-input-xbutton j-flex-row-center">
-        <span>x</span>
-    </button>
-</div>
-`;
-        row.append(html);
-      } else if (qi.orderNum == 85) {
-        col.find('.j-col-input').eq(0).val(qi.content);
-        col
-          .find('.j-col-input')
-          .eq(0)
-          .addClass('qi ' + qi.seq);
-      } else {
-        let html = `
-<div class="j-rowAndcol-input-x-box j-flex-row-center">
-    <input class="j-rowAndcol-input j-col-input qi ${qi.seq}" type="text" value="${qi.content}" placeholder="&nbsp;&nbsp;Col 1">
-    <button class="j-rowAndcol-input-xbutton j-flex-row-center">
-        <span>x</span>
-    </button>
-</div>
-`;
-        col.append(html);
-      }
+      type11($contentBox, qi);
     }
   }
   if (question.ccSeq === 9) {
@@ -621,8 +590,46 @@ function type7Common(target, qi) {
   target.find('input[type="text"]').addClass('qi');
   target.find('input[type="text"]').addClass('' + qi.seq);
   target.find('.j-option-order').text(qi.orderNum);
-  target.find('.j-option-input-radio > input').val(qi.content);
+  target.find('.j-option-input-radio input').val(qi.content);
   target.find('.j-chAndRa').attr('name', qi.questionSeq);
+}
+
+function type11(target, qi) {
+  let row = $($contentBox.find('.j-row-box'));
+  let col = $($contentBox.find('.j-col-box'));
+  if (qi.orderNum === 1) {
+    row.find('.j-row-input').eq(0).val(qi.content);
+    row
+      .find('.j-row-input')
+      .eq(0)
+      .addClass('qi ' + qi.seq);
+  } else if (qi.orderNum > 1 && qi.orderNum < 85) {
+    let html = `
+<div class="j-rowAndcol-input-x-box j-flex-row-center">
+<input class="j-rowAndcol-input j-row-input qi ${qi.seq}" type="text" value="${qi.content}" placeholder="&nbsp;&nbsp;Row 1">
+<button class="j-rowAndcol-input-xbutton j-flex-row-center">
+  <span>x</span>
+</button>
+</div>
+`;
+    row.append(html);
+  } else if (qi.orderNum == 85) {
+    col.find('.j-col-input').eq(0).val(qi.content);
+    col
+      .find('.j-col-input')
+      .eq(0)
+      .addClass('qi ' + qi.seq);
+  } else {
+    let html = `
+<div class="j-rowAndcol-input-x-box j-flex-row-center">
+<input class="j-rowAndcol-input j-col-input qi ${qi.seq}" type="text" value="${qi.content}" placeholder="&nbsp;&nbsp;Col 1">
+<button class="j-rowAndcol-input-xbutton j-flex-row-center">
+  <span>x</span>
+</button>
+</div>
+`;
+    col.append(html);
+  }
 }
 
 async function fetchSubmitFrame() {
@@ -648,10 +655,10 @@ function updateLine(numRangeLine, clickedIndex, totalNumbers) {
     .css(
       'background-image',
       'linear-gradient(90deg, #005bac ' +
-      percentage +
-      '%, rgba(0, 91, 172, 0.4) ' +
-      percentage +
-      '%)'
+        percentage +
+        '%, rgba(0, 91, 172, 0.4) ' +
+        percentage +
+        '%)'
     );
 }
 function updateNumberRange(target) {
@@ -695,7 +702,6 @@ function setPageBtn() {
   }
 }
 
-
 // 선형 배율
 function updateLineProgressBar() {
   let len = $('.content').find('.j-ans').length;
@@ -705,9 +711,9 @@ function updateLineProgressBar() {
   $('.j-progress-line').css(
     'background-image',
     'linear-gradient(90deg, #005bac ' +
-    percentage +
-    '%, rgba(0, 91, 172, 0.4) ' +
-    percentage +
-    '%)'
+      percentage +
+      '%, rgba(0, 91, 172, 0.4) ' +
+      percentage +
+      '%)'
   );
 }
