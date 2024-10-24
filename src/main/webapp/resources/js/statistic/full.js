@@ -1,4 +1,8 @@
 var hitsChart;
+var quanChart;
+var questionsList = [];
+var quanQuestionList;
+var qualQuestionList;
 
 $(document).ready(function () {
     const loadingElement = $("#loading");
@@ -21,10 +25,12 @@ $(document).ready(function () {
                 updateParticipantsPage(response.data);
                 // 조회수 그래프
                 updateHitsPage(response.data);
-                // 통계
-                updateStatisticPage(response.data);
+                // 질문 리스트
+                updateQuestionList(response.data);
                 // 질문, 문항 로드
                 updateSelectQuestion(response.data);
+
+                console.log(response.data);
 
                 // 로딩 완료 후 로딩 화면 숨김
                 loadingElement.hide();
@@ -34,11 +40,6 @@ $(document).ready(function () {
                 console.error("Error fetching initial data: ", error);
             }
         });
-
-        // 버튼에 이벤트 리스너 추가
-        // (DOM이 로드된 이후에만 가능)
-        document.getElementById('listViewButton').addEventListener('click', () => toggleView('table'));
-        document.getElementById('carouselViewButton').addEventListener('click', () => toggleView('carousel'));
 
         $('#search-input').on('click', function () {
             var startDate = $('#startDate').val();
@@ -64,8 +65,8 @@ $(document).ready(function () {
                     updateParticipantsPage(response.data);
                     // 조회수 그래프
                     updateHitsPage(response.data);
-                    // 통계
-                    updateStatisticPage(response.data);
+                    // 질문 리스트
+                    updateQuestionList(response.data);
                     // 질문, 문항 로드
                     updateSelectQuestion(response.data);
 
@@ -114,7 +115,7 @@ function updateHitsPage(response) {
     }
 
     // Chart.js로 차트 업데이트
-    const ctx = document.getElementById('statisticChart').getContext('2d');
+    const ctx = document.getElementById('hitsChart').getContext('2d');
     const data = {
         labels: labels,
         datasets: [
@@ -153,6 +154,7 @@ function updateHitsPage(response) {
             plugins: {
                 legend: {
                     position: 'top',
+                    align: 'end'
                 },
             },
             scales: {
@@ -181,9 +183,168 @@ function updateStatisticPage(response) {
     renderData(response);
 }
 
+function updateQuestionList(response) {
+    // console.log(response);
+    // 정량, 정성 각 항목 저장해놓기
+    quanQuestionList = response.quantitativeResponseList;
+    qualQuestionList = response.qualitativeResponseList;
+    // console.log(quanQuestionList);
+
+    if (questionsList.length > 0) {
+        questionsList.splice(0, questionsList.length);
+    }
+
+    // 정량 항목
+    response.quantitativeResponseList.forEach(item => {
+        questionsList.push({
+            questionOrder: item.questionOrder,
+            questionName: item.questionName,
+            questionDescription: item.questionDescription,
+            ccSeq: item.ccSeq,
+            ccName: item.ccName,
+            parentSeq: item.parentSeq
+        });
+    });
+
+    // 정성 항목
+    response.qualitativeResponseList.forEach(item => {
+        questionsList.push({
+            questionOrder: item.questionOrder,
+            questionName: item.questionName,
+            questionDescription: item.questionDescription,
+            ccSeq: item.ccSeq,
+            ccName: item.ccName,
+            parentSeq: item.parentSeq
+        });
+    });
+
+    // questionOrder로 정렬
+    questionsList.sort((a, b) => a.questionOrder - b.questionOrder);
+
+    console.log(questionsList);
+
+    // 테이블 업데이트
+    updateTable();
+}
+
+function updateTable() {
+    const tableBody = document.getElementById('table-body');
+
+    // 테이블 내용 초기화
+    tableBody.innerHTML = '';
+
+    // questionList에 있는 데이터를 테이블에 추가
+    questionsList.forEach(item => {
+        const row = document.createElement('tr');
+
+        // 스타일 설정
+        let style = 'font-size: small; ';
+
+        // parentSeq 값 따라 스타일 조건부로 설정
+        if (item.parentSeq === 3) {
+            style += 'color: #005bac; font-weight: bold;';
+        } else if (item.parentSeq === 4) {
+            style += 'color: #51971a; font-weight: bold;';
+        } else if (item.parentSeq === 5) {
+            style += 'color: #de8a0d; font-weight: bold;';
+        } else if (item.parentSeq === 6) {
+            style += 'color: #805ad5; font-weight: bold;';
+        }
+
+        row.innerHTML = `
+            <td>${item.questionOrder}</td>
+            <td>${item.questionName}</td>
+            <td style="${style}"><img src="/resources/img/question/type/type${item.ccSeq}.png" style="width: 20px; height: 20px; margin-right: 5px"> ${item.ccName}</td>
+        `;
+
+        // 행 클릭 시 handleRowClick 함수 호출
+        row.addEventListener('click', () => handleRowClick(item));
+
+        tableBody.appendChild(row);
+    });
+}
+
+function handleRowClick(item) {
+    const cardBody = document.querySelector('.chart-container .card-body');
+
+    // 기존 내용 초기화
+    cardBody.innerHTML = '';
+
+    // parentSeq 값에 따라 다른 콘텐츠를 렌더링 (객관식 표 우선 빼놓고)
+    if (item.parentSeq === 3 && item.ccSeq !== 11) {
+        // 차트 삽입
+        cardBody.innerHTML = `
+            <h5 class="fw-bold">${item.questionOrder}번: ${item.questionName}</h5>
+            <p>${item.questionDescription}</p>
+<!--            <div class="row">-->
+<!--                <canvas id="statisticChart" class="col"></canvas>-->
+<!--                <div id="legendContainer" class="col"></div>-->
+<!--            </div>-->
+        `;
+
+        // row, col 추가
+        const rowDiv = document.createElement('div');
+        rowDiv.className = 'row';
+
+        const statisticChart = document.createElement('canvas');
+        statisticChart.id = 'statisticChart';
+        statisticChart.className = 'col-7';
+        // statisticChart.style.width = '300px'; // 원하는 너비로 설정
+        // statisticChart.style.height = '250px'; // 원하는 높이로 설정
+
+        const legendContainer = document.createElement('div');
+        legendContainer.id = 'legendContainer';
+        legendContainer.className = 'col-5';
+
+        // rowDiv에 canvas, legendContainer 추가
+        rowDiv.appendChild(statisticChart);
+        rowDiv.appendChild(legendContainer);
+
+        cardBody.appendChild(rowDiv);
+
+        renderChart(quanQuestionList.find(i => i.questionOrder === item.questionOrder).questionItems); // 차트 렌더링 함수 호출
+    } else if (item.parentSeq === 4) {
+        // 테이블 삽입
+        cardBody.innerHTML = `
+            <h5 class="fw-bold">${item.questionOrder}번: ${item.questionName}</h5>
+            <p>${item.questionDescription}</p>
+            <div style="padding: 0; max-height: 300px; overflow-y: auto;">
+                <table class="table" style="table-layout: fixed; width: 100%;">
+                    <thead style="position: sticky; top: 0; background-color: white; z-index: 1;">
+                        <tr>
+                            <th>응답 시간</th>
+                            <th>응답 내용</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${qualQuestionList.find(i => i.questionOrder === item.questionOrder).answerList.map(answer => `
+                            <tr>
+                                <td>${answer.answerDate}</td>
+                                <td>${answer.answerContent}</td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            </div>
+        `;
+        console.log(qualQuestionList);
+    } else if (item.parentSeq === 5 || item.parentSeq === 6 || item.ccSeq === 11) {
+        // 지원하지 않는 형식 표시
+        cardBody.innerHTML = `
+            <div class="fw-bold">${item.questionOrder}번: ${item.questionName}</div>
+            <p style="color: red; font-weight: bold;">통계를 지원하지 않는 형식의 질문입니다.</p>
+        `;
+        console.log('지원하지 않는 형식 표시');
+    }
+}
+
 function updateSelectQuestion(response) {
     const questionSelect = $(".form-select:eq(0)"); // 첫번째 select 박스
     const itemSelect = $(".form-select:eq(1)"); // 두번째 select 박스
+
+    // 현재 선택된 값 저장
+    const selectedQuestionOrder = questionSelect.val();
+    const selectedItemContent = itemSelect.val();
 
     // 질문 셀렉트 박스 초기화
     questionSelect.empty().append(new Option('질문을 선택해주세요', ''));
@@ -191,11 +352,16 @@ function updateSelectQuestion(response) {
         questionSelect.append(new Option(question.questionName, question.questionOrder));
     });
 
+    // 기존 선택된 질문 값이 있으면 선택 상태 유지
+    if (selectedQuestionOrder) {
+        questionSelect.val(selectedQuestionOrder).change();
+    }
+
     // 질문 선택 시 문항 셀렉트 박스 업데이트
     questionSelect.on('change', function () {
         const selectedQuestionOrder = $(this).val();
         const selectedQuestion = response.quantitativeResponseList.find(q => q.questionOrder == selectedQuestionOrder);
-        console.log(selectedQuestion);
+        // console.log(selectedQuestion);
 
         // 문항 셀렉트 박스 초기화
         itemSelect.empty().append(new Option('문항을 선택해주세요', ''));
@@ -208,199 +374,117 @@ function updateSelectQuestion(response) {
 
         // 문항 선택 가능하게 활성화
         itemSelect.prop('disabled', false);
+
     });
-}
 
-// 테이블과 캐러셀 뷰 전환 함수
-function toggleView(viewType) {
-    const quanTableView = document.getElementById('quanListView');
-    const quanCarouselView = document.getElementById('quanCarouselView');
-
-    const qualTableView = document.getElementById('qualListView');
-    const qualCarouselView = document.getElementById('qualCarouselView');
-
-    if (viewType === 'table') {
-        quanTableView.classList.remove('d-none');
-        quanCarouselView.classList.add('d-none');
-        qualTableView.classList.remove('d-none');
-        qualCarouselView.classList.add('d-none');
-    } else {
-        quanTableView.classList.add('d-none');
-        quanCarouselView.classList.remove('d-none');
-        qualTableView.classList.add('d-none');
-        qualCarouselView.classList.remove('d-none');
+    // 기존 선택된 문항 값이 있으면 해당 문항 유지
+    if (selectedItemContent) {
+        itemSelect.val(selectedItemContent);
     }
 }
 
-// 테이블과 캐러셀에 데이터를 렌더링하는 함수
-function renderData(response) {
-    const quanTableView = document.getElementById('quanListView');
-    const quanCarouselView = document.querySelector('.quan-carousel-inner');
-
-    const qualTableView = document.getElementById('qualListView');
-    const qualCarouselView = document.querySelector('.qual-carousel-inner');
-
-    // 기존 내용을 지움
-    quanTableView.innerHTML = '';
-    quanCarouselView.innerHTML = '';
-
-    qualTableView.innerHTML = '';
-    qualCarouselView.innerHTML = '';
-
-    let quanTableRow = null;
-    let quanCarouselItem = null;
-
-    let qualTableRow = null;
-    let qualCarouselItem = null;
-
-    // quantitativeList 데이터를 순회하며 각 질문에 대한 카드 생성
-    // console.log(response.quantitativeResponseList);
-    response.quantitativeResponseList.forEach((question, index) => {
-        // 2개씩 보여줄 때 새로운 row 혹은 carousel-item을 생성
-        if (index % 2 === 0) {
-            quanTableRow = document.createElement('div');
-            quanTableRow.classList.add('row', 'mb-3');
-            quanTableView.appendChild(quanTableRow); // 새로운 행 추가
-
-            quanCarouselItem = document.createElement('div');
-            quanCarouselItem.classList.add('carousel-item');
-            if (index === 0) quanCarouselItem.classList.add('active'); // 첫 번째 항목은 활성 상태로 설정
-            const row = document.createElement('div');
-            row.classList.add('row');
-            quanCarouselItem.appendChild(row);
-            quanCarouselView.appendChild(quanCarouselItem); // 새로운 캐러셀 항목 추가
-        }
-
-        // 테이블 형식 카드 생성
-        const quanTableCard = document.createElement('div');
-        quanTableCard.classList.add('col-md-6');
-        quanTableCard.innerHTML = `
-            <div class="card">
-                <div class="card-body">
-                    <h5>${question.questionOrder}번: ${question.questionName}</h5>
-                    <canvas id="tableChart${index}" style="height:30vh"></canvas>
-                </div>
-            </div>
-        `;
-        quanTableRow.appendChild(quanTableCard); // 카드가 같은 행 안에 포함되도록
-        // console.log(index);
-
-        // 캐러셀 항목 생성
-        const quanCarouselCard = document.createElement('div');
-        quanCarouselCard.classList.add('col-md-6'); // 한 줄에 두 개의 카드로 구성
-        // if (index === 0) carouselItem.classList.add('active');  // 첫 번째 항목은 활성 상태로 설정
-        quanCarouselCard.innerHTML = `
-                <div class="card">
-                    <div class="card-body">
-                        <h5>${question.questionOrder}번: ${question.questionName}</h5>
-                        <canvas id="carouselChart${index}"style="height:30vh"></canvas>
-                    </div>
-                </div>
-            `;
-        quanCarouselItem.querySelector('.row').appendChild(quanCarouselCard); // 캐러셀의 row에 카드 추가
-
-
-        // Chart.js를 이용해 차트 렌더링
-        renderChart(`tableChart${index}`, question.questionItems);
-        renderChart(`carouselChart${index}`, question.questionItems);
-    });
-
-    // qualitativeList 데이터를 순회하며 각 질문에 대한 카드 생성
-    console.log(response);
-    response.qualitativeResponseList.forEach((question, index) => {
-        qualTableRow = document.createElement('div');
-        qualTableRow.classList.add('row', 'mb-3');
-        qualTableView.appendChild(qualTableRow); // 새로운 행 추가
-
-        qualCarouselItem = document.createElement('div');
-        qualCarouselItem.classList.add('carousel-item');
-        if (index === 0) qualCarouselItem.classList.add('active'); // 첫 번째 항목은 활성 상태로 설정
-        const row = document.createElement('div');
-        row.classList.add('row');
-        qualCarouselItem.appendChild(row);
-        qualCarouselView.appendChild(qualCarouselItem); // 새로운 캐러셀 항목 추가
-
-        // 테이블 형식 카드 생성
-        const qualTableCard = document.createElement('div');
-        qualTableCard.classList.add('col-md-12');
-        qualTableCard.innerHTML = `
-            <div class="card">
-                <div class="card-body">
-                    <h5>${question.questionOrder}번: ${question.questionName}</h5>
-                    <div class="table-responsive">
-                        <table class="table">
-                            <thead>
-                                <tr>
-                                    <th>응답 시간</th>
-                                    <th>응답</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                ${question.answerList.map(answer => `
-                                    <tr>
-                                        <td>${answer.answerDate}</td>
-                                        <td>${answer.answerContent}</td>
-                                    </tr>
-                                `).join('')}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        `;
-        qualTableRow.appendChild(qualTableCard); // 카드가 같은 행 안에 포함되도록
-
-        // 캐러셀 항목 생성
-        const qualCarouselCard = document.createElement('div');
-        qualCarouselCard.classList.add('col-md-12');
-        qualCarouselCard.innerHTML = `
-                <div class="card">
-                    <div class="card-body">
-                        <h5>${question.questionOrder}번: ${question.questionName}</h5>
-                        <div class="table-responsive">
-                            <table class="table">
-                                <thead>
-                                    <tr>
-                                        <th>활동 시간</th>
-                                        <th>사유 선택</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    ${question.answerList.map(answer => `
-                                        <tr>
-                                            <td>${answer.answerDate}</td>
-                                            <td>${answer.answerContent}</td>
-                                        </tr>
-                                    `).join('')}
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            `;
-        qualCarouselItem.querySelector('.row').appendChild(qualCarouselCard); // 캐러셀의 row에 카드 추가
-    });
-}
-
 // 주어진 캔버스 ID에 대해 차트를 그리는 함수
-function renderChart(canvasId, questionItems) {
-    const ctx = document.getElementById(canvasId).getContext('2d');
-    const labels = questionItems.map(item => item.itemContent);
-    const data = questionItems.map(item => item.itemRatio);
+function renderChart(questionItems) {
+    const ctx = document.getElementById('statisticChart').getContext('2d');
 
-    new Chart(ctx, {
+    // 기존 차트가 있으면 제거
+    if (quanChart) {
+        quanChart.destroy();
+    }
+
+    const labels = questionItems.map(item => item.itemContent);
+    const data = questionItems.map(item => item.itemRatio !== null ? item.itemRatio : 0);
+
+    quanChart = new Chart(ctx, {
         type: 'doughnut',
         data: {
             labels: labels,
             datasets: [{
                 data: data,
-                backgroundColor: ['#3C82F6', '#06B6D4', '#0FA4E8', '#6466F1'], // 색상은 원하는 대로 조정
+                backgroundColor: ['#3C82F6', '#06B6D4', '#0FA4E8', '#6466F1'],
                 borderWidth: 1
             }]
         },
         options: {
-            responsive: true,
+            responsive: false,
             // maintainAspectRatio: false
+            plugins: {
+                legend: {
+                    position: 'top', // 레전드 위치 설정
+                    labels: {
+                        display: false // 기본 레전드 숨기기
+                        // boxWidth: 20, // 레전드 색상 상자의 너비
+                        // padding: 30, // 레전드 간격
+                        // usePointStyle: true, // 점 스타일 사용
+                        // generateLabels: function (chart) {
+                        //     let datasets = chart.data.datasets;
+                        //     return datasets[0].data.map((data, i) => ({
+                        //         text: `${chart.data.labels[i]}\t${data}%`,
+                        //         fillStyle: datasets[0].backgroundColor[i],
+                        //         hidden: false,
+                        //     }));
+                        // }
+                    },
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function (tooltipItem) {
+                            return `${tooltipItem.label}: ${tooltipItem.raw}%`;
+                        }
+                    }
+                }
+            }
         }
+    });
+
+    // HTML 레전드 생성
+    const legendContainer = document.getElementById('legendContainer');
+    // legendContainer.className = 'my-auto';
+
+    labels.forEach((label, i) => {
+        // 원형 색상 박스 생성
+        const colorBox = document.createElement('span');
+        colorBox.className = 'color-box';
+        colorBox.style.backgroundColor = quanChart.data.datasets[0].backgroundColor[i];
+        colorBox.style.width = '15px'; // 너비 설정
+        colorBox.style.height = '15px'; // 높이 설정
+        colorBox.style.borderRadius = '50%'; // 원형으로 만들기
+        colorBox.style.display = 'inline-block'; // 인라인 블록으로 설정
+        colorBox.style.marginRight = '10px'; // 텍스트와의 간격
+
+        const labelText = document.createElement('span');
+        labelText.innerHTML = label; // 항목 텍스트
+        labelText.style.whiteSpace = 'nowrap'; // 텍스트를 한 줄로 표시
+        labelText.style.overflow = 'hidden'; // 넘치는 텍스트를 숨김
+        labelText.style.textOverflow = 'ellipsis'; // 넘치는 텍스트를 ...로 표시
+        labelText.style.maxWidth = '70px'; // 최대 너비 설정
+        labelText.style.display = 'inline-block'; // 인라인 블록으로 설정
+        labelText.title = label; // 전체 텍스트를 툴팁으로 표시
+
+        // 비율 항목을 감싸는 div 생성
+        const percentageContainer = document.createElement('div');
+        percentageContainer.style.display = 'flex'; // 플렉스 박스로 설정
+        percentageContainer.style.alignItems = 'center'; // 수직 중앙 정렬
+        percentageContainer.style.marginLeft = 'auto'; // 오른쪽 끝에 배치
+
+        const percentage = document.createElement('span');
+        percentage.className = 'percentage';
+        percentage.innerHTML = `${data[i]}%`; // 비율 텍스트
+
+        // 레전드 항목을 감싸는 div 생성
+        const legendItem = document.createElement('div');
+        legendItem.className = 'legend-item m-2';
+        legendItem.style.display = 'flex'; // 플렉스 박스로 설정
+        legendItem.style.alignItems = 'center'; // 수직 중앙 정렬
+
+        // 색상 박스와 텍스트를 추가
+        legendItem.appendChild(colorBox);
+        legendItem.appendChild(labelText);
+
+        // 비율 항목을 추가
+        percentageContainer.appendChild(percentage);
+        legendItem.appendChild(percentageContainer); // 비율 항목 추가
+
+        legendContainer.appendChild(legendItem);
     });
 }
