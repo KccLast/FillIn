@@ -332,6 +332,25 @@ $(document).ready(function() {
 	let addedQuestions = [];
 	// 선택한 질문지 추가
 	$('#add-questions-btn').off('click').on('click', function() {
+		let hasChecked = false;
+
+		// 선택된 체크박스가 있는지 확인
+		$('.select-question-section').each(function() {
+			const checkbox = $(this).find('.question-select');
+			if (checkbox.is(':checked')) {
+				hasChecked = true;
+			}
+		});
+		
+		if(!hasChecked) {
+			/*alert('하나 이상의 질문을 선택해주세요.');*/
+			Swal.fire({
+				icon: "error",
+				text: "하나 이상의 질문을 선택해주세요.",
+			});
+			return;
+		}
+
 		$('.select-question-section').each(function() {
 			const checkbox = $(this).find('.question-select');
 			// 체크박스가 선택되지 않았으면 다음으로 넘어감
@@ -366,7 +385,7 @@ $(document).ready(function() {
 			if (ccSeq === 7 || ccSeq === 8) {  // 객관식 또는 체크박스일 경우에만 옵션을 수집
 				$(this).find('.question-content div').each(function() { // 모든 <div> 선택
 					const optionText = $(this).text().trim(); // div의 텍스트 가져오기
-					
+
 					// 정규 표현식으로 번호와 점 제거
 					const option = optionText.replace(/^\d+\.\s*/, '')
 					options.push(option); // 텍스트를 options 배열에 추가
@@ -394,7 +413,8 @@ $(document).ready(function() {
 			});
 
 			const questionListContainer = $('.select-add-questions');
-			questionListContainer.html('<p>추가된 질문 목록</p>');
+			$('.vertical-line').show();
+			questionListContainer.html('<p class="fw-bold">추가된 질문 목록</p>');
 
 			// 그룹별로 출력
 			for (const type in groupedQuestions) {
@@ -455,11 +475,11 @@ $(document).ready(function() {
 	// 선택된 질문 - 질문지 만드는 페이지로 보내기
 	$('#create-question-btn').on('click', function() {
 		let questions = [];
-        let surveyName ='';
-        surveyNames = $('#survey-name').val();
-        let aiSurveyObject = {
-            surveyName : surveyNames
-        }
+		let surveyName = '';
+		surveyNames = $('#survey-name').val();
+		let aiSurveyObject = {
+			surveyName: surveyNames
+		}
 		$('.added-question-checkbox:checked').each(function() {
 			const ccSeq = $(this).attr('id').split('-')[1];
 
@@ -478,8 +498,13 @@ $(document).ready(function() {
 		console.log('questions: ' + JSON.stringify(questions, null, 2));
 
 		if (questions.length === 0) {
-			alert("선택된 질문이 없습니다.");
+			// alert("선택된 질문이 없습니다.");
+			Swal.fire({
+				icon: "error",
+				text: "선택된 질문이 없습니다.",
+			});
 			return;
+
 		}
 		aiSurveyObject.questions = questions;
 		console.log('Request Payload 222: ', JSON.stringify(aiSurveyObject));
