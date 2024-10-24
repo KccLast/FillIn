@@ -56,7 +56,7 @@
 </div>
 
 <div class="form-container">
-    <h2>이메일 찾기</h2>
+    <h2>사용자 이메일 찾기</h2>
     <form id="emailForm">
         <input type="text" id="name" name="name" placeholder="이름" required><br>
         <input type="text" id="phoneNumber" name="phoneNumber" placeholder="'-'없이 숫자만 입력하세요" required>

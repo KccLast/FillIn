@@ -1,16 +1,20 @@
- body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-    background-color: #f5f5f5;
-    font-size: 23px; /* 전체 폰트 크기를 기본적으로 키움 */
-}
+body {
+     min-height: 100vh;
+     margin: 0;
+     padding: 0;
+     /*background: linear-gradient(to top right, #92b5db 0%, #1d466c 100%);*/
+    background: #f5f5f5;
+     font-family: Arial, sans-serif;
+     font-size: 1.25rem;
+     color: #333;
+     font-weight:bold;
+ }
 
 .profile-container {
     position: relative;
     width: 200px;
     height: 200px;
-    margin: 48px auto;
+    margin: 20px auto;
 }
 
 .profile-image {
@@ -53,8 +57,8 @@
 }
 
 .logo {
-    max-width: 68%;
-    max-height: 72px;
+    max-width: 55%;
+    max-height: 65px;
     margin-right: 8px;
 }
 
@@ -65,24 +69,17 @@
     align-items: flex-start;
     margin-top: 20px; /* navbar와 폼 사이에 여유 공간 추가 */
     height: auto; /* 88vh 대신 auto로 변경하여 줌 시 더 나은 처리 */
+    /*height: 100vh; !* 뷰포트 높이에 맞추기 *!*/
+
 }
 
-/* .signup-container {
-    background-color: white;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    width: 600px;
-    margin: 50px auto;
-    폼 너비를 반응형으로 설정
-    max-width: 100%;
-} */
 .signup-container {
     background-color: white;
     padding: 30px; /* 패딩을 조금 더 넓게 설정 */
     border-radius: 10px;
+    overflow-y: auto; /* 내용이 넘칠 경우 스크롤 생성 */
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    width: 80%; /* 전체 너비의 80%를 차지하도록 수정 */
+    width: 100%; /* 전체 너비의 80%를 차지하도록 수정 */
     max-width: 900px; /* 최대 900px로 넓힘 */
     margin: 50px auto;
     /* 폼 너비를 반응형으로 설정 */
@@ -90,7 +87,7 @@
 
 h2 {
     text-align: center;
-    font-size: 40px; /* 폰트 크기를 키움 */
+    font-size: 1.5rem; /* 폰트 크기를 키움 */
     font-weight: bold; /* 텍스트를 더 강조하기 위해 굵게 설정 */
     margin-bottom: 20px; /* 제목 아래 여백 추가 */
 }
@@ -122,33 +119,23 @@ label {
      cursor: pointer; /* 마우스 포인터 변경 */
  }
 
-/* input[type="text"],
-input[type="email"],
-input[type="password"],
-select {
-    width: calc(100% - 10px);
-    padding: 10px;
-    margin-bottom: 5px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    box-sizing: border-box;
-} */
+
 input[type="text"],
 input[type="email"],
 input[type="password"],
 select {
     width: calc(100% - 20px); /* 입력 필드 좌우 여백을 더 추가 */
-    padding: 15px; /* 패딩을 약간 늘려서 넓어 보이도록 설정 */
+    padding: 10px; /* 패딩을 약간 늘려서 넓어 보이도록 설정 */
     margin-bottom: 5px;
     border: 1px solid #ccc;
     border-radius: 5px;
     box-sizing: border-box;
-    font-size: 23px;
+    font-size: 1rem;
 }
 
 .error-message {
     color: red;
-    font-size: 20px;
+    font-size: 1rem;
     display: block;
     margin-bottom: 10px;
     display: none;
@@ -156,14 +143,15 @@ select {
 
 button.check-button,
 button.find-zipcode {
-    background-color: #007bff;
+    background-color: #005BAC;
     color: white;
-    padding: 15px;
+    padding: 9px 20px;
     margin-bottom: 7px;
     border: none;
     border-radius: 5px;
     cursor: pointer;
-    font-size:23px;
+    font-size: 16px;
+    font-weight: bold;
 }
 
 button.check-button {
@@ -171,39 +159,203 @@ button.check-button {
 }
 
 button.submit-button {
-    background-color: #007bff;
+    background-color: #005BAC;
     color: white;
     width: 100%;
-    padding: 18px;
-    font-size: 23px;
+    padding: 10px;
+    font-size: 1.25rem;
     border: none;
     border-radius: 5px;
     cursor: pointer;
+    font-weight: bold;
+}
+
+button:hover {
+    background-color: #005BAC;
+}
+/*단계바*/
+/* 단계바 컨테이너 */
+.progress-bar {
+    position: relative;
+    display: flex;
+    justify-content: center; /* 단계들이 균등하게 배치되도록 설정 */
+    /*justify-content: space-between;*/
+    align-items: center;
+    margin: 20px -8px;
+    width: 100%; /* 선과 단계들을 수용하기 위한 전체 너비 */
+
+}
+
+/* 각 단계 스타일링 */
+.step {
+    width: 30px;
+    height: 30px;
+    line-height: 30px;
+    border-radius: 50%;
+    background: #ddd;
+    color: #fff;
+    margin: 0 51px; /* 수평 마진을 조정하여 간격을 제어합니다. */
+    text-align: center;
+    position: relative;
+    z-index: 1; /* 연결 선 위로 */
+    transition: background-color 0.3s ease;
+}
+
+/* 단계들을 연결하는 선 - 단계바의 전체 너비를 가로짐 */
+.progress-bar::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 15px; /* 첫 번째 단계의 왼쪽 가장자리에서 약간 안쪽에서 시작 */
+    right: 15px; /* 마지막 단계의 오른쪽 가장자리에서 약간 안쪽에서 끝 */
+    height: 2px;
+    background-color: #ccc; /* 단계들을 연결하는 선의 색상 */
+    transform: translateY(-50%);
+    z-index: 0; /* 단계 요소 아래 */
+}
+
+/* 활성 단계 스타일링 */
+.step.active {
+    background-color: #007bff;
+}
+
+
+
+
+.step.active {
+    /*background-color: #007bff;*/
+    /*background-color: #28a745;*/
+    background-color: #007bff;
+    /*box-shadow: 0 0 10px rgba(40, 167, 69, 0.6);*/
+    box-shadow: 0 0 10px rgba(0, 123, 255, 0.6);
+}
+
+.form-step {
+    display: none;
+}
+
+.form-step.active {
+    display: block;
+}
+
+.progress-bar::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 15px;
+    height: 4px;
+    width: 0%;
+    background-color: #007bff;
+    z-index: 0;
+    transform: translateY(-50%);
+    transition: width 0.3s ease;
+}
+
+
+.step-description {
+    display: flex;
+    justify-content: space-between;
+    position: absolute;
+    width: 100%;
+    top: 40px;
+    font-size: 12px;
+    color: #666;
+}
+
+.step-description div {
+    position: absolute;
+    width: 100px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+
+.step-1-desc { left: 0; transform: translateX(0%); }
+.step-2-desc { left: 100%; transform: translateX(-100%); }
+
+
+/*이전,다음버튼*/
+button {
+    padding: 10px 20px;
+    font-size: 16px;
+    font-weight: bold;
+    color: white;
+    background-color: #005BAC;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-top: 10px;
+    width: auto;
 }
 
 button:hover {
     background-color: #0056b3;
 }
 
-/* 작은 화면을 위한 추가 미디어 쿼리 */
-/* @media screen and (max-width: 768px) {
-    .signup-container {
-        width: 90%;
-    }
+.next-btn {
+    display: inline-block;
+    margin-left: 84%;
 
-    #signup-container {
-        margin-top: 30px;
+
+}
+.prev-btn{
+    display: inline-block;
+    margin-right: 10px;
+
+}
+
+
+.prev-btn {
+    background-color: #6c757d;
+}
+
+.prev-btn:hover {
+    background-color: #5a6268;
+}
+
+
+.submit-button {
+    width: 100%;
+}
+
+
+@media (max-width: 768px) {
+    button {
+        width: 100%;
+        margin-bottom: 10px;
     }
 }
- */
- @media screen and (max-width: 768px) {
- 
-    .signup-container {
-        width: 90%; /* 작은 화면에서는 기존 90% 설정 유지 */
-    }
 
+.form-group button{
+    display: flex;
+    justify-content: flex-end; /* 오른쪽 정렬 */
+}
+
+
+
+
+/* 화면 크기에 따라 조절 */
+@media (max-height: 500px) {
     #signup-container {
-        margin-top: 30px;
+        height: auto; /* 높이 자동 조절 */
+        padding-top: 10vh;
+        padding-bottom: 10vh;
     }
 }
- 
+
+@media (max-width: 600px) {
+    .signup-container {
+        padding: 10px;
+    }
+}
+
+
+
+
+
+
+
+
+
+

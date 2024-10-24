@@ -23,6 +23,7 @@
 
 
 <div class="container">
+<%--    <p class="fs-3">Survey Log Details</p>--%>
     <h2>Survey Log Details</h2>
     <div class="filter-section">
         <label for="startDate">Start Date:</label>
@@ -54,7 +55,7 @@
     </div>
 
     <!-- 응답 시간 경고 -->
-    <div id="warning-message" style="display:none; color: red; margin-top: 10px;">응답 시간이 너무 짧습니다 (3초 미만)</div>
+<%--    <div id="warning-message" style="display:none; color: red; margin-top: 10px;">응답 시간이 너무 짧습니다 (3초 미만)</div>--%>
 
     <!-- 응답 시간 분석 시각화 -->
     <div id = "chart-container" style="margin-top: 20px;">

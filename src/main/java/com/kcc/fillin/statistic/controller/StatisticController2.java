@@ -3,6 +3,7 @@ package com.kcc.fillin.statistic.controller;
 import java.util.List;
 import java.util.Map;
 
+import com.kcc.fillin.statistic.dto.ClusterDataRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -35,6 +36,22 @@ public class StatisticController2 {
 		model.addAttribute("surveySeq", surveySeq);
 		model.addAttribute("questionSeq", questionSeq);
 		model.addAttribute("clusteringData", clusteringData);
+
+		return "/statistic/keyword";
+	}
+
+	@GetMapping("/keyword")
+	public String showKeywordAnalysisPage(Long surveySeq, Long questionSeq, String clusteringData) {
+
+		 System.out.println(clusteringData);
+
+		// clusteringData를 파싱하여 모델에 추가
+		/*ObjectMapper objectMapper = new ObjectMapper();
+		List<Map<String, Object>> parsedData;
+
+		model.addAttribute("surveySeq", surveySeq);
+		model.addAttribute("questionSeq", questionSeq);
+		model.addAttribute("clusteringData", clusteringData);*/
 
 		return "/statistic/keyword";
 	}
