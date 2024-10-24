@@ -89,21 +89,21 @@ $('#next-btn').on('click', function () {
     $('body').append(form);
     form.submit();
 
-    // console.log("Formatted Data: ", JSON.stringify(formattedData)); // 데이터 구조 확인
+    console.log("Formatted Data: ", JSON.stringify(formattedData)); // 데이터 구조 확인
 
-    // $.ajax({
-    //     url: `/statistic/keyword?surveySeq=${surveyId}&questionSeq=${questionId}`,
-    //     type: 'POST',
-    //     contentType: 'application/json',
-    //     data: JSON.stringify(formattedData),
-    //     success: function (response) {
-    //         console.log(response);
-    //         window.location.href = response;
-    //     },
-    //     error: function (error) {
-    //         console.log("Error during submission: ", error);
-    //     }
-    // });
+    $.ajax({
+        url: `/statistic/keyword?surveySeq=${surveyId}&questionSeq=${questionId}`,
+        type: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify(formattedData),
+        success: function (response) {
+            console.log(response);
+            window.location.href = response;
+        },
+        error: function (error) {
+            console.log("Error during submission: ", error);
+        }
+    });
 });
 
 function requestKmeans(questionId, n_cluster) {

@@ -1,3 +1,4 @@
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java"%>
 <!DOCTYPE html>
 <html lang="ko">
@@ -50,9 +51,9 @@
 				<div class="d-flex align-items-center">
 					<li class="px-2 alarm-item"><img alt="alarm" src="/resources/img/common/alarm.png" width="25" height="23">
 						<div class="circle"></div></li>
-					<li class="px-2 username"></li>
+					<li class="px-2 username"> <sec:authentication property="principal.member.name"/>님</li>
 					<li class="px-2">
-						<!-- 모달 연결 --> 
+						<!-- 모달 연결 -->
 						<img class="profile" alt="profile"
 							src="/resources/img/common/profile.png" width="35" height="35"
 							data-bs-toggle="modal" data-bs-target="#mypage-modal">

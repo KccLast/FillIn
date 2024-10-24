@@ -1,7 +1,8 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!DOCTYPE html>
-<html>
+<html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <%--    <meta name="viewport" content="width=device-width, initial-scale=1.0">--%>
@@ -18,13 +19,18 @@
 <body>
 <%@include file="/resources/common/header.jsp" %>
 <%@include file="/resources/common/nav.jsp" %>
+
 <script>
+
     var surveyId = '${surveyId}';
     console.log(surveyId);
+
 </script>
 
 <div id="content" class="content"
      style="height: 700px; margin-top: 100px; margin-left: 100px; margin-right: 40px;">
+
+
     <h5 class="fw-bold mb-3">K-평균 군집화</h5>
     <div class="accordion my-4" id="accordionExample">
         <div class="accordion-item">
