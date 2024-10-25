@@ -123,4 +123,9 @@ public class SurveyController {
 		model.addAttribute("partSeq", participant.getSeq());
 		return "/survey/participant";
 	}
+
+	@GetMapping("/node/test")
+	public String nodeTest(){
+		return "/survey/node";
+	}
 }
