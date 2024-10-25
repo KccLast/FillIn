@@ -8,6 +8,10 @@ import org.springframework.boot.web.servlet.support.SpringBootServletInitializer
 @SpringBootApplication
 public class FillinApplication extends SpringBootServletInitializer {
 
+	@Override
+	protected SpringApplicationBuilder configure(SpringApplicationBuilder builder) {
+		return builder.sources(FillinApplication.class);
+	}
 
 	public static void main(String[] args) {
 		SpringApplication.run(FillinApplication.class, args);
