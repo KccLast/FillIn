@@ -174,12 +174,9 @@ function showQuestionsModal() {
 					}
 					console.log(questions);
 				});
-
-				// 모달 열기
-				buttonEvent();
-				const questionsModal = new bootstrap.Modal($('#questions-modal')[0]);
-				questionsModal.show();
-				/*$('#makeAutoQuestion-modal').hide();*/
+				
+				$('#questions-modal').modal('show');
+				$('#makeAutoQuestion-modal').modal('hide');
 
 				// 질문 접기/펼치기 기능
 				$('.question-toggle').off('click').on('click', function(e) {
@@ -258,22 +255,6 @@ document.addEventListener('click', function(event) {
 		});
 	}
 });
-
-function buttonEvent() {
-	const oldModal = document.getElementById("makeAutoQuestion-modal");
-	oldModal.classList.remove('show'); // 기존 모달 숨기기
-	oldModal.style.display = 'none';
-
-	const backdrop = document.querySelector('.modal-backdrop');
-	if (backdrop) {
-		backdrop.remove(); // 모달 배경 제거
-	}
-
-	const newModal = document.getElementById("questions-modal");
-	newModal.style.display = 'block'; // 새로운 모달 보이기
-	newModal.classList.add('show');
-
-}
 
 $(document).ready(function() {
 	$.ajax({
@@ -477,10 +458,7 @@ $(document).ready(function() {
 			});
 
 			$('#questions-modal').modal('hide');
-			const questionList = new bootstrap.Modal($('#makeAutoQuestion-modal')[0]);
-			questionList.show();
-			/*$('#makeAutoQuestion-modal').modal('show');*/
-
+			$('#makeAutoQuestion-modal').modal('show');
 		});
 	});
 

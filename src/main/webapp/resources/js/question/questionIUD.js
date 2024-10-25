@@ -62,7 +62,7 @@ async function saveQuestion() {
         JSON.parse(removeQuestionItemData)
       );
     }
-    window.location.href = '/survey/82';
+    window.location.reload();
   } catch (error) {
     console.error('오류 발생:', error);
   }

@@ -60,9 +60,24 @@ textarea {
 }
 
 .select-add-questions {
-	padding-left: 20px;
 	overflow-y: auto;
 	max-height: 300px;
+	white-space: normal;
+	max-width: 300px;
+	margin: 0;
+	padding: 0;
+}
+
+.select-question-selection {
+	max-width: 350px;
+}
+
+.select-add-questions .question-item {
+	display: block;
+	padding: 5px 0;
+	word-wrap: break-word;
+	white-space: normal;
+	overflow-wrap: break-word;
 }
 
 .checkbox-item {
@@ -83,7 +98,12 @@ textarea {
 
 #questions-modal {
 	max-height: 800px;
-	overflow-y: auto; 
+	overflow-y: auto;
+}
+
+.question-modal-body {
+	max-height: 30vh;
+	overflow-y: auto;
 }
 
 /* 추천 질문 목록 - js 동적 생성 */
