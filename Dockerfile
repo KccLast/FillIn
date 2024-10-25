@@ -1,8 +1,8 @@
-# 톰캣 기반 이미지 사용
-FROM tomcat:9.0-jdk17
+# OpenJDK 17 이미지 사용
+FROM openjdk:17-jdk-slim
 
-# WAR 파일을 ROOT.war로 복사
-COPY target/*.war /usr/local/tomcat/webapps/ROOT.war
+# 애플리케이션 WAR 파일을 컨테이너에 복사
+COPY target/*.war /app/app.war
 
-# 톰캣 실행
-CMD ["catalina.sh", "run"]
+# 애플리케이션 실행 (내장 톰캣 사용)
+CMD ["java", "-jar", "/app/app.war"]
