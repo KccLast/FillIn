@@ -1,17 +1,7 @@
 body {
     font-family: Arial, sans-serif;
     background-color: #f4f4f4;
-    padding: 20px;
-}
-
-/*스크롤 박스*/
-.table-section{
-    height: 400px; /* 원하는 높이 설정 */
-    overflow-y: auto; /* 세로 스크롤 활성화 */
-    border: 1px solid #ccc; /* 경계선 추가 */
-    margin-top: 20px;
-    padding: 10px;
-
+    /*padding: 20px;*/
 }
 
 
@@ -19,33 +9,64 @@ body {
     background-color: #fff;
     padding: 100px;
     border-radius: 10px;
-
-    /*display: flex;*/
-    /*justify-content: center;*/
-    /*align-items: flex-start;*/
-    /*margin-left: 20%;*/
-    /*z-index: 1; !* 콘텐츠가 사이드바 밑으로 가는 것을 방지 *!*/
-
+    margin: 40px auto;
+    width: 90%;
+    max-width: 1200px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     margin-top: 95px;
     margin-left: calc(100vh - 650px)!important;
     margin-right: 40px;
     min-height: calc(100vh - 130px)!important;
     box-sizing: border-box;
 
-    box-shadow: 5px 5px 5px #e5e7eb;
+    /*box-shadow: 5px 5px 5px #e5e7eb;*/
 }
+
 
 h2 {
     text-align: center;
-    margin-bottom: 20px;
+    color: #333;
+    margin-bottom: 30px;
+    font-weight: bold !important;
 }
 
+
 .filter-section {
-    margin-bottom: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 30px;
+    flex-wrap: wrap; /* 작은 화면 간격 유지... */
 }
 
 .filter-section label {
-    margin-right: 10px;
+    font-weight: bold;
+    color: #555;
+}
+
+.filter-button {
+    padding: 8px 15px;
+    background-color: #005bac;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.filter-button:hover {
+    background-color: #004080;
+}
+
+
+.table-section {
+    overflow-y: auto;
+    border: 1px solid #ccc;
+    margin-top: 20px;
+    padding: 10px;
+    border-radius: 10px;
+    max-height: 400px;
 }
 
 .result-table {
@@ -54,33 +75,44 @@ h2 {
 }
 
 .result-table th, .result-table td {
-    padding: 10px;
-    border: 1px solid #ccc;
+    padding: 12px;
+    border: 1px solid #e1e1e1;
     text-align: left;
 }
 
 .result-table th {
-    background-color: #f2f2f2;
+    background-color: #005bac;
+    color: #fff;
+}
+
+.result-table tbody tr {
+    transition: background-color 0.2s;
 }
 
 .result-table tbody tr:hover {
-    background-color: #f9f9f9;
+    background-color: #f5f5f5;
 }
 
+/* Warning Message */
 #warning-message {
-    color: red;
+    color: #d9534f;
     font-weight: bold;
     text-align: center;
-    margin-top: 10px;
+    margin-top: 20px;
+    padding: 10px;
+    border: 1px solid #d9534f;
+    border-radius: 5px;
+    background-color: #f8d7da;
 }
 
-/*화면작아질때 사이드바 숨김*/
-@media screen and (max-width: 768px ) {
-    .sidebar {
-        display: none;
+/* Responsive */
+@media screen and (max-width: 768px) {
+    .filter-section {
+        flex-direction: column;
     }
+
     .container {
-        width: 100%;
-        margin-left: 0;
+        width: 95%;
+        padding: 20px;
     }
 }
