@@ -134,7 +134,7 @@ function requestKmeans(questionId, n_cluster) {
             console.log(response.data);
             // python으로 요청 보내기
             $.ajax({
-                url: `http://13.124.251.210:8000/api/statistic/clustering/${n_cluster}`,
+                url: `https://fillin.o-r.kr/api/statistic/clustering/${n_cluster}`,
                 type: 'POST',
                 contentType: 'application/json',
                 data: JSON.stringify(response.data),
