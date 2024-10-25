@@ -161,13 +161,13 @@
 			<!-- 수정일 필터 -->
 			<choose>
 				<when test="startUpdatedAt != null and endUpdatedAt != null">
-					AND s.updated_at BETWEEN #{startUpdatedAt} AND #{endUpdatedAt}
+					AND s.updated_at BETWEEN #{startUpdatedAt} AND #{endUpdatedAt} + 1
 				</when>
 				<when test="startUpdatedAt != null">
             		<![CDATA[AND s.updated_at >= #{startUpdatedAt} ]]>
 				</when>
 				<when test="endUpdatedAt != null">
-            		<![CDATA[AND s.updated_at <= #{endUpdatedAt}]]>
+            		<![CDATA[AND s.updated_at < #{endUpdatedAt}]]>
 				</when>
 			</choose>
 			<!-- 제목 필터 -->
