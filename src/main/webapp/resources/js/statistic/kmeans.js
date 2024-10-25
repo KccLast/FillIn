@@ -10,12 +10,26 @@ $(document).ready(function () {
                 // 질문 로드
                 updateSelectQuestion(response.data);
                 $('#customRange3').val(2);
+                $('#currentRangeValue').text(2);
+
+                // 첫 번째 질문 선택 (기본값)
+                if (response.data.length > 0) {
+                    $('#question-select').val(response.data[0].questionId);
+                    // 기본 질문으로 군집화 요청
+                    requestKmeans(response.data[0].questionId, 2);
+                }
             },
             error: function (error) {
                 console.error("Error fetching initial data : ", error);
             }
         })
     }
+
+    // 슬라이더 값이 변경될 때 현재 값을 업데이트
+    $('#customRange3').on('input', function () {
+        const n_cluster = $(this).val();
+        $('#currentRangeValue').text(n_cluster); // 현재 값 표시
+    });
 
     loadData();
 });
@@ -26,6 +40,11 @@ function updateSelectQuestion(response) {
     response.forEach((question) => {
         questionSelect.append(new Option(`${question.questionOrder}번 ${question.questionName}`, question.questionId));
     });
+
+    // 첫 번째 항목을 기본으로 선택
+    if (response.length > 0) {
+        questionSelect.val(response[0].questionId); // 첫 번째 질문 선택
+    }
 }
 
 $('#analysis-btn').on('click', function () {
@@ -183,6 +202,11 @@ function updateChart(series) {
             },
             yaxis: {
                 tickAmount: 7,
+                labels: {
+                    formatter: function (val) {
+                        return parseFloat(val).toFixed(1); // Y축 소수점 두 자리
+                    }
+                },
                 title: {
                     text: 'Y (PCA Component 2)' // Y축 제목
                 }
@@ -191,12 +215,14 @@ function updateChart(series) {
                 custom: function ({series, seriesIndex, dataPointIndex, w}) {
                     const answerContent = w.config.series[seriesIndex].data[dataPointIndex][2]; // answerContent 추출
                     const answerDate = w.config.series[seriesIndex].data[dataPointIndex][3];
-                    return '<div class="arrow_box">' +
-                        // '<span>PCA1: ' + series[seriesIndex][dataPointIndex][0] + '</span><br>' +
-                        // '<span>PCA2: ' + series[seriesIndex][dataPointIndex][1] + '</span><br>' +
-                        '<span>Date: ' + answerDate + '</span>' +
-                        '<span>Answer: ' + answerContent + '</span>' +
-                        '</div>';
+                    return `
+                        <div class="tooltip-content" style="padding: 10px; border: 1px solid #ddd; border-radius: 5px; background-color: #fff; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);">
+                            <div style="font-weight: bold;">Answer Details</div>
+                            <hr style="margin: 5px 0;">
+                            <div><strong>Date:</strong> ${answerDate}</div>
+                            <div><strong>Answer:</strong> ${answerContent}</div>
+                        </div>
+                    `;
                 }
             }
         };
