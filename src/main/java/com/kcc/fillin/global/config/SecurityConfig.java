@@ -194,7 +194,7 @@ public class SecurityConfig {
 		http.cors(cors -> cors.configurationSource(request -> {
 			CorsConfiguration config = new CorsConfiguration();
 			config.setAllowedOrigins(List.of("*")); // 모든 도메인 허용 (필요시 제한 가능)
-			config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+			config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS","PATCH"));
 			config.setAllowedHeaders(List.of("*"));
 			return config;
 		}));

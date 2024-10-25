@@ -10,7 +10,7 @@
 		<link rel="stylesheet" type="text/css" href="/resources/css/question/questionNav.css">
 		<link rel="stylesheet" type="text/css" href="/resources/css/question/question.css">
 		<link rel="stylesheet" type="text/css" href="/resources/css/question/condition.css">
-		<link rel="stylesheet" type="text/css" href="/resources/css/question/Treant.css">
+
 		<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/jsPlumb/2.15.6/js/jsplumb.min.js"></script> -->
 		<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 		<script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
@@ -25,11 +25,11 @@
 			})
 
 		</script>
+		<script type="text/javascript" src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
 		<script src="/resources/js/question/questionIUD.js"></script>
 		<script src="/resources/js/question/questionEvent.js"></script>
 		<script src="/resources/js/question/questionParse.js"></script>
-		<script src="/resources/js/question/raphael.js"></script>
-		<script src="/resources/js/question/Treant.js"></script>
+		<script src="/resources/js/question/condition.js"></script>
 
 		<script type="text/javascript">
 
@@ -41,6 +41,7 @@
 
 				let survey = '${surveyJson}';
 				parseJson(survey);
+				parseCondition(survey);
 
 			})
 		</script>
@@ -420,34 +421,11 @@
 						<img class="j-arrow-content j-arrow-left" src="/resources/img/question/arrow-left.png">
 						<div class="j-condition-card-container" id="conditionCardCon">
 
-							<div class="j-que-con-card j-flex-row-center mini-card" id="card1">
-								<div class="j-corder j-flex-row-center">1</div>
-								<div class="j-type-con-img j-flex-row-center">
-									<img src="/resources/img/question/checkBox.png" />
-								</div>
-								<div class="j-con-que-name">질문명</div>
-							</div>
 
 
 
 
-							<div class="j-que-con-card j-flex-row-center mini-card" id="card2">
-								<div class="j-corder j-flex-row-center">2</div>
-								<div class="j-type-con-img j-flex-row-center">
-									<img src="/resources/img/question/checkBox.png" />
-								</div>
-								<div class="j-con-que-name">질문명</div>
-							</div>
 
-
-
-							<div class="j-que-con-card j-flex-row-center mini-card" id="card3">
-								<div class="j-corder j-flex-row-center">3</div>
-								<div class="j-type-con-img j-flex-row-center">
-									<img src="/resources/img/question/checkBox.png" />
-								</div>
-								<div class="j-con-que-name">질문명</div>
-							</div>
 
 						</div>
 					</div>

@@ -91,63 +91,8 @@ $(function () {
     $('.j-condition-box').show(); // 보이기
     $('#j-con-modal').show();
 
-    var chart_structure = {
-      chart: config,
-      nodeStructure: {
-        text: {
-          name: 'Root Node',
-          title: 'Root Card',
-          desc: 'This is the root node',
-        },
-        HTMLid: 'root-node',
-        children: [
-          {
-            text: {
-              order: '1',
-              name: '질문명',
-            },
-            image: '/resources/img/question/type/type7.png', // 질문 유형 이미지를 표시할 경로
-            HTMLid: 'card1',
-          },
-          {
-            text: {
-              order: '2',
-              name: '질문명',
-            },
-            image: '/resources/img/question/type/type7.png',
-            HTMLid: 'card2',
-            children: [
-              {
-                text: {
-                  order: '3',
-                  name: '질문명',
-                },
-                HTMLid: 'card3',
-                image: '/resources/img/question/type/type7.png',
-              },
-              {
-                text: {
-                  order: '3',
-                  name: '질문명',
-                },
-                HTMLid: 'card3',
-                image: '/resources/img/question/type/type7.png',
-                innerHTML: ` <div class="node-content j-flex-row-center" value="208">
-                  <input type="hidden" class="con-questionSeq">
-                  <div class="node-order">1</div>
-                  <img src="/resources/img/question/type/type7.png" alt="Node Image" class="node-img">
-                  <div class="node-name">질문명</div>
-              </div>`,
-              },
-            ],
-          },
-        ],
-      },
-    };
-
-    var my_chart = new Treant(chart_structure);
     // dragInstance.repaintEverything();
-
+    redrawNetWork();
     $('.j-arrow-right').hide();
   });
   $('.j-arrow-left').click(function () {
@@ -279,6 +224,8 @@ $(function () {
           $newContainer.find('.j-map-container').attr('id', 'map' + idx);
           setTimeout(() => createDefaultMap('map' + idx), 100);
         }
+
+        createNewNode(idx + 1);
       } catch (error) {
         console.error('AJAX 요청 실패:', error);
       }
