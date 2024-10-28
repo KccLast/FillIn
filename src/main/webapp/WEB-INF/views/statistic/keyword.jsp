@@ -30,35 +30,39 @@
 <!-- 단계 바 -->
 <div id="content" class="content" style="height: 700px; margin-top: 100px; margin-left: 100px; margin-right: 40px;">
     <div class="container">
-        <div class="container" style="margin-top: 3px; margin-bottom: 28px; text-align: center;">
-            <div class="step-wrapper">
-                <div class="step-container">
-                    <div class="step active">
-                        <i class="fas fa-search"></i>
-                    </div>
-                    <p class="step-text">키워드 분석</p>
-                </div>
-                <div class="step-divider"></div>
-                <div class="step-container">
-                    <div class="step">
-                        <i class="fas fa-braille"></i>
-                    </div>
-                    <p class="step-text">K-평균 군집화</p>
-                </div>
-                <div class="step-divider"></div>
-                <div class="step-container">
-                    <div class="step">
-                        <i class="fas fa-chart-bar"></i>
-                    </div>
-                    <p class="step-text">군집별 비교분석</p>
-                </div>
-            </div>
-
-            <div class="nav-buttons">
-                <button id="prevBtn" class="nav-btn">이전</button>
-                <button id="nextBtn" class="nav-btn">다음</button>
+<%--        <div class="container" style="margin-top: 3px; margin-bottom: 28px; text-align: center;">--%>
+    <div class="step-wrapper">
+        <div class="step-container">
+            <div class="step">
+                <i class="fas fa-braille"></i>
+                <p class="step-text">K-평균 군집화</p>
             </div>
         </div>
+        <div class="step-divider"></div>
+        <div class="step-container">
+            <div class="step active">
+                <i class="fas fa-search"></i>
+                <p class="step-text">키워드 분석</p>
+            </div>
+        </div>
+        <div class="step-divider"></div>
+        <div class="step-container">
+            <div class="step">
+                <i class="fas fa-chart-bar"></i>
+                <p class="step-text">군집별 비교분석</p>
+            </div>
+        </div>
+    </div>
+
+
+<%--    <div class="nav-buttons">--%>
+<%--        <button id="prevBtn" class="nav-btn">이전</button>--%>
+<%--        <button id="nextBtn" class="nav-btn">다음</button>--%>
+<%--    </div>--%>
+
+<%--        </div>--%>
+
+
 
         <!-- 검색 및 필터 -->
         <div class="container" style="margin-top: 20px;">
@@ -104,14 +108,22 @@
 
             <!-- 워드클라우드 생성 및 감정 분석 버튼 -->
             <div class="tab-buttons">
-                <div id="wordcloud-tab" class="tab active">워드 클라우드 생성</div>
-                <div id="emotion-tab" class="tab">감정 분석</div>
+                <div id="wordcloud-tab" class="tab active"> <i class="fas fa-cloud" style="color: #0096FF;"></i> 워드 클라우드 생성 <i class="fas fa-info-circle" data-bs-toggle="tooltip" title="응답 내용의 주요 키워드를 시각화하여 보여줍니다."></i></div>
+                <div id="emotion-tab" class="tab"> <i class="fas fa-smile" style="color: #28A745;"></i> 감정 분석 <i class="fas fa-info-circle" data-bs-toggle="tooltip" title="응답 내용의 감정을 분석하여 긍정, 중립, 부정의 비율을 시각화합니다."></i></div>
             </div>
 
             <!-- 워드 클라우드 컨테이너 -->
             <div id="wordCloudContainer"
                  style="width: 100%; height: 400px; background-color: rgb(248, 249, 252); margin-top: 30px; justify-content: center;"></div>
 
+            <!-- 감정분석 차트 -->
+            <div id="emotionChartContainer">
+                <select id="chart-type-selector" class="form-select" style="width: 150px; margin-bottom: 15px;">
+                    <option value="bar">막대 그래프</option>
+                    <option value="pie">파이 차트</option>
+                </select>
+                <canvas id="chart-container"></canvas>
+            </div>
 
             <div class="keyword-search">
                 <label for="keyword-input" class="d-block">검색 키워드 입력</label>
@@ -125,14 +137,7 @@
                 </div>
             </div>
 
-            <!-- 감정분석 차트 -->
-            <div id="emotionChartContainer">
-                <select id="chart-type-selector" class="form-select" style="width: 150px; margin-bottom: 15px;">
-                    <option value="bar">막대 그래프</option>
-                    <option value="pie">파이 차트</option>
-                </select>
-                <canvas id="chart-container"></canvas>
-            </div>
+
 
             <!-- 검색 결과 테이블 -->
             <div class="result-section"
@@ -150,8 +155,13 @@
                     <tbody></tbody>
                 </table>
             </div>
+            <div class="nav-buttons">
+                <button id="prevBtn" class="nav-btn">이전</button>
+                <button id="nextBtn" class="nav-btn">다음</button>
+            </div>
         </div>
     </div>
+
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/wordcloud2.js/1.1.0/wordcloud2.js"></script>

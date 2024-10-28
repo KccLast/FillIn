@@ -482,7 +482,7 @@ document.addEventListener("DOMContentLoaded", function () {
         console.warn("clusteringData is empty or undefined.");
     }
 
-    let currentStep = 0;
+    let currentStep = 1;
     const steps = document.querySelectorAll(".step");
     const dividers = document.querySelectorAll(".step-divider");
     const prevBtn = document.getElementById("prevBtn");
