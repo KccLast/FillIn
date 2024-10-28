@@ -159,8 +159,8 @@ button:active {
 }
 
 .step {
-    width: 80px; /* 크기를 줄임 */
-    height: 80px;
+    width: 89px; /* 크기를 줄임 */
+    height: 86px;
     border-radius: 50%;
     background-color: rgba(108, 117, 125, 0.15); /* 은은한 배경색 */
     color: #6c757d;

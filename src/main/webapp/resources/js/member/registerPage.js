@@ -273,6 +273,14 @@ $(document).ready(function () {
     const csrfToken = $("input[name='_csrf']").val();
     const csrfHeader = $("meta[name='_csrf_header']").attr("content");
 
+    let currentStep = 0;
+
+    // 단계바 업데이트 함수
+    function updateProgressBar() {
+        $(".progress-bar .step").removeClass("active");
+        $(".progress-bar .step").eq(currentStep).addClass("active");
+    }
+
     // 이메일 입력 시 실시간 유효성 검사
     $("#email").on("input", function () {
         const email = $(this).val();
@@ -520,7 +528,7 @@ $(document).ready(function () {
 
     // 단계바
     // 이전/다음 버튼 로직 구현
-    let currentStep = 0;
+
     $('.next-btn').click(function () {
         if (!validateCurrentStep()) {
             alert("모든 항목을 올바르게 작성한 후에 다음 단계로 진행해주세요.");
@@ -531,6 +539,8 @@ $(document).ready(function () {
         $('.form-step').eq(currentStep).removeClass('active');
         currentStep = (currentStep + 1) % $('.form-step').length;
         $('.form-step').eq(currentStep).addClass('active');
+
+        updateProgressBar();
     });
 
     // "이전" 버튼 클릭 이벤트
@@ -539,6 +549,8 @@ $(document).ready(function () {
             $('.form-step').eq(currentStep).removeClass('active');
             currentStep--;
             $('.form-step').eq(currentStep).addClass('active');
+
+            updateProgressBar();
         }
     });
 
@@ -546,4 +558,5 @@ $(document).ready(function () {
     function validateCurrentStep() {
         return $('.form-step').eq(currentStep).find('input, select').toArray().every(el => el.checkValidity());
     }
+    updateProgressBar();
 });
