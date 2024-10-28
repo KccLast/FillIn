@@ -452,7 +452,36 @@ $(document).ready(function () {
 
 
 document.addEventListener("DOMContentLoaded", function () {
-    // Step Navigation Initialization
+    const stopWords = [
+        "이", "가", "을", "를", "은", "는", "의", "에", "에서", "그리고", "하지만", "또한", "너무", "아주", "매우",
+        "않습니다", "왜냐하면", "되기", "것입니다", "저희", "여러분", "우리", "아", "휴", "아이구", "아이쿠", "아이고", "어",
+        "나", "우리", "저희", "따라", "의해", "을", "를", "에", "의", "가", "으로", "로", "에게", "뿐이다", "의거하여",
+        "근거하여", "입각하여", "기준으로", "예하면", "예를", "들면", "저", "소인", "소생", "지말고", "하지마", "하지마라",
+        "다른", "물론", "또한", "그리고", "비길수", "없다", "해서는", "안된다", "만이", "아니다", "막론하고", "관계없이", "그치지",
+        "않다", "그러나", "그런데", "하지만", "든간에", "논하지", "않다", "따지지", "않다", "설사", "비록", "더라도",
+        "아니면", "만", "못하다", "편이", "낫다", "불문하고", "향하여", "향해서", "향하다", "쪽으로", "틈타", "이용하여",
+        "타다", "오르다", "제외하고", "이외에", "이밖에", "해야", "한다", "한다면", "몰라도", "외에도", "이곳", "여기",
+        "부터", "기점으로", "따라서", "할", "생각이다", "하려고하다", "이리하여", "그리하여", "그렇게", "함으로써", "하지만",
+        "일때", "할때", "앞에서", "중에서", "보는데서", "으로써", "로써", "까지", "해야한다", "일것이다", "반드시", "할줄알다",
+        "할수있다", "할수있어", "임에", "틀림없다", "한다면", "등", "등등", "제", "겨우", "단지", "다만", "할뿐", "딩동",
+        "댕그", "대해서", "대하여", "대하면", "훨씬", "얼마나", "얼마만큼", "얼마큼", "남짓", "여", "얼마간", "약간", "다소",
+        "좀", "조금", "다수", "몇", "얼마", "지만", "하물며", "또한", "그러나", "그렇지만", "하지만", "이외에도", "대해",
+        "말하자면", "뿐이다", "다음에", "반대로", "반대로", "말하자면", "이와", "반대로", "바꾸어서", "말하면", "바꾸어서",
+        "한다면", "만약", "그렇지않으면", "비교적", "보다더", "비하면", "시키다", "하게하다", "할만하다", "의해서", "연이서",
+        "잇따라", "뒤따라", "뒤이어", "결국", "의지하여", "기대여", "통하여", "자마자", "더욱더", "불구하고", "얼마든지",
+        "마음대로", "주저하지", "않고", "즉시", "바로", "당장", "하자마자", "밖에", "안된다", "하면된다", "그런즉", "구체적으로",
+        "비교하면", "구체적으로", "위에서", "서술한바와같이", "인", "듯하다", "하지", "않는다면", "비록", "이르기까지",
+        "한계로", "인해", "따라", "이해", "역할", "따른다", "어떻게", "어찌", "또한", "대체로", "기타", "해보니", "뿐만",
+        "아니라", "남자", "여자", "남성", "여성", "의해", "기점으로"
+    ];
+
+    // 페이지 로드 시 전체 데이터로 워드클라우드 생성
+    if (clusteringData && clusteringData.length > 0) {
+        generateWordCloudFromAll(); // 전체 데이터로 워드클라우드 생성
+    } else {
+        console.warn("clusteringData is empty or undefined.");
+    }
+
     let currentStep = 0;
     const steps = document.querySelectorAll(".step");
     const dividers = document.querySelectorAll(".step-divider");
@@ -471,7 +500,6 @@ document.addEventListener("DOMContentLoaded", function () {
         nextBtn.disabled = currentStep === steps.length - 1;
     };
 
-    // Button Click Events
     prevBtn.addEventListener("click", function () {
         if (currentStep > 0) {
             currentStep--;
@@ -495,19 +523,16 @@ document.addEventListener("DOMContentLoaded", function () {
 
     updateSteps();
 
-
     const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-    const tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+    tooltipTriggerList.map(function (tooltipTriggerEl) {
         return new bootstrap.Tooltip(tooltipTriggerEl);
     });
-
 
     let clusterDropdown = $('#phrase');
     let uniqueClusters = [...new Set(clusteringData.map(item => item.cluster))];
     uniqueClusters.forEach(cluster => {
         clusterDropdown.append(new Option(`Cluster ${cluster}`, cluster));
     });
-
 
     clusterDropdown.change(function () {
         let selectedCluster = $(this).val();
@@ -520,20 +545,10 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     function calculateWordFrequency(content) {
-        // let words = preprocessText(content);
-        // let wordFrequency = {};
-        //
-        // words.forEach(word => {
-        //     wordFrequency[word] = (wordFrequency[word] || 0) + 1;
-        // });
-        //
-        // // 빈도수 합산 계산
-        // return Object.values(wordFrequency).reduce((a, b) => a + b, 0);
-        if (!content) return 0; // 빈 값일 경우 빈도수를 0으로 설정
-        let words = content.trim().split(/\s+/); // 공백을 기준으로 단어를 분리
-        return words.length; // 총 단어 개수 반환
+        if (!content) return 0;
+        let words = content.trim().split(/\s+/);
+        return words.length;
     }
-
 
     function renderTable(data) {
         let tbody = $(".result-table tbody");
@@ -543,24 +558,20 @@ document.addEventListener("DOMContentLoaded", function () {
         } else {
             data.forEach(function (item, index) {
                 let frequency = calculateWordFrequency(item.answerContent);
-                tbody.append(
-                    `<tr>
+                tbody.append(`
+                    <tr>
                         <td>${index + 1}</td>
                         <td>${item.cluster}</td>
                         <td>${item.answerContent}</td>
                         <td>${item.answerDate}</td>
                         <td>${frequency}</td>
-                        
-                    </tr>`
-
-                );
+                    </tr>
+                `);
             });
         }
     }
 
     renderTable(clusteringData);
-
-
 
     $('#table-search-btn').click(function () {
         let keyword = $('#keyword-input').val().trim();
@@ -568,7 +579,6 @@ document.addEventListener("DOMContentLoaded", function () {
             filterClusteringData(keyword);
         } else {
             renderTable(clusteringData);
-            // alert("검색 키워드를 입력해주세요.");
         }
     });
 
@@ -580,35 +590,50 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
 
-    $('#wordcloud-btn').click(function () {
-        $(this).prop("disabled", true);
-        let keyword = $('#keyword-input').val().trim();
-        if (clusteringData.length === 0) {
-            alert("워드 클라우드를 생성하기 전에 데이터를 먼저 조회해주세요.");
-            resetButtons();
-            return;
-        }
+        $('#wordcloud-tab').click(function () {
+            setActiveTab($(this));
+            $(this).prop("disabled", true);
+            let keyword = $('#keyword-input').val().trim();
 
-        if (keyword) {
-            generateWordCloud(keyword);
-        } else {
-            generateWordCloudFromAll();
+            if (clusteringData.length === 0) {
+                alert("워드 클라우드를 생성하기 전에 데이터를 먼저 조회해주세요.");
+                return;
+            }
+
+            if (keyword) {
+                generateWordCloud(keyword);
+            } else {
+                generateWordCloudFromAll();
+            }
+        });
+
+    function setActiveTab(tab) {
+        // Remove 'active' class from both tabs and add to clicked tab
+        $('#wordcloud-tab, #emotion-tab').removeClass('active');
+        tab.addClass('active');
+
+        // Hide other content sections
+        if (tab.attr("id") === "wordcloud-tab") {
+            $('#wordCloudContainer').show();
+            $('#emotionChartContainer').hide();
+        } else if (tab.attr("id") === "emotion-tab") {
+            $('#wordCloudContainer').hide();
+            $('#emotionChartContainer').show();
         }
-    });
+    }
 
     function generateWordCloud(keyword) {
         $('#wordCloudContainer').empty();
         $.ajax({
             url: "/api/statistic/wordcloud",
             type: "GET",
-            data: {keyword: keyword},
+            data: { keyword: keyword },
             success: function (data) {
                 if (!data || data.length === 0) {
                     alert("워드클라우드를 생성할 데이터가 없습니다.");
                     resetButtons();
                     return;
                 }
-
 
                 let processedWords = preprocessText(data.map(item => item.word).join(" "));
                 let wordFrequency = {};
@@ -649,20 +674,20 @@ document.addEventListener("DOMContentLoaded", function () {
 
         WordCloud(document.getElementById('wordCloudContainer'), {
             list: Object.entries(wordFrequency),
-            gridSize: 10,
+            gridSize: 15,
             weightFactor: function (size) {
-                return size * 18;
+                return size * 17;
             },
-            fontFamily: 'Times, serif',
+            fontFamily: /*'Times, serif'*/ 'Poppins, sans-serif',
             color: 'random-dark',
             backgroundColor: '#f8f9fc',
-            rotateRatio: 0.5,
-            minSize: 10,
+            rotateRatio: 0, /*0.7*/
+            minSize: 15,
             drawOutOfBound: false,
         });
 
         const wordCloudContainer = document.getElementById('wordCloudContainer');
-        wordCloudContainer.scrollIntoView({behavior: 'smooth', block: 'center'});
+        wordCloudContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
         wordCloudContainer.classList.add("highlight");
         setTimeout(() => {
             wordCloudContainer.classList.remove("highlight");
@@ -671,33 +696,10 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
 
-    const stopWords = [
-        "이", "가", "을", "를", "은", "는", "의", "에", "에서", "그리고", "하지만", "또한", "너무", "아주", "매우",
-        "않습니다", "왜냐하면", "되기", "것입니다", "저희", "여러분", "우리", "아", "휴", "아이구", "아이쿠", "아이고", "어",
-        "나", "우리", "저희", "따라", "의해", "을", "를", "에", "의", "가", "으로", "로", "에게", "뿐이다", "의거하여",
-        "근거하여", "입각하여", "기준으로", "예하면", "예를", "들면", "저", "소인", "소생", "지말고", "하지마", "하지마라",
-        "다른", "물론", "또한", "그리고", "비길수", "없다", "해서는", "안된다", "만이", "아니다", "막론하고", "관계없이", "그치지",
-        "않다", "그러나", "그런데", "하지만", "든간에", "논하지", "않다", "따지지", "않다", "설사", "비록", "더라도",
-        "아니면", "만", "못하다", "편이", "낫다", "불문하고", "향하여", "향해서", "향하다", "쪽으로", "틈타", "이용하여",
-        "타다", "오르다", "제외하고", "이외에", "이밖에", "해야", "한다", "한다면", "몰라도", "외에도", "이곳", "여기",
-        "부터", "기점으로", "따라서", "할", "생각이다", "하려고하다", "이리하여", "그리하여", "그렇게", "함으로써", "하지만",
-        "일때", "할때", "앞에서", "중에서", "보는데서", "으로써", "로써", "까지", "해야한다", "일것이다", "반드시", "할줄알다",
-        "할수있다", "할수있어", "임에", "틀림없다", "한다면", "등", "등등", "제", "겨우", "단지", "다만", "할뿐", "딩동",
-        "댕그", "대해서", "대하여", "대하면", "훨씬", "얼마나", "얼마만큼", "얼마큼", "남짓", "여", "얼마간", "약간", "다소",
-        "좀", "조금", "다수", "몇", "얼마", "지만", "하물며", "또한", "그러나", "그렇지만", "하지만", "이외에도", "대해",
-        "말하자면", "뿐이다", "다음에", "반대로", "반대로", "말하자면", "이와", "반대로", "바꾸어서", "말하면", "바꾸어서",
-        "한다면", "만약", "그렇지않으면", "비교적", "보다더", "비하면", "시키다", "하게하다", "할만하다", "의해서", "연이서",
-        "잇따라", "뒤따라", "뒤이어", "결국", "의지하여", "기대여", "통하여", "자마자", "더욱더", "불구하고", "얼마든지",
-        "마음대로", "주저하지", "않고", "즉시", "바로", "당장", "하자마자", "밖에", "안된다", "하면된다", "그런즉", "구체적으로",
-        "비교하면", "구체적으로", "위에서", "서술한바와같이", "인", "듯하다", "하지", "않는다면", "비록", "이르기까지",
-        "한계로", "인해", "따라", "이해", "역할", "따른다", "어떻게", "어찌", "또한", "대체로", "기타", "해보니", "뿐만",
-        "아니라", "남자", "여자", "남성", "여성", "의해", "기점으로"
-    ];
-
 
     function resetButtons() {
         $('#wordcloud-btn').prop("disabled", false);
-        $('#analyze-emotion-btn').prop("disabled", false);
+        $('#emotion-tab').prop("disabled", false);
     }
 
     function preprocessText(text) {
@@ -706,9 +708,8 @@ document.addEventListener("DOMContentLoaded", function () {
         return words.filter(word => !stopWords.includes(word) && word.length > 1);
     }
 
-
-
-    $('#analyze-emotion-btn').click(function () {
+    $('#emotion-tab').click(function () {
+        setActiveTab($(this));
         $(this).prop("disabled", true);
         if (clusteringData.length === 0) {
             alert("데이터를 조회해주세요.");
@@ -720,34 +721,11 @@ document.addEventListener("DOMContentLoaded", function () {
         analyzeEmotion(allTexts);
     });
 
-    // function analyzeEmotion(text) {
-    //     $.ajax({
-    //         url: "/api/statistic/analyzeEmotion",
-    //         method: "POST",
-    //         contentType: "application/json",
-    //         data: JSON.stringify({content: text}),
-    //         success: function (response) {
-    //             console.log("감정분석 응답:", response);
-    //             $('#emotionChartContainer').show();
-    //             $('#wordCloudContainer').css("display", "none");
-    //             window.currentChartData = response;
-    //             renderChart(response);
-    //             resetButtons();
-    //         },
-    //         error: function () {
-    //             alert("감정 분석 중 오류가 발생했습니다.");
-    //             resetButtons();
-    //         }
-    //     });
-    // }
-
     function analyzeEmotion(text) {
-        // 텍스트를 문장 단위로 분리
         let sentences = text.split(/(?<=[.!?])\s+/);
         let totalPositive = 0, totalNeutral = 0, totalNegative = 0;
         let processedCount = 0;
 
-        // 각 문장을 개별적으로 감정 분석
         sentences.forEach(sentence => {
             $.ajax({
                 url: "/api/statistic/analyzeEmotion",
@@ -762,7 +740,6 @@ document.addEventListener("DOMContentLoaded", function () {
                     }
                     processedCount++;
 
-                    // 모든 문장의 감정 분석이 끝났을 때 평균 계산
                     if (processedCount === sentences.length) {
                         let avgPositive = totalPositive / sentences.length;
                         let avgNeutral = totalNeutral / sentences.length;
@@ -777,9 +754,7 @@ document.addEventListener("DOMContentLoaded", function () {
                                 }
                             }
                         };
-                        console.log("최종 감정 분석 결과:", finalResponse);
 
-                        // 차트 업데이트
                         $('#emotionChartContainer').show();
                         $('#wordCloudContainer').css("display", "none");
                         window.currentChartData = finalResponse;
@@ -799,12 +774,6 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
-
-
-
-    resetButtons();
-
-
     function renderChart(data) {
         if (!data || !data.document || !data.document.confidence) {
             console.error("Invalid data for chart:", data);
@@ -821,8 +790,6 @@ document.addEventListener("DOMContentLoaded", function () {
         const neutral = data.document.confidence.neutral;
         const negative = data.document.confidence.negative;
 
-        console.log(`Positive: ${positive}, Neutral: ${neutral}, Negative: ${negative}`);
-
         if (chartType === 'pie') {
             window.currentChart = drawPieChart(ctx, data);
         } else {
@@ -833,13 +800,6 @@ document.addEventListener("DOMContentLoaded", function () {
     $('#chart-type-selector').change(function () {
         if (window.currentChartData) {
             renderChart(window.currentChartData);
-        }
-    });
-
-    // 차트 유형 선택 드롭다운 변경 이벤트
-    $('#chart-type-selector').change(function () {
-        if (window.currentChartData) {
-            renderChart(window.currentChartData); // 차트 다시 그리기
         }
     });
 
@@ -886,6 +846,7 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 });
+
 
 
 

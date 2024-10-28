@@ -18,7 +18,7 @@
 
 <div class="page-container" style="display: flex; width: 100%; height: 100vh;">
     <div class="welcome-section">
-        <h2>Welcome</h2>
+        <div class="welcome">Welcome</div>
         <p>회원님을 환영합니다!</p>
     </div>
 
@@ -26,7 +26,7 @@
 
     <!-- 로그인 폼 -->
     <form class="login-form" method="post" action="/login">
-        <h2>Login</h2>
+        <h2>로그인</h2>
 
         <!-- 이메일 입력 -->
         <div class="input-container">
@@ -41,7 +41,7 @@
         <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}">
 
         <!-- 로그인 버튼 -->
-        <button type="submit" id="login-btn">로그인</button>
+        <button type="submit" id="login-btn" >로그인</button>
     </form>
 
     <!-- 로그인 실패 시 에러 메시지 표시 -->
