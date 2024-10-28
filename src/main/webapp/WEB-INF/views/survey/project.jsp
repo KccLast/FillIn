@@ -6,6 +6,7 @@
 	<head>
 		<meta charset="UTF-8">
 		<title>Title</title>
+
 		<link rel="stylesheet" type="text/css" href="/resources/common/nav.css">
 		<link rel="stylesheet" type="text/css" href="/resources/css/question/questionNav.css">
 		<link rel="stylesheet" type="text/css" href="/resources/css/question/question.css">
@@ -26,6 +27,7 @@
 
 		</script>
 		<script type="text/javascript" src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+		<script src="/resources/js/survey/surveyPost.js"></script>
 		<script src="/resources/js/question/questionIUD.js"></script>
 		<script src="/resources/js/question/questionEvent.js"></script>
 		<script src="/resources/js/question/questionParse.js"></script>
@@ -35,8 +37,13 @@
 
 			$(function () {
 				$('.content').on('keyup', '.j-survey-name-input', function () {
+
 					let idx = $(this).parent().parent().index();
+
 					$('.j-question-list').find('.j-question').eq(idx).find('.question-name > span').html($(this).val());
+					let nameVal = $(this).val();
+					changeNodeName(idx, nameVal);
+
 				})
 
 				let survey = '${surveyJson}';
@@ -97,7 +104,9 @@
 							<button class="btn btn-primary j-nav-input-button j-nav-save-button fs-6">저장</button>
 
 							<!-- <input type="button" value="게시" class="j-nav-input-button j-depoly-button  fs-6 btn"> -->
-							<button class="btn btn-primary j-nav-input-button j-depoly-button fs-6">게시</button>
+							<button type="button" class="btn btn-primary j-nav-input-button j-depoly-button fs-6"
+								data-bs-toggle="modal" data-bs-target="#postModal">게시
+							</button>
 
 							<!-- <input type="button" value="질문 고급조건" class="j-nav-input-button j-condition-button j-con-btn fs-6 btn"> -->
 
@@ -120,6 +129,72 @@
 
 
 					</div>
+
+					<!-- Post Modal -->
+					<div class="modal fade" id="postModal" tabindex="-1" aria-labelledby="postModalLabel" aria-hidden="true">
+						<div class="modal-dialog modal-dialog-centered">
+							<div class="modal-content">
+								<div class="modal-header">
+									<h5 class="modal-title fw-bold ms-0" id="postModalLabel">게시 설정</h5>
+									<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+								</div>
+								<div class="modal-body">
+									<!-- 설문기간 -->
+									<div class="mb-4">
+										<label class="form-label fw-bold c-main">설문기간</label>
+										<div class="d-flex">
+											<input type="date" class="form-control" value="2024-09-25">
+											<span class="mx-3">—</span>
+											<input type="date" class="form-control" value="2024-09-26">
+										</div>
+									</div>
+
+									<!-- 목표 설정 -->
+									<div>
+										<label class="form-label fw-bold c-main">목표 설정</label>
+										<div class="border p-3 rounded">
+											<div class="row mb-3">
+												<div class="col">
+													<label class="form-label">예상 모집단</label>
+													<input type="text" class="form-control" placeholder="모집단 입력">
+												</div>
+												<div class="col">
+													<label class="form-label">표본 집단</label>
+													<input type="text" class="form-control" placeholder="집단 입력">
+												</div>
+												<div class="col">
+													<label class="form-label">신뢰도</label>
+													<select class="form-select">
+														<option>80%</option>
+														<option>90%</option>
+														<option>95%</option>
+													</select>
+												</div>
+												<div class="col">
+													<label class="form-label">표본오차</label>
+													<input type="text" class="form-control" value="± 4.25%">
+												</div>
+											</div>
+											<div class="form-check">
+												<input class="form-check-input" type="radio" name="exampleRadios" id="estimateCheck">
+												<label class="form-check-label" for="estimateCheck">모집단 추정불가</label>
+											</div>
+											<div class="text-end mt-2">
+												<button type="button" class="btn btn-primary">적용</button>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="modal-footer">
+									<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
+									<button type="button" class="btn btn-primary" id="confirmPost">확인</button>
+								</div>
+							</div>
+
+						</div>
+					</div>
+
+
 
 					<!-- 모달 창 -->
 					<div id="optionModal" class="modifiy-modal">
@@ -417,7 +492,7 @@
 						</div>
 					</div>
 					<!-- add type 모달창2 -->
-					<div class="j-condition-box">
+					<div class="j-condition-box j-flex-row-center">
 						<img class="j-arrow-content j-arrow-left" src="/resources/img/question/arrow-left.png">
 						<div class="j-condition-card-container" id="conditionCardCon">
 
@@ -426,6 +501,50 @@
 
 
 
+
+						</div>
+						<div class="condition-nav-box">
+							<input type="hidden" name="questionSeq">
+							<div class="condition-nav-1">
+								<div class="nav-top j-flex-row-center">
+									<div class="top-basic condition-nav-1-top condition-nav-1-selected">
+										기본 이동
+									</div>
+									<div class="top-condition condition-nav-1-top">
+										조건별 이동
+									</div>
+								</div>
+								<div class="nav-body-1">
+									<div class="basic-move">
+										<span class="fs-6">다음 질문</span>
+										<select class="form-select"></select>
+									</div>
+								</div>
+								<div class="nav-body-2">
+
+
+									<div class="accordion">
+
+
+
+
+
+									</div>
+
+									<div class="j-condition-plus-img j-flex-row-center">
+										<div class="fs-6">조건 추가</div>
+										<img src="/resources/img/question/plus-circle-fill-blue.png">
+									</div>
+
+
+
+								</div>
+
+							</div>
+
+							<div class="condition-nav-2">
+
+							</div>
 
 						</div>
 					</div>

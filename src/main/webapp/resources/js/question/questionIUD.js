@@ -459,3 +459,20 @@ async function sendremoveQquestionItemLocalData(localData) {
 }
 
 /**삭제를 위한 함수 모음 */
+//row랑 cal에 데이터 삭제시 removeQuestionItemList에 추가
+function storeItemChartListInLocal(target) {
+  let questionSeqs = $(target)
+    .parents('.j-question-card')
+    .find('.j-qseq')
+    .val();
+  if (questionSeqs === null && questionSeqs === undefined) return;
+  questionSeqs = parseInt(questionSeqs);
+  let extractedNumber = seqExtract($(target).prev());
+
+  let obj = { seq: extractedNumber, questionSeq: questionSeqs };
+  storeUpdateQuestionItemInLocal(
+    obj,
+    extractedNumber,
+    'removeQuestionItemList'
+  );
+}

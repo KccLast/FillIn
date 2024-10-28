@@ -6,7 +6,8 @@
   cursor: pointer;
 }
 .j-arrow-left {
-  left: 380px;
+  left: 405px;
+  top: 100px;
 }
 .j-arrow-right {
   right: 116px;
@@ -27,6 +28,8 @@
   box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
 
   box-sizing: border-box;
+
+  justify-content: flex-start;
 }
 
 .j-survey-name {
