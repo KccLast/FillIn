@@ -49,10 +49,11 @@
 .modal-footer {
 	display: flex;
 	justify-content: center;
+	gap: 20px;
 }
 
 .modal-footer .btn{
-    margin-right: 20px;
+    margin-right: 0;
 }
 
 .btn-group {
@@ -75,4 +76,13 @@
 .error-message {
 	margin-top: 10px;
 	color: #EB1C23;
+}
+
+.logoutBtn {
+	background-color: #E9ECEF;
+	border: none;
+	padding: 7px 10px;
+	margin-left: 5px;
+	cursor: pointer;
+	border-radius: 5px;
 }
