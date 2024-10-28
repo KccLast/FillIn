@@ -134,7 +134,7 @@ function requestKmeans(questionId, n_cluster) {
             console.log(response.data);
             // python으로 요청 보내기
             $.ajax({
-                url: `http://13.124.251.210:8000/api/statistic/clustering/${n_cluster}`,
+                url: `https://fillin.o-r.kr/api/statistic/clustering/${n_cluster}`,
                 type: 'POST',
                 contentType: 'application/json',
                 data: JSON.stringify(response.data),
@@ -217,10 +217,10 @@ function updateChart(series) {
                     const answerDate = w.config.series[seriesIndex].data[dataPointIndex][3];
                     return `
                         <div class="tooltip-content" style="padding: 10px; border: 1px solid #ddd; border-radius: 5px; background-color: #fff; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);">
-                            <div style="font-weight: bold;">Answer Details</div>
+                            <div style="font-weight: bold;">응답</div>
                             <hr style="margin: 5px 0;">
-                            <div><strong>Date:</strong> ${answerDate}</div>
-                            <div><strong>Answer:</strong> ${answerContent}</div>
+                            <div><strong>응답일:</strong> ${answerDate}</div>
+                            <div><strong>내용:</strong> ${answerContent}</div>
                         </div>
                     `;
                 }

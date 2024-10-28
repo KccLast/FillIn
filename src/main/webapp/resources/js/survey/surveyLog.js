@@ -92,10 +92,8 @@ $(document).ready(function () {
                 tbody.append(`<tr>
                     <td>${item.logSeq}</td>
                     <td>${item.surveySeq}</td>
-<!--                    <td>${item.occurDate}</td>-->
                     <td>${item.startDate}</td>
                     <td>${item.endDate}</td>
-<!--                    <td>${item.responseTime} ms</td>-->
                     <td>${formattedResponseTime}</td> <!-- 변환된 시간을 사용 -->
                 </tr>`);
             });

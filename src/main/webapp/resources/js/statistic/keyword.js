@@ -450,13 +450,9 @@ $(document).ready(function () {
     }
 });*/
 
-// 슬라이더 값 업데이트 함수 추가
-function updateResultValue(value) {
-    document.getElementById("rangeValue").innerText = value;
-}
 
 document.addEventListener("DOMContentLoaded", function () {
-    // Step navigation control
+    // Step Navigation Initialization
     let currentStep = 0;
     const steps = document.querySelectorAll(".step");
     const dividers = document.querySelectorAll(".step-divider");
@@ -475,7 +471,7 @@ document.addEventListener("DOMContentLoaded", function () {
         nextBtn.disabled = currentStep === steps.length - 1;
     };
 
-    // 버튼 클릭 이벤트 추가
+    // Button Click Events
     prevBtn.addEventListener("click", function () {
         if (currentStep > 0) {
             currentStep--;
@@ -499,14 +495,20 @@ document.addEventListener("DOMContentLoaded", function () {
 
     updateSteps();
 
-    // 클러스터링 데이터 반영
+
+    const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+    const tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl);
+    });
+
+
     let clusterDropdown = $('#phrase');
     let uniqueClusters = [...new Set(clusteringData.map(item => item.cluster))];
     uniqueClusters.forEach(cluster => {
         clusterDropdown.append(new Option(`Cluster ${cluster}`, cluster));
     });
 
-    // 드롭다운 메뉴로 필터링 기능 추가
+
     clusterDropdown.change(function () {
         let selectedCluster = $(this).val();
         if (selectedCluster !== "phrase") {
@@ -517,31 +519,158 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 
-    // 테이블 렌더링 함수
+    function calculateWordFrequency(content) {
+        // let words = preprocessText(content);
+        // let wordFrequency = {};
+        //
+        // words.forEach(word => {
+        //     wordFrequency[word] = (wordFrequency[word] || 0) + 1;
+        // });
+        //
+        // // 빈도수 합산 계산
+        // return Object.values(wordFrequency).reduce((a, b) => a + b, 0);
+        if (!content) return 0; // 빈 값일 경우 빈도수를 0으로 설정
+        let words = content.trim().split(/\s+/); // 공백을 기준으로 단어를 분리
+        return words.length; // 총 단어 개수 반환
+    }
+
+
     function renderTable(data) {
         let tbody = $(".result-table tbody");
         tbody.empty();
         if (data.length === 0) {
-            tbody.append("<tr><td colspan='4'>검색 결과가 없습니다.</td></tr>");
+            tbody.append("<tr><td colspan='5'>검색 결과가 없습니다.</td></tr>");
         } else {
             data.forEach(function (item, index) {
+                let frequency = calculateWordFrequency(item.answerContent);
                 tbody.append(
                     `<tr>
                         <td>${index + 1}</td>
                         <td>${item.cluster}</td>
                         <td>${item.answerContent}</td>
                         <td>${item.answerDate}</td>
+                        <td>${frequency}</td>
+                        
                     </tr>`
+
                 );
             });
         }
     }
 
-    renderTable(clusteringData); //페이지 로드 시 전체 데이터 표시
+    renderTable(clusteringData);
 
 
 
-    // 불용어 리스트
+    $('#table-search-btn').click(function () {
+        let keyword = $('#keyword-input').val().trim();
+        if (keyword) {
+            filterClusteringData(keyword);
+        } else {
+            renderTable(clusteringData);
+            // alert("검색 키워드를 입력해주세요.");
+        }
+    });
+
+    function filterClusteringData(keyword) {
+        let filteredData = clusteringData.filter(item =>
+            item.answerContent.includes(keyword)
+        );
+        renderTable(filteredData);
+    }
+
+
+    $('#wordcloud-btn').click(function () {
+        $(this).prop("disabled", true);
+        let keyword = $('#keyword-input').val().trim();
+        if (clusteringData.length === 0) {
+            alert("워드 클라우드를 생성하기 전에 데이터를 먼저 조회해주세요.");
+            resetButtons();
+            return;
+        }
+
+        if (keyword) {
+            generateWordCloud(keyword);
+        } else {
+            generateWordCloudFromAll();
+        }
+    });
+
+    function generateWordCloud(keyword) {
+        $('#wordCloudContainer').empty();
+        $.ajax({
+            url: "/api/statistic/wordcloud",
+            type: "GET",
+            data: {keyword: keyword},
+            success: function (data) {
+                if (!data || data.length === 0) {
+                    alert("워드클라우드를 생성할 데이터가 없습니다.");
+                    resetButtons();
+                    return;
+                }
+
+
+                let processedWords = preprocessText(data.map(item => item.word).join(" "));
+                let wordFrequency = {};
+                processedWords.forEach(word => {
+                    wordFrequency[word] = (wordFrequency[word] || 0) + 1;
+                });
+
+                createWordCloud(wordFrequency);
+            },
+            error: function () {
+                alert("워드 클라우드를 생성하는 중 오류가 발생했습니다.");
+                resetButtons();
+            }
+        });
+    }
+
+    function generateWordCloudFromAll() {
+        $('#wordCloudContainer').empty();
+        let allTexts = clusteringData.map(item => item.answerContent).join(" ");
+        let processedWords = preprocessText(allTexts);
+        let wordFrequency = {};
+        processedWords.forEach(word => {
+            wordFrequency[word] = (wordFrequency[word] || 0) + 1;
+        });
+
+        createWordCloud(wordFrequency);
+    }
+
+    function createWordCloud(wordFrequency) {
+        if (Object.keys(wordFrequency).length === 0) {
+            alert("워드클라우드를 생성할 단어가 없습니다.");
+            resetButtons();
+            return;
+        }
+
+        $('#wordCloudContainer').css("display", "block");
+        $('#emotionChartContainer').css("display", "none");
+
+        WordCloud(document.getElementById('wordCloudContainer'), {
+            list: Object.entries(wordFrequency),
+            gridSize: 10,
+            weightFactor: function (size) {
+                return size * 18;
+            },
+            fontFamily: 'Times, serif',
+            color: 'random-dark',
+            backgroundColor: '#f8f9fc',
+            rotateRatio: 0.5,
+            minSize: 10,
+            drawOutOfBound: false,
+        });
+
+        const wordCloudContainer = document.getElementById('wordCloudContainer');
+        wordCloudContainer.scrollIntoView({behavior: 'smooth', block: 'center'});
+        wordCloudContainer.classList.add("highlight");
+        setTimeout(() => {
+            wordCloudContainer.classList.remove("highlight");
+        }, 2000);
+        resetButtons();
+    }
+
+
     const stopWords = [
         "이", "가", "을", "를", "은", "는", "의", "에", "에서", "그리고", "하지만", "또한", "너무", "아주", "매우",
         "않습니다", "왜냐하면", "되기", "것입니다", "저희", "여러분", "우리", "아", "휴", "아이구", "아이쿠", "아이고", "어",
@@ -566,51 +695,24 @@ document.addEventListener("DOMContentLoaded", function () {
     ];
 
 
+    function resetButtons() {
+        $('#wordcloud-btn').prop("disabled", false);
+        $('#analyze-emotion-btn').prop("disabled", false);
+    }
+
     function preprocessText(text) {
-        let processedText = text.toLowerCase().replace(/[^ㄱ-ㅎㅏ-ㅣ가-힣\s]/g, "");
+        let processedText = text.replace(/[a-zA-Z]/g, "").replace(/[^ㄱ-ㅎㅏ-ㅣ가-힣\s]/g, "");
         let words = processedText.split(/\s+/);
         return words.filter(word => !stopWords.includes(word) && word.length > 1);
     }
 
-    $('#wordcloud-btn').click(function () {
-        if (clusteringData.length === 0) {
-            alert("데이터를 조회해주세요.");
-            return;
-        }
-
-
-        let allTexts = clusteringData.map(item => item.answerContent).join(" ");
-        let processedWords = preprocessText(allTexts);
-        let wordFrequency = {};
-        processedWords.forEach(word => {
-            wordFrequency[word] = (wordFrequency[word] || 0) + 1;
-        });
-
-        let wordCloudData = Object.entries(wordFrequency);
-
-        if (wordCloudData.length === 0) {
-            alert("워드클라우드를 생성할 단어가 없습니다.");
-            return;
-        }
-
-        WordCloud(document.getElementById('wordCloudContainer'), {
-            list: wordCloudData,
-            gridSize: 10,
-            weightFactor: function (size) { return size * 8; },
-            fontFamily: 'Times, serif',
-            color: 'random-dark',
-            backgroundColor: '#f8f9fc',
-            rotateRatio: 0.5,
-            minSize: 10,
-            drawOutOfBound: false,
-        });
-    });
-
 
 
     $('#analyze-emotion-btn').click(function () {
+        $(this).prop("disabled", true);
         if (clusteringData.length === 0) {
             alert("데이터를 조회해주세요.");
+            resetButtons();
             return;
         }
 
@@ -618,28 +720,90 @@ document.addEventListener("DOMContentLoaded", function () {
         analyzeEmotion(allTexts);
     });
 
+    // function analyzeEmotion(text) {
+    //     $.ajax({
+    //         url: "/api/statistic/analyzeEmotion",
+    //         method: "POST",
+    //         contentType: "application/json",
+    //         data: JSON.stringify({content: text}),
+    //         success: function (response) {
+    //             console.log("감정분석 응답:", response);
+    //             $('#emotionChartContainer').show();
+    //             $('#wordCloudContainer').css("display", "none");
+    //             window.currentChartData = response;
+    //             renderChart(response);
+    //             resetButtons();
+    //         },
+    //         error: function () {
+    //             alert("감정 분석 중 오류가 발생했습니다.");
+    //             resetButtons();
+    //         }
+    //     });
+    // }
+
     function analyzeEmotion(text) {
-        $.ajax({
-            url: "/api/statistic/analyzeEmotion",
-            method: "POST",
-            contentType: "application/json",
-            data: JSON.stringify({ content: text }),
-            success: function (response) {
-                $('#emotionChartContainer').show();
-                $('#wordCloudContainer').css("display", "none");
-                renderChart(response);
-            },
-            error: function () {
-                alert("감정 분석 중 오류가 발생했습니다.");
-            }
+        // 텍스트를 문장 단위로 분리
+        let sentences = text.split(/(?<=[.!?])\s+/);
+        let totalPositive = 0, totalNeutral = 0, totalNegative = 0;
+        let processedCount = 0;
+
+        // 각 문장을 개별적으로 감정 분석
+        sentences.forEach(sentence => {
+            $.ajax({
+                url: "/api/statistic/analyzeEmotion",
+                method: "POST",
+                contentType: "application/json",
+                data: JSON.stringify({ content: sentence }),
+                success: function (response) {
+                    if (response && response.document && response.document.confidence) {
+                        totalPositive += response.document.confidence.positive;
+                        totalNeutral += response.document.confidence.neutral;
+                        totalNegative += response.document.confidence.negative;
+                    }
+                    processedCount++;
+
+                    // 모든 문장의 감정 분석이 끝났을 때 평균 계산
+                    if (processedCount === sentences.length) {
+                        let avgPositive = totalPositive / sentences.length;
+                        let avgNeutral = totalNeutral / sentences.length;
+                        let avgNegative = totalNegative / sentences.length;
+
+                        let finalResponse = {
+                            document: {
+                                confidence: {
+                                    positive: avgPositive,
+                                    neutral: avgNeutral,
+                                    negative: avgNegative
+                                }
+                            }
+                        };
+                        console.log("최종 감정 분석 결과:", finalResponse);
+
+                        // 차트 업데이트
+                        $('#emotionChartContainer').show();
+                        $('#wordCloudContainer').css("display", "none");
+                        window.currentChartData = finalResponse;
+                        renderChart(finalResponse);
+                        resetButtons();
+                    }
+                },
+                error: function () {
+                    console.error("문장 감정 분석 중 오류 발생:", sentence);
+                    processedCount++;
+
+                    if (processedCount === sentences.length) {
+                        resetButtons();
+                    }
+                }
+            });
         });
     }
 
-    $('#chart-type-selector').change(function () {
-        if (window.currentChartData) {
-            renderChart(window.currentChartData);
-        }
-    });
+
+
+
+    resetButtons();
+
 
     function renderChart(data) {
         if (!data || !data.document || !data.document.confidence) {
@@ -653,12 +817,31 @@ document.addEventListener("DOMContentLoaded", function () {
             window.currentChart.destroy();
         }
 
+        const positive = data.document.confidence.positive;
+        const neutral = data.document.confidence.neutral;
+        const negative = data.document.confidence.negative;
+
+        console.log(`Positive: ${positive}, Neutral: ${neutral}, Negative: ${negative}`);
+
         if (chartType === 'pie') {
             window.currentChart = drawPieChart(ctx, data);
         } else {
             window.currentChart = drawBarChart(ctx, data);
         }
     }
+
+    $('#chart-type-selector').change(function () {
+        if (window.currentChartData) {
+            renderChart(window.currentChartData);
+        }
+    });
+
+    // 차트 유형 선택 드롭다운 변경 이벤트
+    $('#chart-type-selector').change(function () {
+        if (window.currentChartData) {
+            renderChart(window.currentChartData); // 차트 다시 그리기
+        }
+    });
 
     function drawPieChart(ctx, data) {
         return new Chart(ctx, {
@@ -703,6 +886,8 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 });
+
+
 
 
 

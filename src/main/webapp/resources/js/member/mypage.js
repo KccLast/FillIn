@@ -100,7 +100,6 @@ $(document).ready(function() {
 				$('#update-member-modal').modal('hide');
 				$('#mypage-modal').modal('show');
 
-				/*alert('회원 정보 수정이 완료되었습니다.');*/
 				Swal.fire({
 					position: "top",
 					icon: "success",
