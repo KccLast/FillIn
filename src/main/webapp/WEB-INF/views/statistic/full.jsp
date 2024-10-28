@@ -31,8 +31,9 @@
 <!-- 컨텐츠 내용 -->
 <div id="content" class="content" style="display: none;">
     <!-- 날짜 조회 및 질문 선택 -->
-    <div class="container">
-        <h4 class="fw-bold mb-">설문 전체 통계</h4>
+    <div class="container card">
+        <%--        border p-3 rounded mb-5--%>
+        <h4 class="fw-bold mt-2">설문 전체 통계</h4>
 
 
         <div class="row g-3 my-auto">
@@ -58,11 +59,11 @@
                 <button id="search-input" class="btn btn-primary">검색</button>
             </div>
         </div>
-
+        <hr/>
         <!-- 참여자 수 그래프 -->
-        <div class="my-auto">
+        <div class="my-auto mb-2">
             <h5 class="fw-bold mt-4">목표 달성률</h5>
-            <div class="progress-bar-container" style="height: 60px;">
+            <div class="progress-bar-container" style="height: 40px;">
                 <div class="progress-bar-fill fw-bold" id="progress-bar-fill"></div>
                 <div class="progress-bar-total fw-bold" id="progress-bar-total"></div>
             </div>
