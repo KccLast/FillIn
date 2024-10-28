@@ -59,8 +59,6 @@ function showQuestionsModal() {
 			ccSeq: 13, // ccSeq 13 (장문형)
 			count: longAnswerCount
 		});
-
-
 	}
 
 	console.log('requestData: ' + JSON.stringify(requestData));
@@ -174,18 +172,30 @@ function showQuestionsModal() {
 					}
 					console.log(questions);
 				});
-				
-				$('#questions-modal').modal('show');
-				$('#makeAutoQuestion-modal').modal('hide');
+
+				// 생성된 질문 content show
+				$('.first-content').hide();
+				$('.second-content').show();
 
 				// 질문 접기/펼치기 기능
+				$('.question-content').hide();
 				$('.question-toggle').off('click').on('click', function(e) {
 					if ($(e.target).is('.question-select')) {
 						return;
 					}
 					const $content = $(this).next('.question-content');
-					console.log('현재 상태:', $content.length ? $content.css('display') : '요소 없음');
-					$content.toggle();
+					const $arrowDown = $(this).find('.bi-caret-right-fill');
+					const $arrowUp = $(this).find('.bi-caret-down-fill');
+
+					$content.slideToggle(300, function() {
+						if ($content.is(':visible')) {
+							$arrowDown.hide();
+							$arrowUp.show();
+						} else {
+							$arrowDown.show();
+							$arrowUp.hide();
+						}
+					});
 				});
 			} else {
 				console.error('질문 목록이 없거나 형식이 잘못되었습니다.');
@@ -215,6 +225,8 @@ function createQuestionSection(queIndex, index, title, count, name, isHidden = f
                     <input type="checkbox" id="${name}-select" class="question-select" data-title="${title}" 
                     	data-count="${count}" value=${queIndex}>
                     ${index}. ${title}
+                    <i class="bi bi-caret-right-fill"></i>
+                    <i class="bi bi-caret-down-fill" style="display: none;"></i>
                 </h6>`;
 	section += `<div class="question-content" style="${isHidden ? 'display:none;' : ''}">`;
 	section += `<p>${description}</p>`;
@@ -321,7 +333,7 @@ $(document).ready(function() {
 
 	let addedQuestions = [];
 	// 선택한 질문지 추가
-	$('#add-questions-btn').off('click').on('click', function() {
+	$('#add-questions-btn').on('click', function() {
 		let hasChecked = false;
 
 		// 선택된 체크박스가 있는지 확인
@@ -457,9 +469,20 @@ $(document).ready(function() {
 				});
 			});
 
-			$('#questions-modal').modal('hide');
-			$('#makeAutoQuestion-modal').modal('show');
+			$('.second-content').hide();
+			$('.first-content').show();
+			$('.generated-questions-list-btn').show();
 		});
+	});
+
+	$('#question-close-btn').on('click', function () {
+		$('.second-content').hide();
+		$('.first-content').show();
+	});
+
+	$('.generated-questions-list-btn').on('click', function () {
+		$('.first-content').hide();
+		$('.second-content').show();
 	});
 
 	// 선택된 질문 - 질문지 만드는 페이지로 보내기
