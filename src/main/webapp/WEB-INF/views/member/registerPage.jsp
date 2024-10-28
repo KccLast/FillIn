@@ -29,7 +29,7 @@
         <form id="register-form" action="/member/register" method="post" enctype="multipart/form-data">
             <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
             <div class="form-step active">
-                <!-- First step fields -->
+
                 <div class="form-group">
                     <label for="username">이메일</label>
                     <input type="email" id="email" name="username" placeholder="이메일을 입력하세요" required>

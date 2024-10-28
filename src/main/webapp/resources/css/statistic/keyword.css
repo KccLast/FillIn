@@ -24,15 +24,18 @@ body {
     flex: 1;
 }
 
-#wordcloud-btn{
-    pdding: 14px 20px;
+#wordcloud-tab, #emotion-tab {
+    padding: 12px 20px;
+    margin: 5px;
 }
+
+
 
 #wordCloudContainer, #emotionChartContainer {
     background-color: #f8f9fc;
-    padding: 20px; /* 내부 간격 추가 */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* 그림자 추가 */
-    border-radius: 8px; /* 모서리 둥글게 */
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
 }
 
 .search-filter, .keyword-search {
@@ -43,11 +46,11 @@ body {
 
 .search-filter label, .keyword-search label {
     margin-bottom: 5px;
-    margin-left:11px;
+    margin-left: 11px;
 }
 
 .search-filter input[type="range"] {
-    width: 50%; /* 슬라이더가 더 넓게 표시되도록 설정 */
+    width: 50%;
 }
 
 .d-flex.justify-content-between {
@@ -65,6 +68,13 @@ body {
     width: 65.5%;
 }
 
+.keyword-search {
+    display: flex;
+    flex-direction: column;
+    margin-top: 20px;
+}
+
+
 button {
     padding: 10px 15px;
     background-color: #005bac;
@@ -74,7 +84,7 @@ button {
     cursor: pointer;
     transition: background-color 0.3s ease, transform 0.2s ease;
     font-size: 14px;
-    width: auto; /* 가로 크기 자동 설정 */
+    width: auto;
 }
 
 button:hover {
@@ -100,9 +110,6 @@ button:active {
     align-items: flex-end;
 }
 
-
-
-/* 결과 테이블 */
 .result-section {
     max-height: 300px;
     overflow-y: auto;
@@ -147,81 +154,65 @@ button:active {
     align-items: center;
     justify-content: center;
     flex-wrap: wrap;
-    position: relative;
+    gap: 100px; /* 요소 사이 간격 */
+    margin-bottom: 20px;
 }
 
 .step {
-    width: 96px;
-    height: 92px;
+    width: 89px; /* 크기를 줄임 */
+    height: 86px;
     border-radius: 50%;
-    background-color: #6c757d;
-    color: white;
+    background-color: rgba(108, 117, 125, 0.15); /* 은은한 배경색 */
+    color: #6c757d;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     cursor: pointer;
     transition: background-color 0.3s ease, transform 0.3s ease;
-    margin-bottom: 0;
-    margin-top: 10px;
-    padding-top: 10px;
-
-}
-
-.step-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin: 0 40px;
 }
 
 .step.active {
-    background-color: #005bac;
-    transform: scale(1.1);
+    background-color: rgba(0, 91, 172, 0.3) !important;
+    color: #005bac !important;
+    transform: scale(1.05);
 }
 
 .step i {
-    font-size: 24px;
-    margin-bottom: 10px;
+    font-size: 20px; /* 아이콘 크기 조정 */
+    margin-bottom: 5px;
 }
 
 .step p {
-    font-size: 13px;
+    font-size: 12px; /* 텍스트 크기 조정 */
     margin: 0;
 }
 
 .step-divider {
-    width: 80px;
-    height: 6px;
-    background-color: #6c757d;
-    margin: 0 10px;
-    transition: background-color 0.3s ease;
+    width: 100px;
+    height: 3px;
+    background-color: rgba(108, 117, 125, 0.3); /* 연한 색상 */
 }
 
 .step-divider.active {
-    background-color: #005bac;
-}
-
-.step:hover {
-    background-color: #3d3d3d;
+    background-color: rgba(0, 91, 172, 0.3); /* 활성 상태 색상 */
 }
 
 .nav-buttons {
     display: flex;
-    justify-content: space-between; /* 버튼을 양 끝으로 배치 */
-    margin-top: -2px;
-    padding: 0 10px; /* 버튼과 화면 사이 간격 */
+    justify-content: center;
+    padding-top: 20px;
+    margin-top: 20px;
 }
 
 .nav-btn {
-    padding: 10px 20px;
-    font-size: 14px;
-    margin: 10px;
-    cursor: pointer;
+    padding: 11px 22px; /* 크기를 줄임 */
+    font-size: 13px; /* 폰트 크기 줄임 */
+    margin: 0 8px;
     background-color: #005bac;
     color: white;
     border: none;
-    border-radius: 5px;
+    border-radius: 4px;
     transition: background-color 0.3s ease;
 }
 
@@ -229,17 +220,6 @@ button:active {
     background-color: #003d75;
 }
 
-.step-divider {
-    width: 80px;
-    height: 6px;
-    background-color: #6c757d;
-    margin: 0 10px;
-    transition: background-color 0.3s ease;
-}
-
-.nav-btn:hover {
-    background-color: #003d75;
-}
 
 @keyframes bounce {
     0%, 20%, 50%, 80%, 100% {
@@ -266,9 +246,6 @@ button:active {
     animation: bounce 1s ease;
 }
 
-
-/*감정분석부분*/
-/* 감정 분석 버튼을 마우스 오버했을 때 키워드 입력 필드 강조 */
 .keyword-input {
     border: 2px solid #005bac;
     box-shadow: 0 0 10px rgba(0, 91, 172, 0.5);
@@ -281,43 +258,22 @@ button:active {
     animation: fade-highlight 2s forwards;
 }
 
-button#analyze-emotion-btn {
-    padding: 11px 37px;
+#keyword-input {
+    /*flex-grow: 1; */
+    margin-right: 10px; /*입력창과 버튼 사이 간격*/
+    margin-top: 6px;
+    width: 32%;
 }
 
-.emotion-analysis {
-    margin-top: 30px;
-    text-align: center;
-}
-
-.emotion-analysis input[type="text"] {
-    width: 70%;
-    margin-right: 10px;
-    padding: 8px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-}
-
-.emotion-analysis button {
-    padding: 10px 15px;
-    background-color: #005bac;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
+#table-search-btn {
+    padding: 9px 50px;
+    font-size: 1rem;
+    height: auto;
 }
 
 button.custom-btn {
     padding: 12px 5px;
 }
-
-
-.emotion-analysis #emotion-result {
-    margin-top: 20px;
-    font-size: 16px;
-    color: #005bac;
-}
-
 
 #emotionChartContainer {
     display: none;
@@ -325,7 +281,6 @@ button.custom-btn {
     height: 500px;
     background-color: rgb(248, 249, 252);
     margin-top: 30px;
-    /*display: flex;*/
     flex-direction: column;
     align-items: center !important;
     justify-content: center !important;
@@ -337,14 +292,7 @@ button.custom-btn {
     height: 429px !important;
     width: 488px !important;
     margin-left: 31% !important;
-
-    /*width: 100%;*/
-    /*max-width: 600px; !* 최대 너비 조정 *!*/
-    /*height: 400px !important;*/
-    /*margin: 0 auto; !* 가운데 정렬 *!*/
-
 }
-
 
 .c-gray {
     background-color: #E9ECEF !important;
@@ -354,13 +302,13 @@ button.custom-btn {
     background-color: #005BAC !important;
 }
 
-#update-btn{
-    padding: 11px 50px;
+#update-btn {
+    padding: 9px 50px;
+    margin-left:10px;
 }
 
-.swiper-container {
-    width: 100%;
-    height: 50px; /* 슬라이더 높이 조정 */
+#phrase {
+    width: 56% !important;
 }
 
 
@@ -375,3 +323,31 @@ button.custom-btn {
         font-size: 14px;
     }
 }
+
+
+.tab-buttons {
+    display: flex;
+    border-bottom: 2px solid #ddd;
+    margin-bottom: 20px;
+}
+
+.tab {
+    padding: 12px 20px;
+    cursor: pointer;
+    text-align: center;
+    flex: 1;
+    font-weight: bold;
+    color: #6c757d;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.tab.active {
+    background-color: #005bac;
+    color: white;
+    border: 1px solid #ddd;
+    border-bottom: none;
+}
+
+

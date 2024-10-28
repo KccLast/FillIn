@@ -60,7 +60,7 @@
     <form id="emailForm">
         <input type="text" id="name" name="name" placeholder="이름" required><br>
         <input type="text" id="phoneNumber" name="phoneNumber" placeholder="'-'없이 숫자만 입력하세요" required>
-        <button type="submit" id="findEmailButton">이메일 찾기</button>
+        <button type="submit" id="findEmailButton" style="margin-bottom:2px;">이메일 찾기</button>
     </form>
 
     <div id="resultContainer"></div>

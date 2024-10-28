@@ -29,7 +29,7 @@
     <h2>비밀번호 찾기</h2>
     <form id="passwordForm">
 
-        <div class="input-group">
+        <div class="input-group" style="margin-bottom: -16px;">
             <input type="text" id="name" name="name" placeholder="이름 입력" required>
 
             <div class="phone-input">

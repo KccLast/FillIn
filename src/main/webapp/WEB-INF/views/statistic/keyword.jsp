@@ -13,6 +13,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap">
+
 
     <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
 </head>
@@ -28,35 +30,39 @@
 <!-- 단계 바 -->
 <div id="content" class="content" style="height: 700px; margin-top: 100px; margin-left: 100px; margin-right: 40px;">
     <div class="container">
-        <div class="container" style="margin-top: 3px; margin-bottom: 28px; text-align: center;">
-            <div class="step-wrapper">
-                <div class="step-container">
-                    <div class="step active">
-                        <i class="fas fa-search"></i>
-                    </div>
-                    <p class="step-text">키워드 분석</p>
-                </div>
-                <div class="step-divider"></div>
-                <div class="step-container">
-                    <div class="step">
-                        <i class="fas fa-braille"></i>
-                    </div>
-                    <p class="step-text">K-평균 군집화</p>
-                </div>
-                <div class="step-divider"></div>
-                <div class="step-container">
-                    <div class="step">
-                        <i class="fas fa-chart-bar"></i>
-                    </div>
-                    <p class="step-text">군집별 비교분석</p>
-                </div>
-            </div>
-
-            <div class="nav-buttons">
-                <button id="prevBtn" class="nav-btn">이전</button>
-                <button id="nextBtn" class="nav-btn">다음</button>
+<%--        <div class="container" style="margin-top: 3px; margin-bottom: 28px; text-align: center;">--%>
+    <div class="step-wrapper">
+        <div class="step-container">
+            <div class="step">
+                <i class="fas fa-braille"></i>
+                <p class="step-text">K-평균 군집화</p>
             </div>
         </div>
+        <div class="step-divider"></div>
+        <div class="step-container">
+            <div class="step active">
+                <i class="fas fa-search"></i>
+                <p class="step-text">키워드 분석</p>
+            </div>
+        </div>
+        <div class="step-divider"></div>
+        <div class="step-container">
+            <div class="step">
+                <i class="fas fa-chart-bar"></i>
+                <p class="step-text">군집별 비교분석</p>
+            </div>
+        </div>
+    </div>
+
+
+<%--    <div class="nav-buttons">--%>
+<%--        <button id="prevBtn" class="nav-btn">이전</button>--%>
+<%--        <button id="nextBtn" class="nav-btn">다음</button>--%>
+<%--    </div>--%>
+
+<%--        </div>--%>
+
+
 
         <!-- 검색 및 필터 -->
         <div class="container" style="margin-top: 20px;">
@@ -77,57 +83,33 @@
                     </div>
                 </div>
             </div>
+
             <div class="row mb-4">
                 <div class="col-md-4">
                     <div class="mb-3">
-                        <label for="phrase" style="margin-bottom:14px; margin-left:10px;">군집을 선택해주세요</label>
-                        <select id="phrase" class="form-select">
-                            <option selected value="phrase">문항을 선택해주세요.</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="search-filter mb-3">
-                        <label for="result-count" class="d-block">군집 갯수</label>
-                        <input type="range" id="result-count" min="2" max="20" value="5"
-                               oninput="updateResultValue(this.value)" class="form-range">
-                        <div class="d-flex justify-content-between mt-1" style="width:50%;">
-                            <span id="rangeMinValue">2</span>
-                            <span id="rangeValue">5</span>
-                            <span id="rangeMaxValue">20</span>
+                        <label for="phrase" style="margin-bottom:5px; margin-left:11px;">군집을 선택해주세요</label>
+                        <div style="display: flex; align-items: center;">
+                            <select id="phrase" class="form-select me-2" style="width: 100%;">
+                                <option selected value="phrase">문항을 선택해주세요.</option>
+                            </select>
+                            <button id="update-btn" class="btn btn-primary custom-btn">업데이트</button>
                         </div>
                     </div>
                 </div>
-                <div class="col-md-4 d-flex align-items-end justify-content-end">
-                    <button id="update-btn" class="btn btn-primary custom-btn">업데이트</button>
+            </div>
+
+
+            <!-- 검색 키워드 입력 -->
+            <div class="row mb-4">
+                <div class="col-md-6">
+
                 </div>
             </div>
 
-            <!-- 검색 키워드 입력 및 워드클라우드, 감정분석 -->
-            <div class="row mb-4">
-                <div class="col-md-6">
-                    <div class="keyword-search">
-                        <label for="keyword-input" class="d-block">검색 키워드 입력</label>
-                        <input type="text" id="keyword-input" class="form-control mb-2"
-                               placeholder="ex) 질문, 추가 등의 키워드를 입력하세요">
-                        <button id="table-search-btn" class="btn btn-primary custom-btn" data-bs-toggle="tooltip"
-                                data-bs-placement="top" title="키워드를 검색하여 테이블을 필터링합니다;">
-                            <i class="fas fa-search"></i> 검색
-                        </button>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="d-flex flex-column align-items-end">
-                        <button id="wordcloud-btn" class="btn btn-primary custom-btn mb-2" data-bs-toggle="tooltip"
-                                data-bs-placement="top" title="키워드로 워드 클라우드를 만듭니다;">
-                            <i class="fas fa-cloud"></i> 워드 클라우드 생성
-                        </button>
-                        <button id="analyze-emotion-btn" class="btn btn-primary custom-btn" data-bs-toggle="tooltip"
-                                data-bs-placement="top" title="텍스트 감정을 분석합니다;">
-                            <i class="fas fa-smile"></i> 감정 분석
-                        </button>
-                    </div>
-                </div>
+            <!-- 워드클라우드 생성 및 감정 분석 버튼 -->
+            <div class="tab-buttons">
+                <div id="wordcloud-tab" class="tab active"> <i class="fas fa-cloud" style="color: #0096FF;"></i> 워드 클라우드 생성 <i class="fas fa-info-circle" data-bs-toggle="tooltip" title="응답 내용의 주요 키워드를 시각화하여 보여줍니다."></i></div>
+                <div id="emotion-tab" class="tab"> <i class="fas fa-smile" style="color: #28A745;"></i> 감정 분석 <i class="fas fa-info-circle" data-bs-toggle="tooltip" title="응답 내용의 감정을 분석하여 긍정, 중립, 부정의 비율을 시각화합니다."></i></div>
             </div>
 
             <!-- 워드 클라우드 컨테이너 -->
@@ -142,6 +124,20 @@
                 </select>
                 <canvas id="chart-container"></canvas>
             </div>
+
+            <div class="keyword-search">
+                <label for="keyword-input" class="d-block">검색 키워드 입력</label>
+                <div style="display: flex; align-items: center;">
+                <input type="text" id="keyword-input" class="form-control mb-2"
+                       placeholder="ex) 질문, 추가 등의 키워드를 입력하세요">
+                <button id="table-search-btn" class="btn btn-primary custom-btn" data-bs-toggle="tooltip"
+                        data-bs-placement="top" title="키워드를 검색하여 테이블을 필터링합니다;">
+                    <i class="fas fa-search"></i> 검색
+                </button>
+                </div>
+            </div>
+
+
 
             <!-- 검색 결과 테이블 -->
             <div class="result-section"
@@ -159,13 +155,19 @@
                     <tbody></tbody>
                 </table>
             </div>
+            <div class="nav-buttons">
+                <button id="prevBtn" class="nav-btn">이전</button>
+                <button id="nextBtn" class="nav-btn">다음</button>
+            </div>
         </div>
     </div>
+
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/wordcloud2.js/1.1.0/wordcloud2.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3-alpha1/dist/js/bootstrap.bundle.min.js"></script>
     <script src="/resources/js/statistic/keyword.js"></script>
+</div>
 </body>
 </html>
