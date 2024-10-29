@@ -39,6 +39,7 @@
 
 
 <div id="content" class="content">
+
     <div class="container">
         <div class="step-wrapper">
             <div class="step-container">
@@ -63,7 +64,9 @@
             </div>
         </div>
 
-        <h5 class="fw-bold mb-3">K-평균 군집화</h5>
+    <div class="container card">
+
+        <h4 class="fw-bold mt-2">K-평균 군집화</h4>
         <div class="accordion my-4" id="accordionExample">
             <div class="accordion-item">
                 <h2 class="accordion-header" id="headingOne">
@@ -128,9 +131,9 @@
                 <table class="table table-hover" style="table-layout: fixed; width: 100%; text-align: center">
                     <thead style="position: sticky; top: 0; background-color: white; z-index: 1;">
                     <tr>
-                        <th scope="col" style="width: 25%">Date</th>
+                        <th scope="col" style="width: 25%">응답일</th>
                         <th scope="col" style="width: 10%">Cluster</th>
-                        <th scope="col" style="width: 65%">Answer</th>
+                        <th scope="col" style="width: 65%">내용</th>
                     </tr>
                     </thead>
                     <tbody id="table-body"></tbody>

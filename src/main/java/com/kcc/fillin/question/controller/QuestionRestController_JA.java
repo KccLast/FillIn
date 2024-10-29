@@ -1,6 +1,8 @@
 package com.kcc.fillin.question.controller;
 
 import java.security.Principal;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 
@@ -8,8 +10,11 @@ import com.kcc.fillin.member.auth.PrincipalDetail;
 import com.kcc.fillin.question.dto.*;
 import com.kcc.fillin.question.service.QuestionService;
 import org.springframework.ai.chat.messages.Message;
+import org.springframework.ai.chat.messages.SystemMessage;
 import org.springframework.ai.chat.messages.UserMessage;
 import org.springframework.ai.chat.model.ChatModel;
+import org.springframework.ai.chat.model.ChatResponse;
+import org.springframework.ai.chat.prompt.Prompt;
 import org.springframework.ai.chat.prompt.PromptTemplate;
 import org.springframework.ai.openai.OpenAiChatModel;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -89,7 +94,7 @@ public class QuestionRestController_JA {
 
 				gptInputBuilder.append("{")
                 	.append("\"ccSeq\": \"").append(questionType.getCcSeq()).append("\", ")
-                	.append("\"name\": \"질문명 ").append(i).append("\", ")
+                	.append("\"name\": \"질문 ").append(i).append("\", ")
                 	.append("\"description\": \"").append(questionType.getDisplayName()).append("질문 설명 ").append(i).append("\"");
 
 				if (questionType == QuestionType.CCSEQ_7 || questionType == QuestionType.CCSEQ_8) {
@@ -97,12 +102,13 @@ public class QuestionRestController_JA {
 					gptInputBuilder.append(", \"options\": [\"옵션 1\", \"옵션 2\", \"옵션 3\"]");
 				}
 
+
 				gptInputBuilder.append("}");
 			}
 		}
 
 		gptInputBuilder.append("] }");
-		
+
 		StringBuilder questionTypesBuilder = new StringBuilder();
 		for (QuestionType type : QuestionType.values()) {
 		    questionTypesBuilder.append(type.getDisplayName()).append("(").append(type.getCcSeq()).append("), ");
@@ -111,12 +117,12 @@ public class QuestionRestController_JA {
 		// 이스케이프 처리 없이 그대로 사용
 		String jsonInput = gptInputBuilder.toString();
 
-		String command = "사용자가 입력한 내용: " + requestList.get(0).getDescription() + ", 다음과 같은 질문 유형에 맞춰 질문지를 추천해줘: \n"
-		        + gptInputBuilder.toString().replace("{", "\\{").replace("}", "\\}") 
-		        + "각 질문 유형에 대해 적절한 질문명(name)과 질문에 대한 설명(description)을 추가하고, "
+		String command = "설문지를 생성하기 위한 입력을 받을거야. 사용자가 입력한 내용: " + requestList.get(0).getDescription() + ", 다음과 같은 질문 유형에 맞춰 질문지를 생성해줘: \n"
+		        + gptInputBuilder.toString().replace("{", "\\{").replace("}", "\\}")
+		        + "각 질문 유형에 대해 적절한 질문(name)을 의문형으로 작성하며, 질문(name) 하나당 최소 100자 이상의 자세한 내용으로 구성해줘. 질문에 대한 설명(description)을 추가하고, "
 		        + questionTypesBuilder.toString() + " 질문의 경우 해당 질문 유형에 맞는 선택할 수 있는 옵션(options)도 포함해줘. "
 		        + "전체 총 " + totalCount + "개의 질문을 생성하되, 각 질문의 ccSeq는 고정하고, 나머지 항목은 자유롭게 구성해줘. "
-		        + "아무 설명 없이 json 형식으로 출력해줘.";
+		        + "기타 설명 없이 순수 json 형식만 반환해줘.";
 
 		System.out.println("질문 유형 / 개수 : " + gptInputBuilder.toString());
 		System.out.println("command: " + command);
