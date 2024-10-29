@@ -14,4 +14,18 @@ import java.util.List;
 public class SentimentAnalysisResult {
     private Document document;
     private List<Sentence> sentences;
+
+//    가중치 부여 후 수정
+    public SentimentAnalysisResult(double avgPositive, double avgNeutral, double avgNegative) {
+        this.document = new Document();
+
+
+        Confidence confidence = new Confidence();
+        confidence.setPositive(avgPositive);
+        confidence.setNeutral(avgNeutral);
+        confidence.setNegative(avgNegative);
+
+        this.document.setConfidence(confidence);
+    }
+
 }

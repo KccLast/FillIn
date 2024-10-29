@@ -12,3 +12,9 @@ public class Confidence {
     private double positive;
     private double negative;
 }
+
+
+
+
+
+

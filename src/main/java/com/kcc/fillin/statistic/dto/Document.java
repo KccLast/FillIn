@@ -10,4 +10,6 @@ import lombok.ToString;
 public class Document {
     private String sentiment;
     private Confidence confidence;
+
+
 }

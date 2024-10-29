@@ -7,6 +7,7 @@ import com.kcc.fillin.statistic.dto.WordFrequencyDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -90,11 +91,30 @@ public class StatisticRestController {
 //
 //        return new ResponseEntity<>(result, HttpStatus.OK);
 //    }
+
+
     // 감정분석을 POST 요청으로 처리
+//    @PostMapping("/analyzeEmotion")
+//    public ResponseEntity<SentimentAnalysisResult> analyzeEmotion(@RequestBody EmotionRequest request) {
+//        System.out.println("request = " + request);
+//        SentimentAnalysisResult result = statisticService.analyzeSentiment(request.getText());
+//        return new ResponseEntity<>(result, HttpStatus.OK);
+//    }
+
+//    가중치 적용 수정 후
     @PostMapping("/analyzeEmotion")
     public ResponseEntity<SentimentAnalysisResult> analyzeEmotion(@RequestBody EmotionRequest request) {
+        System.out.println("request = " + request);
         SentimentAnalysisResult result = statisticService.analyzeSentiment(request.getText());
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
+    //군집별 비교분석 예시
+    @PostMapping("/compareClustering")
+    public List<AnswerDTO> compareClustering(@RequestBody List<AnswerDTO> tableData, Model model) {
+        return tableData;
+    }
+
+
 }
+
