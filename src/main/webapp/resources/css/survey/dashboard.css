@@ -131,7 +131,7 @@ body {
     margin-top: 35px;
 }
 
-.pagination a {
+.pagination a, .pagination span {
     text-decoration: none;
     color: #005BAC;
     padding: 10px 15px;
@@ -139,6 +139,18 @@ body {
     border: 1px solid #005BAC;
     border-radius: 5px;
     transition: background-color 0.3s, color 0.3s;
+}
+
+.disabled {
+    color: #999999 !important;
+    background-color: #E9ECEF;
+    opacity: 0.5;
+    border: 1px solid #005BAC !important;
+}
+
+.dummy-card {
+    visibility: hidden;
+    height: 200px;
 }
 
 .pagination a:hover {

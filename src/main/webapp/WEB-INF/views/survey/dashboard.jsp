@@ -1,6 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -13,7 +14,7 @@
           href="/resources/css/survey/dashboard.css">
 </head>
 <body>
-<%@include file="/resources/common/header.jsp" %>
+<%@ include file="/resources/common/header.jsp" %>
 <%@ include file="/resources/common/dashBoardNav.jsp" %>
 
 <!-- 컨텐트 내용 -->
@@ -196,19 +197,45 @@
                 </div>
             </c:forEach>
 
+            <%-- 페이지네이션 위치 고정을 위한 더미 카드 추가 --%>
+            <c:set var="dummyCount"
+                   value="${pageNum == 1 ? 5 - fn:length(pagedSurveys) : 6 - fn:length(pagedSurveys)}"/>
+            <c:if test="${dummyCount > 0}">
+                <c:forEach var="i" begin="1" end="${dummyCount}">
+                    <div class="col dummy-card"></div>
+                </c:forEach>
+            </c:if>
         </div>
 
         <!-- 페이지 네비게이션 -->
         <div class="pagination">
             <!-- 처음으로 버튼 -->
-            <c:if test="${pageNum > 1 }">
-                <a href="?pageNum=1&amount=${amount}"> << </a>
-            </c:if>
+            <c:choose>
+                <c:when test="${pageNum == 1}">
+                    <span class="disabled">
+                        <i class="bi bi-chevron-double-left"></i>
+                     </span>
+                </c:when>
+                <c:otherwise>
+                    <a href="?pageNum=1&amount=${amount}">
+                        <i class="bi bi-chevron-double-left"></i>
+                    </a>
+                </c:otherwise>
+            </c:choose>
 
             <!-- 이전 버튼 -->
-            <c:if test="${pageNum > 1 }">
-                <a href="?pageNum=${pageNum - 1 }&amount=${amount}"> < </a>
-            </c:if>
+            <c:choose>
+                <c:when test="${pageNum == 1}">
+                    <span class="disabled">
+                        <i class="bi bi-chevron-left"></i>
+                    </span>
+                </c:when>
+                <c:otherwise>
+                    <a href="?pageNum=${pageNum - 1 }&amount=${amount}">
+                        <i class="bi bi-chevron-left"></i>
+                    </a>
+                </c:otherwise>
+            </c:choose>
 
             <!-- 페이지 번호 반복 -->
             <c:forEach var="i" begin="${startPage }" end="${endPage }">
@@ -223,14 +250,32 @@
             </c:forEach>
 
             <!-- 다음 페이지 버튼 추가 -->
-            <c:if test="${pageNum < totalPages }">
-                <a href="?pageNum=${pageNum + 1 }&amount=${amount}"> > </a>
-            </c:if>
+            <c:choose>
+                <c:when test="${pageNum == totalPages}">
+                    <span class="disabled">
+                        <i class="bi bi-chevron-right"></i>
+                    </span>
+                </c:when>
+                <c:otherwise>
+                      <a href="?pageNum=${pageNum + 1 }&amount=${amount}">
+                        <i class="bi bi-chevron-right"></i>
+                    </a>
+                </c:otherwise>
+            </c:choose>
 
             <!-- 맨 마지막으로 버튼 추가 -->
-            <c:if test="${pageNum < totalPages }">
-                <a href="?pageNum=${totalPages }&amount=${amount}"> >> </a>
-            </c:if>
+            <c:choose>
+                <c:when test="${pageNum == totalPages}">
+                    <span class="disabled">
+                        <i class="bi bi-chevron-double-right"></i>
+                     </span>
+                </c:when>
+                <c:otherwise>
+                    <a href="?pageNum=${totalPages }&amount=${amount}">
+                        <i class="bi bi-chevron-double-right"></i>
+                    </a>
+                </c:otherwise>
+            </c:choose>
         </div>
     </div>
 </div>
