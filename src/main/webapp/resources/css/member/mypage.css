@@ -15,12 +15,12 @@
 .form-group {
 	display: flex;
     flex-direction: column;
-	margin-bottom: 15px; 
+	margin-bottom: 13px; 
 }
 
 .form-group label {
     align-self: flex-start;
-    margin-bottom: 10px;
+    margin-bottom: 5px;
 }
 
 .form-group .btn {
@@ -49,10 +49,11 @@
 .modal-footer {
 	display: flex;
 	justify-content: center;
+	gap: 20px;
 }
 
 .modal-footer .btn{
-    margin-right: 20px;
+    margin-right: 0;
 }
 
 .btn-group {
@@ -75,5 +76,13 @@
 .error-message {
 	margin-top: 10px;
 	color: #EB1C23;
-  	font-size: 15px;
+}
+
+.logoutBtn {
+	background-color: #E9ECEF;
+	border: none;
+	padding: 7px 10px;
+	margin-left: 5px;
+	cursor: pointer;
+	border-radius: 5px;
 }

@@ -33,6 +33,7 @@ public class QuestionServiceImpl implements QuestionService {
 		int questionItemInsertResult = 0;
 		for (QuestionVO questionVO : questionVOList) {
 			questionItemInsertResult = 0;
+			questionVO.setOrder(questionDao.getOrderNum(questionVO.getSurveySeq()));
 			questionInsertResult = questionDao.insertQuestion(questionVO);
 
 			if (questionVO.isQuestionItemExist()) {
@@ -167,6 +168,19 @@ public class QuestionServiceImpl implements QuestionService {
 
 
 		return selectedQuestions.getSeq();
+	}
+
+	@Override
+	@Transactional
+	public boolean insertCondition(ConditionRequest conditionRequest) {
+		int cnt = questionDao.countCondition(conditionRequest);
+		boolean result = false;
+		if(cnt == 0){
+			result = questionDao.insertCondition(conditionRequest);
+		}else{
+			result = questionDao.updateCondition(conditionRequest);
+		}
+		return result;
 	}
 
 	private boolean answerIsContactData(SubmitRequest item) {

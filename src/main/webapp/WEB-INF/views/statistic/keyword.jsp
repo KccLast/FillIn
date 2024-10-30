@@ -11,129 +11,105 @@
     <link rel="stylesheet" type="text/css" href="/resources/common/nav.css">
     <link rel="stylesheet" type="text/css" href="/resources/css/statistic/keyword.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap">
 
-
-    <!-- 버전 맞춤 -->
 
     <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
 </head>
 <body>
-<%@include file="/resources/common/header.jsp" %>
+<%@ include file="/resources/common/header.jsp" %>
 <%@ include file="/resources/common/nav.jsp" %>
 
 <script>
-    <%--console.log('${}')// 콘솔에 clusteringData 출력--%>
-    // 서버에서 전달된 clusteringData를 JSON으로 변환하여 JavaScript 변수에 저장
-
     var clusteringData = ${clusteringData};
-
-    <%--console.log("Received Clustering Data: " + ${clusteringData});--%>
-
     console.log("Received Clustering Data: ", clusteringData);
 </script>
+
 <!-- 단계 바 -->
-
-<%--<div class="container" style="margin-top:30px; margin-bottom:45px;">
-    <div class="progress" style="height: 40px;">
-        <div class="progress-bar progress-bar-striped progress-bar-animated bg-success" role="progressbar"
-             style="width: 33%" aria-valuenow="33" aria-valuemin="0" aria-valuemax="100">
-            <i class="fas fa-check-circle"></i> 키워드 분석
-        </div>
-        <div class="progress-bar bg-secondary" role="progressbar" style="width: 33%" aria-valuenow="33"
-             aria-valuemin="0" aria-valuemax="100">
-            K-평균 군집화
-        </div>
-        <div class="progress-bar bg-secondary" role="progressbar" style="width: 34%" aria-valuenow="34"
-             aria-valuemin="0" aria-valuemax="100">
-            군집별 비교분석
-        </div>
-    </div>
-</div>--%>
-
 <div id="content" class="content" style="height: 700px; margin-top: 100px; margin-left: 100px; margin-right: 40px;">
     <div class="container">
-        <div class="container" style="margin-top: 3px; margin-bottom: 28px; text-align: center;">
-            <div class="step-wrapper">
-                <div class="step active">
-                    <i class="fas fa-search"></i>
-                    <p>키워드 분석</p>
-                </div>
-                <div class="step-divider"></div>
-                <div class="step">
-                    <i class="fas fa-braille"></i>
-                    <p>K-평균 군집화</p>
-                </div>
-                <div class="step-divider"></div>
-                <div class="step">
-                    <i class="fas fa-chart-bar"></i>
-                    <p>군집별 비교분석</p>
-                </div>
-            </div>
-            <div style="margin-top: 20px;">
-                <button id="prevBtn" class="nav-btn" style="padding: 12px 30px; font-size:16px;">이전</button>
-                <button id="nextBtn" class="nav-btn" style="padding: 12px 30px; font-size:16px;">다음</button>
+<%--        <div class="container" style="margin-top: 3px; margin-bottom: 28px; text-align: center;">--%>
+    <div class="step-wrapper">
+        <div class="step-container">
+            <div class="step">
+                <i class="fas fa-braille"></i>
+                <p class="step-text">K-평균 군집화</p>
             </div>
         </div>
+        <div class="step-divider"></div>
+        <div class="step-container">
+            <div class="step active">
+                <i class="fas fa-search"></i>
+                <p class="step-text">키워드 분석</p>
+            </div>
+        </div>
+        <div class="step-divider"></div>
+        <div class="step-container">
+            <div class="step">
+                <i class="fas fa-chart-bar"></i>
+                <p class="step-text">군집별 비교분석</p>
+            </div>
+        </div>
+    </div>
+
+
+<%--    <div class="nav-buttons">--%>
+<%--        <button id="prevBtn" class="nav-btn">이전</button>--%>
+<%--        <button id="nextBtn" class="nav-btn">다음</button>--%>
+<%--    </div>--%>
+
+<%--        </div>--%>
+
+
 
         <!-- 검색 및 필터 -->
         <div class="container" style="margin-top: 20px;">
-            <div class="row mb-4">
-                <div class="col-md-4">
-                    <div class="mb-3">
-                        <label for="phrase" style="margin-bottom:14px; margin-left:10px;">군집을 선택해주세요</label>
-                        <select id="phrase" class="form-select">
-                            <option selected value="phrase">문항을 선택해주세요.</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="search-filter mb-3">
-                        <label for="result-count" class="d-block">군집 갯수</label>
-                        <input type="range" id="result-count" min="2" max="20" value="5"
-                               oninput="updateResultValue(this.value)" class="form-range">
-                        <div class="d-flex justify-content-between mt-1" style="width:50%;">
-                            <span id="rangeMinValue">2</span>
-                            <span id="rangeValue">5</span>
-                            <span id="rangeMaxValue">20</span>
+            <div class="accordion my-4" id="accordionExample">
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="headingOne">
+                        <button class="accordion-button collapsed c-gray" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+                            <i class="bi bi-info-circle me-2"></i> 키워드 분석이란?
+                        </button>
+                    </h2>
+                    <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne"
+                         data-bs-parent="#accordionExample">
+                        <div class="accordion-body">
+                            <strong>‘키워드 분석’</strong>은 군집별로 주어진 데이터 내에서 중요한 키워드를 식별하고, 이 키워드들의 사용 빈도와 관련성을 분석하는 과정입니다.
+                            이를 통해 사용자는 데이터의 핵심 주제나 트렌드를 더 명확하게 이해할 수 있습니다.
                         </div>
                     </div>
                 </div>
-                <div class="col-md-4 d-flex align-items-end justify-content-end">
-                    <button id="update-btn" class="btn btn-primary custom-btn">업데이트</button>
+            </div>
+
+            <div class="row mb-4">
+                <div class="col-md-4">
+                    <div class="mb-3">
+                        <label for="phrase" style="margin-bottom:5px; margin-left:11px;">군집을 선택해주세요</label>
+                        <div style="display: flex; align-items: center;">
+                            <select id="phrase" class="form-select me-2" style="width: 100%;">
+                                <option selected value="phrase">문항을 선택해주세요.</option>
+                            </select>
+                            <button id="update-btn" class="btn btn-primary custom-btn">업데이트</button>
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <!-- 검색 키워드 입력 및 워드클라우드, 감정분석 -->
+
+            <!-- 검색 키워드 입력 -->
             <div class="row mb-4">
                 <div class="col-md-6">
-                    <div class="keyword-search">
-                        <label for="keyword-input" class="d-block">검색 키워드 입력</label>
-                        <input type="text" id="keyword-input" class="form-control mb-2"
-                               placeholder="ex) 질문, 추가 등의 키워드를 입력하세요">
-                        <button id="table-search-btn" class="btn btn-primary custom-btn" data-bs-toggle="tooltip"
-                                data-bs-placement="top" title="키워드를 검색하여 테이블을 필터링합니다;">
-                            <i class="fas fa-search"></i> 검색
-                        </button>
-                    </div>
+
                 </div>
-                <div class="col-md-6">
-                    <div class="d-flex flex-column align-items-end">
-                        <button id="wordcloud-btn" class="btn btn-primary custom-btn mb-2" data-bs-toggle="tooltip"
-                                data-bs-placement="top" title="키워드로 워드 클라우드를 만듭니다;">
-                            <i class="fas fa-cloud"></i> 워드 클라우드 생성
-                        </button>
-                        <button id="analyze-emotion-btn" class="btn btn-primary custom-btn" data-bs-toggle="tooltip"
-                                data-bs-placement="top" title="텍스트 감정을 분석합니다;" style="width:30%;">
-                            <i class="fas fa-smile"></i> 감정 분석
-                        </button>
-                        <small class="text-muted d-block mt-2">- 워드 클라우드 생성: 입력된 키워드를 바탕으로 자주 사용된 단어를 시각화합니다.</small>
-                        <small class="text-muted d-block">- 감정 분석: 텍스트에서 긍정, 부정 등의 감정을 분석합니다.</small>
-                    </div>
-                </div>
+            </div>
+
+            <!-- 워드클라우드 생성 및 감정 분석 버튼 -->
+            <div class="tab-buttons">
+                <div id="wordcloud-tab" class="tab active"> <i class="fas fa-cloud" style="color: #0096FF;"></i> 워드 클라우드 생성 <i class="fas fa-info-circle" data-bs-toggle="tooltip" title="응답 내용의 주요 키워드를 시각화하여 보여줍니다."></i></div>
+                <div id="emotion-tab" class="tab"> <i class="fas fa-smile" style="color: #28A745;"></i> 감정 분석 <i class="fas fa-info-circle" data-bs-toggle="tooltip" title="응답 내용의 감정을 분석하여 긍정, 중립, 부정의 비율을 시각화합니다."></i></div>
             </div>
 
             <!-- 워드 클라우드 컨테이너 -->
@@ -149,6 +125,20 @@
                 <canvas id="chart-container"></canvas>
             </div>
 
+            <div class="keyword-search">
+                <label for="keyword-input" class="d-block">검색 키워드 입력</label>
+                <div style="display: flex; align-items: center;">
+                <input type="text" id="keyword-input" class="form-control mb-2"
+                       placeholder="ex) 질문, 추가 등의 키워드를 입력하세요">
+                <button id="table-search-btn" class="btn btn-primary custom-btn" data-bs-toggle="tooltip"
+                        data-bs-placement="top" title="키워드를 검색하여 테이블을 필터링합니다;">
+                    <i class="fas fa-search"></i> 검색
+                </button>
+                </div>
+            </div>
+
+
+
             <!-- 검색 결과 테이블 -->
             <div class="result-section"
                  style="max-height: 300px; overflow-y: scroll; margin-top: 20px; border: 1px solid #ccc;">
@@ -159,24 +149,25 @@
                         <th>CLUSTER</th>
                         <th>ANSWER_Content</th>
                         <th>ANSWER_DATE</th>
+                        <th>Frequency</th>
                     </tr>
                     </thead>
                     <tbody></tbody>
                 </table>
             </div>
+            <div class="nav-buttons">
+                <button id="prevBtn" class="nav-btn">이전</button>
+                <button id="nextBtn" class="nav-btn">다음</button>
+            </div>
         </div>
+    </div>
 
 
-        <%--<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>--%>
-        <%--<script src="https://cdnjs.cloudflare.com/ajax/libs/wordcloud2.js/1.1.0/wordcloud2.min.js"></script>--%>
-        <%--<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>--%>
-        <%--<script src="/resources/js/statistic/keyword.js"></script>--%>
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
-        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-        <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
-        <script src="/resources/js/statistic/keyword.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/wordcloud2.js/1.1.0/wordcloud2.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/wordcloud2.js/1.1.0/wordcloud2.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/resources/js/statistic/keyword.js"></script>
+</div>
 </body>
-
 </html>

@@ -4,6 +4,12 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.kcc.fillin.question.dao.QuestionDao">
 
+	<select id="getOrderNum" parameterType="long" resultType="int">
+		SELECT NVL(MAX(ORDER_NUM), 0) + 1
+		FROM question
+		WHERE survey_seq = #{surveySeq}
+	</select>
+
 	<insert id="insertQuestion" parameterType="QuestionVO">
 		<selectKey keyProperty="seq" resultType="long" order="BEFORE">
 			SELECT question_seq.nextval
@@ -18,10 +24,8 @@
 		#{seq}
 		,#{surveySeq}
 		,#{name}
-		,#{description},
-		(SELECT NVL(MAX(ORDER_NUM), 0) + 1
-		FROM question
-		WHERE survey_seq = #{surveySeq})
+		,#{description}
+		,#{order}
 		,#{isEssential},#{ccSeq}
 		<if test="tbFileSeq != null">
 			, #{tbFileSeq}
@@ -123,4 +127,40 @@
     WHERE seq = #{participantSeq}
 </update>
 
+
+	<select id="countCondition" resultType="int" parameterType="ConditionRequest">
+			SELECT count(*)
+			FROM condition
+			WHERE question_seq = #{from}
+
+			AND ORDER_NUM = #{id}
+	</select>
+
+	<insert id="insertCondition" parameterType="ConditionRequest">
+		INSERT INTO condition(seq,question_seq,next_question_seq,c_value,operation,order_num)
+		VALUES
+		(
+		condition_seq.nextval
+		,#{from}
+		,#{to}
+		,#{condition}
+		,#{operation}
+		,#{id}
+		)
+	</insert>
+	<update id="updateCondition" parameterType="ConditionRequest" >
+		UPDATE condition
+		SET next_question_seq = #{to}, c_value = #{condition}, operation = #{operation}
+		WHERE question_seq = #{from}
+		AND order_num = #{id}
+	</update>
+
+
+	<update id="deleteCondition">
+		UPDATE condition
+		SET is_ACTIVE = 'N'
+		WHERE question_seq = #{from}
+		next_question_seq = #{to}
+		AND order_num = #{id}
+	</update>
 </mapper>

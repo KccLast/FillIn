@@ -3,20 +3,24 @@
 	<!DOCTYPE html>
 	<html lang="en">
 
+	<!-- <div id="loading-spinner">
+		<div class="spinner"></div> 로딩 중...
+	</div> -->
+
 	<head>
 		<meta charset="UTF-8">
 		<title>Title</title>
-
 		<link rel="stylesheet" type="text/css" href="/resources/common/nav.css">
 		<link rel="stylesheet" type="text/css" href="/resources/css/question/questionNav.css">
 		<link rel="stylesheet" type="text/css" href="/resources/css/question/question.css">
 		<link rel="stylesheet" type="text/css" href="/resources/css/question/condition.css">
-
+		<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 		<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/jsPlumb/2.15.6/js/jsplumb.min.js"></script> -->
 		<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 		<script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 		<script type="text/javascript"
 			src="//dapi.kakao.com/v2/maps/sdk.js?appkey=f7372f613dea5dbd8f49b7be0a73bbb8"></script>
+
 
 		<script type="text/javascript">
 			$(function () {
@@ -24,7 +28,6 @@
 				updateSurveyName(surveyName);
 				console.log("surveyName In jsp" + surveyName);
 			})
-
 		</script>
 		<script type="text/javascript" src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
 		<script src="/resources/js/survey/surveyPost.js"></script>
@@ -33,10 +36,12 @@
 		<script src="/resources/js/question/questionParse.js"></script>
 		<script src="/resources/js/question/condition.js"></script>
 
+
 		<script type="text/javascript">
 
+
 			$(function () {
-				$('.content').on('keyup', '.j-survey-name-input', function () {
+				$('.content').on('keyup', '.j-survey-name-input', async function () {
 
 					let idx = $(this).parent().parent().index();
 
@@ -50,6 +55,8 @@
 				parseJson(survey);
 				parseCondition(survey);
 
+
+
 			})
 		</script>
 
@@ -59,10 +66,14 @@
 	</head>
 
 	<body>
+		<div class="loading-box">
+			<span class="loader"></span>
+		</div>
 		<input type="hidden" id="surveySeq" value="${survey.seq}" />
 		<%@include file="/resources/common/header.jsp" %>
 			<%-- <%@ include file="/resources/common/miniNav.jsp" %> --%>
 				<%@ include file="/resources/common/nav.jsp" %>
+
 
 
 
@@ -78,8 +89,8 @@
 						</div>
 						<div class="j-question-box">
 							<div class="j-total-question-box j-flex-row-center">
-								<span>전체문항수</span>
-								<div class="j-ai-img">AI</div>
+								<span class="fw-bold">전체문항수</span>
+								<div class="j-ai-img fw-bold fs-6">AI</div>
 							</div>
 
 							<div class="j-question-list">
@@ -101,7 +112,9 @@
 						<div class="j-nav-button-box j-flex-row-center">
 
 							<!-- <input type="button" value="저장" class="j-nav-input-button j-nav-save-button fs-6 btn"> -->
-							<button class="btn btn-primary j-nav-input-button j-nav-save-button fs-6">저장</button>
+							<button class="btn btn-primary j-nav-save-button fs-6">
+								<span class="button-text">저장</span>
+							</button>
 
 							<!-- <input type="button" value="게시" class="j-nav-input-button j-depoly-button  fs-6 btn"> -->
 							<button type="button" class="btn btn-primary j-nav-input-button j-depoly-button fs-6"
@@ -494,6 +507,10 @@
 					<!-- add type 모달창2 -->
 					<div class="j-condition-box j-flex-row-center">
 						<img class="j-arrow-content j-arrow-left" src="/resources/img/question/arrow-left.png">
+						<!-- 고정된 노드처럼 보이게 하는 HTML 요소 -->
+						<div id="fixedNode" class="fixed-node">
+							<button class="btn btn-primary">조건 펼치기</button>
+						</div>
 						<div class="j-condition-card-container" id="conditionCardCon">
 
 
@@ -542,65 +559,44 @@
 
 							</div>
 
-							<div class="condition-nav-2">
+							<div class="condition-nav-2 j-flex-row-center">
+								<div class="cur-con-question-box con-question-box">
+									<span class="fw-bold">현재 질문</span>
+									<div class="form-floating con-question-input">
+										<input type="text" class="form-control" placeholder="name@example.com" value=" " readonly>
+										<label for="floatingInput">질문명</label>
+									</div>
+									<div class="cur-con-question-type con-question-type con-question-input j-flex-row-center">
+
+									</div>
+									<div class="form-floating cur-con-description con-question-description">
+										<textarea class="form-control" placeholder="Leave a comment here" id="floatingTextarea"
+											readonly> </textarea>
+										<label for="floatingTextarea">질문설명</label>
+									</div>
+								</div>
+								<div class="next-question-box con-question-box">
+
+									<span class="fw-bold">다음 질문</span>
+									<div class="form-floating con-question-input">
+										<input type="text" class="form-control" placeholder="name@example.com" value=" " readonly>
+										<label for="floatingInput">질문명</label>
+									</div>
+									<div class="next-con-question-type con-question-type con-question-input j-flex-row-center">
+
+									</div>
+									<div class="form-floating next-con-description con-question-description">
+										<textarea class="form-control" placeholder="Leave a comment here" id="floatingTextarea"
+											readonly> </textarea>
+										<label for="floatingTextarea">질문설명</label>
+									</div>
+								</div>
 
 							</div>
 
 						</div>
 					</div>
 
-					<div id="j-con-modal">
-						<div id="j-con-modal-hader" class="j-flex-row-center">
-							<div id="j-nextQuestion" class="j-flex-row-center j-con-modal-h-select">
-								<span>이어지는 질문</span>
-							</div>
-							<div id="j-subQuestion" class="j-flex-row-center">
-								<span>대체 질문 등록</span>
-							</div>
-						</div>
-						<div id="j-con-modal-body">
-							<div class="j-basic-move">
-								<div>기본이동</div>
-								<select class="form-select">
-									<option value="" disabled>다음질문</option>
-								</select>
-							</div>
-							<div class="j-condition-move">
-								<div class="j-condition-plus j-flex-row-center">
-									<span>로직 추가하기</span>
-									<div class="j-con-plus-button j-flex-row-center">
-										<span>+</span>
-									</div>
-								</div>
-								<div class="j-condition-content-box">
-
-									<div class="j-condition">
-
-										<div class="j-condition-header j-flex-row-center">
-											<div class="j-arrow j-flex-row-center">
-												<img src="/resources/img/question/arrow-up.png">
-											</div>
-											<div class="j-con-sur-name">로직 1</div>
-										</div>
-
-										<div class="j-condition-c">
-											<div>조건</div>
-											<input type="text" class="form-control" placeholder="조건 값을 입력해주세요">
-											<select class="operations form-select">
-												<option value="" disabled="disabled">조건</option>
-											</select>
-											<div>결과</div>
-											<select class="next-ques form-select">
-												<option value="" disabled="disabled">다음질문</option>
-											</select>
-										</div>
-
-									</div>
-
-								</div>
-							</div>
-						</div>
-					</div>
 	</body>
 
 	</html>

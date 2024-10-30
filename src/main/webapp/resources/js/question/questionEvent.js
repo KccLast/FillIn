@@ -103,6 +103,7 @@ $(function () {
     targetCard.remove();
     deleteNode(idx);
     updateQuestionNavOrder();
+    totalQuestionCnt();
   });
 
   /**새로운 질문 추가하는 모달  */
@@ -196,6 +197,8 @@ $(function () {
         }
 
         createNewNode(idx);
+        await insertQuestion();
+        totalQuestionCnt();
       } catch (error) {
         console.error('AJAX 요청 실패:', error);
       }
@@ -722,18 +725,16 @@ $(function () {
 
     if ($(this).hasClass('j-question-nav-tab')) {
       $('.j-question-box').show();
-      $('.j-condition-button').show();
+
       $('.j-deploy-box').hide();
-      $('.j-depoly-button').hide();
     } else {
       $('.j-question-box').hide();
-      $('.j-condition-button').hide();
+
       $('.j-deploy-box').show();
-      $('.j-depoly-button').show();
     }
   });
 
-  $('.j-nav-save-button').on('click', saveQuestion);
+  $('.j-nav-save-button').on('click', handleSaveButtonClick);
 
   /** 조건 카드 선택시 border이벤트 */
   $('.j-condition-box').on('click', '.j-que-con-card', function () {
@@ -1053,3 +1054,12 @@ function createKaKaoMap(id, latitude, longitude) {
   marker.setMap(map);
 }
 /**지도 관련 */
+
+async function totalQuestionCnt(questionLen) {
+  if (questionLen === '' || questionLen === undefined || questionLen === null) {
+    console.log($('.content').find('.j-question-card').length);
+    $('.j-ai-img').text($('.content').find('.j-question-card').length);
+  } else {
+    $('.j-ai-img').text(questionLen);
+  }
+}

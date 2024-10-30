@@ -123,6 +123,10 @@ $(function () {
     let nextSeq = body.find('.contition-next-se').val();
     let optionVal = body.find('.contition-option-se').val();
 
+    if (optionVal === '' || optionVal === null || optionVal === undefined) {
+      optionVal = ' ';
+    }
+
     let saveCondition = {
       id: parseInt(ConditionId),
       from: parseInt(questionSeq),
@@ -130,9 +134,9 @@ $(function () {
       condition: optionVal, // 조건에 해당하는 값 설정
       operation: operation, // 연산 또는 동작 설정
     };
-
+    console.log(saveCondition);
     saveConditionDataInLocal(saveCondition);
-
+    saveConditionInDB(saveCondition);
     let nodeId = getNodeIdByQuestionSeq(saveCondition.to, saveCondition.from);
     deleteEdge(nodeId.from, saveCondition.id);
     addConditionalFlow(nodeId.from, nodeId.to, saveCondition.id);
@@ -187,16 +191,61 @@ $(function () {
         id: 0,
         from: parseInt(questionSeq),
         to: parseInt(toSeq), // 'to' 값은 필요에 따라 설정
-        condition: '', // 조건에 해당하는 값 설정
-        operation: '', // 연산 또는 동작 설정
+        condition: ' ', // 조건에 해당하는 값 설정
+        operation: ' ', // 연산 또는 동작 설정
       };
       saveConditionDataInLocal(saveCondition);
+      saveConditionInDB(saveCondition);
     } else {
       findCondition.to = parseInt(toSeq);
       saveConditionListInLocalStorage(conditions, questionSeq);
+      saveConditionInDB(findCondition);
     }
+
     //edge 수정
     redrawDefaultOrder();
+  });
+
+  $('.top-basic').click(function () {
+    let questionSeq = $(this)
+      .parents('.condition-nav-box')
+      .find('input[type="hidden"]')
+      .val();
+
+    let conditionList = getQuestionConditions(questionSeq);
+
+    let findCondition = conditionList.find((con) => con.id === 0);
+    console.log(findCondition);
+
+    setConditionNav2(findCondition.from, findCondition.to);
+  });
+
+  $('.nav-body-2').on('click', '.accordion-button', function () {
+    let questionSeq = $(this)
+      .parents('.condition-nav-box')
+      .find('input[type="hidden"]')
+      .val();
+    let toSeq = $(this)
+      .parents('.accordion-item')
+      .find('.contition-next-se')
+      .val();
+    let conditionList = getQuestionConditions(questionSeq);
+
+    setConditionNav2(questionSeq, toSeq);
+  });
+
+  $('#fixedNode >button').click(function () {
+    let currentText = $(this).text(); // 버튼의 현재 텍스트 가져오기
+
+    if (currentText === '조건 펼치기') {
+      $(this).text('조건 접기'); // 텍스트 변경
+      showAllConditionFlow();
+    } else {
+      $(this).text('조건 펼치기'); // 원래 텍스트로 변경
+      deleteAllConditionalFlow();
+    }
+    console.log(edges.get());
+    network.redraw();
   });
 });
 
@@ -211,45 +260,55 @@ var nodes;
 var options = {
   nodes: {
     shape: 'box',
-    borderWidth: 2,
+    borderWidth: 0, // 테두리 없음
+    shadow: {
+      enabled: true,
+      color: 'rgba(100, 100, 111, 0.2)', // 그림자 색상
+      size: 20, // 그림자의 크기
+      x: 5, // X축 이동
+      y: 5, // Y축 이동
+    },
     widthConstraint: {
-      maximum: 150, // 박스 너비를 고정
+      maximum: 150, // 박스 너비 고정
       minimum: 150, // 최소 너비
     },
     heightConstraint: {
-      minimum: 50, // 최소 높이 설정
+      minimum: 50, // 최소 높이
     },
     color: {
-      background: '#ffffff',
-      border: '#cccccc',
+      background: '#ffffff', // 기본 배경 흰색
       highlight: {
-        background: '#e6f7ff',
-        border: '#1890ff',
+        background: '#e6f7ff', // 하이라이트 시 배경
+        border: '#1890ff', // 하이라이트 테두리
+      },
+      hover: {
+        background: '#f8f9fa', // 호버 시 배경색
+        border: '#1890ff', // 호버 시 테두리
       },
     },
     font: {
-      color: '#000000',
+      color: '#000000', // 글자 색상 검정
       size: 14,
       face: 'Arial',
       multi: true, // 여러 줄 지원
     },
-    margin: 10,
+    margin: 10, // 내부 여백
   },
   edges: {
     width: 2,
     color: {
-      color: '#848484',
-      highlight: '#005bac',
-      hover: '#848484',
+      color: '#848484', // 기본 엣지 색상
+      highlight: '#005bac', // 하이라이트 엣지 색상
+      hover: '#848484', // 호버 시 엣지 색상
     },
-    arrows: { to: { enabled: true } },
+    arrows: { to: { enabled: true } }, // 화살표 활성화
     smooth: {
-      type: 'curvedCCW',
-      roundness: 0.2,
+      type: 'curvedCCW', // 커브 스타일
+      roundness: 0.2, // 곡률 설정
     },
   },
   physics: {
-    enabled: false,
+    enabled: false, // 물리 엔진 비활성화
   },
 };
 
@@ -291,11 +350,14 @@ function getQuestionConditions(questionSeq) {
 function saveConditionListInLocalStorage(conditions, questionSeq) {
   let storedData = JSON.parse(localStorage.getItem('accordionData')) || {};
   storedData[questionSeq] = conditions;
+  console.log(storedData);
   localStorage.setItem('accordionData', JSON.stringify(storedData));
 }
 
 function parseCondition(json) {
   let question = JSON.parse(json);
+
+  initcondition(question.questions);
   createDefaultOrder(question.questions);
   //conditionCardCon
 }
@@ -311,20 +373,100 @@ function createDefaultOrder(questions) {
   //추후 변경 defaultcondition이 등록된게 있다면 변화해야함
   // edge 그리는 건 condition -> edge로 변환해야할 듯
 
-  for (let i = 0; i < questions.length - 1; i++) {
-    let defaultCondition = createDefaultCondition(
-      questions[i].seq,
-      questions[i + 1].seq
-    );
-    let conditionList = [];
-    conditionList.push(defaultCondition);
-    saveConditionListInLocalStorage(conditionList, questions[i].seq);
-    edgeList.push(convertConditionToedge(defaultCondition, '기본 흐름'));
-  }
+  // for (let i = 0; i < questions.length - 1; i++) {
+  //   let defaultCondition = createDefaultCondition(
+  //     questions[i].seq,
+  //     questions[i + 1].seq
+  //   );
+  //   let conditionList = [];
+  //   conditionList.push(defaultCondition);
+  //   saveConditionListInLocalStorage(conditionList, questions[i].seq);
+  //   edgeList.push(convertConditionToedge(defaultCondition, '기본 흐름'));
+  // }
+
+  // for (let i = 0; i < questions.length - 1; i++) {
+  //   let existingConditionList = getQuestionConditions(questions[i].seq) || []; // 로컬스토리지에서 조건 불러오기
+  //   console.log(existingConditionList);
+  //   // conditionId가 0인 조건이 있는지 확인
+  //   let conditionWithIdZero = existingConditionList.find(
+  //     (condition) => condition.id === 0
+  //   );
+
+  //   let conditionToUse;
+
+  //   if (conditionWithIdZero) {
+  //     // 이미 존재하는 조건을 사용
+  //     console.log(`기존 조건 사용:`, conditionWithIdZero);
+  //     conditionToUse = conditionWithIdZero;
+  //   } else {
+  //     // 새로운 조건 생성
+  //     let defaultCondition = createDefaultCondition(
+  //       questions[i].seq,
+  //       questions[i + 1].seq
+  //     );
+  //     console.log(`새로운 조건 생성:`, defaultCondition);
+
+  //     // 새로 생성한 조건을 conditionList에 추가하고 로컬스토리지에 저장
+  //     let newConditionList = [...existingConditionList, defaultCondition];
+  //     saveConditionListInLocalStorage(newConditionList, questions[i].seq);
+
+  //     conditionToUse = defaultCondition;
+  //   }
+
+  //   // edgeList에 조건을 변환하여 추가
+  //   edgeList.push(convertConditionToedge(conditionToUse, '기본 흐름'));
+  // }
 
   // for (let i = 0; i < questions.length - 1; i++) {
   //   edgeList.push(createEdge(i, i + 1));
   // }
+
+  for (let i = 0; i < questions.length - 1; i++) {
+    // 로컬스토리지에서 조건 불러오기
+    let existingConditionList = getQuestionConditions(questions[i].seq) || [];
+    console.log(`기존 조건 리스트:`, existingConditionList);
+
+    // conditionId가 0인 조건이 있는지 확인
+    let conditionWithIdZero = existingConditionList.find(
+      (condition) => condition.id === 0
+    );
+
+    let conditionToUse;
+
+    if (conditionWithIdZero) {
+      // 조건 ID가 0인 조건이 존재하면 그대로 사용
+      console.log(`기존 조건 사용:`, conditionWithIdZero);
+      conditionToUse = conditionWithIdZero;
+    } else {
+      // 조건 ID가 0인 조건이 없는 경우 새로 생성
+      let defaultCondition = createDefaultCondition(
+        questions[i].seq,
+        questions[i + 1].seq
+      );
+      console.log(`새로운 기본 조건 생성:`, defaultCondition);
+
+      if (existingConditionList.length > 0) {
+        // 기존 리스트에 새 기본 조건 추가
+        existingConditionList.push(defaultCondition);
+        console.log(`새 조건이 추가된 리스트:`, existingConditionList);
+      } else {
+        // 기존 리스트가 없는 경우, 새 리스트로 초기화
+        existingConditionList = [defaultCondition];
+        console.log(
+          `기존 리스트가 없어 새 리스트로 초기화:`,
+          existingConditionList
+        );
+      }
+
+      // 수정된 리스트를 로컬스토리지에 저장
+      saveConditionListInLocalStorage(existingConditionList, questions[i].seq);
+
+      conditionToUse = defaultCondition;
+    }
+
+    // edgeList에 조건을 변환하여 추가
+    edgeList.push(convertConditionToedge(conditionToUse, '기본 흐름'));
+  }
 
   edges = new vis.DataSet(edgeList);
   let data = { nodes: nodes, edges: edges };
@@ -353,12 +495,29 @@ function createNode(idx, question, yp) {
     label: truncateLabel(question.name, 10), // 라벨 길이 제한
     shape: 'box',
     title: question.name, // 전체 이름은 툴팁에 표시
-    color: { background: '#f0f0f0' },
-    x: 480,
-    y: yp,
+    color: {
+      background: '#ffffff', // 배경색 흰색
+      highlight: {
+        background: '#e6f7ff', // 하이라이트 시 배경
+        border: '#1890ff', // 하이라이트 테두리
+      },
+      hover: {
+        background: '#f8f9fa', // 호버 시 배경
+        border: '#1890ff', // 호버 시 테두리
+      },
+    },
+    x: 480, // 노드 X 위치
+    y: yp, // 노드 Y 위치
     condition: 0,
     seq: question.seq,
     surveySeq: question.surveySeq,
+    shadow: {
+      enabled: true, // 그림자 활성화
+      color: 'rgba(100, 100, 111, 0.2)', // 그림자 색상
+      size: 20, // 그림자 크기
+      x: 5, // X축 이동
+      y: 5, // Y축 이동
+    },
   };
 }
 function createDefaultCondition(from, to) {
@@ -366,8 +525,8 @@ function createDefaultCondition(from, to) {
     id: 0,
     from: from,
     to: to, // 'to' 값은 필요에 따라 설정
-    condition: '', // 조건에 해당하는 값 설정
-    operation: '', // 연산 또는 동작 설정
+    condition: ' ', // 조건에 해당하는 값 설정
+    operation: ' ', // 연산 또는 동작 설정
   };
 }
 function createNewNode(idx) {
@@ -461,8 +620,9 @@ function redrawNetWork() {
       let conditionList = $('.accordion');
       conditionList.empty(); // 기존 조건 프레임 초기화
 
-      for (let i = 1; i < conditions.length; i++) {
+      for (let i = 0; i < conditions.length; i++) {
         let condition = conditions[i];
+        if (condition.id === 0) continue;
         let getConditionFrame = await fetchConditionFrame();
         conditionList.append(getConditionFrame);
         let lastAccordionItem = conditionList.find('.accordion-item:last');
@@ -480,9 +640,9 @@ function redrawNetWork() {
       deleteAllConditionalFlow();
 
       let nodeList = nodes.get();
-      for (let i = 1; i < conditions.length; i++) {
+      for (let i = 0; i < conditions.length; i++) {
         let condition = conditions[i];
-
+        if (condition.id === 0) continue;
         // fromNode 찾기
         let fromNode = nodeList.find((node) => node.seq === condition.from);
         let toNode = nodeList.find((node) => node.seq === condition.to);
@@ -497,6 +657,7 @@ function redrawNetWork() {
         }
         addConditionalFlow(fromNodeId, toNodeId, condition.id);
       }
+      $('.top-basic').click();
     }
   });
 
@@ -774,9 +935,9 @@ async function filldefaultMoveSelectBox(questionSeq) {
   // 로컬스토리지에서 저장된 값 불러오기
   let storedData = JSON.parse(localStorage.getItem('accordionData')) || {};
   let conditions = storedData[questionSeq] || [];
-  console.log(storedData);
+
   let matchingCondition = conditions.find((condition) => condition.id === 0);
-  console.log(conditions);
+
   // 저장된 'from' 값 선택 또는 첫 번째 옵션 기본 선택
   if (matchingCondition) {
     if (matchingCondition.to !== '' && matchingCondition.to !== null) {
@@ -852,6 +1013,36 @@ function deleteAllConditionalFlow() {
   });
 }
 
+function showAllConditionFlow() {
+  let storedData = JSON.parse(localStorage.getItem('accordionData')) || {};
+  let conditionalEdges = [];
+
+  // 로컬스토리지에서 조건을 불러와 conditionId가 0이 아닌 조건만 필터링
+  for (let key in storedData) {
+    let conditions = storedData[key].filter((condition) => condition.id !== 0);
+
+    // 각 조건을 엣지로 변환하여 추가
+    conditions.forEach((condition) => {
+      let edge = convertConditionToedge(condition, `조건부 흐름`, condition.id);
+      console.log('생성된 엣지:', edge); // 디버깅용 로그
+      if (edge) {
+        conditionalEdges.push(edge);
+      }
+    });
+  }
+
+  // 필터링된 조건부 엣지들을 네트워크에 추가
+  try {
+    console.log('추가할 조건부 엣지들:', conditionalEdges);
+    edges.add(conditionalEdges); // 엣지를 한 번에 추가
+    network.setData({ nodes: nodes, edges: edges }); // 네트워크에 데이터 설정
+    network.redraw(); // 네트워크 다시 그리기
+    console.log('조건부 엣지 추가 성공!');
+  } catch (error) {
+    console.error('조건부 엣지 추가 중 오류 발생:', error);
+  }
+}
+
 function redrawDefaultOrder() {
   let storedData = JSON.parse(localStorage.getItem('accordionData')) || {};
 
@@ -898,4 +1089,88 @@ function deleteEdgesWithConditionIdZero() {
   });
 
   console.log('모든 conditionId가 0인 엣지들이 삭제되었습니다.');
+}
+
+function saveConditionInDB(condition) {
+  $.ajax({
+    url: '/api/question/condition',
+    type: 'post',
+    contentType: 'application/json',
+    data: JSON.stringify(condition),
+    success: function (response) {
+      console.log(response);
+    },
+    error: function (error) {},
+  });
+}
+
+function initcondition(questions) {
+  var conditionSeq; // 외부에서 선언
+  for (let q = 0; q < questions.length; q++) {
+    let conditions = questions[q].conditions;
+    let conditionList = [];
+    for (let c = 0; c < conditions.length; c++) {
+      let condition = conditions[c];
+      conditionSeq = condition.questionSeq;
+      let saveCondition = {
+        from: condition.questionSeq,
+        to: condition.nextQuestionSeq,
+        operation: condition.operation,
+        id: condition.orderNum,
+      };
+      conditionList.push(saveCondition);
+    }
+    console.log('conSeq = ' + conditionSeq);
+    console.log('conList', conditionList);
+    if (
+      conditions.length > 0 &&
+      conditionSeq !== null &&
+      conditionSeq !== undefined &&
+      conditionSeq !== ''
+    ) {
+      saveConditionListInLocalStorage(conditionList, conditionSeq);
+    }
+  }
+}
+
+function setConditionNav2(from, to) {
+  let fromInput = $('.j-qseq').filter(function () {
+    return $(this).val() === from + '';
+  });
+
+  let toInput = $('.j-qseq').filter(function () {
+    return $(this).val() === to + '';
+  });
+
+  // 부모 카드 찾기
+  let fromCard = fromInput.parents('.j-question-card');
+  let toCard = toInput.parents('.j-question-card');
+
+  // fromCard에서 데이터 추출
+  let fromName = fromCard.find('.j-survey-name-input').val();
+  let fromType = fromCard.find('.j-typeAndImg').prop('outerHTML'); // 오타 수정: fomrType → fromType
+  let fromDes = fromCard.find('.j-survey-content > textarea').val(); // .val() 사용
+
+  // toCard에서 데이터 추출
+  let toName = toCard.find('.j-survey-name-input').val(); // toCard 사용
+  let toType = toCard.find('.j-typeAndImg').prop('outerHTML'); // toCard 사용
+  let toDes = toCard.find('.j-survey-content > textarea').val(); // .val() 사용
+
+  // 현재 질문 박스에 값 설정
+  $('.cur-con-question-box')
+    .find('.con-question-input > input')
+    .val(fromName + ' ');
+  $('.cur-con-question-box .con-question-type').html(fromType);
+  $('.cur-con-question-box')
+    .find('.con-question-description > textarea')
+    .val(fromDes + ' ');
+
+  // 다음 질문 박스에 값 설정
+  $('.next-question-box')
+    .find('.con-question-input > input')
+    .val(toName + ' ');
+  $('.next-question-box .con-question-type').html(toType);
+  $('.next-question-box')
+    .find('.con-question-description > textarea')
+    .val(toDes + ' ');
 }

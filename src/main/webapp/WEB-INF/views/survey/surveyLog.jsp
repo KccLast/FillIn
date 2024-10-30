@@ -14,17 +14,16 @@
     <script src="/resources/js/survey/surveyLog.js"></script>
 
     <link rel="stylesheet" type="text/css" href="/resources/css/survey/surveyLog.css">
-    <link rel="stylesheet" type="text/css" href="/resources/common/dashBoardNav.css">
+    <link rel="stylesheet" type="text/css" href="/resources/common/statisticsNav.css">
     <link rel="stylesheet" type="text/css" href="/resources/css/survey/dashboard.css">
 </head>
 <body>
 <%@include file="/resources/common/header.jsp"%>
-<%@ include file="/resources/common/dashBoardNav.jsp"%>
+<%@ include file="/resources/common/statisticsNav.jsp"%>
 
 
-<div class="container">
-<%--    <p class="fs-3">Survey Log Details</p>--%>
-    <h2>Survey Log Details</h2>
+<div class="container" style="padding-top:65px;">
+    <h2 style="padding-bottom: 10px;">Survey Log Details</h2>
     <div class="filter-section">
         <label for="startDate">Start Date:</label>
         <input type="date" id="startDate">
@@ -32,35 +31,27 @@
         <label for="endDate">End Date:</label>
         <input type="date" id="endDate">
 
-        <button id="filter-btn">Filter Logs</button>
+        <button id="filter-btn" class="filter-button">Filter Logs</button>
     </div>
 
-    <!-- 설문 로그 테이블(스크롤 가능한 박스 설정) -->
     <div id="data-container" class="table-section">
         <table id="surveyLogTable" class="result-table">
             <thead>
             <tr>
                 <th>Log Seq</th>
                 <th>Survey Seq</th>
-<%--                <th>Occur Date</th>--%>
                 <th>Start Date</th>
                 <th>End Date</th>
-                <th>Response Time (seconds)</th>
+                <th>Response Time</th>
             </tr>
             </thead>
             <tbody>
-            <!-- 데이터가 스크롤을 통해 볼 수 있음 -->
             </tbody>
         </table>
     </div>
 
-    <!-- 응답 시간 경고 -->
-<%--    <div id="warning-message" style="display:none; color: red; margin-top: 10px;">응답 시간이 너무 짧습니다 (3초 미만)</div>--%>
-
-    <!-- 응답 시간 분석 시각화 -->
-    <div id = "chart-container" style="margin-top: 20px;">
+<%--    <div id="warning-message" style="display:none;">Some responses are under 3 seconds.</div>--%>
     <canvas id="responseTimeChart" width="400" height="200"></canvas>
-    </div>
 </div>
 
 </body>

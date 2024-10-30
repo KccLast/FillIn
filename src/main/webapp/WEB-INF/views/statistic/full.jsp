@@ -31,8 +31,9 @@
 <!-- 컨텐츠 내용 -->
 <div id="content" class="content" style="display: none;">
     <!-- 날짜 조회 및 질문 선택 -->
-    <div class="container">
-        <h4 class="fw-bold mb-">설문 전체 통계</h4>
+    <div class="container card">
+        <%--        border p-3 rounded mb-5--%>
+        <h4 class="fw-bold mt-2">설문 전체 통계</h4>
 
 
         <div class="row g-3 my-auto">
@@ -48,25 +49,21 @@
                 <label for="questionSelect" class="form-label fw-bold me-2 my-auto"
                        style="min-width: 50px;">그룹화</label>
                 <select id="questionSelect" class="form-select" style="min-width: 270px !important;">
-                    <%--                    <option>질문을 선택해주세요</option>--%>
                 </select>
             </div>
             <div class="col d-flex align-items-center">
                 <select id="itemSelect" class="form-select" style="min-width: 220px !important;" disabled>
-                    <%--                    <option>문항을 선택해주세요</option>--%>
                 </select>
             </div>
             <div class="col">
                 <button id="search-input" class="btn btn-primary">검색</button>
             </div>
         </div>
-
+        <hr/>
         <!-- 참여자 수 그래프 -->
-        <div class="my-auto">
+        <div class="my-auto mb-2">
             <h5 class="fw-bold mt-4">목표 달성률</h5>
-            <div class="progress-bar-container" style="height: 60px;">
-                <%--        <c:set var="progressPercentage"--%>
-                <%--               value="${(statisticSurveyResponse.participantsCount / statisticSurveyResponse.targetCount) * 100}"/>--%>
+            <div class="progress-bar-container" style="height: 40px;">
                 <div class="progress-bar-fill fw-bold" id="progress-bar-fill"></div>
                 <div class="progress-bar-total fw-bold" id="progress-bar-total"></div>
             </div>
@@ -116,11 +113,6 @@
                                 </tr>
                                 </thead>
                                 <tbody id="table-body">
-                                <%--                                <tr>--%>
-                                <%--                                    <td>1</td>--%>
-                                <%--                                    <td>사용자 경험 조사</td>--%>
-                                <%--                                    <td>객관식</td>--%>
-                                <%--                                </tr>--%>
                                 </tbody>
                             </table>
                         </div>
@@ -131,11 +123,6 @@
                 <div class="col-lg-6">
                     <div class="card chart-container">
                         <div class="card-body">
-                            <%--                            <div class="fw-bold">--%>
-                            <%--                                1번: 사용자 경험 조사--%>
-                            <%--                            </div>--%>
-                            <%--                            <p>웹 사이트 사용에 대한 경험을 조사합니다.</p>--%>
-                            <%--                            <canvas id="statisticChart"></canvas>--%>
                         </div>
                     </div>
                 </div>
@@ -144,6 +131,5 @@
         </div>
         <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
         <script src="/resources/js/statistic/full.js"></script>
-        <%--        <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>--%>
 </body>
 </html>

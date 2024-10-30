@@ -17,10 +17,15 @@ function parseJson(jsonString) {
 
   const surveyObject = JSON.parse(jsonString);
   const questions = surveyObject.questions;
-  console.log(questions);
 
   // 비동기 함수로 질문을 순차적으로 처리하기 위해 async/await 사용
-  processQuestions(questions);
+  try {
+    processQuestions(questions);
+    totalQuestionCnt(questions.length);
+  } finally {
+    $('.loading-box').hide();
+    $('.j-question-box, .content').hide().fadeIn(1500);
+  }
 }
 
 async function processQuestions(questions) {

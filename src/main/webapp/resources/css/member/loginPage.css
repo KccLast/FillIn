@@ -133,6 +133,7 @@ body {
     align-items: center;
     height: 100vh;
     padding-top: 60px;
+    overflow: hidden;
 }
 
 /*.login-container {*/
@@ -239,6 +240,15 @@ body {
     margin-right: 8px;
 }
 
+.welcome {
+    font-size: 5rem;
+    margin-right: auto;
+    font-weight: bold;
+    color: var(--white);
+    margin-bottom: 20px;
+
+}
+
 h2 {
     text-align: center;
     font-size: 24px;
@@ -272,7 +282,7 @@ h2 {
 }
 
 #login-btn:hover {
-    background-color: #007bff;
+    background-color: #004a8a;
     color: #ffffff;
 }
 

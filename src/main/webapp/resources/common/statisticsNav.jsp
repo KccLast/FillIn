@@ -13,12 +13,12 @@
 		</a>
 		<a href="#" class="nav-link"> 
 			<img src="/resources/img/common/clustering.png" alt="clustering">
-			<span class="menu-text ">K-평균 군집화</span>
+			<span class="menu-text ">군집 별 비교분석</span>
 			<img class="arrow-icon" alt="arrow" src="/resources/img/common/arrow.png">
 		</a>
 		<a href="#" class="nav-link "> 
 			<img src="/resources/img/common/keyword.png" alt="keyword">
-			<span class="menu-text">키워드 분석</span>
+			<span class="menu-text">응답 시간 분석</span>
 			<img class="arrow-icon" alt="arrow" src="/resources/img/common/arrow.png">
 		</a>
 	</nav>
