@@ -313,10 +313,9 @@
             </div>
 
 
-
+            <button id="analyzeAllBtn" class="btn btn-primary">전체 감정분석 보기</button>
             <!-- 검색 결과 테이블 -->
-            <div class="result-section"
-                 style="max-height: 300px; overflow-y: scroll; margin-top: 20px; border: 1px solid #ccc;">
+            <div class="result-section" style="max-height: 300px; overflow-y: scroll; margin-top: 20px; border: 1px solid #ccc;">
                 <table class="result-table" style="width: 100%; border-collapse: collapse;" aria-label="검색 결과 테이블">
                     <thead>
                     <tr>
@@ -335,6 +334,24 @@
             <div class="nav-buttons">
                 <button id="prevBtn" class="nav-btn" onclick="history.back()">이전 페이지</button>
                 <button id="nextBtn" class="nav-btn">다음 페이지</button>
+            </div>
+        </div>
+    </div>
+
+<%--    <!-- 모달 창 코드 -->--%>
+    <div class="modal fade" id="emotionModal" tabindex="-1" aria-labelledby="emotionModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="emotionModalLabel">감정 분석 결과</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p id="modalContent"></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
+                </div>
             </div>
         </div>
     </div>

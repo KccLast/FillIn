@@ -45,6 +45,7 @@ public class StatisticServiceImpl implements StatisticService {
 
     private final StatisticMapper statisticMapper;
 
+
     @Override
     public PostDateResponse getPostDate(Long surveyId) {
         return statisticMapper.selectPostDate(surveyId);
@@ -161,12 +162,14 @@ public class StatisticServiceImpl implements StatisticService {
 //    가중치 부여 후 수정
     @Override
     public SentimentAnalysisResult analyzeSentiment(String text) {
-        // 텍스트를 문장 단위로 분리
         String[] sentences = splitSentences(text);
 
         double totalPositive = 0.0, totalNeutral = 0.0, totalNegative = 0.0;
         double totalWeight = 0.0;
-
+        double positiveWeight = 1.5;
+        double negativeWeight = 1.5;
+        double neutralWeight = 0.8;
+        // ��정 분석
         for (String sentence : sentences) {
             try {
                 // 각 문장에 대해 감정 분석 요청
@@ -176,24 +179,25 @@ public class StatisticServiceImpl implements StatisticService {
 
                 // 문장 길이에 따른 가중치 설정
                 double lengthWeight = sentence.length() > 100 ? 1.5 : 1.0;
-                double sentimentWeight = getSentimentWeight(confidence);
 
-                double weight = lengthWeight * sentimentWeight;
-                totalWeight += weight;
+                // 감정별 가중치 적용
+                double weightedPositive = confidence.getDouble("positive") * positiveWeight * lengthWeight;
+                double weightedNeutral = confidence.getDouble("neutral") * neutralWeight * lengthWeight;
+                double weightedNegative = confidence.getDouble("negative") * negativeWeight * lengthWeight;
 
                 // 로그 출력: 가중치와 감정 분석 결과 확인
                 System.out.println("문장: " + sentence);
-                System.out.println("문장 길이 가중치: " + lengthWeight + ", 감정 강도 가중치: " + sentimentWeight);
-                System.out.println("적용된 긍정 값: " + (confidence.getDouble("positive") * weight));
-                System.out.println("적용된 중립 값: " + (confidence.getDouble("neutral") * weight));
-                System.out.println("적용된 부정 값: " + (confidence.getDouble("negative") * weight));
+                System.out.println("문장 길이 가중치: " + lengthWeight);
+                System.out.println("적용된 긍정 값: " + weightedPositive);
+                System.out.println("적용된 중립 값: " + weightedNeutral);
+                System.out.println("적용된 부정 값: " + weightedNegative);
 
+                // 합산
+                totalPositive += weightedPositive;
+                totalNeutral += weightedNeutral;
+                totalNegative += weightedNegative;
 
-                // 각 감정의 confidence 값을 가중치로 합산
-                totalPositive += confidence.getDouble("positive") * weight;
-                totalNeutral += confidence.getDouble("neutral") * weight;
-                totalNegative += confidence.getDouble("negative") * weight;
-
+                totalWeight += lengthWeight;
 
             } catch (IOException | InterruptedException e) {
                 e.printStackTrace();
@@ -227,14 +231,22 @@ public class StatisticServiceImpl implements StatisticService {
 
     // 가중치 적용 메서드
     private double getSentimentWeight(JSONObject confidence) {
-        double maxConfidence = Math.max(confidence.getDouble("positive"),
-                Math.max(confidence.getDouble("neutral"),
-                        confidence.getDouble("negative")));
+         double positiveWeight = 1.5;
+         double negativeWeight = 1.5;
+         double neutralWeight = 1;
+        double positiveConfidence = confidence.getDouble("positive") * positiveWeight;
+        double neutralConfidence = confidence.getDouble("neutral") * neutralWeight;
+        double negativeConfidence = confidence.getDouble("negative") * negativeWeight;
+
+        // 가장 높은 가중치가 적용된 confidence 값 선택
+        double maxConfidence = Math.max(positiveConfidence, Math.max(neutralConfidence, negativeConfidence));
+
+        // 선택된 가중치가 0.8 이상일 때 1.5, 그렇지 않으면 1.0을 반환
         return maxConfidence >= 0.8 ? 1.5 : 1.0;
     }
 
     // 문장 분리 메서드 (쉼표와 마침표 기준)
     private String[] splitSentences(String text) {
-        return text.split("(?<=[.,])");
+        return text.split("(?<=[.,은는이가])");
     }
 }

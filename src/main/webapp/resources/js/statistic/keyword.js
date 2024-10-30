@@ -1,4 +1,6 @@
 document.addEventListener("DOMContentLoaded", function () {
+    $('#wordCloudContainer').focus();
+
     const maxChunkSize = 1000;
 
     const stopWords = [
@@ -31,6 +33,16 @@ document.addEventListener("DOMContentLoaded", function () {
         console.warn("clusteringData is empty or undefined.");
     }
 
+    const wordCloudContainer = $('#wordCloudContainer');
+    wordCloudContainer.focus();
+    wordCloudContainer[0].scrollIntoView({ behavior: 'smooth', block: 'start' });
+    wordCloudContainer.addClass('highlight');
+
+    setTimeout(() => {
+        wordCloudContainer.removeClass('highlight');
+    }, 2000);
+
+
     let currentStep = 1;
     const steps = document.querySelectorAll(".step");
     const dividers = document.querySelectorAll(".step-divider");
@@ -58,6 +70,10 @@ document.addEventListener("DOMContentLoaded", function () {
     }));
     updateSteps();
 
+    const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+    tooltipTriggerList.map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl));
+
+    // Cluster dropdown ���기화
     let clusterDropdown = $('#phrase');
     [...new Set(clusteringData.map(item => item.cluster))].forEach(cluster => {
         clusterDropdown.append(new Option(`Cluster ${cluster}`, cluster));
@@ -91,9 +107,21 @@ document.addEventListener("DOMContentLoaded", function () {
     function setActiveTab(tab) {
         $('#wordcloud-tab, #emotion-tab').removeClass('active');
         tab.addClass('active');
-        $('#wordCloudContainer').toggle(tab.attr("id") === "wordcloud-tab");
-        $('#emotionChartContainer').toggle(tab.attr("id") === "emotion-tab");
+
+        const isWordCloudActive = tab.attr("id") === "wordcloud-tab";
+        $('#wordCloudContainer').toggle(isWordCloudActive);
+        $('#emotionChartContainer').toggle(!isWordCloudActive);
+
+        // 포커스 설정 및 강조 효과 추가
+        if (isWordCloudActive) {
+            $('#wordCloudContainer').focus();
+            $('#wordCloudContainer').addClass('highlight'); // 강조 효과를 위한 클래스 추가
+        } else {
+            $('#emotionChartContainer').focus();
+            $('#emotionChartContainer').removeClass('highlight'); // 강조 효과 제거
+        }
     }
+
 
     function generateWordCloudFromAll() {
         createWordCloud(clusteringData.map(item => item.answerContent).join(" ").split(/\s+/)
@@ -200,6 +228,32 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         });
     }
+
+    // 각 행별 감정분석 일괄 버튼
+    document.getElementById("analyzeAllBtn").addEventListener("click", function () {
+        const tableData = collectTableData();  // 테이블 데이터를 JSON 형식으로 수집
+
+        // 전체 테이블 데이터를 한 번에 서버로 전송
+        $.ajax({
+            url: "/api/statistic/analyzeAllEmotions",
+            method: "POST",
+            contentType: "application/json",
+            data: JSON.stringify(tableData),
+            success: function (response) {
+                console.log("전체 감정 분석 성공:", response);
+
+                // 서버에서 받은 각 행별 감정 분석 결과를 테이블에 표시합니다.
+                response.forEach((result, index) => {
+                    $(`.emotion-result[data-index="${index}"]`).text(
+                        `긍정: ${result.positive.toFixed(2)}, 중립: ${result.neutral.toFixed(2)}, 부정: ${result.negative.toFixed(2)}`
+                    );
+                });
+            },
+            error: function (xhr, status, error) {
+                console.error("전체 감정 분석 실패:", error);
+            }
+        });
+    });
 
 
 
@@ -332,31 +386,125 @@ document.addEventListener("DOMContentLoaded", function () {
 
 });
 
+// 전체 감정 분석 버튼 클릭 이벤트
+document.getElementById("analyzeAllBtn").addEventListener("click", function () {
+    const tableData = collectTableData();
+
+    // 전체 감정 분석 요청
+    $.ajax({
+        url: "/api/statistic/analyzeAllEmotions",
+        method: "POST",
+        contentType: "application/json",
+        data: JSON.stringify(tableData),
+        success: function (response) {
+            response.forEach((result, index) => {
+                // 각 행의 감정 결과 업데이트
+                $(`.emotion-result[data-index="${index}"]`).text(
+                    `긍정: ${result.positive.toFixed(2)}, 중립: ${result.neutral.toFixed(2)}, 부정: ${result.negative.toFixed(2)}`
+                );
+            });
+        },
+        error: function (xhr, status, error) {
+            console.error("전체 감정 분석 실패:", error);
+        }
+    });
+});
+
+// 개별 감정분석 버튼 클릭 시 모달 표시 이벤트
+$(document).on("click", ".analyze-btn", function () {
+    const rowIndex = $(this).data("index");
+    const text = $(this).closest("tr").find(".ans-content").text();
+
+    $.ajax({
+        url: "/api/statistic/analyzeEmotion", // Ensure this matches your controller's endpoint
+        method: "POST",
+        contentType: "application/json",
+        data: JSON.stringify({ text: text }),
+        success: function (response) {
+            if (response && response.document && response.document.confidence) {
+                const { positive, neutral, negative } = response.document.confidence;
+                const sentiment = positive > neutral && positive > negative ? "긍정" :
+                    negative > positive && negative > neutral ? "부정" : "중립";
+
+                // Determine the highest sentiment and set its color
+                let highestSentiment = "neutral";
+                let highestValue = neutral;
+                if (positive > highestValue) {
+                    highestSentiment = "positive";
+                    highestValue = positive;
+                }
+                if (negative > highestValue) {
+                    highestSentiment = "negative";
+                    highestValue = negative;
+                }
+
+                const colorMap = {
+                    positive: "green",
+                    neutral: "blue",
+                    negative: "red"
+                };
+
+                // Highlight the text based on the dominant sentiment
+                const highlightedText = text.replace(
+                    /(싸늘하다)|(가슴에 비수가 날아와 꽂힌다)/g,
+                    match => `<span style="color: ${colorMap[highestSentiment]}; font-weight: bold;">${match}</span>`
+                );
+
+                // Display result in modal
+                $("#modalContent").html(`
+                    <div><strong>테스트 문장:</strong> ${highlightedText}</div>
+                    <div><strong>감정 분류 결과:</strong> <span style="color: ${colorMap[highestSentiment]}; font-weight: bold;">${sentiment}</span></div>
+                    <div>긍정: <span style="color: ${colorMap.positive};">${positive.toFixed(2)}</span>, 
+                         중립: <span style="color: ${colorMap.neutral};">${neutral.toFixed(2)}</span>, 
+                         부정: <span style="color: ${colorMap.negative};">${negative.toFixed(2)}</span></div>
+                `);
+                $("#emotionModal").modal("show");
+            } else {
+                $("#modalContent").text("감정 분석에 실패했습니다.");
+                $("#emotionModal").modal("show");
+            }
+        },
+        error: function (xhr, status, error) {
+            console.error("Sentiment analysis request failed:", error);
+            $("#modalContent").text("오류 발생: 감정 분석 요청에 실패했습니다.");
+            $("#emotionModal").modal("show");
+        }
+    });
+});
+
+
+
+
+
+
+
+
 // 다음페이지 버튼 후 군집별 비교분석페이지로 이동
 $("#nextBtn").click(function() {
     console.log("다음 버튼 클릭");
     const tableData = collectTableData();
 
-    // Convert your JSON data to a string
-    const tableDataJsonString = JSON.stringify(tableData); // Assuming tableData is your JSON data
 
-// Create a hidden form and append it to the body
+    const tableDataJsonString = JSON.stringify(tableData);
+
+
     let form = document.createElement("form");
     form.method = "POST";
     form.action = "/statistic/compareClustering";
 
-// Create a hidden input to hold the JSON string
+
     let input = document.createElement("input");
     input.type = "hidden";
-    input.name = "tableData"; // This should match the server's expected parameter name
+    input.name = "tableData";
     input.value = tableDataJsonString;
 
-// Append the input to the form and the form to the body
+
     form.appendChild(input);
     document.body.appendChild(form);
 
-// Submit the form
+
     form.submit();
+
     // $.ajax({
     //     url: "/api/statistic/compareClustering",
     //     method: "POST",

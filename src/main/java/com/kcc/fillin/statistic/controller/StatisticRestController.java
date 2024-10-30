@@ -24,7 +24,9 @@ import com.kcc.fillin.statistic.service.StatisticService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
@@ -101,7 +103,7 @@ public class StatisticRestController {
 //        return new ResponseEntity<>(result, HttpStatus.OK);
 //    }
 
-//    가중치 적용 수정 후
+    //    가중치 적용 수정 후
     @PostMapping("/analyzeEmotion")
     public ResponseEntity<SentimentAnalysisResult> analyzeEmotion(@RequestBody EmotionRequest request) {
         System.out.println("request = " + request);
@@ -114,6 +116,15 @@ public class StatisticRestController {
     public List<AnswerDTO> compareClustering(@RequestBody List<AnswerDTO> tableData, Model model) {
         return tableData;
     }
+
+    @PostMapping("/analyzeAllEmotions")
+    public ResponseEntity<List<SentimentAnalysisResult>> analyzeAllEmotions(@RequestBody List<EmotionRequest> requestList) {
+        List<SentimentAnalysisResult> results = requestList.stream()
+                .map(request -> statisticService.analyzeSentiment(request.getText()))
+                .collect(Collectors.toList());
+        return new ResponseEntity<>(results, HttpStatus.OK);
+    }
+
 
 
 }
