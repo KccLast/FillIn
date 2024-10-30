@@ -67,6 +67,7 @@
             <result column="next_question_seq" property="nextQuestionSeq"/>
             <result column="c_value" property="cValue"/>
             <result column="operation" property="operation"/>
+			<result column="condition_order" property="orderNum"></result>
             <result column="c_is_active" property="isActive"/>
             <result column="c_created_at" property="createdAt"/>
             <result column="c_updated_at" property="updatedAt"/>
@@ -209,7 +210,7 @@
 		SELECT s.seq, s.name, s.post_date, s.end_date, s.url, s.target_people,
 		q.seq AS question_seq, q.survey_seq, q.tb_file_seq, q.name AS question_name, q.description, q.order_num as q_order, q.is_essential, q.cc_seq AS question_cc_seq,
 		qi.seq AS question_item_seq, qi.question_seq AS qi_question_seq, qi.content, qi.order_num as qi_order,
-		c.seq AS condition_seq, c.question_seq as c_question_seq, c.next_question_seq, c.c_value, c.operation
+		c.seq AS condition_seq, c.question_seq as c_question_seq, c.next_question_seq, c.c_value, c.operation,c.order_num as condition_order
 		FROM SURVEY s
 		LEFT JOIN QUESTION q
 		ON s.SEQ = q.SURVEY_SEQ

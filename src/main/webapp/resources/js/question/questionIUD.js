@@ -42,7 +42,6 @@ function storeUpdateQuestionItemInLocal(updateItem, seq, listId) {
 /**save버튼 눌렀을때 실행되는 함수 */
 async function saveQuestion() {
   try {
-    await insertQuestion();
     await updateQuestion();
     await updateAndInsertQuestionItem();
     // 로컬 스토리지 데이터 가져오기
@@ -62,12 +61,47 @@ async function saveQuestion() {
         JSON.parse(removeQuestionItemData)
       );
     }
-    window.location.reload();
+    //window.location.reload();
   } catch (error) {
     console.error('오류 발생:', error);
+  } finally {
+    console.log('로딩');
   }
 }
 /**save버튼 눌렀을때 실행되는 함수 */
+async function handleSaveButtonClick() {
+  const saveButton = document.querySelector('.j-nav-save-button');
+  const buttonText = saveButton.querySelector('.button-text');
+
+  // 로딩 상태로 변경
+  buttonText.style.display = 'none'; // 텍스트 숨기기
+  const spinner = document.createElement('div'); // 스피너 생성
+  spinner.className = 'spinner-border';
+  spinner.setAttribute('role', 'status');
+  saveButton.appendChild(spinner); // 버튼에 스피너 추가
+
+  try {
+    // 저장 작업 수행
+    await saveQuestion();
+
+    Swal.fire({
+      icon: 'success',
+      title: '저장 완료',
+      text: '작업을 성공적으로 저장했습니다!',
+    });
+  } catch (error) {
+    console.error('저장 중 오류 발생:', error);
+    Swal.fire({
+      icon: 'error',
+      title: '저장 실패',
+      text: '저장 중 오류가 발생했습니다. 잠시후 다시 시도해주세요',
+    });
+  } finally {
+    // 로딩 종료 및 UI 복구
+    spinner.remove(); // 스피너 제거
+    buttonText.style.display = 'inline'; // 텍스트 복구
+  }
+}
 
 /**질문을 모달을 통해 생성시 (DB 조회 x) 필요한 ajax모음 */
 
@@ -151,7 +185,18 @@ function saveQuestionInDB(questions) {
       contentType: 'application/json', // JSON 형식으로 보낸다는 것을 명시
       data: JSON.stringify(questions), // 자바스크립트 객체를 JSON 형식으로 변환
       success: function (response) {
-        console.log('서버 응답:', response);
+        console.log(response);
+        $('.content')
+          .find('.j-new-card')
+          .find('.j-q-order')
+          .val(response.data.order);
+        $('.content')
+          .find('.j-new-card')
+          .append(
+            `<input type="hidden" value="${response.data.seq}" class="j-qseq">`
+          )
+          .removeClass('j-new-card');
+
         resolve(response); // 요청이 완료되면 Promise 해결
       },
       error: function (error) {
@@ -459,3 +504,20 @@ async function sendremoveQquestionItemLocalData(localData) {
 }
 
 /**삭제를 위한 함수 모음 */
+//row랑 cal에 데이터 삭제시 removeQuestionItemList에 추가
+function storeItemChartListInLocal(target) {
+  let questionSeqs = $(target)
+    .parents('.j-question-card')
+    .find('.j-qseq')
+    .val();
+  if (questionSeqs === null && questionSeqs === undefined) return;
+  questionSeqs = parseInt(questionSeqs);
+  let extractedNumber = seqExtract($(target).prev());
+
+  let obj = { seq: extractedNumber, questionSeq: questionSeqs };
+  storeUpdateQuestionItemInLocal(
+    obj,
+    extractedNumber,
+    'removeQuestionItemList'
+  );
+}

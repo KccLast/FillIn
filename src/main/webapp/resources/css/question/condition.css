@@ -3,13 +3,12 @@ body {
 }
 
 .j-condition-box {
-  margin-top: 100px;
-  margin-left: calc(100vh - 510px);
+  width: 100%;
+  margin-top: 76px;
+  margin-left: calc(100vh - 770px);
   margin-right: 40px;
   min-height: calc(100vh - 130px);
   box-sizing: border-box;
-  background-color: white;
-  box-shadow: 5px 5px 5px #e5e7eb;
 
   /* 부모 컨테이너는 relative */
   overflow: auto;
@@ -17,10 +16,172 @@ body {
 }
 
 .j-condition-card-container {
-  width: 1423px;
-  height: 816px;
+  width: 50%;
+  height: 788px;
+  margin: 1%;
+  border-radius: 10px;
+  background-color: white;
+  box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+}
+#fixedNode {
+  position: fixed;
+  top: 102px;
+  right: 475px;
+  width: 100px;
+  height: 40px;
+  background-color: #ffffff;
+  box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+  border-radius: 10px;
+  text-align: center;
+  z-index: 1000;
+}
+#fixedNode > button {
+  width: 101px;
+  height: 100%;
 }
 
+.node-content img {
+  width: 50px;
+  height: 50px;
+}
+/*nav box*/
+.condition-nav-box {
+  width: 17%;
+  height: 788px;
+  border-radius: 10px;
+}
+.nav-top {
+  height: 9%;
+  border-bottom: 1.5px solid #e9ecef;
+}
+
+.condition-nav-1 {
+  border-radius: 10px;
+  height: 53%;
+  background-color: white;
+  box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+}
+.condition-nav-1-top {
+  font-weight: bold;
+  text-align: center;
+  width: 50%;
+  font-size: 17px;
+  height: 100%;
+  line-height: 36px;
+}
+.condition-nav-1-selected {
+  background-color: #005bac;
+  color: white;
+}
+.top-basic {
+  border-right: 1px solid black;
+  border-top-left-radius: 10px;
+}
+.top-condition {
+  border-top-right-radius: 10px;
+}
+.nav-body-1 {
+  height: 80%;
+}
+.basic-move {
+  margin-top: 10%;
+  width: 100%;
+}
+.basic-move > span {
+  display: block;
+  width: 100%;
+  text-align: left;
+  margin-bottom: 7%;
+  padding-left: 4%;
+  font-weight: bold;
+}
+.basic-move > select {
+  width: 80%;
+  margin: 0 auto;
+}
+
+.nav-body-2 {
+  height: 100%;
+  max-height: 385px; /* 최대 높이 제한 */
+  overflow-y: auto; /* 세로 스크롤 추가 */
+  display: none;
+}
+
+/*옵션 추가 버튼*/
+.j-condition-plus-img {
+  gap: 10px;
+  margin-top: 4%;
+}
+.j-condition-plus-img > div {
+  color: #005bac;
+  font-weight: bold;
+}
+.j-condition-plus-img > img {
+  width: 23px;
+  height: 23px;
+}
+
+/*아코디언*/
+.condition-nav-2 {
+  border-radius: 10px;
+  margin-top: 5%;
+  height: 45%;
+  background-color: white;
+  box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+}
+.accordion {
+  margin-top: 4%;
+}
+.condition-ac {
+  border-radius: 0px;
+}
+.condition-ac-header {
+  border-radius: 0px;
+}
+.condition-ac-body {
+}
+.condition-if {
+  margin-bottom: 10%;
+}
+.accordion-button::after {
+  display: none;
+}
+
+/* 아코디언 버튼 스타일 */
+.accordion-button {
+  background-color: white !important;
+  border: none;
+  outline: none;
+  padding: 10px;
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  font-size: 1.2rem;
+}
+
+/* 활성화된 아코디언의 배경색 */
+.accordion-button.active {
+  background-color: #cfe2ff !important;
+}
+
+/* 화살표 스타일 */
+.arrow {
+  display: inline-block;
+  margin-right: 10px;
+  transition: transform 0.3s;
+}
+
+/* 화살표 회전 효과 */
+.arrow.rotate {
+  transform: rotate(90deg);
+}
+
+/* 아코디언 내용 기본 숨김 */
+.accordion-collapse {
+  display: none;
+  overflow: hidden;
+}
 /* 질문 카드 css */
 .j-que-con-card {
   border: 1.5px solid #dfdfdf;
@@ -218,3 +379,50 @@ body {
 }
 
 /*조건내용*/
+
+/*condition style*/
+.vis-network .vis-node {
+  box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+  border-radius: 5px; /* 경계 모서리 둥글게 */
+}
+
+/*condition-nav2 style*/
+.con-question-box {
+  height: 100%;
+  width: 50%;
+  box-sizing: border-box;
+  padding-top: 3%;
+  padding-left: 3%;
+}
+.con-question-box > span {
+  display: inline-block;
+  width: 100%;
+  text-align: center;
+  margin-bottom: 10%;
+}
+.con-question-input {
+  height: 17%;
+  margin-bottom: 5%;
+}
+.con-question-input > input[type='text'] {
+  height: 80%;
+}
+.con-question-type {
+  height: 10%;
+  border: 1px solid #dee2e6;
+  border-radius: 5px;
+  margin-bottom: 5%;
+}
+.con-question-type > .j-typeAndImg {
+  width: 85% !important;
+}
+.con-question-description {
+  height: 55%;
+}
+.con-question-description > textarea {
+  height: 90% !important;
+  resize: none;
+}
+.next-question-box {
+  padding-right: 3%;
+}

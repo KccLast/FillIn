@@ -16,4 +16,6 @@ public class ConditionVO extends CommonVO {
 	private String cValue;
 	private String operation;
 
+	private Integer orderNum;
+
 }
