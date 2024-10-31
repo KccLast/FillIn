@@ -25,6 +25,7 @@
 <body>
 <%@include file="/resources/common/header.jsp" %>
 <%@include file="/resources/common/statisticsNav.jsp" %>
+<%--<%@include file="/resources/common/progressBar.css" %>--%>
 
 <script>
 
@@ -33,7 +34,10 @@
 
 </script>
 
-<%--<%@include file="/resources/common/progressBar.jsp" %>--%>
+
+
+
+
 <div id="content" class="content">
     <div class="container card">
         <div class="step-wrapper">
