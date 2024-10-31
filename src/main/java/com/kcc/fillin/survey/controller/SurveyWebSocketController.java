@@ -1,3 +1,4 @@
+/*
 package com.kcc.fillin.survey.controller;
 
 import org.springframework.web.socket.CloseStatus;
@@ -31,3 +32,4 @@ public class SurveyWebSocketController implements WebSocketHandler {
         return false;
     }
 }
+*/

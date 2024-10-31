@@ -1,3 +1,4 @@
+/*
 package com.kcc.fillin.global.config;
 
 import com.kcc.fillin.survey.controller.SurveyWebSocketController;
@@ -13,4 +14,4 @@ public class WebSocketConfig implements WebSocketConfigurer {
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
         registry.addHandler(new SurveyWebSocketController(), "/ws/survey").setAllowedOrigins("*");
     }
-}
+}*/

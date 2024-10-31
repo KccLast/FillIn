@@ -646,9 +646,9 @@ tr:nth-child(even) {
 /*chart css*/
 
 /*주소입력*/
-.btn {
-  background: #005bac !important;
-  font-weight: bold !important;
+.btn:not(.btn-secondary) {
+    background: #005bac !important;
+    font-weight: bold !important;
 }
 
 .j-address-box {

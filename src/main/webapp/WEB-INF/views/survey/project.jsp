@@ -4,8 +4,8 @@
 	<html lang="en">
 
 	<!-- <div id="loading-spinner">
-		<div class="spinner"></div> 로딩 중...
-	</div> -->
+    <div class="spinner"></div> 로딩 중...
+</div> -->
 
 	<head>
 		<meta charset="UTF-8">
@@ -14,10 +14,12 @@
 		<link rel="stylesheet" type="text/css" href="/resources/css/question/questionNav.css">
 		<link rel="stylesheet" type="text/css" href="/resources/css/question/question.css">
 		<link rel="stylesheet" type="text/css" href="/resources/css/question/condition.css">
+		<link rel="stylesheet" type="text/css" href="/resources/css/survey/post.css">
 		<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 		<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/jsPlumb/2.15.6/js/jsplumb.min.js"></script> -->
 		<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 		<script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+		<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
 		<script type="text/javascript"
 			src="//dapi.kakao.com/v2/maps/sdk.js?appkey=f7372f613dea5dbd8f49b7be0a73bbb8"></script>
 
@@ -27,7 +29,10 @@
 				let surveyName = "${survey.name}";
 				updateSurveyName(surveyName);
 				console.log("surveyName In jsp" + surveyName);
+
 			})
+			var surveyJson = '${surveyJson}';
+			console.log(surveyJson);
 		</script>
 		<script type="text/javascript" src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
 		<script src="/resources/js/survey/surveyPost.js"></script>
@@ -35,9 +40,16 @@
 		<script src="/resources/js/question/questionEvent.js"></script>
 		<script src="/resources/js/question/questionParse.js"></script>
 		<script src="/resources/js/question/condition.js"></script>
-
+		<script src="https://developers.kakao.com/sdk/js/kakao.js"></script>
+		<script src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.2/kakao.min.js"
+			integrity="sha384-TiCUE00h649CAMonG018J2ujOgDKW/kVWlChEuu4jK2vxfAAD0eZxzCKakxg55G4"
+			crossorigin="anonymous"></script>
+		<script>
+			Kakao.init('127ec225729d485fc260cc987bda87a9'); // 사용하려는 앱의 JavaScript 키 입력
+		</script>
 
 		<script type="text/javascript">
+
 
 
 			$(function () {
@@ -45,6 +57,7 @@
 					console.log('hi');
 				})
 				$('.content').on('keyup', '.j-survey-name-input', async function () {
+
 
 					let idx = $(this).parent().parent().index();
 
@@ -67,6 +80,11 @@
 		</script>
 
 
+		var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+		var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+		return new bootstrap.Tooltip(tooltipTriggerEl)
+		})
+
 	</head>
 
 	<body>
@@ -77,7 +95,6 @@
 		<%@include file="/resources/common/header.jsp" %>
 			<%-- <%@ include file="/resources/common/miniNav.jsp" %> --%>
 				<%@ include file="/resources/common/nav.jsp" %>
-
 
 
 
@@ -102,6 +119,7 @@
 
 							</div>
 
+
 							<div class="j-question-plus-button j-flex-row-center">
 								<button class="j-flex-row-center">
 									<div>
@@ -116,13 +134,18 @@
 						<div class="j-nav-button-box j-flex-row-center">
 
 							<!-- <input type="button" value="저장" class="j-nav-input-button j-nav-save-button fs-6 btn"> -->
-							<button class="btn btn-primary j-nav-save-button fs-6">
-								<span class="button-text">저장</span>
-							</button>
+							<button class="btn btn-primary j-nav-input-button j-nav-save-button fs-6">저장</button>
 
 							<!-- <input type="button" value="게시" class="j-nav-input-button j-depoly-button  fs-6 btn"> -->
-							<button type="button" class="btn btn-primary j-nav-input-button j-depoly-button fs-6"
-								data-bs-toggle="modal" data-bs-target="#postModal">게시
+							<button type="button" id="postButton"
+								class="btn btn-primary j-nav-input-button j-depoly-button fs-6 fw-bold" data-bs-toggle="modal"
+								data-bs-target="#postModal" style="display: none;">게시
+							</button>
+
+							<!-- 공유 버튼 -->
+							<button type="button" id="shareButton"
+								class="btn btn-primary j-nav-input-button j-share-button fs-6 fw-bold" data-bs-toggle="modal"
+								data-bs-target="#shareModal" style="display: none;">공유
 							</button>
 
 							<!-- <input type="button" value="질문 고급조건" class="j-nav-input-button j-condition-button j-con-btn fs-6 btn"> -->
@@ -149,7 +172,7 @@
 
 					<!-- Post Modal -->
 					<div class="modal fade" id="postModal" tabindex="-1" aria-labelledby="postModalLabel" aria-hidden="true">
-						<div class="modal-dialog modal-dialog-centered">
+						<div class="modal-dialog modal-lg modal-dialog-centered">
 							<div class="modal-content">
 								<div class="modal-header">
 									<h5 class="modal-title fw-bold ms-0" id="postModalLabel">게시 설정</h5>
@@ -160,9 +183,9 @@
 									<div class="mb-4">
 										<label class="form-label fw-bold c-main">설문기간</label>
 										<div class="d-flex">
-											<input type="date" class="form-control" value="2024-09-25">
+											<input type="date" class="form-control" id="startDate">
 											<span class="mx-3">—</span>
-											<input type="date" class="form-control" value="2024-09-26">
+											<input type="date" class="form-control" id="endDate">
 										</div>
 									</div>
 
@@ -173,44 +196,75 @@
 											<div class="row mb-3">
 												<div class="col">
 													<label class="form-label">예상 모집단</label>
-													<input type="text" class="form-control" placeholder="모집단 입력">
+													<input type="text" class="form-control" id="populationEstimate" placeholder="모집단 입력">
 												</div>
 												<div class="col">
 													<label class="form-label">표본 집단</label>
-													<input type="text" class="form-control" placeholder="집단 입력">
+													<input type="text" class="form-control" id="sampleSize" placeholder="집단 입력" disabled readonly>
 												</div>
 												<div class="col">
 													<label class="form-label">신뢰도</label>
-													<select class="form-select">
-														<option>80%</option>
+													<select class="form-select" id="confidenceLevel">
 														<option>90%</option>
 														<option>95%</option>
+														<option>99%</option>
 													</select>
 												</div>
 												<div class="col">
 													<label class="form-label">표본오차</label>
-													<input type="text" class="form-control" value="± 4.25%">
+													<select class="form-select" id="marginOfError">
+														<option>±3%</option>
+														<option>±5%</option>
+														<option>±10%</option>
+													</select>
 												</div>
 											</div>
 											<div class="form-check">
-												<input class="form-check-input" type="radio" name="exampleRadios" id="estimateCheck">
+												<input class="form-check-input" type="checkbox" id="estimateCheck">
 												<label class="form-check-label" for="estimateCheck">모집단 추정불가</label>
 											</div>
 											<div class="text-end mt-2">
-												<button type="button" class="btn btn-primary">적용</button>
+												<button type="button" class="btn btn-primary" id="applyButton">적용</button>
 											</div>
 										</div>
 									</div>
 								</div>
 								<div class="modal-footer">
-									<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
-									<button type="button" class="btn btn-primary" id="confirmPost">확인</button>
+									<button type="button" class="btn btn-secondary fw-bold" data-bs-dismiss="modal">취소</button>
+									<button type="button" class="btn btn-primary" id="confirmPost">게시</button>
 								</div>
 							</div>
 
 						</div>
 					</div>
 
+					<!-- Share Modal -->
+					<div class="modal fade" id="shareModal" tabindex="-1" aria-labelledby="shareModalLabel" aria-hidden="true">
+						<div class="modal-dialog modal-lg modal-dialog-centered">
+							<div class="modal-content">
+								<div class="modal-header">
+									<h5 class="modal-title fw-bold ms-0" id="shareModalLabel">설문링크</h5>
+									<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+								</div>
+								<div class="modal-body">
+									<label class="form-label fw-bold c-main">설문링크</label>
+									<div class="input-group border p-3 rounded">
+										<input type="text" class="form-control" id="surveyLink" readonly>
+										<button class="btn btn-outline-secondary" id="copyButton" onclick="copyLink()">
+											<i class="bi bi-copy"></i> <!-- 복사 아이콘 -->
+										</button>
+										<a type="button" class="btn btn-outline-secondary" id="shareButtonInModal"
+											href="javascript:shareMessage()">
+											<i class="bi bi-share"></i> <!-- 공유 아이콘 -->
+										</a>
+									</div>
+								</div>
+								<div class="modal-footer">
+									<button type="button" class="btn btn-primary fw-bold" data-bs-dismiss="modal">확인</button>
+								</div>
+							</div>
+						</div>
+					</div>
 
 
 					<!-- 모달 창 -->
@@ -310,13 +364,11 @@
 									<div class="j-type-box ">
 
 
-
 										<div class="j-typeAndImg-modal j-flex-row-center">
 											<img src="/resources/img/question/location.png" />
 											<div class="j-type-name-modal">위치기록</div>
 											<input type="hidden" value="17" />
 										</div>
-
 
 
 										<div class="j-typeAndImg-modal j-flex-row-center">
@@ -349,7 +401,6 @@
 									<span>Contact</span>
 
 									<div class="j-type-box ">
-
 
 
 										<div class="j-typeAndImg-modal j-flex-row-center">
@@ -442,13 +493,11 @@
 									<div class="j-type-box ">
 
 
-
 										<div class="j-typeAndImg-modal j-flex-row-center">
 											<img src="/resources/img/question/location.png" />
 											<div class="j-type-name-modal">위치기록</div>
 											<input type="hidden" value="17" />
 										</div>
-
 
 
 										<div class="j-typeAndImg-modal j-flex-row-center">
@@ -481,7 +530,6 @@
 									<span>Contact</span>
 
 									<div class="j-type-box ">
-
 
 
 										<div class="j-typeAndImg-modal j-flex-row-center">
@@ -518,11 +566,6 @@
 						<div class="j-condition-card-container" id="conditionCardCon">
 
 
-
-
-
-
-
 						</div>
 						<div class="condition-nav-box">
 							<input type="hidden" name="questionSeq">
@@ -547,16 +590,12 @@
 									<div class="accordion">
 
 
-
-
-
 									</div>
 
 									<div class="j-condition-plus-img j-flex-row-center">
 										<div class="fs-6">조건 추가</div>
 										<img src="/resources/img/question/plus-circle-fill-blue.png">
 									</div>
-
 
 
 								</div>

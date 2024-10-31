@@ -17,6 +17,7 @@ import com.kcc.fillin.global.Common.Response;
 import com.kcc.fillin.survey.domain.SurveyVO;
 import com.kcc.fillin.survey.dto.MultiSearchSurveyRequest;
 import com.kcc.fillin.survey.dto.MultiSearchSurveyResponse;
+import com.kcc.fillin.survey.dto.PostSurveyRequest;
 import com.kcc.fillin.survey.dto.SurveyLogDTO;
 import com.kcc.fillin.survey.service.SurveyService;
 
@@ -88,4 +89,8 @@ public class SurveyRestController {
 		return ResponseEntity.ok(logs);
 	}
 
+	@PostMapping("/post")
+	public Response postSurvey(@RequestBody PostSurveyRequest request) {
+		return Response.setSuccess(service.addSurveyUrl(request), 200, "게시 완료");
+	}
 }
