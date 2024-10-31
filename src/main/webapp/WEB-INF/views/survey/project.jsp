@@ -41,6 +41,9 @@
 
 
 			$(function () {
+				$('#addWorker > img').click(function () {
+					console.log('hi');
+				})
 				$('.content').on('keyup', '.j-survey-name-input', async function () {
 
 					let idx = $(this).parent().parent().index();
@@ -55,7 +58,10 @@
 				parseJson(survey);
 				parseCondition(survey);
 
-
+				var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+				var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+					return new bootstrap.Tooltip(tooltipTriggerEl)
+				})
 
 			})
 		</script>

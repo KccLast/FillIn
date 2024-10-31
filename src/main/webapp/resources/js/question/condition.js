@@ -1,3 +1,4 @@
+let conditionWhiteList = ['7', '9', '10', '12', '13', '19'];
 /** condition event*/
 $(function () {
   $('.top-basic').click(function () {
@@ -23,6 +24,19 @@ $(function () {
         .parents('.condition-nav-box')
         .find('input[type="hidden"]')
         .val();
+      let targetCard = $('.j-question-card').filter(function () {
+        return $(this).find('.j-qseq') === questionSeq;
+      });
+      let ccSeq = targetCard.find('.j-cseq');
+
+      if (!compareConditionWhiteList(ccSeq)) {
+        Swal.fire({
+          icon: 'warning',
+          title: '조건 생성 실패',
+          text: '조건을 생성할 수 있는 타입의 질문이 아닙니다.',
+        });
+        return;
+      }
 
       if (
         questionSeq === null ||
@@ -47,8 +61,8 @@ $(function () {
       let conditionData = {
         from: parseInt(questionSeq),
         to: '', // 'to' 값은 필요에 따라 설정
-        condition: '', // 조건에 해당하는 값 설정
-        operation: '', // 연산 또는 동작 설정
+        condition: ' ', // 조건에 해당하는 값 설정
+        operation: ' ', // 연산 또는 동작 설정
       };
 
       conditionData = await saveAccordionToLocalStorage(
@@ -168,7 +182,7 @@ $(function () {
     //to
     let toSeq = $(this).val();
     if (toSeq === null || toSeq === '' || toSeq === undefined) return;
-
+    console.log('toSeq' + toSeq);
     //node에 변화가 있는건 아니고, edge만 옮기면 됨
     //기본 node에 원래 연결되어 있던 edge는 conditionId = 0이면서, from과 to가 일치하는 것
     let edgeId = { from: parseInt(questionSeq), to: parseInt(toSeq) };
@@ -1092,6 +1106,20 @@ function deleteEdgesWithConditionIdZero() {
 }
 
 function saveConditionInDB(condition) {
+  if (
+    condition.operation === null ||
+    condition.operation === undefined ||
+    condition.operation === ''
+  ) {
+    condition.operation = ' ';
+  }
+  if (
+    condition.condition === null ||
+    condition.condition === undefined ||
+    condition.condition === ''
+  ) {
+    condition.condition = ' ';
+  }
   $.ajax({
     url: '/api/question/condition',
     type: 'post',
@@ -1116,6 +1144,7 @@ function initcondition(questions) {
         from: condition.questionSeq,
         to: condition.nextQuestionSeq,
         operation: condition.operation,
+        condition: condition.cvalue,
         id: condition.orderNum,
       };
       conditionList.push(saveCondition);
@@ -1173,4 +1202,11 @@ function setConditionNav2(from, to) {
   $('.next-question-box')
     .find('.con-question-description > textarea')
     .val(toDes + ' ');
+}
+
+function compareConditionWhiteList(ccSeq) {
+  for (let i = 0; i < conditionWhiteList.length; i++) {
+    if (ccSeq === conditionWhiteList[i]) return true;
+  }
+  return false;
 }
