@@ -13,6 +13,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 import com.kcc.fillin.statistic.dto.*;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -43,6 +44,7 @@ public class StatisticServiceImpl implements StatisticService {
     private String client_secret;
 
     private final StatisticMapper statisticMapper;
+
 
     @Override
     public PostDateResponse getPostDate(Long surveyId) {
@@ -116,18 +118,18 @@ public class StatisticServiceImpl implements StatisticService {
     }
 
     //	감정분석
-    @Override
+  /*  @Override
     public SentimentAnalysisResult analyzeSentiment(String text) {
-        System.out.println(client_id);
-        System.out.println(client_secret);
+
         HttpClient client = HttpClient.newHttpClient();
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create("https://naveropenapi.apigw.ntruss.com/sentiment-analysis/v1/analyze"))
                 .header("Content-Type", "application/json")
                 .header("X-NCP-APIGW-API-KEY-ID", client_id)
                 .header("X-NCP-APIGW-API-KEY", client_secret)
-                .POST(HttpRequest.BodyPublishers.ofString("{\"content\":\"" + text + "\"}"))
+                .POST(HttpRequest.BodyPublishers.ofString("{\"content\":\"" + text+ "\"}"))
                 .build();
+
 
         try {
 
@@ -156,4 +158,95 @@ public class StatisticServiceImpl implements StatisticService {
     }
 
 }
+*/
+//    가중치 부여 후 수정
+    @Override
+    public SentimentAnalysisResult analyzeSentiment(String text) {
+        String[] sentences = splitSentences(text);
 
+        double totalPositive = 0.0, totalNeutral = 0.0, totalNegative = 0.0;
+        double totalWeight = 0.0;
+        double positiveWeight = 1.5;
+        double negativeWeight = 1.5;
+        double neutralWeight = 0.8;
+        // ��정 분석
+        for (String sentence : sentences) {
+            try {
+                // 각 문장에 대해 감정 분석 요청
+                HttpResponse<String> response = sendSentimentRequest(sentence);
+                JSONObject jsonResponse = new JSONObject(response.body());
+                JSONObject confidence = jsonResponse.getJSONObject("document").getJSONObject("confidence");
+
+                // 문장 길이에 따른 가중치 설정
+                double lengthWeight = sentence.length() > 100 ? 1.5 : 1.0;
+
+                // 감정별 가중치 적용
+                double weightedPositive = confidence.getDouble("positive") * positiveWeight * lengthWeight;
+                double weightedNeutral = confidence.getDouble("neutral") * neutralWeight * lengthWeight;
+                double weightedNegative = confidence.getDouble("negative") * negativeWeight * lengthWeight;
+
+                // 로그 출력: 가중치와 감정 분석 결과 확인
+                System.out.println("문장: " + sentence);
+                System.out.println("문장 길이 가중치: " + lengthWeight);
+                System.out.println("적용된 긍정 값: " + weightedPositive);
+                System.out.println("적용된 중립 값: " + weightedNeutral);
+                System.out.println("적용된 부정 값: " + weightedNegative);
+
+                // 합산
+                totalPositive += weightedPositive;
+                totalNeutral += weightedNeutral;
+                totalNegative += weightedNegative;
+
+                totalWeight += lengthWeight;
+
+            } catch (IOException | InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+
+        // 최종 감정 값 계산
+        double avgPositive = totalPositive / totalWeight;
+        double avgNeutral = totalNeutral / totalWeight;
+        double avgNegative = totalNegative / totalWeight;
+
+        System.out.println("최종 긍정: " + avgPositive + ", 최종 중립: " + avgNeutral + ", 최종 부정: " + avgNegative);
+
+        return new SentimentAnalysisResult(avgPositive, avgNeutral, avgNegative);
+    }
+
+
+    // 감정 분석 API 요청 메서드
+    private HttpResponse<String> sendSentimentRequest(String sentence) throws IOException, InterruptedException {
+        HttpClient client = HttpClient.newHttpClient();
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create("https://naveropenapi.apigw.ntruss.com/sentiment-analysis/v1/analyze"))
+                .header("Content-Type", "application/json")
+                .header("X-NCP-APIGW-API-KEY-ID", client_id)
+                .header("X-NCP-APIGW-API-KEY", client_secret)
+                .POST(HttpRequest.BodyPublishers.ofString("{\"content\":\"" + sentence + "\"}"))
+                .build();
+
+        return client.send(request, HttpResponse.BodyHandlers.ofString());
+    }
+
+    // 가중치 적용 메서드
+    private double getSentimentWeight(JSONObject confidence) {
+         double positiveWeight = 1.5;
+         double negativeWeight = 1.5;
+         double neutralWeight = 1;
+        double positiveConfidence = confidence.getDouble("positive") * positiveWeight;
+        double neutralConfidence = confidence.getDouble("neutral") * neutralWeight;
+        double negativeConfidence = confidence.getDouble("negative") * negativeWeight;
+
+        // 가장 높은 가중치가 적용된 confidence 값 선택
+        double maxConfidence = Math.max(positiveConfidence, Math.max(neutralConfidence, negativeConfidence));
+
+        // 선택된 가중치가 0.8 이상일 때 1.5, 그렇지 않으면 1.0을 반환
+        return maxConfidence >= 0.8 ? 1.5 : 1.0;
+    }
+
+    // 문장 분리 메서드 (쉼표와 마침표 기준)
+    private String[] splitSentences(String text) {
+        return text.split("(?<=[.,은는이가])");
+    }
+}

@@ -12,13 +12,20 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap">
     <!-- 버전 맞춤 -->
+    <link rel="stylesheet" type="text/css" href="/resources/common/progressBar.css">
+
 
     <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
 </head>
 <body>
 <%@include file="/resources/common/header.jsp" %>
 <%@include file="/resources/common/statisticsNav.jsp" %>
+<%--<%@include file="/resources/common/progressBar.css" %>--%>
 
 <script>
 
@@ -27,9 +34,34 @@
 
 </script>
 
-<%--<%@include file="/resources/common/progressBar.jsp" %>--%>
+
+
+
+
 <div id="content" class="content">
     <div class="container card">
+        <div class="step-wrapper">
+            <div class="step-container">
+                <div class="step active">
+                    <i class="fas fa-braille"></i>
+                    <p class="step-text">K-평균 군집화</p>
+                </div>
+            </div>
+            <div class="step-divider"></div>
+            <div class="step-container">
+                <div class="step">
+                    <i class="fas fa-search"></i>
+                    <p class="step-text">키워드 분석</p>
+                </div>
+            </div>
+            <div class="step-divider"></div>
+            <div class="step-container">
+                <div class="step">
+                    <i class="fas fa-chart-bar"></i>
+                    <p class="step-text">군집별 비교분석</p>
+                </div>
+            </div>
+        </div>
 
         <h4 class="fw-bold mt-2">K-평균 군집화</h4>
         <div class="accordion my-4" id="accordionExample">
@@ -106,7 +138,12 @@
             </div>
         </div>
 
-        <button id="next-btn" class="btn c-gray">다음 페이지</button>
+
+        <div class="d-flex justify-content-center mt-4" style="margin-bottom: 20px;">
+            <button id="next-btn" class="btn btn-primary">다음 페이지</button>
+        </div>
+    </div>
+</div>
 
         <script src="/resources/js/statistic/kmeans.js"></script>
 </body>

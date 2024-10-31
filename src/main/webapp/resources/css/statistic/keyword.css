@@ -207,7 +207,7 @@ button:active {
 
 .nav-btn {
     padding: 11px 22px; /* 크기를 줄임 */
-    font-size: 13px; /* 폰트 크기 줄임 */
+    font-size: 16px; /* 폰트 크기 줄임 */
     margin: 0 8px;
     background-color: #005bac;
     color: white;
@@ -253,8 +253,8 @@ button:active {
 }
 
 .highlight {
-    border: 2px solid #005bac;
-    box-shadow: 0 0 15px rgba(0, 91, 172, 0.5);
+    border: 2px solid #005bac !important;
+    box-shadow: 0 0 15px rgba(0, 91, 172, 0.5) !important;
     animation: fade-highlight 2s forwards;
 }
 
@@ -350,4 +350,19 @@ button.custom-btn {
     border-bottom: none;
 }
 
+.emotion-result {
+    font-weight: bold;
+    color: #333;
+}
 
+.modal-content {
+    max-width: 70%;
+}
+
+.modal-dialog {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    max-width: 600px;
+    margin: auto;
+}

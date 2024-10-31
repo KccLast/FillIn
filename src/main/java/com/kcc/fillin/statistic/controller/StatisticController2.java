@@ -3,13 +3,10 @@ package com.kcc.fillin.statistic.controller;
 import java.util.List;
 import java.util.Map;
 
+import com.kcc.fillin.statistic.dto.AnswerDTO;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kcc.fillin.statistic.service.StatisticService;
@@ -54,5 +51,14 @@ public class StatisticController2 {
 		model.addAttribute("surveyId", surveyId);
 
 		return "/statistic/kmeans";
+	}
+
+
+
+	@PostMapping("/compareClustering")
+	public String findCompareClusteringPage(@RequestParam("tableData") String tableData,Model model) {
+		System.out.println("tableData = " + tableData);
+		model.addAttribute("tableData", tableData);
+		return "/statistic/compareClustering";  // JSP 페이지 이름 반환
 	}
 }

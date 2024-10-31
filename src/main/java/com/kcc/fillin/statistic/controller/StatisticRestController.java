@@ -1,12 +1,10 @@
 package com.kcc.fillin.statistic.controller;
 
-import com.kcc.fillin.statistic.dto.AnswerDTO;
-import com.kcc.fillin.statistic.dto.EmotionRequest;
-import com.kcc.fillin.statistic.dto.SentimentAnalysisResult;
-import com.kcc.fillin.statistic.dto.WordFrequencyDTO;
+import com.kcc.fillin.statistic.dto.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -23,7 +21,9 @@ import com.kcc.fillin.statistic.service.StatisticService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
@@ -83,18 +83,39 @@ public class StatisticRestController {
         return new ResponseEntity<>(wordFrequencies, HttpStatus.OK);
     }
 
-    //	감정분석
-//    @GetMapping("/analyzeEmotion")
-//    public ResponseEntity<SentimentAnalysisResult> analyzeEmotion(@RequestParam("text") String text) {
-//        SentimentAnalysisResult result = statisticService.analyzeSentiment(text);
-//
-//        return new ResponseEntity<>(result, HttpStatus.OK);
-//    }
-    // 감정분석을 POST 요청으로 처리
+
+    //    가중치 적용 수정 후
     @PostMapping("/analyzeEmotion")
     public ResponseEntity<SentimentAnalysisResult> analyzeEmotion(@RequestBody EmotionRequest request) {
+        System.out.println("request = " + request);
         SentimentAnalysisResult result = statisticService.analyzeSentiment(request.getText());
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
+
+    //군집별 비교분석 예시
+    @PostMapping("/compareClustering")
+    public List<AnswerDTO> compareClustering(@RequestBody List<AnswerDTO> tableData, Model model) {
+        return tableData;
+    }
+
+
+
+    @PostMapping("/analyzeAllEmotions")
+    public ResponseEntity<List<SentimentAnalysisResponse>> analyzeAllEmotions(@RequestBody List<EmotionRequest> requestList) {
+        //SentimentAnalysisResult result = statisticService.analyzeSentiment(request.getText());
+        System.out.println("Received request list: " + requestList);
+        List<SentimentAnalysisResponse> sentiResponse = new ArrayList<SentimentAnalysisResponse>();
+        for(EmotionRequest request : requestList){
+            SentimentAnalysisResult sentimentAnalysisResult = statisticService.analyzeSentiment(request.getText());
+            String maxConfidenceName = sentimentAnalysisResult.getDocument().getConfidence().getMaxConfidenceName();
+            Integer order = request.getOrder();
+            sentiResponse.add(new SentimentAnalysisResponse(maxConfidenceName,order));
+        }
+
+
+        return ResponseEntity.ok(sentiResponse);
+    }
+
+
 
 }
