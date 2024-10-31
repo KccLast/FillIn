@@ -355,7 +355,7 @@ $(document).ready(function () {
 
         if (!hasChecked) {
             Swal.fire({
-                icon: "error",
+                type: "error",
                 text: "하나 이상의 질문을 선택해주세요.",
             });
             return;
