@@ -29,8 +29,6 @@
         })
 
         var surveyJson = '${surveyJson}';
-        <%--var seq = JSON.parse('${surveyJson}').seq;--%>
-        <%--var url = JSON.parse('${surveyJson}').url;--%>
         console.log(surveyJson);
 
     </script>
