@@ -166,7 +166,7 @@ $(document).ready(function () {
 
         // AJAX 요청
         $.ajax({
-            url: '/api/survey/dashboard',
+            url: '/api/survey/dashboard' ,
             type: 'POST',
             contentType: 'application/json',
             data: JSON.stringify(requestData),

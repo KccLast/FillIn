@@ -25,6 +25,9 @@
             console.log("surveyName In jsp" + surveyName);
          })
 
+         console.log('${surveyJson}.seq');
+         var surveyJson = '${surveyJson}';
+
       </script>
       <script type="text/javascript" src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
       <script src="/resources/js/survey/surveyPost.js"></script>
@@ -32,6 +35,8 @@
       <script src="/resources/js/question/questionEvent.js"></script>
       <script src="/resources/js/question/questionParse.js"></script>
       <script src="/resources/js/question/condition.js"></script>
+      <script src="/resources/common/statisticsNav.js"></script>
+      <script src="/resources/common/nav.js"></script>
 
       <script type="text/javascript">
 

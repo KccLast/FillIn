@@ -16,9 +16,9 @@
 			<span class="menu-text ">군집 별 비교 분석</span>
 			<img class="arrow-icon" alt="arrow" src="/resources/img/common/arrow.png">
 		</a>
-		<a href="#" class="nav-link" data-bs-toggle="modal" data-bs-target="#customizedStatisticsModal">
-			<img src="/resources/img/common/customizedStatistics.png" alt="answerTime">
-			<span class="menu-text">맞춤형 통계</span>
+		<a href="#" id="regression-statistics" class="nav-link">
+			<img src="/resources/img/statistic/regression.png" alt="regression">
+			<span class="menu-text">회귀분석</span>
 			<img class="arrow-icon" alt="arrow" src="/resources/img/common/arrow.png">
 		</a>
 		<a href="#" class="nav-link "> 
