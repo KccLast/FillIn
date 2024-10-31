@@ -1239,7 +1239,7 @@ h5 {
   width: 25px;
   height: 25px;
 }
-.tooltip-inner {
+.toolti .tooltip-inner {
   background-color: #005bac !important; /* 툴팁 배경색 */
   color: #ffffff !important; /* 툴팁 글씨 색상 */
   padding: 0px !important;
