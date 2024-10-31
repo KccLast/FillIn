@@ -25,11 +25,12 @@
           // createDefaultMap("j-map");
           /* let map = createDefaultMap('j-map-ji');
           map.relayout(); */
-          showCard($('.content').find('.j-question-card').eq(0));
+          // showCard($('.content').find('.j-question-card').eq(0));
 
-          $('.j-question-card').click(function () {
-            showCard($(this));
-          })
+          // $('.j-question-card').click(function () {
+          //   showCard($(this));
+          // })
+
         })
 
         //카드로 표시설정
@@ -41,16 +42,16 @@
 
         // 화면 크기 변경 시 동작
         $(window).on('resize', function () {
-          let $cards = $('.j-question-card');
-          if ($(window).width() > 768) {
-            // 데스크탑 크기일 때 모든 카드 보여주기
-            $cards.show(); // 모든 카드를 표시
-          } else {
-            // 모바일 크기일 때는 현재 카드 하나만 보이도록
-            $cards.hide(); // 모든 카드를 숨김
-            let $curCard = $cards.filter('.active'); // active 클래스를 가진 카드 선택
-            $curCard.show(); // 선택된 active 카드를 보여줌
-          }
+          // let $cards = $('.j-question-card');
+          // if ($(window).width() > 768) {
+          //   // 데스크탑 크기일 때 모든 카드 보여주기
+          //   $cards.show(); // 모든 카드를 표시
+          // } else {
+          //   // 모바일 크기일 때는 현재 카드 하나만 보이도록
+          //   $cards.hide(); // 모든 카드를 숨김
+          //   let $curCard = $cards.filter('.active'); // active 클래스를 가진 카드 선택
+          //   $curCard.show(); // 선택된 active 카드를 보여줌
+        }
         });
 
 
@@ -151,7 +152,7 @@
     </head>
 
     <body>
-	 <input type="hidden" id='j-participant-seq' value="${partSeq}" />
+      <input type="hidden" id='j-participant-seq' value="${partSeq}" />
       <div class="navbar">
         <div class="nav-left">
           <a href="#">

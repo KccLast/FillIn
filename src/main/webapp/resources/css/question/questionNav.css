@@ -85,6 +85,7 @@ body {
   min-height: 10%;
   max-height: 690px;
   overflow: auto;
+  display: none;
 }
 
 .j-deploy-box {
@@ -263,61 +264,21 @@ body {
 }
 .j-nav-button-box {
   justify-content: space-around;
-  margin-top: 20%;
+  position: fixed;
+  bottom: 100px;
+  left: 50px;
+  width: 320px;
 }
 
 .j-depoly-button {
 }
 
-.j-save-button {
+.j-nav-save-button {
+  width: 35%;
+  height: 40px;
 }
 
 .j-fixSave-height {
 }
 
 /* question navBar  */
-
-/* toolTip */
-.wrap {
-  position: relative;
-  display: inline-block;
-}
-
-.box {
-  width: 150px;
-  background: #242f9b;
-  padding: 10px;
-  border-radius: 5px;
-  color: #ffffff;
-  text-align: center;
-}
-
-.tooltip {
-  position: absolute;
-  left: 0px;
-  top: 52px;
-  background: #646fd4;
-  padding: 10px;
-  border-radius: 5px;
-  color: #fff;
-  text-align: center;
-  display: none;
-}
-
-.tooltip:after {
-  display: block;
-  content: '';
-  position: absolute;
-  top: -7px;
-  left: 15px;
-  width: 0px;
-  height: 0px;
-  border-top: 8px solid none;
-  border-left: 8psolid transparent;
-  border-right: 8px solid transparent;
-  border-bottom: 8px solid #646fd4;
-}
-
-.wrap:hover .tooltip {
-  display: block;
-}

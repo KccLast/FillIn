@@ -10,6 +10,8 @@ import com.kcc.fillin.survey.domain.SurveyVO;
 import com.kcc.fillin.survey.dto.CommonCodeResponse;
 import com.kcc.fillin.survey.dto.MultiSearchSurveyRequest;
 import com.kcc.fillin.survey.dto.MultiSearchSurveyResponse;
+import com.kcc.fillin.survey.dto.PostSurveyRequest;
+import com.kcc.fillin.survey.dto.PostSurveyResponse;
 import com.kcc.fillin.survey.dto.SurveyLogDTO;
 
 public interface SurveyService {
@@ -37,4 +39,5 @@ public interface SurveyService {
 
 	public boolean createCheckLog(String surveyUrl);
 
+	public PostSurveyResponse addSurveyUrl(PostSurveyRequest request);
 }

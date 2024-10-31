@@ -9,3 +9,7 @@
 .modal-content {
     z-index: 1060 !important;
 }
+
+#copyButton i, #shareButtonInModal i {
+    color: #ffffff; /* 아이콘 색상을 흰색으로 설정 */
+}

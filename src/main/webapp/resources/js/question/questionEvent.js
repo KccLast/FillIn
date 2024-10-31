@@ -1,37 +1,5 @@
 var dragInstance;
 
-var config = {
-  container: '#conditionCardCon', // 트리 컨테이너 설정
-  rootOrientation: 'NORTH', // 트리 방향 설정 (위에서 아래로)
-  nodeAlign: 'CENTER', // 노드 정렬
-  levelSeparation: 40, // 레벨 간 간격
-  siblingSeparation: 30, // 형제 노드 간 간격
-  subTeeSeparation: 30, // 서브 트리 간 간격
-  connectors: {
-    type: 'bCurve', // 연결선 모양
-    style: {
-      stroke: 'black', // 연결선 색상
-      'stroke-width': 2, // 연결선 두께
-    },
-  },
-  node: {
-    HTMLclass: 'mini-card', // 노드의 CSS 클래스
-    collapsable: true, // 노드 접기 가능 여부
-    drawLineThrough: true, // 노드를 가로지르는 선
-    stackChildren: true,
-  },
-  // 커스터마이즈된 노드 템플릿 사용
-  nodeTemplate: function (data) {
-    return `
-          <div class="node-content">
-              <div class="node-order">${data.text.order}</div>
-              <img src="${data.image}" alt="Node Image" class="node-img">
-              <div class="node-name">${data.text.name}</div>
-          </div>
-      `;
-  },
-};
-
 $(function () {
   // x버튼 숨기기
   // jQuery로 이벤트 위임 설정
@@ -126,6 +94,7 @@ $(function () {
     let seqVal = targetCard.find('.j-qseq').val();
 
     if (seqVal !== undefined) {
+      console.log('hio');
       let deleteQues = { seq: seqVal };
       storeUpdateQuestionItemInLocal(deleteQues, seqVal, 'removeQuestionList');
       sendremoveQquestionItemLocalData(
@@ -133,6 +102,9 @@ $(function () {
       );
     }
     targetCard.remove();
+    deleteNode(idx);
+    updateQuestionNavOrder();
+    totalQuestionCnt();
   });
 
   /**새로운 질문 추가하는 모달  */
@@ -225,7 +197,9 @@ $(function () {
           setTimeout(() => createDefaultMap('map' + idx), 100);
         }
 
-        createNewNode(idx + 1);
+        createNewNode(idx);
+        await insertQuestion();
+        totalQuestionCnt();
       } catch (error) {
         console.error('AJAX 요청 실패:', error);
       }
@@ -257,7 +231,6 @@ $(function () {
     'change',
     'input[type="text"][class*="qi"], select[class*="qi"]',
     function () {
-      console.log('에?');
       let classList = $(this).attr('class') || '';
       let match = classList.match(/(\d+)/); // 'qi' 뒤의 숫자 추출
 
@@ -753,18 +726,16 @@ $(function () {
 
     if ($(this).hasClass('j-question-nav-tab')) {
       $('.j-question-box').show();
-      $('.j-condition-button').show();
+
       $('.j-deploy-box').hide();
-      $('.j-depoly-button').hide();
     } else {
       $('.j-question-box').hide();
-      $('.j-condition-button').hide();
+
       $('.j-deploy-box').show();
-      $('.j-depoly-button').show();
     }
   });
 
-  $('.j-nav-save-button').on('click', saveQuestion);
+  $('.j-nav-save-button').on('click', handleSaveButtonClick);
 
   /** 조건 카드 선택시 border이벤트 */
   $('.j-condition-box').on('click', '.j-que-con-card', function () {
@@ -868,6 +839,16 @@ async function getNavFrame() {
   return $.ajax({
     url: '/resources/html/question/questionNavFrame.html',
     type: 'GET',
+  });
+}
+// nav번호 다시 계산하기
+function updateQuestionNavOrder() {
+  let navList = $('.j-question');
+  console.log(navList);
+  navList.each(function (idx, item) {
+    $(item)
+      .find('.question-nav-order')
+      .text(idx + 1);
   });
 }
 
@@ -1074,3 +1055,12 @@ function createKaKaoMap(id, latitude, longitude) {
   marker.setMap(map);
 }
 /**지도 관련 */
+
+async function totalQuestionCnt(questionLen) {
+  if (questionLen === '' || questionLen === undefined || questionLen === null) {
+    console.log($('.content').find('.j-question-card').length);
+    $('.j-ai-img').text($('.content').find('.j-question-card').length);
+  } else {
+    $('.j-ai-img').text(questionLen);
+  }
+}

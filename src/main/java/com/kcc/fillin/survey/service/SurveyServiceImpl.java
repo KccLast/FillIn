@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,11 +18,15 @@ import com.kcc.fillin.survey.domain.SurveyVO;
 import com.kcc.fillin.survey.dto.CommonCodeResponse;
 import com.kcc.fillin.survey.dto.MultiSearchSurveyRequest;
 import com.kcc.fillin.survey.dto.MultiSearchSurveyResponse;
+import com.kcc.fillin.survey.dto.PostSurveyRequest;
+import com.kcc.fillin.survey.dto.PostSurveyResponse;
 import com.kcc.fillin.survey.dto.SurveyLogDTO;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class SurveyServiceImpl implements SurveyService {
 	private final SurveyDao mapper;
@@ -43,12 +48,12 @@ public class SurveyServiceImpl implements SurveyService {
 	public List<MultiSearchSurveyResponse> getSurveyListWithPaging(Criteria cri) {
 		int pageNum = cri.getPageNum();
 		int amount = cri.getAmount();
-		
+
 		// 1페이지라면 amount에서 1을 뺀 값으로 조정
-	    int newAmount = (pageNum == 1) ? amount - 1 : amount;
-	    
-		int startRow = (pageNum - 1) * newAmount + 1; 
-	    int endRow = pageNum * newAmount;
+		int newAmount = (pageNum == 1) ? amount - 1 : amount;
+
+		int startRow = (pageNum - 1) * newAmount + 1;
+		int endRow = pageNum * newAmount;
 
 		return mapper.getSurveyListWithPaging(startRow, endRow);
 	}
@@ -124,4 +129,31 @@ public class SurveyServiceImpl implements SurveyService {
 		return mapper.insertCheckLog(surveyUrl);
 	}
 
+	@Override
+	public PostSurveyResponse addSurveyUrl(PostSurveyRequest request) {
+		// url 생성 후 request에 업데이트
+		String url = generateSurveyUrl(request.getSurveyId());
+
+		// 기존 request 객체를 복사하면서 URL만 업데이트
+		PostSurveyRequest updatedRequest = request.toBuilder()
+			.url(url)
+			.build();
+
+		log.info(updatedRequest.toString());
+
+		mapper.updateSurveyInfo(updatedRequest);
+
+		return PostSurveyResponse.builder().surveyId(request.getSurveyId()).url(url).build();
+	}
+
+	private String generateSurveyUrl(long surveyId) {
+		// surveyId를 문자열로 변환
+		String surveyIdStr = String.valueOf(surveyId);
+
+		// surveyId를 바이트 배열로 변환하여 UUID 생성
+		UUID uuid = UUID.nameUUIDFromBytes(surveyIdStr.getBytes());
+
+		// UUID 문자열 반환
+		return uuid.toString();
+	}
 }
