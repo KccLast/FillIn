@@ -324,7 +324,8 @@
                         <th>ANSWER_Content</th>
                         <th>ANSWER_DATE</th>
                         <th>Frequency</th>
-                        <th>감정 분석</th>
+                        <th>상위 단어 추출</th>
+                        <th>상세보기</th>
                         <th>감정 결과</th>
                     </tr>
                     </thead>

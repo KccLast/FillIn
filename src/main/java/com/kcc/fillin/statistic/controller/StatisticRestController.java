@@ -1,9 +1,6 @@
 package com.kcc.fillin.statistic.controller;
 
-import com.kcc.fillin.statistic.dto.AnswerDTO;
-import com.kcc.fillin.statistic.dto.EmotionRequest;
-import com.kcc.fillin.statistic.dto.SentimentAnalysisResult;
-import com.kcc.fillin.statistic.dto.WordFrequencyDTO;
+import com.kcc.fillin.statistic.dto.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -117,15 +114,36 @@ public class StatisticRestController {
         return tableData;
     }
 
+//    @PostMapping("/analyzeAllEmotions")
+//    public ResponseEntity<List<SentimentAnalysisResult>> analyzeAllEmotions(@RequestBody List<EmotionRequest> requestList) {
+//        List<SentimentAnalysisResult> results = requestList.stream()
+//                .map(request -> statisticService.analyzeSentiment(request.getText()))
+//                .collect(Collectors.toList());
+//        return new ResponseEntity<>(results, HttpStatus.OK);
+//    }
+
     @PostMapping("/analyzeAllEmotions")
-    public ResponseEntity<List<SentimentAnalysisResult>> analyzeAllEmotions(@RequestBody List<EmotionRequest> requestList) {
-        List<SentimentAnalysisResult> results = requestList.stream()
-                .map(request -> statisticService.analyzeSentiment(request.getText()))
-                .collect(Collectors.toList());
-        return new ResponseEntity<>(results, HttpStatus.OK);
+    public ResponseEntity<List<SentimentAnalysisResponse>> analyzeAllEmotions(@RequestBody List<EmotionRequest> requestList) {
+        //SentimentAnalysisResult result = statisticService.analyzeSentiment(request.getText());
+        System.out.println("Received request list: " + requestList);
+        List<SentimentAnalysisResponse> sentiResponse = new ArrayList<SentimentAnalysisResponse>();
+        for(EmotionRequest request : requestList){
+            SentimentAnalysisResult sentimentAnalysisResult = statisticService.analyzeSentiment(request.getText());
+            String maxConfidenceName = sentimentAnalysisResult.getDocument().getConfidence().getMaxConfidenceName();
+            Integer order = request.getOrder();
+            sentiResponse.add(new SentimentAnalysisResponse(maxConfidenceName,order));
+        }
+//        List<SentimentAnalysisResult> results = requestList.stream()
+//                .map(request -> statisticService.analyzeSentiment(request.getText()))
+//                .collect(Collectors.toList());
+//        for (SentimentAnalysisResult result : results) {
+//            System.out.println("Positive: " + result.getPositive() +
+//                    ", Neutral: " + result.getNeutral() +
+//                    ", Negative: " + result.getNegative());
+//        }
+        return ResponseEntity.ok(sentiResponse);
     }
 
-
+//    }
 
 }
-

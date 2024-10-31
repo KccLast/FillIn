@@ -1,3 +1,4 @@
+/*
 document.addEventListener("DOMContentLoaded", function () {
     $('#wordCloudContainer').focus();
 
@@ -35,7 +36,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const wordCloudContainer = $('#wordCloudContainer');
     wordCloudContainer.focus();
-    wordCloudContainer[0].scrollIntoView({ behavior: 'smooth', block: 'start' });
+    wordCloudContainer[0].scrollIntoView({behavior: 'smooth', block: 'start'});
     wordCloudContainer.addClass('highlight');
 
     setTimeout(() => {
@@ -73,7 +74,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
     tooltipTriggerList.map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl));
 
-    // Cluster dropdown ���기화
+
     let clusterDropdown = $('#phrase');
     [...new Set(clusteringData.map(item => item.cluster))].forEach(cluster => {
         clusterDropdown.append(new Option(`Cluster ${cluster}`, cluster));
@@ -92,6 +93,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
     renderTable(clusteringData);
+
 
     $('#table-search-btn').click(() => {
         let keyword = $('#keyword-input').val().trim();
@@ -122,7 +124,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
-
+    // 빈도수 계산
     function generateWordCloudFromAll() {
         createWordCloud(clusteringData.map(item => item.answerContent).join(" ").split(/\s+/)
             .reduce((freq, word) => {
@@ -133,6 +135,26 @@ document.addEventListener("DOMContentLoaded", function () {
                 return freq;
             }, {}));
     }
+
+    // 상위 단어 추출 함수 추가
+    function calculateTopWords(text, topN = 3) {
+        if (!text) return [];
+        const wordFrequency = text.trim().split(/\s+/).reduce((freq, word) => {
+            word = word.trim();
+            if (!stopWords.includes(word) && word.length > 1) {
+                freq[word] = (freq[word] || 0) + 1;
+            }
+            return freq;
+        }, {});
+
+        // 가장 높은 N개의 단어를 정렬하여 반환
+        return Object.entries(wordFrequency)
+            .sort(([, a], [, b]) => b - a)
+            .slice(0, topN)
+            .map(([word]) => word);
+    }
+
+
 
     function createWordCloud(wordFrequency) {
         if (!Object.keys(wordFrequency).length) {
@@ -176,9 +198,10 @@ document.addEventListener("DOMContentLoaded", function () {
         let tbody = $(".result-table tbody");
         tbody.empty();
         if (data.length === 0) {
-            tbody.append("<tr><td colspan='6'>검색 결과가 없습니다.</td></tr>");
+            tbody.append("<tr><td colspan='7'>검색 결과가 없습니다.</td></tr>");
         } else {
             data.forEach((item, index) => {
+                const topWords = calculateTopWords(item.answerContent); // 가장 높은 단어 추출
                 tbody.append(`
                 <tr>
                     <td>${index + 1}</td>
@@ -186,223 +209,143 @@ document.addEventListener("DOMContentLoaded", function () {
                     <td class="ans-content">${item.answerContent}</td>
                     <td>${item.answerDate}</td>
                     <td>${calculateWordFrequency(item.answerContent)}</td>
+                     <td class="top-words">${topWords.join(', ')}</td> <!-- 상위 단어 추가 -->
                     <td>
-                        <button class="btn btn-primary btn-sm analyze-btn" data-index="${index}">감정분석</button>
+                        <button class="btn btn-primary btn-sm analyze-btn" data-index="${index}">상세보기</button>
                     </td>
                     <td class="emotion-result" data-index="${index}">-</td>
                 </tr>
             `);
             });
         }
-
-        // 각 행의 감정분석 버튼 클릭 이벤트
-        $(".analyze-btn").click(function () {
-            let text = $(this).parents('tr').find('.ans-content').text();
-            console.log(text);
-            const rowIndex = $(this).data("index");
-            analyzeEmotionForRow(text, rowIndex);
-        });
     }
 
-    // 가중치 적용 수정 후
-    function analyzeEmotionForRow(rowData, rowIndex) {
-        $.ajax({
-            url: "/api/statistic/analyzeEmotion",
-            method: "POST",
-            contentType: "application/json",
-            data: JSON.stringify({ text: rowData }),
-            success: function (response) {
-                if (response && response.document && response.document.confidence) {
-                    const { positive, neutral, negative } = response.document.confidence;
-                    $(`.emotion-result[data-index="${rowIndex}"]`).text(
-                        `긍정: ${positive.toFixed(2)}, 중립: ${neutral.toFixed(2)}, 부정: ${negative.toFixed(2)}`
-                    );
-                } else {
-                    console.error("Invalid sentiment analysis response:", response);
-                    $(`.emotion-result[data-index="${rowIndex}"]`).text("오류 발생");
-                }
-            },
-            error: function (xhr, status, error) {
-                console.error("Sentiment analysis request failed:", status, error);
-                $(`.emotion-result[data-index="${rowIndex}"]`).text("오류 발생");
-            }
-        });
-    }
+}); //이벤트리스너 종료부분
 
-    // 각 행별 감정분석 일괄 버튼
-    document.getElementById("analyzeAllBtn").addEventListener("click", function () {
-        const tableData = collectTableData();  // 테이블 데이터를 JSON 형식으로 수집
+// 각 행의 감정분석 버튼 클릭 이벤트
+$(".analyze-btn").click(function () {
+    let text = $(this).parents('tr').find('.ans-content').text();
+    const rowIndex = $(this).data("index");
 
-        // 전체 테이블 데이터를 한 번에 서버로 전송
-        $.ajax({
-            url: "/api/statistic/analyzeAllEmotions",
-            method: "POST",
-            contentType: "application/json",
-            data: JSON.stringify(tableData),
-            success: function (response) {
-                console.log("전체 감정 분석 성공:", response);
+    // 감정 결과 열 데이터를 비우기
+    // $(`.emotion-result[data-index="${rowIndex}"]`).text("-"); // 데이터 비우기 또는 기본값 설정
 
-                // 서버에서 받은 각 행별 감정 분석 결과를 테이블에 표시합니다.
-                response.forEach((result, index) => {
-                    $(`.emotion-result[data-index="${index}"]`).text(
-                        `긍정: ${result.positive.toFixed(2)}, 중립: ${result.neutral.toFixed(2)}, 부정: ${result.negative.toFixed(2)}`
-                    );
-                });
-            },
-            error: function (xhr, status, error) {
-                console.error("전체 감정 분석 실패:", error);
-            }
-        });
-    });
-
-
-
-    function analyzeEmotionByRow(data) {
-        let positiveCount = 0, neutralCount = 0, negativeCount = 0;
-        let totalPositive = 0, totalNeutral = 0, totalNegative = 0;
-        let processedCount = 0;
-
-        data.forEach((item, index) => {
-            $.ajax({
-                url: "/api/statistic/analyzeEmotion",
-                method: "POST",
-                contentType: "application/json",
-                data: JSON.stringify({text: item.answerContent}),
-                success: function (response) {
-                    if (response && response.document && response.document.confidence) {
-                        const {positive, neutral, negative} = response.document.confidence;
-
-                        // 가장 높은 confidence 값을 기준으로 감정을 결정하여 카운트
-                        if (positive >= neutral && positive >= negative) {
-                            positiveCount++;
-                        } else if (neutral >= positive && neutral >= negative) {
-                            neutralCount++;
-                        } else {
-                            negativeCount++;
-                        }
-
-                        // 각 감정의 합산을 위해 값을 저장
-                        totalPositive += positive;
-                        totalNeutral += neutral;
-                        totalNegative += negative;
-                    }
-
-                    processedCount++;
-                    if (processedCount === data.length) {
-                        // 퍼센티지 계산을 위한 비율 변환
-                        let total = totalPositive + totalNeutral + totalNegative;
-                        let avgPositive = (totalPositive / total) * 100;
-                        let avgNeutral = (totalNeutral / total) * 100;
-                        let avgNegative = (totalNegative / total) * 100;
-
-                        renderChart({
-                            document: {
-                                confidence: {
-                                    positive: avgPositive,
-                                    neutral: avgNeutral,
-                                    negative: avgNegative
-                                }
-                            }
-                        });
-                        resetButtons();
-                    }
-                },
-                error: function (xhr, status, error) {
-                    console.error("감정 분석 API 요청 중 오류 발생:", status, error);
-                    processedCount++;
-                    if (processedCount === data.length) {
-                        resetButtons();
-                    }
-                }
-            });
-        });
-    }
-
-    function renderChart(data) {
-        if (!data || !data.document || !data.document.confidence) {
-            console.error("Invalid data for chart:", data);
-            return;
-        }
-        // 현재 데이터를 저장하여 차트 타입 변경 시 사용
-        window.currentChartData = data;
-
-        const ctx = document.getElementById('chart-container').getContext('2d');
-        const chartType = $('#chart-type-selector').val();
-
-
-        if (window.currentChart) {
-            window.currentChart.destroy();
-        }
-
-        window.currentChart = (chartType === 'pie' ? drawPieChart : drawBarChart)(ctx, data);
-    }
-
-
-    $('#chart-type-selector').change(() => {
-        if (window.currentChartData) {
-            renderChart(window.currentChartData);
-        }
-    });
-
-    function drawPieChart(ctx, data) {
-        return new Chart(ctx, {
-            type: 'pie',
-            data: {
-                labels: ['긍정', '중립', '부정'],
-                datasets: [{
-                    data: [
-                        data.document.confidence.positive,
-                        data.document.confidence.neutral,
-                        data.document.confidence.negative
-                    ],
-                    backgroundColor: ['rgba(75, 192, 192, 0.6)', 'rgba(54, 162, 235, 0.6)', 'rgba(255, 99, 132, 0.6)']
-                }]
-            },
-            options: {responsive: true}
-        });
-    }
-
-    function drawBarChart(ctx, data) {
-        return new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: ['긍정', '중립', '부정'],
-                datasets: [{
-                    label: '감정 분석 결과',
-                    data: [
-                        data.document.confidence.positive,
-                        data.document.confidence.neutral,
-                        data.document.confidence.negative
-                    ],
-                    backgroundColor: ['rgba(75, 192, 192, 0.6)', 'rgba(54, 162, 235, 0.6)', 'rgba(255, 99, 132, 0.6)']
-                }]
-            },
-            options: {
-                responsive: true,
-                scales: { y: { beginAtZero: true } }
-            }
-        });
-    }
-
+    analyzeEmotionForRow(text, rowIndex);
 });
+
+function analyzeEmotionForRow(rowData, rowIndex) {
+    $.ajax({
+        url: "/api/statistic/analyzeEmotion",
+        method: "POST",
+        contentType: "application/json",
+        data: JSON.stringify({text: rowData}),
+        success: function (response) {
+            if (response && response.document && response.document.confidence) {
+                const {positive, neutral, negative} = response.document.confidence;
+                const sentiment = positive > neutral && positive > negative ? "긍정" :
+                    negative > positive && negative > neutral ? "부정" : "중립";
+
+                const colorMap = {
+                    positive: "green",
+                    neutral: "blue",
+                    negative: "red"
+                };
+
+                const highlightedText = `<span style="color: ${colorMap[sentiment]}">${rowData}</span>`;
+
+                $("#modalContent").html(`
+                    <div><strong>테스트 문장:</strong> ${highlightedText}</div>
+                    <div><strong>감정 분류 결과:</strong> <span style="color: ${colorMap[sentiment]}">${sentiment}</span></div>
+                    <div>긍정: <span style="color: ${colorMap.positive};">${positive.toFixed(2)}</span>, 
+                     <div>중립: <span style="color: ${colorMap.neutral};">${neutral.toFixed(2)}</span>, 
+                        <div>부정: <span style="color: ${colorMap.negative};">${negative.toFixed(2)}</span></div>
+                `);
+                $("#emotionModal").modal("show");
+            } else {
+                console.error("Invalid sentiment analysis response:", response);
+                $("#modalContent").text("감정 분석에 실패했습니다.");
+                $("#emotionModal").modal("show");
+            }
+        },
+        error: function (xhr, status, error) {
+            console.error("Sentiment analysis request failed:", status, error);
+            $("#modalContent").text("오류 발생: 감정 분석 요청에 실패했습니다.");
+            $("#emotionModal").modal("show");
+        }
+    });
+}
+
+
+// 감정 분석 버튼 클릭 시 모달 표시 이벤트
+// $(document).on("click", ".analyze-btn", function () {
+//     const rowIndex = $(this).data("index");
+//     const text = $(this).closest("tr").find(".ans-content").text();
+//
+//     // 감정 결과 열 데이터를 비우기
+//     // $(`.emotion-result[data-index="${rowIndex}"]`).text("-"); // 데이터 비우기 또는 기본값 설정
+//
+//     $.ajax({
+//         url: "/api/statistic/analyzeEmotion",
+//         method: "POST",
+//         contentType: "application/json",
+//         data: JSON.stringify({text: text}),
+//         success: function (response) {
+//             if (response && response.document && response.document.confidence) {
+//                 const {positive, neutral, negative} = response.document.confidence;
+//                 const sentiment = positive > neutral && positive > negative ? "긍정" :
+//                     negative > positive && negative > neutral ? "부정" : "중립";
+//
+//
+//                 $("#modalContent").html(`
+//             <div><strong>테스트 문장:</strong> ${text}</div>
+//             <div><strong>감정 분류 결과:</strong> ${sentiment}</div>
+//             <div>긍정: ${positive.toFixed(2)}, 중립: ${neutral.toFixed(2)}, 부정: ${negative.toFixed(2)}</div>
+//         `);
+//                 $("#emotionModal").modal("show");
+//             } else {
+//                 $("#modalContent").text("감정 분석에 실패했습니다.");
+//                 $("#emotionModal").modal("show");
+//             }
+//         },
+//         error: function (xhr, status, error) {
+//             console.error("Sentiment analysis request failed:", error);
+//             $("#modalContent").text("오류 발생: 감정 분석 요청에 실패했습니다.");
+//             $("#emotionModal").modal("show");
+//         }
+//     });
+// });
+
 
 // 전체 감정 분석 버튼 클릭 이벤트
 document.getElementById("analyzeAllBtn").addEventListener("click", function () {
-    const tableData = collectTableData();
-
-    // 전체 감정 분석 요청
+    const tableData = collectTableData().map(data => ({ text: data.answerContent,order:data.seq }));
+    console.log(tableData);
     $.ajax({
         url: "/api/statistic/analyzeAllEmotions",
         method: "POST",
         contentType: "application/json",
         data: JSON.stringify(tableData),
         success: function (response) {
-            response.forEach((result, index) => {
-                // 각 행의 감정 결과 업데이트
-                $(`.emotion-result[data-index="${index}"]`).text(
-                    `긍정: ${result.positive.toFixed(2)}, 중립: ${result.neutral.toFixed(2)}, 부정: ${result.negative.toFixed(2)}`
-                );
+            console.log(response);
+            response.forEach((result) => {
+                const orderIndex = result.order - 1; // order는 1부터 시작하므로 -1...!!
+
+                const highestEmotion = result.name; // name 속성에서 감정 값을 가져옴
+                // const { positive, neutral, negative } = result;
+
+                // 가장 높은 감정 결정
+                // let highestEmotion = "중립"; // 기본값
+                // if (positive > neutral && positive > negative) {
+                //     highestEmotion = "긍정";
+                // } else if (negative > positive && negative > neutral) {
+                //     highestEmotion = "부정";
+                // }
+
+                // 감정 결과 업데이트
+                const emotionHTML = getStyledEmotionHTML(highestEmotion);
+                $(`.emotion-result[data-index="${orderIndex}"]`).html(emotionHTML);
             });
+
         },
         error: function (xhr, status, error) {
             console.error("전체 감정 분석 실패:", error);
@@ -410,23 +353,175 @@ document.getElementById("analyzeAllBtn").addEventListener("click", function () {
     });
 });
 
+function getStyledEmotionHTML(emotion) {
+    let iconHTML = "";
+    let color = "";
+
+    switch (emotion) {
+        case "긍정":
+            iconHTML = "✔️";
+            color = "#007bff";
+            break;
+        case "중립":
+            iconHTML = "➖";
+            color = "#6c757d";
+            break;
+        case "부정":
+            iconHTML = "❌";
+            color = "#dc3545";
+            break;
+    }
+    return `<span style="color: ${color}; font-weight: bold;">${iconHTML} ${emotion}</span>`;
+}
+
+
+function analyzeEmotionByRow(data) {
+    let positiveCount = 0, neutralCount = 0, negativeCount = 0;
+    let totalPositive = 0, totalNeutral = 0, totalNegative = 0;
+    let processedCount = 0;
+
+    data.forEach((item, index) => {
+        $.ajax({
+            url: "/api/statistic/analyzeEmotion",
+            method: "POST",
+            contentType: "application/json",
+            data: JSON.stringify({text: item.answerContent}),
+            success: function (response) {
+                if (response && response.document && response.document.confidence) {
+                    const {positive, neutral, negative} = response.document.confidence;
+
+                    // 가장 높은 confidence 값을 기준으로 감정을 결정하여 카운트
+                    if (positive >= neutral && positive >= negative) {
+                        positiveCount++;
+                    } else if (neutral >= positive && neutral >= negative) {
+                        neutralCount++;
+                    } else {
+                        negativeCount++;
+                    }
+
+                    // 각 감정의 합산을 위해 값을 저장
+                    totalPositive += positive;
+                    totalNeutral += neutral;
+                    totalNegative += negative;
+                }
+
+                processedCount++;
+                if (processedCount === data.length) {
+                    // 퍼센티지 계산을 위한 비율 변환
+                    let total = totalPositive + totalNeutral + totalNegative;
+                    let avgPositive = (totalPositive / total) * 100;
+                    let avgNeutral = (totalNeutral / total) * 100;
+                    let avgNegative = (totalNegative / total) * 100;
+
+                    renderChart({
+                        document: {
+                            confidence: {
+                                positive: avgPositive,
+                                neutral: avgNeutral,
+                                negative: avgNegative
+                            }
+                        }
+                    });
+                    resetButtons();
+                }
+            },
+            error: function (xhr, status, error) {
+                console.error("감정 분석 API 요청 중 오류 발생:", status, error);
+                processedCount++;
+                if (processedCount === data.length) {
+                    resetButtons();
+                }
+            }
+        });
+    });
+}
+
+function renderChart(data) {
+    if (!data || !data.document || !data.document.confidence) {
+        console.error("Invalid data for chart:", data);
+        return;
+    }
+    // 현재 데이터를 저장하여 차트 타입 변경 시 사용
+    window.currentChartData = data;
+
+    const ctx = document.getElementById('chart-container').getContext('2d');
+    const chartType = $('#chart-type-selector').val();
+
+
+    if (window.currentChart) {
+        window.currentChart.destroy();
+    }
+
+    window.currentChart = (chartType === 'pie' ? drawPieChart : drawBarChart)(ctx, data);
+}
+
+
+$('#chart-type-selector').change(() => {
+    if (window.currentChartData) {
+        renderChart(window.currentChartData);
+    }
+});
+
+function drawPieChart(ctx, data) {
+    return new Chart(ctx, {
+        type: 'pie',
+        data: {
+            labels: ['긍정', '중립', '부정'],
+            datasets: [{
+                data: [
+                    data.document.confidence.positive,
+                    data.document.confidence.neutral,
+                    data.document.confidence.negative
+                ],
+                backgroundColor: ['rgba(75, 192, 192, 0.6)', 'rgba(54, 162, 235, 0.6)', 'rgba(255, 99, 132, 0.6)']
+            }]
+        },
+        options: {responsive: true}
+    });
+};
+
+function drawBarChart(ctx, data) {
+    return new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: ['긍정', '중립', '부정'],
+            datasets: [{
+                label: '감정 분석 결과',
+                data: [
+                    data.document.confidence.positive,
+                    data.document.confidence.neutral,
+                    data.document.confidence.negative
+                ],
+                backgroundColor: ['rgba(75, 192, 192, 0.6)', 'rgba(54, 162, 235, 0.6)', 'rgba(255, 99, 132, 0.6)']
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {y: {beginAtZero: true}}
+        }
+    });
+};
+
+
 // 개별 감정분석 버튼 클릭 시 모달 표시 이벤트
 $(document).on("click", ".analyze-btn", function () {
     const rowIndex = $(this).data("index");
     const text = $(this).closest("tr").find(".ans-content").text();
 
+    // 감정 결과 열 데이터를 비우기
+    // $(`.emotion-result[data-index="${rowIndex}"]`).text("-"); // 데이터 비우기 또는 기본값 설정
+
     $.ajax({
-        url: "/api/statistic/analyzeEmotion", // Ensure this matches your controller's endpoint
+        url: "/api/statistic/analyzeEmotion",
         method: "POST",
         contentType: "application/json",
-        data: JSON.stringify({ text: text }),
+        data: JSON.stringify({text: text}),
         success: function (response) {
             if (response && response.document && response.document.confidence) {
-                const { positive, neutral, negative } = response.document.confidence;
+                const {positive, neutral, negative} = response.document.confidence;
                 const sentiment = positive > neutral && positive > negative ? "긍정" :
                     negative > positive && negative > neutral ? "부정" : "중립";
 
-                // Determine the highest sentiment and set its color
                 let highestSentiment = "neutral";
                 let highestValue = neutral;
                 if (positive > highestValue) {
@@ -444,13 +539,8 @@ $(document).on("click", ".analyze-btn", function () {
                     negative: "red"
                 };
 
-                // Highlight the text based on the dominant sentiment
-                const highlightedText = text.replace(
-                    /(싸늘하다)|(가슴에 비수가 날아와 꽂힌다)/g,
-                    match => `<span style="color: ${colorMap[highestSentiment]}; font-weight: bold;">${match}</span>`
-                );
+                const highlightedText = `<span style="color: ${colorMap[highestSentiment]}; font-weight: bold;">${text}</span>`;
 
-                // Display result in modal
                 $("#modalContent").html(`
                     <div><strong>테스트 문장:</strong> ${highlightedText}</div>
                     <div><strong>감정 분류 결과:</strong> <span style="color: ${colorMap[highestSentiment]}; font-weight: bold;">${sentiment}</span></div>
@@ -473,14 +563,8 @@ $(document).on("click", ".analyze-btn", function () {
 });
 
 
-
-
-
-
-
-
 // 다음페이지 버튼 후 군집별 비교분석페이지로 이동
-$("#nextBtn").click(function() {
+$("#nextBtn").click(function () {
     console.log("다음 버튼 클릭");
     const tableData = collectTableData();
 
@@ -524,7 +608,7 @@ $("#nextBtn").click(function() {
 // JSON형식으로 테이블 데이터 수집
 function collectTableData() {
     let tableData = [];
-    $(".result-table tbody tr").each(function() {
+    $(".result-table tbody tr").each(function () {
         let rowData = {
             seq: $(this).find("td:eq(0)").text().trim(),
             cluster: $(this).find("td:eq(1)").text().trim(),
@@ -533,6 +617,7 @@ function collectTableData() {
             frequency: $(this).find("td:eq(4)").text().trim(),
             sentimentResult: $(this).find(".emotion-result").text().trim()
         };
+        console.log(rowData);
         tableData.push(rowData);
     });
     return tableData;
@@ -557,11 +642,14 @@ function sendDataToServer() {
         .then(data => console.log("서버 응답 데이터:", data))
         .catch(error => console.error("에러 발생:", error));
 }
+*/
 
 
+document.addEventListener("DOMContentLoaded", function () {
+    $('#wordCloudContainer').focus();
 
-/*document.addEventListener("DOMContentLoaded", function () {
     const maxChunkSize = 1000;
+
     const stopWords = [
         "이", "가", "을", "를", "은", "는", "의", "에", "에서", "그리고", "하지만", "또한", "너무", "아주", "매우",
         "않습니다", "왜냐하면", "되기", "것입니다", "저희", "여러분", "우리", "아", "휴", "아이구", "아이쿠", "아이고", "어",
@@ -585,11 +673,22 @@ function sendDataToServer() {
         "아니라", "남자", "여자", "남성", "여성", "의해", "기점으로"
     ];
 
+    // 페이지 로드 시 전체 데이터로 워드클라우드 생성
     if (clusteringData && clusteringData.length > 0) {
         generateWordCloudFromAll();
     } else {
         console.warn("clusteringData is empty or undefined.");
     }
+
+    const wordCloudContainer = $('#wordCloudContainer');
+    wordCloudContainer.focus();
+    wordCloudContainer[0].scrollIntoView({behavior: 'smooth', block: 'start'});
+    wordCloudContainer.addClass('highlight');
+
+    setTimeout(() => {
+        wordCloudContainer.removeClass('highlight');
+    }, 2000);
+
 
     let currentStep = 1;
     const steps = document.querySelectorAll(".step");
@@ -604,13 +703,23 @@ function sendDataToServer() {
         nextBtn.disabled = currentStep === steps.length - 1;
     };
 
-    prevBtn.addEventListener("click", () => { if (currentStep > 0) currentStep--; updateSteps(); });
-    nextBtn.addEventListener("click", () => { if (currentStep < steps.length - 1) currentStep++; updateSteps(); });
-    steps.forEach((step, index) => step.addEventListener("click", () => { currentStep = index; updateSteps(); }));
+    prevBtn.addEventListener("click", () => {
+        if (currentStep > 0) currentStep--;
+        updateSteps();
+    });
+    nextBtn.addEventListener("click", () => {
+        if (currentStep < steps.length - 1) currentStep++;
+        updateSteps();
+    });
+    steps.forEach((step, index) => step.addEventListener("click", () => {
+        currentStep = index;
+        updateSteps();
+    }));
     updateSteps();
 
     const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
     tooltipTriggerList.map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl));
+
 
     let clusterDropdown = $('#phrase');
     [...new Set(clusteringData.map(item => item.cluster))].forEach(cluster => {
@@ -619,40 +728,25 @@ function sendDataToServer() {
 
     clusterDropdown.change(function () {
         let selectedCluster = $(this).val();
-        let data = selectedCluster !== "phrase" ? clusteringData.filter(item => item.cluster == selectedCluster) : clusteringData;
-        renderTable(data);
+        currentData = selectedCluster !== "phrase" ? clusteringData.filter(item => item.cluster == selectedCluster) : clusteringData;
+        renderTable(currentData); // 현재 데이터로 테이블 렌더링
+        generateWordCloudFromCurrentData(); // 현재 데이터로 워드클라우드 생성
     });
 
-    function calculateWordFrequency(content) {
-        if (!content) return 0;
-        return content.trim().split(/\s+/).length;
+    function calculateWordFrequency(text) {
+        if (!text) return 0;
+        return text.trim().split(/\s+/).length;
     }
 
-    function renderTable(data) {
-        let tbody = $(".result-table tbody");
-        tbody.empty();
-        if (data.length === 0) {
-            tbody.append("<tr><td colspan='5'>검색 결과가 없습니다.</td></tr>");
-        } else {
-            data.forEach((item, index) => {
-                tbody.append(`
-                    <tr>
-                        <td>${index + 1}</td>
-                        <td>${item.cluster}</td>
-                        <td>${item.answerContent}</td>
-                        <td>${item.answerDate}</td>
-                        <td>${calculateWordFrequency(item.answerContent)}</td>
-                    </tr>
-                `);
-            });
-        }
-    }
 
     renderTable(clusteringData);
 
+
     $('#table-search-btn').click(() => {
         let keyword = $('#keyword-input').val().trim();
-        renderTable(keyword ? clusteringData.filter(item => item.answerContent.includes(keyword)) : clusteringData);
+        currentData = keyword ? clusteringData.filter(item => item.answerContent.includes(keyword)) : clusteringData; // 현재 데이터를 업데이트
+        renderTable(currentData); // 현재 데이터로 테이블 렌더링
+        generateWordCloudFromCurrentData(); // 현재 데이터로 워드클라우드 생성
     });
 
     $('#wordcloud-tab').click(function () {
@@ -664,37 +758,35 @@ function sendDataToServer() {
     function setActiveTab(tab) {
         $('#wordcloud-tab, #emotion-tab').removeClass('active');
         tab.addClass('active');
-        $('#wordCloudContainer').toggle(tab.attr("id") === "wordcloud-tab");
-        $('#emotionChartContainer').toggle(tab.attr("id") === "emotion-tab");
+
+        const isWordCloudActive = tab.attr("id") === "wordcloud-tab";
+        $('#wordCloudContainer').toggle(isWordCloudActive);
+        $('#emotionChartContainer').toggle(!isWordCloudActive);
+
+        // 포커스 설정 및 강조 효과 추가
+        if (isWordCloudActive) {
+            $('#wordCloudContainer').focus();
+            $('#wordCloudContainer').addClass('highlight'); // 강조 효과를 위한 클래스 추가
+        } else {
+            $('#emotionChartContainer').focus();
+            $('#emotionChartContainer').removeClass('highlight'); // 강조 효과 제거
+        }
     }
 
-    function generateWordCloud(keyword = '') {
-        $('#wordCloudContainer').empty();
-        $.ajax({
-            url: "/api/statistic/wordcloud",
-            type: "GET",
-            data: { keyword },
-            success: function (data) {
-                if (!data || data.length === 0) {
-                    alert("워드클라우드를 생성할 데이터가 없습니다.");
-                    resetButtons();
-                    return;
+    // 워드클라우드 생성함수
+    function generateWordCloudFromCurrentData() {
+        createWordCloud(currentData.map(item => item.answerContent).join(" ").split(/\s+/)
+            .reduce((freq, word) => {
+                word = word.trim();
+                if (!stopWords.includes(word) && word.length > 1) {
+                    freq[word] = (freq[word] || 0) + 1;
                 }
-                createWordCloud(data.reduce((freq, item) => {
-                    let word = item.word.trim();
-                    if (!stopWords.includes(word) && word.length > 1) {
-                        freq[word] = (freq[word] || 0) + 1;
-                    }
-                    return freq;
-                }, {}));
-            },
-            error: function () {
-                alert("워드 클라우드를 생성하는 중 오류가 발생했습니다.");
-                resetButtons();
-            }
-        });
+                return freq;
+            }, {}));
     }
 
+
+    // 빈도수 계산
     function generateWordCloudFromAll() {
         createWordCloud(clusteringData.map(item => item.answerContent).join(" ").split(/\s+/)
             .reduce((freq, word) => {
@@ -705,6 +797,26 @@ function sendDataToServer() {
                 return freq;
             }, {}));
     }
+
+    // 상위 단어 추출 함수 추가
+    function calculateTopWords(text, topN = 3) {
+        if (!text) return [];
+        const wordFrequency = text.trim().split(/\s+/).reduce((freq, word) => {
+            word = word.trim();
+            if (!stopWords.includes(word) && word.length > 1) {
+                freq[word] = (freq[word] || 0) + 1;
+            }
+            return freq;
+        }, {});
+
+        // 가장 높은 N개의 단어를 정렬하여 반환
+        return Object.entries(wordFrequency)
+            .sort(([, a], [, b]) => b - a)
+            .slice(0, topN)
+            .map(([word]) => word);
+    }
+
+
 
     function createWordCloud(wordFrequency) {
         if (!Object.keys(wordFrequency).length) {
@@ -721,7 +833,7 @@ function sendDataToServer() {
             backgroundColor: '#f8f9fc',
             rotateRatio: 0,
             minSize: 15,
-            drawOutOfBound: false,
+            drawOutOfBound: false
         });
         resetButtons();
     }
@@ -731,131 +843,464 @@ function sendDataToServer() {
         $('#emotion-tab').prop("disabled", false);
     }
 
-    function preprocessText(text) {
-        return text.replace(/[a-zA-Z]/g, "").replace(/[^ㄱ-ㅎㅏ-ㅣ가-힣\s]/g, "").split(/\s+/)
-            .filter(word => !stopWords.includes(word) && word.length > 1);
-    }
-
+    // 감정 분석 탭을 누를 때마다 감정 빈도수를 집계하고 시각화
     $('#emotion-tab').click(function () {
         setActiveTab($(this));
         $(this).prop("disabled", true);
-        clusteringData.length === 0 ? alert("데이터를 조회해주세요.") : analyzeEmotionByRow(clusteringData);
+        if (currentData.length === 0) {
+            alert("데이터를 조회해주세요.");
+            resetButtons();
+            return;
+        }
+        analyzeEmotionByRow(currentData); // 현재 데이터로 감정 분석 수행
     });
 
 
-
-    function analyzeEmotionByRow(data) {
-        let totalPositive = 0, totalNeutral = 0, totalNegative = 0;
-        let processedCount = 0;
-
-        data.forEach((item, index) => {
-            $.ajax({
-                url: "/api/statistic/analyzeEmotion",
-                method: "POST",
-                contentType: "application/json",
-                data: JSON.stringify({ content: item.answerContent }),
-                success: function (response) {
-                    console.log("Sentiment analysis response for row " + (index + 1) + ":", response);
-                    if (response && response.document && response.document.confidence) {
-                        totalPositive += response.document.confidence.positive;
-                        totalNeutral += response.document.confidence.neutral;
-                        totalNegative += response.document.confidence.negative;
-                    } else {
-                        console.error("유효하지 않은 감정 분석 데이터:", response);
-                    }
-
-                    processedCount++;
-                    if (processedCount === data.length) {
-                        let avgPositive = totalPositive / data.length;
-                        let avgNeutral = totalNeutral / data.length;
-                        let avgNegative = totalNegative / data.length;
-
-                        renderChart({
-                            document: {
-                                confidence: {
-                                    positive: avgPositive,
-                                    neutral: avgNeutral,
-                                    negative: avgNegative
-                                }
-                            }
-                        });
-                        resetButtons();
-                    }
-                },
-                error: function (xhr, status, error) {
-                    console.error("감정 분석 API 요청 중 오류 발생:", status, error);
-                    console.error("서버 응답:", xhr.responseText);
-                    processedCount++;
-                    if (processedCount === data.length) {
-                        resetButtons();
-                    }
-                }
+    function renderTable(data) {
+        let tbody = $(".result-table tbody");
+        tbody.empty();
+        if (data.length === 0) {
+            tbody.append("<tr><td colspan='7'>검색 결과가 없습니다.</td></tr>");
+        } else {
+            data.forEach((item, index) => {
+                const topWords = calculateTopWords(item.answerContent); // 가장 높은 단어 추출
+                tbody.append(`
+                <tr>
+                    <td>${index + 1}</td>
+                    <td>${item.cluster}</td>
+                    <td class="ans-content">${item.answerContent}</td>
+                    <td>${item.answerDate}</td>
+                    <td>${calculateWordFrequency(item.answerContent)}</td>
+                     <td class="top-words">${topWords.join(', ')}</td> <!-- 상위 단어 추가 -->
+                    <td>
+                        <button class="btn btn-primary btn-sm analyze-btn" data-index="${index}">상세보기</button>
+                    </td>
+                    <td class="emotion-result" data-index="${index}">-</td>
+                </tr>
+            `);
             });
-        });
-    }
-
-    function renderChart(data) {
-        if (!data || !data.document || !data.document.confidence) {
-            console.error("Invalid data for chart:", data);
-            return;
         }
-        const ctx = document.getElementById('chart-container').getContext('2d');
-        const chartType = $('#chart-type-selector').val();
+    }
 
-        if (window.currentChart) {
-            window.currentChart.destroy();
+}); //이벤트리스너 종료부분
+
+// 각 행의 감정분석 버튼 클릭 이벤트
+$(".analyze-btn").click(function () {
+    let text = $(this).parents('tr').find('.ans-content').text();
+    const rowIndex = $(this).data("index");
+
+    // 감정 결과 열 데이터를 비우기
+    // $(`.emotion-result[data-index="${rowIndex}"]`).text("-"); // 데이터 비우기 또는 기본값 설정
+
+    analyzeEmotionForRow(text, rowIndex);
+});
+
+function analyzeEmotionForRow(rowData, rowIndex) {
+    $.ajax({
+        url: "/api/statistic/analyzeEmotion",
+        method: "POST",
+        contentType: "application/json",
+        data: JSON.stringify({text: rowData}),
+        success: function (response) {
+            if (response && response.document && response.document.confidence) {
+                const {positive, neutral, negative} = response.document.confidence;
+                const sentiment = positive > neutral && positive > negative ? "긍정" :
+                    negative > positive && negative > neutral ? "부정" : "중립";
+
+                const colorMap = {
+                    positive: "green",
+                    neutral: "blue",
+                    negative: "red"
+                };
+
+                const highlightedText = `<span style="color: ${colorMap[sentiment]}">${rowData}</span>`;
+
+                $("#modalContent").html(`
+                    <div><strong>테스트 문장:</strong> ${highlightedText}</div>
+                    <div><strong>감정 분류 결과:</strong> <span style="color: ${colorMap[sentiment]}">${sentiment}</span></div>
+                    <div>긍정: <span style="color: ${colorMap.positive};">${positive.toFixed(2)}</span>, 
+                     <div>중립: <span style="color: ${colorMap.neutral};">${neutral.toFixed(2)}</span>, 
+                        <div>부정: <span style="color: ${colorMap.negative};">${negative.toFixed(2)}</span></div>
+                `);
+                $("#emotionModal").modal("show");
+            } else {
+                console.error("Invalid sentiment analysis response:", response);
+                $("#modalContent").text("감정 분석에 실패했습니다.");
+                $("#emotionModal").modal("show");
+            }
+        },
+        error: function (xhr, status, error) {
+            console.error("Sentiment analysis request failed:", status, error);
+            $("#modalContent").text("오류 발생: 감정 분석 요청에 실패했습니다.");
+            $("#emotionModal").modal("show");
         }
+    });
+}
 
-        window.currentChart = (chartType === 'pie' ? drawPieChart : drawBarChart)(ctx, data);
+
+// 감정 분석 버튼 클릭 시 모달 표시 이벤트
+// $(document).on("click", ".analyze-btn", function () {
+//     const rowIndex = $(this).data("index");
+//     const text = $(this).closest("tr").find(".ans-content").text();
+//
+//     // 감정 결과 열 데이터를 비우기
+//     // $(`.emotion-result[data-index="${rowIndex}"]`).text("-"); // 데이터 비우기 또는 기본값 설정
+//
+//     $.ajax({
+//         url: "/api/statistic/analyzeEmotion",
+//         method: "POST",
+//         contentType: "application/json",
+//         data: JSON.stringify({text: text}),
+//         success: function (response) {
+//             if (response && response.document && response.document.confidence) {
+//                 const {positive, neutral, negative} = response.document.confidence;
+//                 const sentiment = positive > neutral && positive > negative ? "긍정" :
+//                     negative > positive && negative > neutral ? "부정" : "중립";
+//
+//
+//                 $("#modalContent").html(`
+//             <div><strong>테스트 문장:</strong> ${text}</div>
+//             <div><strong>감정 분류 결과:</strong> ${sentiment}</div>
+//             <div>긍정: ${positive.toFixed(2)}, 중립: ${neutral.toFixed(2)}, 부정: ${negative.toFixed(2)}</div>
+//         `);
+//                 $("#emotionModal").modal("show");
+//             } else {
+//                 $("#modalContent").text("감정 분석에 실패했습니다.");
+//                 $("#emotionModal").modal("show");
+//             }
+//         },
+//         error: function (xhr, status, error) {
+//             console.error("Sentiment analysis request failed:", error);
+//             $("#modalContent").text("오류 발생: 감정 분석 요청에 실패했습니다.");
+//             $("#emotionModal").modal("show");
+//         }
+//     });
+// });
+
+
+// 전체 감정 분석 버튼 클릭 이벤트
+document.getElementById("analyzeAllBtn").addEventListener("click", function () {
+    const tableData = collectTableData().map(data => ({ text: data.answerContent,order:data.seq }));
+    console.log(tableData);
+    $.ajax({
+        url: "/api/statistic/analyzeAllEmotions",
+        method: "POST",
+        contentType: "application/json",
+        data: JSON.stringify(tableData),
+        success: function (response) {
+            console.log(response);
+            response.forEach((result) => {
+                const orderIndex = result.order - 1; // order는 1부터 시작하므로 -1...!!
+
+                const highestEmotion = result.name; // name 속성에서 감정 값을 가져옴
+                // const { positive, neutral, negative } = result;
+
+                // 가장 높은 감정 결정
+                // let highestEmotion = "중립"; // 기본값
+                // if (positive > neutral && positive > negative) {
+                //     highestEmotion = "긍정";
+                // } else if (negative > positive && negative > neutral) {
+                //     highestEmotion = "부정";
+                // }
+
+                // 감정 결과 업데이트
+                const emotionHTML = getStyledEmotionHTML(highestEmotion);
+                $(`.emotion-result[data-index="${orderIndex}"]`).html(emotionHTML);
+            });
+
+        },
+        error: function (xhr, status, error) {
+            console.error("전체 감정 분석 실패:", error);
+        }
+    });
+});
+
+function getStyledEmotionHTML(emotion) {
+    let iconHTML = "";
+    let color = "";
+
+    switch (emotion) {
+        case "긍정":
+            iconHTML = "✔️";
+            color = "#007bff";
+            break;
+        case "중립":
+            iconHTML = "➖";
+            color = "#6c757d";
+            break;
+        case "부정":
+            iconHTML = "❌";
+            color = "#dc3545";
+            break;
     }
+    return `<span style="color: ${color}; font-weight: bold;">${iconHTML} ${emotion}</span>`;
+}
 
-    $('#chart-type-selector').change(() => window.currentChartData && renderChart(window.currentChartData));
 
-    function drawPieChart(ctx, data) {
-        return new Chart(ctx, {
-            type: 'pie',
-            data: {
-                labels: ['Positive', 'Neutral', 'Negative'],
-                datasets: [{
-                    data: [
-                        data.document.confidence.positive,
-                        data.document.confidence.neutral,
-                        data.document.confidence.negative
-                    ],
-                    backgroundColor: ['rgba(75, 192, 192, 0.6)', 'rgba(54, 162, 235, 0.6)', 'rgba(255, 99, 132, 0.6)']
-                }]
+function analyzeEmotionByRow(data) {
+    let positiveCount = 0, neutralCount = 0, negativeCount = 0;
+    let totalPositive = 0, totalNeutral = 0, totalNegative = 0;
+    let processedCount = 0;
+
+    data.forEach((item, index) => {
+        $.ajax({
+            url: "/api/statistic/analyzeEmotion",
+            method: "POST",
+            contentType: "application/json",
+            data: JSON.stringify({text: item.answerContent}),
+            success: function (response) {
+                if (response && response.document && response.document.confidence) {
+                    const {positive, neutral, negative} = response.document.confidence;
+
+                    // 가장 높은 confidence 값을 기준으로 감정을 결정하여 카운트
+                    if (positive >= neutral && positive >= negative) {
+                        positiveCount++;
+                    } else if (neutral >= positive && neutral >= negative) {
+                        neutralCount++;
+                    } else {
+                        negativeCount++;
+                    }
+
+                    // 각 감정의 합산을 위해 값을 저장
+                    totalPositive += positive;
+                    totalNeutral += neutral;
+                    totalNegative += negative;
+                }
+
+                processedCount++;
+                if (processedCount === data.length) {
+                    // 퍼센티지 계산을 위한 비율 변환
+                    let total = totalPositive + totalNeutral + totalNegative;
+                    let avgPositive = (totalPositive / total) * 100;
+                    let avgNeutral = (totalNeutral / total) * 100;
+                    let avgNegative = (totalNegative / total) * 100;
+
+                    renderChart({
+                        document: {
+                            confidence: {
+                                positive: avgPositive,
+                                neutral: avgNeutral,
+                                negative: avgNegative
+                            }
+                        }
+                    });
+                    resetButtons();
+                }
             },
-            options: { responsive: true }
-        });
-    }
-
-    function drawBarChart(ctx, data) {
-        return new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: ['Positive', 'Neutral', 'Negative'],
-                datasets: [{
-                    data: [
-                        data.document.confidence.positive,
-                        data.document.confidence.neutral,
-                        data.document.confidence.negative
-                    ],
-                    backgroundColor: ['rgba(75, 192, 192, 0.6)', 'rgba(54, 162, 235, 0.6)', 'rgba(255, 99, 132, 0.6)']
-                }]
-            },
-            options: {
-                responsive: true,
-                scales: { y: { beginAtZero: true } }
+            error: function (xhr, status, error) {
+                console.error("감정 분석 API 요청 중 오류 발생:", status, error);
+                processedCount++;
+                if (processedCount === data.length) {
+                    resetButtons();
+                }
             }
         });
+    });
+}
+
+function renderChart(data) {
+    if (!data || !data.document || !data.document.confidence) {
+        console.error("Invalid data for chart:", data);
+        return;
     }
-});*/
+    // 현재 데이터를 저장하여 차트 타입 변경 시 사용
+    window.currentChartData = data;
+
+    const ctx = document.getElementById('chart-container').getContext('2d');
+    const chartType = $('#chart-type-selector').val();
 
 
+    if (window.currentChart) {
+        window.currentChart.destroy();
+    }
+
+    window.currentChart = (chartType === 'pie' ? drawPieChart : drawBarChart)(ctx, data);
+}
 
 
+$('#chart-type-selector').change(() => {
+    if (window.currentChartData) {
+        renderChart(window.currentChartData);
+    }
+});
+
+function drawPieChart(ctx, data) {
+    return new Chart(ctx, {
+        type: 'pie',
+        data: {
+            labels: ['긍정', '중립', '부정'],
+            datasets: [{
+                data: [
+                    data.document.confidence.positive,
+                    data.document.confidence.neutral,
+                    data.document.confidence.negative
+                ],
+                backgroundColor: ['rgba(75, 192, 192, 0.6)', 'rgba(54, 162, 235, 0.6)', 'rgba(255, 99, 132, 0.6)']
+            }]
+        },
+        options: {responsive: true}
+    });
+};
+
+function drawBarChart(ctx, data) {
+    return new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: ['긍정', '중립', '부정'],
+            datasets: [{
+                label: '감정 분석 결과',
+                data: [
+                    data.document.confidence.positive,
+                    data.document.confidence.neutral,
+                    data.document.confidence.negative
+                ],
+                backgroundColor: ['rgba(75, 192, 192, 0.6)', 'rgba(54, 162, 235, 0.6)', 'rgba(255, 99, 132, 0.6)']
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {y: {beginAtZero: true}}
+        }
+    });
+};
 
 
+// 개별 감정분석 버튼 클릭 시 모달 표시 이벤트
+$(document).on("click", ".analyze-btn", function () {
+    const rowIndex = $(this).data("index");
+    const text = $(this).closest("tr").find(".ans-content").text();
+
+    // 감정 결과 열 데이터를 비우기
+    // $(`.emotion-result[data-index="${rowIndex}"]`).text("-"); // 데이터 비우기 또는 기본값 설정
+
+    $.ajax({
+        url: "/api/statistic/analyzeEmotion",
+        method: "POST",
+        contentType: "application/json",
+        data: JSON.stringify({text: text}),
+        success: function (response) {
+            if (response && response.document && response.document.confidence) {
+                const {positive, neutral, negative} = response.document.confidence;
+                const sentiment = positive > neutral && positive > negative ? "긍정" :
+                    negative > positive && negative > neutral ? "부정" : "중립";
+
+                let highestSentiment = "neutral";
+                let highestValue = neutral;
+                if (positive > highestValue) {
+                    highestSentiment = "positive";
+                    highestValue = positive;
+                }
+                if (negative > highestValue) {
+                    highestSentiment = "negative";
+                    highestValue = negative;
+                }
+
+                const colorMap = {
+                    positive: "green",
+                    neutral: "blue",
+                    negative: "red"
+                };
+
+                const highlightedText = `<span style="color: ${colorMap[highestSentiment]}; font-weight: bold;">${text}</span>`;
+
+                $("#modalContent").html(`
+                    <div><strong>테스트 문장:</strong> ${highlightedText}</div>
+                    <div><strong>감정 분류 결과:</strong> <span style="color: ${colorMap[highestSentiment]}; font-weight: bold;">${sentiment}</span></div>
+                    <div>긍정: <span style="color: ${colorMap.positive};">${positive.toFixed(2)}</span>, 
+                         중립: <span style="color: ${colorMap.neutral};">${neutral.toFixed(2)}</span>, 
+                         부정: <span style="color: ${colorMap.negative};">${negative.toFixed(2)}</span></div>
+                `);
+                $("#emotionModal").modal("show");
+            } else {
+                $("#modalContent").text("감정 분석에 실패했습니다.");
+                $("#emotionModal").modal("show");
+            }
+        },
+        error: function (xhr, status, error) {
+            console.error("Sentiment analysis request failed:", error);
+            $("#modalContent").text("오류 발생: 감정 분석 요청에 실패했습니다.");
+            $("#emotionModal").modal("show");
+        }
+    });
+});
 
 
+// 다음페이지 버튼 후 군집별 비교분석페이지로 이동
+$("#nextBtn").click(function () {
+    console.log("다음 버튼 클릭");
+    const tableData = collectTableData();
 
+
+    const tableDataJsonString = JSON.stringify(tableData);
+
+
+    let form = document.createElement("form");
+    form.method = "POST";
+    form.action = "/statistic/compareClustering";
+
+
+    let input = document.createElement("input");
+    input.type = "hidden";
+    input.name = "tableData";
+    input.value = tableDataJsonString;
+
+
+    form.appendChild(input);
+    document.body.appendChild(form);
+
+
+    form.submit();
+
+    // $.ajax({
+    //     url: "/api/statistic/compareClustering",
+    //     method: "POST",
+    //     contentType: "application/json",
+    //     data: JSON.stringify(tableData),
+    //     success: function(response) {
+    //         console.log("데이터 전송 성공:", response);
+    //
+    //         //window.location.href = "/statistic/compareClustering";
+    //     },
+    //     error: function(xhr, status, error) {
+    //         console.error("데이터 전송 실패:", error);
+    //     }
+    // });
+});
+
+// JSON형식으로 테이블 데이터 수집
+function collectTableData() {
+    let tableData = [];
+    $(".result-table tbody tr").each(function () {
+        let rowData = {
+            seq: $(this).find("td:eq(0)").text().trim(),
+            cluster: $(this).find("td:eq(1)").text().trim(),
+            answerContent: $(this).find("td:eq(2)").text().trim(),
+            answerDate: $(this).find("td:eq(3)").text().trim(),
+            frequency: $(this).find("td:eq(4)").text().trim(),
+            sentimentResult: $(this).find(".emotion-result").text().trim()
+        };
+        console.log(rowData);
+        tableData.push(rowData);
+    });
+    return tableData;
+}
+
+// 서버로 전송
+function sendDataToServer() {
+    let tableData = collectTableData();
+    fetch("/statistic/compareClustering", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(tableData)
+    })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error("서버 응답 에러");
+            }
+            return response.json();
+        })
+        .then(data => console.log("서버 응답 데이터:", data))
+        .catch(error => console.error("에러 발생:", error));
+}
