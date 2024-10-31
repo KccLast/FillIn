@@ -3,15 +3,16 @@ package com.kcc.fillin.statistic.dto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class QuestionListResponse {
+@ToString
+public class QuantityQuestionsResponse {
     private Long surveySeq;
+    private String surveyName;
     private Long questionSeq;
-    private int orderNum;
-    private String name;
-    private Long answerSeq;
-    private String contents;
+    private String questionName;
+    private int ccSeq;
 }

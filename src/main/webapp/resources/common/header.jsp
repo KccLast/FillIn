@@ -42,6 +42,32 @@
 
         </head>
 
+<<<<<<< HEAD
+<body>
+	<!-- 헤더 -->
+	<header class="p-2">
+		<div class="container-fluid">
+			<ul class="header-list d-flex justify-content-between m-1 align-items-center">
+				<li><img class="logo" alt="로고" src="/resources/img/common/logo.png"></li>
+				<li class="dashboard">DashBoard</li>
+				<div class="d-flex align-items-center">
+					<li class="px-2 alarm-item"><img alt="alarm" src="/resources/img/common/alarm.png" width="25" height="23">
+						<div class="circle"></div></li>
+					<li class="px-2 username"> <sec:authentication property="principal.member.name"/>님(<sec:authentication property="principal.member.username"/>)</li>
+					<li class="px-2">
+						<!-- 모달 연결 -->
+						<img class="profile" alt="profile"
+							src="/resources/img/common/profile.png" width="35" height="35"
+							data-bs-toggle="modal" data-bs-target="#mypage-modal">
+					</li>
+				</div>
+			</ul>
+		</div>
+	</header>
+	<%@include file="/WEB-INF/views/member/modal-mypage.jsp"%>
+</body>
+</html>
+=======
         <body>
             <!-- 헤더 -->
             <header class="p-2">
@@ -75,3 +101,4 @@
         </body>
 
         </html>
+>>>>>>> c5fa23152ff0aace95c09f928cd2651588416479

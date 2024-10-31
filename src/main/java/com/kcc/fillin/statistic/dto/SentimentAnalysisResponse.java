@@ -4,11 +4,10 @@ import lombok.*;
 
 @Getter
 @Setter
-@AllArgsConstructor
-@NoArgsConstructor
 @ToString
-public class EmotionRequest {
-    private String text;
+@NoArgsConstructor
+@AllArgsConstructor
+public class SentimentAnalysisResponse {
+    private String name;
     private Integer order;
-
 }

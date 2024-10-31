@@ -18,5 +18,6 @@ public class AnswerDTO {
     private Long questionSeq;
     private Long participantSeq;
     private String contents;
+    @JsonFormat(pattern = "yyyy-MM-dd a h:mm:ss")
     private LocalDateTime answerDate;
 }

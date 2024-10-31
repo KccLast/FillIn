@@ -27,15 +27,17 @@ h2 {
     text-align: center;
     color: #333;
     margin-bottom: 30px;
+    padding-left: 23px;
     font-weight: bold !important;
 }
 
 
 .filter-section {
     display: flex;
-    justify-content: center;
+    justify-content: left;
     align-items: center;
     gap: 15px;
+    padding-left:25px;
     margin-bottom: 30px;
     flex-wrap: wrap; /* 작은 화면 간격 유지... */
 }

@@ -1,6 +1,7 @@
 package com.kcc.fillin.statistic.service;
 
 import com.kcc.fillin.statistic.dao.StatisticsDao_JA;
+import com.kcc.fillin.statistic.dto.QuantityQuestionsResponse;
 import com.kcc.fillin.statistic.dto.QuestionListResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -14,5 +15,10 @@ public class StatisticsServiceImpl_JA implements StatisticsService_JA {
     @Override
     public List<QuestionListResponse> getQuestionsBySurveySeq(Long surveySeq) {
         return dao.getQuestionsBySurveySeq(surveySeq);
+    }
+
+    @Override
+    public List<QuantityQuestionsResponse> getQuantityQuestionsBySurvey(Long surveySeq) {
+        return dao.getQuantityQuestionsBySurvey(surveySeq);
     }
 }

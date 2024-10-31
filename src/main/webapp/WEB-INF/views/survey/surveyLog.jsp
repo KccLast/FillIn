@@ -22,16 +22,16 @@
 <%@ include file="/resources/common/statisticsNav.jsp"%>
 
 
-<div class="container" style="padding-top:65px;">
-    <h2 style="padding-bottom: 10px;">Survey Log Details</h2>
+<div class="container" style="padding-top:55px; width:80%;">
+    <h2 style="padding-bottom: 28px; text-align: left;">응답 시간 분석</h2>
     <div class="filter-section">
-        <label for="startDate">Start Date:</label>
+        <label for="startDate">시작 일자:</label>
         <input type="date" id="startDate">
 
-        <label for="endDate">End Date:</label>
+        <label for="endDate">종료 일자:</label>
         <input type="date" id="endDate">
 
-        <button id="filter-btn" class="filter-button">Filter Logs</button>
+        <button id="filter-btn" class="filter-button">로그 필터</button>
     </div>
 
     <div id="data-container" class="table-section">
