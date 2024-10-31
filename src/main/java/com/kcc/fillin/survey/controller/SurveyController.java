@@ -78,7 +78,7 @@ public class SurveyController {
 	}
 
 	// 설문 로그 및 응답 시간 페이지를 반환하는 메서드
-	@GetMapping("/logs")
+	@GetMapping("/logs/{surveySeq}")
 	public String showSurveyLogsPage(Model model) {
 		
 		return "/survey/surveyLog";  // surveyLog.jsp 파일을 렌더링

@@ -748,6 +748,10 @@ $(function () {
   // let surveySeq = pathName.substring(pathName.lastIndexOf('/') + 1);
   // let link = '/survey/' + surveySeq;
   // $('.nav > .nav-link:eq(0)').attr('href', link);
+  $('.content').on('input', '.j-survey-content>textarea', function () {
+    $(this).css('height', 'auto'); // 높이를 초기화
+    $(this).css('height', this.scrollHeight + 'px'); // scrollHeight를 사용해 높이 설정
+  });
 });
 
 //생성된 input에 name부여

@@ -67,7 +67,7 @@
 
 .j-survey-content > textarea {
   width: 95%;
-  height: 80px !important;
+  min-height: 80px !important;
   border: none;
   resize: none;
   padding-left: 1.6% !important;
@@ -75,8 +75,9 @@
   color: #aeaeae;
   font-weight: bold;
   text-align: left;
-  height: 15%;
+
   padding-top: 4% !important;
+  overflow: hidden;
 }
 
 .text-label {
