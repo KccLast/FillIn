@@ -22,43 +22,43 @@
     </resultMap>
 
     <resultMap type="SurveyVO" id="surveyInfo">
-        <!-- 설문지 정보 -->
-        <id column="seq" property="seq"/>
-        <result column="name" property="name"/>
-        <result column="post_date" property="postDate"/>
-        <result column="end_date" property="endDate"/>
-        <result column="url" property="url"/>
-        <result column="created_at" property="createdAt"/>
-        <result column="updated_at" property="updatedAt"/>
-        <result column="target_people" property="targetPeople"/>
-        <result column="cc_seq" property="ccSeq"/>
-        <result column="member_seq" property="memberSeq"/>
-        <result column="totalCnt" property="totalCnt"/>
+    <!-- 설문지 정보 -->
+    <id column="seq" property="seq"/>
+    <result column="name" property="name"/>
+    <result column="post_date" property="postDate"/>
+    <result column="end_date" property="endDate"/>
+    <result column="url" property="url"/>
+    <result column="created_at" property="createdAt"/>
+    <result column="updated_at" property="updatedAt"/>
+    <result column="target_people" property="targetPeople"/>
+    <result column="cc_seq" property="ccSeq"/>
+    <result column="member_seq" property="memberSeq"/>
+   <result column="totalCnt" property="totalCnt"/>
 
-        <!-- question List -->
-        <collection property="questions" ofType="QuestionVO">
-            <id column="question_seq" property="seq"/>
-            <result column="survey_seq" property="surveySeq"/>
-            <result column="tb_file_seq" property="tbFileSeq"/>
-            <result column="question_name" property="name"/>
-            <result column="description" property="description"/>
-            <result column="q_order" property="order"/>
-            <result column="is_essential" property="isEssential"/>
-            <result column="question_cc_seq" property="ccSeq"/>
-            <result column="q_is_active" property="isActive"/>
-            <result column="q_created_at" property="createdAt"/>
-            <result column="q_updated_at" property="updatedAt"/>
+    <!-- question List -->
+    <collection property="questions" ofType="QuestionVO" >
+        <id column="question_seq" property="seq"/>
+        <result column="survey_seq" property="surveySeq"/>
+        <result column="tb_file_seq" property="tbFileSeq"/>
+        <result column="question_name" property="name"/>
+        <result column="description" property="description"/>
+        <result column="q_order" property="order"/>
+        <result column="is_essential" property="isEssential"/>
+        <result column="question_cc_seq" property="ccSeq"/>
+        <result column="q_is_active" property="isActive"/>
+        <result column="q_created_at" property="createdAt"/>
+        <result column="q_updated_at" property="updatedAt"/>
 
-            <!-- 질문 항목 리스트 -->
-            <collection property="questionItems" ofType="QuestionItemVO">
-                <id column="question_item_seq" property="seq"/>
-                <result column="qi_question_seq" property="questionSeq"/>
-                <result column="content" property="content"/>
-                <result column="qi_order" property="orderNum"/>
-                <result column="qi_is_active" property="isActive"/>
-                <result column="qi_created_at" property="createdAt"/>
-                <result column="qi_updated_at" property="updatedAt"/>
-            </collection>
+        <!-- 질문 항목 리스트 -->
+        <collection property="questionItems" ofType="QuestionItemVO">
+            <id column="question_item_seq" property="seq"/>
+            <result column="qi_question_seq" property="questionSeq"/>
+            <result column="content" property="content"/>
+            <result column="qi_order" property="orderNum"/>
+            <result column="qi_is_active" property="isActive"/>
+            <result column="qi_created_at" property="createdAt"/>
+            <result column="qi_updated_at" property="updatedAt"/>
+        </collection>
 
         <!-- 조건 리스트 -->
         <collection property="conditions" ofType="ConditionVO">
@@ -67,14 +67,15 @@
             <result column="next_question_seq" property="nextQuestionSeq"/>
             <result column="c_value" property="cValue"/>
             <result column="operation" property="operation"/>
-			<result column="condition_order" property="orderNum"></result>
+         <result column="condition_order" property="orderNum"></result>
             <result column="c_is_active" property="isActive"/>
             <result column="c_created_at" property="createdAt"/>
             <result column="c_updated_at" property="updatedAt"/>
         </collection>
-        <!-- question List -->
-
-    </resultMap>
+    </collection>
+    <!-- question List -->
+    
+</resultMap>
 
     <!-- 전체 설문지 조회 -->
     <select id="getSurveyListWithPaging" resultMap="surveyResultMap"
