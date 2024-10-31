@@ -9,6 +9,7 @@ import com.kcc.fillin.survey.domain.SurveyVO;
 import com.kcc.fillin.survey.dto.CommonCodeResponse;
 import com.kcc.fillin.survey.dto.MultiSearchSurveyRequest;
 import com.kcc.fillin.survey.dto.MultiSearchSurveyResponse;
+import com.kcc.fillin.survey.dto.PostSurveyRequest;
 
 @Mapper
 public interface SurveyDao {
@@ -36,5 +37,7 @@ public interface SurveyDao {
 	public boolean insertNewParticipant(ParticipantVO newParticipantVO);
 
 	public boolean insertCheckLog(String surveyUrl);
+
+	public boolean updateSurveyInfo(PostSurveyRequest postSurveyRequest);
 
 }

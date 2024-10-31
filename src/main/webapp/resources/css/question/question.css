@@ -642,7 +642,7 @@ tr:nth-child(even) {
 /*chart css*/
 
 /*주소입력*/
-.btn {
+.btn:not(.btn-secondary) {
     background: #005bac !important;
     font-weight: bold !important;
 }
