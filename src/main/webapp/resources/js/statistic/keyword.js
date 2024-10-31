@@ -1234,7 +1234,7 @@ function drawBarChart(ctx, data) {
     });
 };
 
-// 승우 추가 - 리터럴 객체
+
 let arr = {
     positive: 0,
     neutral: 0,
@@ -1372,7 +1372,7 @@ function collectTableData() {
             topwords: $(this).find("td:eq(5)").text().trim(),
             //details: $(this).find(".details").text().trim(), // 감정 결과가 담긴 details 추가
 
-            // 승우 추가 아마 동적이라서 부른시점에없어서 그런걸지도?
+
             details:  arr,
             sentimentResult: $(this).find(".emotion-result").text().trim()
         };

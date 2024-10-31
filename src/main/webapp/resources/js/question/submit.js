@@ -2,6 +2,8 @@ var page = 1;
 var end;
 var participant_seq;
 var totalCount;
+var totalEssentialCnt;
+var curNum = 0;
 //var pageDTO;
 $(function () {
   setCard();
@@ -38,8 +40,6 @@ $(function () {
     var clickedIndex = $(this).index(); // 클릭된 숫자의 인덱스
     var totalNumbers = $(this).parent().find('span').length - 1; // 전체 숫자의 갯수 (인덱스 기준으로 -1)
 
-    console.log(clickedIndex);
-    console.log(totalNumbers);
     // 선 채우기 업데이트
     updateLine($(this).parents('.j-LineAndnumber'), clickedIndex, totalNumbers);
     e.stopPropagation();
@@ -58,7 +58,6 @@ $(function () {
     pageHideAndShow();
   });
   $('.nextBtn').on('click', '#prev-btn', function () {
-    console.log(page);
     page--;
     //setCard();
     setPageBtn();
@@ -69,7 +68,6 @@ $(function () {
     'click',
     '.j-option-input-radio  input[type="checkbox"]',
     function () {
-      console.log('hi');
       let $parentCard = $(this).parents('.j-question-card'); // 부모 .j-question-card 요소
       let questionSeq = $parentCard.find('.j-qseq').val();
       let cSeq = $parentCard.find('.j-cseq').val();
@@ -95,6 +93,7 @@ $(function () {
       storeCheckBoxsubmitInLocal(submitObject, questionSeq, 'submitList');
       $parentCard.addClass('j-ans');
       updateLineProgressBar();
+      checkConditionalFlow(this, $(this).val());
     }
   );
 
@@ -102,6 +101,12 @@ $(function () {
     'click',
     '.j-option-input-radio  input[type="radio"], .j-gender-radio',
     function () {
+      let questionSeq = $(this)
+        .parents('.j-question-card')
+        .find('.j-qseq')
+        .val();
+      checkConditionalFlow(this, $(this).val());
+
       getSubmitObject(this, $(this).val());
 
       // storeCheckBoxsubmitInLocal(
@@ -172,7 +177,6 @@ $(function () {
           email += $(item).val();
           if (index === 0) email += '@'; // 이메일 주소 형식으로 결합
         });
-      console.log(email);
 
       // 이메일 유효성 검사 (정규 표현식)
       let emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // 이메일 형식 확인 정규식
@@ -198,7 +202,6 @@ $(function () {
 
     // 휴대폰 번호가 형식에 맞는지 확인
     if (phoneRegex.test(phone)) {
-      console.log(phone);
       getSubmitObject(this, phone);
     }
   });
@@ -231,9 +234,7 @@ function submitResponse() {
     success: function () {
       alert('설문에 참여해주셔서 감사합니다.');
     },
-    error: function (error) {
-      console.log(error);
-    },
+    error: function (error) {},
   });
 }
 function getSubmitObject(target, value) {
@@ -258,9 +259,8 @@ function getSubmitObject(target, value) {
 }
 
 async function pageHideAndShow() {
-  console.log('show' + page);
-  $('.j-question-card').hide();
-  $('.' + page).show();
+  $('.j-question-card').removeClass('ac-card');
+  $('.' + page).addClass('ac-card');
   // 스크롤을 맨 위로 올립니다.
   window.scrollTo({
     top: 0,
@@ -302,7 +302,7 @@ function storeCheckBoxsubmitInLocal(updateItem, questionSeq, listId) {
   } else {
     localStorageObject.push(updateItem);
   }
-  console.log(localStorageObject);
+
   localStorage.setItem(listId, JSON.stringify(localStorageObject));
 }
 
@@ -443,7 +443,7 @@ function execDaumPostcode(button) {
 //주소입력
 
 //카드셋팅
-function setCard() {
+async function setCard() {
   const currentUrl = window.location.href;
   const lastSlashIndex = currentUrl.lastIndexOf('/');
   const surveyUrl = currentUrl.substring(lastSlashIndex + 1);
@@ -454,10 +454,16 @@ function setCard() {
     success: async function (response) {
       if (page === undefined || page === null) page = 1;
       //pageDTO = response.data.pageDTO;
+
       setEnd(response.data.totalCnt);
       setPageBtn();
 
       await processQuestions(response.data.questions);
+
+      await setNodes(response.data.questions);
+
+      await findNext(nodeList[0].seq);
+      await setTotalCnt();
       await pageHideAndShow();
     },
     error: function (xhr, status, error) {
@@ -705,7 +711,7 @@ function setPageBtn() {
 // 선형 배율
 function updateLineProgressBar() {
   let len = $('.content').find('.j-ans').length;
-  console.log(len);
+
   var percentage = (len / totalCount) * 100; // 클릭한 비율 계산
   if (!percentage) percentage = 0;
   $('.j-progress-line').css(
@@ -716,4 +722,152 @@ function updateLineProgressBar() {
       percentage +
       '%)'
   );
+}
+
+function checkAndPlusAnswer() {
+  curNum++;
+  if (curNum == totalCount) {
+    $('#j-submit').fadeIn();
+  } else {
+    $('#j-submit').hide();
+  }
+}
+
+let nodeList = [];
+let originalNodeList;
+
+async function setNodes(questions) {
+  for (let i = 0; i < questions.length; i++) {
+    let seq = questions[i].seq;
+    let nextSeq;
+    let conditionList = [];
+    console.log(questions[i]);
+    questions[i].conditions.forEach((con) => {
+      let condition = {
+        operation: con.operation,
+        val: con.cvalue,
+        next: con.nextQuestionSeq,
+        order: con.orderNum,
+      };
+      if (condition.order === 0) nextSeq = condition.next;
+      conditionList.push(condition);
+    });
+
+    // 다음 인덱스의 질문을 찾아 설정
+    if (nextSeq === undefined && i < questions.length - 1) {
+      nextSeq = questions[i + 1].seq;
+    } else if (i === questions.length - 1) {
+      nextSeq = null;
+    }
+    nodeList.push({ seq: seq, next: nextSeq, conditionList: conditionList });
+  }
+  originalNodeList = nodeList;
+}
+//현재 질문 혹은 선택에 의한 질문이 들어가면 됨 거기서부터 next를 찾으면서 돌면된다.
+async function findNext(target) {
+  //nodeList에서 해당 seq를 찾기
+  let targetNode = nodeList.find((node) => {
+    return node.seq === target;
+  });
+
+  const cards = $('.content .j-question-card');
+
+  // 2. j-seq가 314인 카드 찾기
+  const targetCard = cards.filter(function () {
+    return $(this).find('.j-qseq').val() === targetNode.seq + ''; // j-seq 값이 '314'인 카드
+  });
+  //targetCard.removeClass('no-card');
+  if (!targetCard.hasClass('ac-card')) {
+    targetCard.addClass('ac-card');
+  }
+  if (targetNode.next === null) return;
+  findNext(targetNode.next);
+}
+
+function cal(operation, val, target) {
+  console.log(operation);
+  switch (operation) {
+    case '같음':
+      return val === target; // 두 값이 같은지 비교
+    case '같지않음':
+      return val !== target; // 두 값이 다른지 비교
+    case '포함':
+      return target.includes(val); // target에 val이 포함되어 있는지 검사
+    case '시작':
+      return target.startsWith(val); // target이 val로 시작하는지 검사
+    case '끝':
+      return target.endsWith(val); // target이 val로 끝나는지 검사
+    default:
+      console.error('지원되지 않는 연산입니다:', operation);
+      return false; // 기본적으로 false 반환
+  }
+}
+
+async function setTotalCnt() {
+  totalCount = $('.content .ac-card').length;
+  totalEssentialCnt = $('.content .ac-card').find('.j-es-seleted').length;
+}
+function addAllCardDisplayNone() {
+  $('.content .j-question-card').removeClass('ac-card');
+}
+
+function checkConditionalFlow(targetCard, targetVal) {
+  let questionSeq = $(targetCard)
+    .parents('.j-question-card')
+    .find('.j-qseq')
+    .val();
+
+  let findNode = nodeList.find((node) => node.seq === parseInt(questionSeq));
+
+  if (!findNode) return;
+
+  let isConditionAnswer = false;
+  // findNode.conditionList.forEach((con) => {
+  //   if (!isConditionAnswer && cal(con.operation, con.val, targetVal)) {
+  //     console.log(con.val);
+  //     findNode.next = con.next;
+  //     //targetCard 밑으로는 ac-card 다 빼버리기
+  //     displayNoneLowerOrderCards(questionSeq);
+  //     isConditionAnswer = true;
+  //   }
+  // });
+  for (const con of findNode.conditionList) {
+    if (cal(con.operation, con.val, targetVal)) {
+      console.log(con.val);
+      findNode.next = con.next;
+      displayNoneLowerOrderCards(questionSeq); // 조건에 부합하면 처리
+      isConditionAnswer = true;
+      break; // 반복 중단
+    }
+  }
+  console.log(nodeList);
+
+  if (!isConditionAnswer) {
+    console.log('ho');
+    let findOrigin = originalNodeList.find(
+      (node) => node.seq === parseInt(questionSeq)
+    );
+    findNode.next = findOrigin.next;
+  }
+
+  findNext(parseInt(questionSeq));
+}
+
+function displayNoneLowerOrderCards(questionSeq) {
+  const targetCard = $('.j-question-card').filter(function () {
+    return $(this).find('.j-qseq').val() === questionSeq;
+  });
+
+  console.log(targetCard);
+
+  // targetCard의 인덱스 찾기
+  const targetIndex = $('.j-question-card').index(targetCard);
+
+  // targetIndex 이후의 카드들에 removeClass 적용
+  $('.j-question-card')
+    .slice(targetIndex + 1)
+    .each(function () {
+      $(this).removeClass('ac-card'); // 적용할 클래스 이름으로 교체
+      $(this).addClass('no-card');
+    });
 }

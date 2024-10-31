@@ -2,6 +2,7 @@ package com.kcc.fillin.question.controller;
 
 import java.util.List;
 
+import com.kcc.fillin.question.dto.*;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -12,10 +13,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.kcc.fillin.global.Common.Response;
 import com.kcc.fillin.question.domain.QuestionItemVO;
 import com.kcc.fillin.question.domain.QuestionVO;
-import com.kcc.fillin.question.dto.DeleteQuestionItemRequest;
-import com.kcc.fillin.question.dto.DeleteQuestionRequest;
-import com.kcc.fillin.question.dto.UpdateQuestionItemRequest;
-import com.kcc.fillin.question.dto.UpdateQuestionRequest;
 import com.kcc.fillin.question.service.QuestionService;
 import com.kcc.fillin.survey.dto.SubmitRequest;
 
@@ -29,12 +26,15 @@ public class QuestionRestController {
 	private final QuestionService questionService;
 
 	@PostMapping("")
-	public Response<String> insertQuestion(@RequestBody
+	public Response<QuestionVO> insertQuestion(@RequestBody
 	List<QuestionVO> questionVOList) {
-		System.out.println("questionVOList = " + questionVOList);
+		System.out.println("questionVOList 1 = " + questionVOList);
 		questionService.insertQuestionAndQuestionItem(questionVOList);
-		return Response.setSuccess("성공적으로 질문을 등록했습니다.", 200);
+		System.out.println("questionVOList 2 = " + questionVOList.get(0));
+		return Response.<QuestionVO>setSuccess(questionVOList.get(0),200,"질문을 성공적으로 등록했습니다.");
 	}
+	
+	
 
 	@PatchMapping("")
 	public Response<String> updateQuestion(@RequestBody
@@ -99,6 +99,18 @@ public class QuestionRestController {
 			return Response.setSuccess(successMessage, 200);
 		}
 		return Response.setFail(failMessage, 500);
+	}
+
+	@PostMapping("/condition")
+	public Response<?> saveCondition(@RequestBody  ConditionRequest conditionRequest){
+		System.out.println("conditionRequest = " + conditionRequest);
+		boolean result = questionService.insertCondition(conditionRequest);
+		if(result) {
+			return Response.setSuccess(" 조건을 성공적으로 등록", 200);
+		}
+		else{
+			return Response.setFail("조건 등록에 실패했습니다.",500);
+		}
 	}
 
 }

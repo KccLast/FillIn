@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kcc.fillin.statistic.dao.StatisticsDao_JA">
+    <select id="getQuestionsBySurveySeq" resultType="QuestionListResponse" parameterType="Long">
+        SELECT s.seq AS survey_seq, q.seq AS question_seq, q.name, a.contents, a.seq AS answer_seq, a.contents
+        FROM survey s
+                 JOIN question q
+                      ON s.seq = q.survey_seq
+                 LEFT JOIN answer a
+                           ON q.seq = a.question_seq
+        WHERE s.seq = #{surveySeq}
+    </select>
+</mapper>
