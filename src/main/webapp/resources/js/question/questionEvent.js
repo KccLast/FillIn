@@ -744,52 +744,11 @@ $(function () {
     this.scrollIntoView({ behavior: 'smooth', block: 'center' });
   });
   /** 조건 카드 선택시 border이벤트 */
+  // let pathName = window.location.pathname;
+  // let surveySeq = pathName.substring(pathName.lastIndexOf('/') + 1);
+  // let link = '/survey/' + surveySeq;
+  // $('.nav > .nav-link:eq(0)').attr('href', link);
 });
-// function setCardPositions(cards, startTop = 20, left = 20, gap = 140) {
-//   // cards: 배치할 카드 목록 (jQuery 객체)
-//   // startTop: 첫 번째 카드의 상단 시작 위치
-//   // left: 모든 카드의 왼쪽 위치
-//   // gap: 각 카드 간의 세로 간격
-
-//   cards.each(function (index) {
-//     const topPosition = startTop + index * gap; // 각 카드의 Y축 위치 계산
-//     $(this).css({
-//       top: `${topPosition}px`,
-//       left: `${left}px`,
-//       position: 'absolute', // 위치 고정
-//     });
-//   });
-// }
-
-// //시작하면 연결하기!
-// function defaultConditionLine() {
-//   const instance = jsPlumb.getInstance({
-//     Connector: ['Straight'],
-//     Endpoint: ['Dot', { radius: 5 }],
-//     PaintStyle: { stroke: 'black', strokeWidth: 2 },
-//     EndpointStyle: { fill: 'blue' },
-//     Overlays: [['Arrow', { width: 10, length: 10, location: 1 }]],
-//     Anchors: ['Bottom', 'Top'],
-//     Container: document.querySelector('.j-condition-box'),
-//   });
-
-//   $('.j-que-con-card').draggable({
-//     containment: '.j-condition-box', // 부모 컨테이너 내부로 제한
-//     scroll: false, // 스크롤 시 움직임 방지
-//     drag: function () {
-//       instance.repaintEverything(); // 드래그 중 연결선 갱신
-//     },
-//   });
-
-//   // 카드 연결 설정
-//   instance.connect({ source: 'card1', target: 'card2', detachable: false });
-//   instance.connect({ source: 'card2', target: 'card3', detachable: false });
-
-//   // 초기 연결선 그리기
-//   instance.repaintEverything();
-
-//   return instance;
-// }
 
 //생성된 input에 name부여
 async function setQiCheckBoxAndRadioName(html, prev, next, idx) {
