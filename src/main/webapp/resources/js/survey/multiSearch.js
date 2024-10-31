@@ -3,6 +3,27 @@ $(document).ready(function () {
     const pageSize = 6;
     let surveysData = [];
 
+    const savedRequestData = sessionStorage.getItem("requestData");
+    const savedResultData = sessionStorage.getItem("resultData");
+
+    if (savedRequestData && savedResultData &&
+        (performance.getEntriesByType("navigation")[0].type === 'back_forward' || performance.getEntriesByType("navigation")[0].type === 'reload')) {
+        const requestData = JSON.parse(savedRequestData);
+        const resultData = JSON.parse(savedResultData);
+
+        // 저장된 검색 조건과 결과 적용
+        $('#progress-ccSeq').val(requestData.ccSeq);
+        $('#startCreatedAt').val(requestData.startCreatedAt);
+        $('#endCreatedAt').val(requestData.endCreatedAt);
+        $('#startUpdatedAt').val(requestData.startUpdatedAt);
+        $('#endUpdatedAt').val(requestData.endUpdatedAt);
+        $('#title').val(requestData.name);
+        $('#minAnswerCount').val(requestData.minAnswerCount);
+        $('#maxAnswerCount').val(requestData.maxAnswerCount);
+
+        surveysData = resultData || [];
+    }
+
     // 기간별 설문지 조회
     $('.date-badge').on('click', function () {
         // 선택된 배지 스타일 업데이트
@@ -138,6 +159,11 @@ $(document).ready(function () {
 
         console.log(requestData);
 
+        let scrollSearching = false;
+
+        // sessionStorage에 검색 조건 저장
+        sessionStorage.setItem("requestData", JSON.stringify(requestData));
+
         // AJAX 요청
         $.ajax({
             url: '/api/survey/dashboard',
@@ -153,7 +179,6 @@ $(document).ready(function () {
                 let surveyCount = surveysData.length - 1;
                 console.log('surveysData.length: ', surveysData.length);
 
-
                 if (surveysData.length < pageSize) {
                     surveyCount = surveysData.length;
                 }
@@ -161,11 +186,24 @@ $(document).ready(function () {
                 console.log('surveyCount: ', surveyCount);
 
                 $('#surveyCount').text(surveyCount);
-
                 $('#surveyCountContainer').show();
 
                 filteringSurveyCards(); // 필터링된 설문 카드 동적으로 업데이트
                 setupPagination(); // 페이지 설정
+
+                // 뒤로가기, 새로고침인 경우 페이지 정보 sessionStorage에서 가져오기
+                // if(!scrollSearching && performance.getEntriesByType("navigation")[0].type === 'back_forward'
+                //     || performance.getEntriesByType("navigation")[0].type === 'reload') {
+                //     response.data.result = JSON.parse(sessionStorage.getItem("resultData"));
+                //     scrollSearching = true;
+                // }
+
+                // sessionStorage에 검색 결과 저장
+                sessionStorage.setItem("resultData", JSON.stringify(surveysData));
+                scrollSearching = true;
+
+                // 뒤로가기 스크롤 정보 가져오기 위해 페이지 정보 저장
+                // if()
             },
             error: function (xhr, status, error) {
                 console.error('Error message:', xhr.responseText || error);
@@ -251,11 +289,21 @@ $(document).ready(function () {
             </div>`
             ).join('');
 
+            // 페이지네이션 고정을 위한 더미 카드
+            const totalCards = currentSurveys.length;
+            // const isFirstPage = (currentPage === 1); // 현재 페이지가 1페이지인지 확인
+            const dummyCount = (currentPage === 1) ? (5 - totalCards) : (6 - totalCards);
+
+            if(dummyCount > 0) {
+                const dummyCards = Array(dummyCount).fill(`<div class="col dummy-card"></div>`)
+                    .join('');
+                surveyCard += dummyCards;
+            }
+
             // 최종적으로 생성된 HTML을 카드 컨테이너에 추가
             $('.row.row-cols-1').append(surveyCard);
         }
     }
-
 
     function setupPagination() {
         $('.pagination').empty(); // 페이지네이션 초기화
@@ -265,30 +313,38 @@ $(document).ready(function () {
         const endPage = Math.min(startPage + pageBlock - 1, totalPage);
 
         // 처음으로 버튼 추가
-        if (currentPage > 1) {
-            $('.pagination').append($('<div class="page-item"></div>')
-                .append($('<a class="page-link" href="#"> << </a>')
-                    .on('click', function (e) {
-                        e.preventDefault();
+        const firstPageLink = $('<a class="page-link" href="#"> <i class="bi bi-chevron-double-left"></i> </a>')
+                .on('click', function (e) {
+                    e.preventDefault();
+                    if(currentPage > 1) {
                         currentPage = 1; // 첫 페이지로 이동
                         filteringSurveyCards();
                         setupPagination();
-                    })));
+                    }
+                });
+
+        if(currentPage === 1) {
+            firstPageLink.addClass('disabled');
         }
 
+        $('.pagination').append(firstPageLink);
+
         // 이전 버튼 추가
-        if (currentPage > 1) {
-            $('.pagination').append($('<div class="page-item"></div>')
-                .append($('<a class="page-link" href="#"> < </a>')
-                    .on('click', function (e) {
-                        e.preventDefault();
-                        if (currentPage > 1) {
-                            currentPage--; // 이전 페이지로 이동
-                            filteringSurveyCards();
-                            setupPagination();
-                        }
-                    })));
+        const prevPageLink = $('<a class="page-link" href="#"> <i class="bi bi-chevron-left"></i> </a>')
+                .on('click', function (e) {
+                    e.preventDefault();
+                    if (currentPage > 1) {
+                        currentPage--; // 이전 페이지로 이동
+                        filteringSurveyCards();
+                        setupPagination();
+                    }
+                });
+
+        if (currentPage === 1) {
+            prevPageLink.addClass('disabled'); // 현재 첫 페이지일 경우 비활성화
         }
+
+        $('.pagination').append(prevPageLink);
 
         // 페이지 링크 추가
         for (let i = startPage; i <= endPage; i++) {
@@ -310,30 +366,38 @@ $(document).ready(function () {
         }
 
         // 다음 버튼 추가
-        if (currentPage < totalPage) {
-            $('.pagination').append($('<div class="page-item"></div>')
-                .append($('<a class="page-link" href="#"> > </a>')
-                    .on('click', function (e) {
-                        e.preventDefault();
-                        if (currentPage < totalPage) {
-                            currentPage++; // 다음 페이지로 이동
-                            filteringSurveyCards();
-                            setupPagination();
-                        }
-                    })));
+        const nextPageLink = $('<a class="page-link" href="#"> <i class="bi bi-chevron-right"></i> </a>')
+                .on('click', function (e) {
+                    e.preventDefault();
+                    if (currentPage < totalPage) {
+                        currentPage++; // 다음 페이지로 이동
+                        filteringSurveyCards();
+                        setupPagination();
+                    }
+                });
+
+        if (currentPage === totalPage) {
+            nextPageLink.addClass('disabled'); // 현재 마지막 페이지일 경우 비활성화
         }
 
+        $('.pagination').append(nextPageLink);
+
         // 맨 마지막으로 버튼 추가
-        if (currentPage < totalPage) {
-            $('.pagination').append($('<div class="page-item"></div>')
-                .append($('<a class="page-link" href="#"> >> </a>')
-                    .on('click', function (e) {
-                        e.preventDefault();
+        const lastPageLink = ($('<a class="page-link" href="#"> <i class="bi bi-chevron-double-right"></i> </a>')
+                .on('click', function (e) {
+                    e.preventDefault();
+                    if(currentPage < totalPage) {
                         currentPage = totalPage; // 마지막 페이지로 이동
                         filteringSurveyCards();
                         setupPagination();
-                    })));
+                    }
+                }));
+
+        if (currentPage === totalPage) {
+            lastPageLink.addClass('disabled'); // 현재 마지막 페이지일 경우 비활성화
         }
+
+        $('.pagination').append(lastPageLink);
     }
 
     // 상태에 따른 배지 클래스 반환
@@ -425,4 +489,3 @@ $(document).ready(function () {
 
     });
 });
-

@@ -60,17 +60,17 @@
                 <result column="qi_updated_at" property="updatedAt"/>
             </collection>
 
-            <!-- 조건 리스트 -->
-            <collection property="conditions" ofType="ConditionVO">
-                <id column="condition_seq" property="seq"/>
-                <result column="c_question_seq" property="questionSeq"/>
-                <result column="next_question_seq" property="nextQuestionSeq"/>
-                <result column="c_value" property="cValue"/>
-                <result column="operation" property="operation"/>
-                <result column="c_is_active" property="isActive"/>
-                <result column="c_created_at" property="createdAt"/>
-                <result column="c_updated_at" property="updatedAt"/>
-            </collection>
+        <!-- 조건 리스트 -->
+        <collection property="conditions" ofType="ConditionVO">
+            <id column="condition_seq" property="seq"/>
+            <result column="c_question_seq" property="questionSeq"/>
+            <result column="next_question_seq" property="nextQuestionSeq"/>
+            <result column="c_value" property="cValue"/>
+            <result column="operation" property="operation"/>
+			<result column="condition_order" property="orderNum"></result>
+            <result column="c_is_active" property="isActive"/>
+            <result column="c_created_at" property="createdAt"/>
+            <result column="c_updated_at" property="updatedAt"/>
         </collection>
         <!-- question List -->
 
@@ -112,6 +112,7 @@
         WHERE (parent_seq = 2 AND seq BETWEEN 3 AND 5)
            OR parent_seq = 8
     </select>
+
 
     <!-- 다중 검색 -->
     <select id="getFilteringSurveys" resultMap="surveyResultMap"
@@ -190,6 +191,7 @@
     </select>
 
 
+
     <insert id="insertNewSurvey" parameterType="SurveyVO">
         <selectKey order="BEFORE" resultType="long" keyProperty="seq">
             SELECT survey_seq.nextval
@@ -202,43 +204,22 @@
 
     <select id="selectSurveyBySurveySeq" resultMap="surveyInfo" parameterType="long">
 
-        SELECT s.seq,
-               s.name,
-               s.post_date,
-               s.end_date,
-               s.url,
-               s.target_people,
-               q.seq           AS question_seq,
-               q.survey_seq,
-               q.tb_file_seq,
-               q.name          AS question_name,
-               q.description,
-               q.order_num     as q_order,
-               q.is_essential,
-               q.cc_seq        AS question_cc_seq,
-               qi.seq          AS question_item_seq,
-               qi.question_seq AS qi_question_seq,
-               qi.content,
-               qi.order_num    as qi_order,
-               c.seq           AS condition_seq,
-               c.question_seq  as c_question_seq,
-               c.next_question_seq,
-               c.c_value,
-               c.operation
-        FROM SURVEY s
-                 LEFT JOIN QUESTION q
-                           ON s.SEQ = q.SURVEY_SEQ
-                               AND (q.IS_ACTIVE != 'N' OR q.IS_ACTIVE IS NULL)
-                 LEFT JOIN QUESTION_ITEM qi
-                           ON q.SEQ = qi.QUESTION_SEQ
-                               AND (qi.IS_ACTIVE != 'N' OR qi.IS_ACTIVE IS NULL)
-                 LEFT JOIN CONDITION c
-                           ON q.seq = c.QUESTION_SEQ
-                               AND (c.IS_ACTIVE != 'N' OR c.IS_ACTIVE IS NULL)
-        WHERE s.SEQ = ${surveySeq}
-        ORDER BY q_order, qi_order
-
-
+       	SELECT s.seq, s.name, s.post_date, s.end_date, s.url, s.target_people,
+		q.seq AS question_seq, q.survey_seq, q.tb_file_seq, q.name AS question_name, q.description, q.order_num as q_order, q.is_essential, q.cc_seq AS question_cc_seq,
+		qi.seq AS question_item_seq, qi.question_seq AS qi_question_seq, qi.content, qi.order_num as qi_order,
+		c.seq AS condition_seq, c.question_seq as c_question_seq, c.next_question_seq, c.c_value, c.operation,c.order_num as condition_order
+		FROM SURVEY s
+		LEFT JOIN QUESTION q
+		ON s.SEQ = q.SURVEY_SEQ
+		AND (q.IS_ACTIVE != 'N' OR q.IS_ACTIVE IS NULL)
+		LEFT JOIN QUESTION_ITEM qi
+		ON q.SEQ  = qi.QUESTION_SEQ
+		AND (qi.IS_ACTIVE != 'N' OR qi.IS_ACTIVE IS NULL)
+		LEFT JOIN CONDITION c
+		ON q.seq = c.QUESTION_SEQ
+		AND (c.IS_ACTIVE != 'N' OR c.IS_ACTIVE IS NULL)
+		WHERE s.SEQ = ${surveySeq}
+		ORDER BY q_order,qi_order
     </select>
 
     <select id="selectSurveyByurl" resultMap="surveyInfo" parameterType="String">

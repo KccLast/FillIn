@@ -1,14 +1,11 @@
 package com.kcc.fillin.question.dao;
 
+import com.kcc.fillin.question.dto.*;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import com.kcc.fillin.question.domain.QuestionItemVO;
 import com.kcc.fillin.question.domain.QuestionVO;
-import com.kcc.fillin.question.dto.DeleteQuestionItemRequest;
-import com.kcc.fillin.question.dto.DeleteQuestionRequest;
-import com.kcc.fillin.question.dto.UpdateQuestionItemRequest;
-import com.kcc.fillin.question.dto.UpdateQuestionRequest;
 import com.kcc.fillin.survey.dto.SubmitRequest;
 
 @Mapper
@@ -37,4 +34,11 @@ public interface QuestionDao {
 	String content, @Param("participantSeq")
 	Long participant);
 
+    int countCondition(ConditionRequest conditionRequest);
+
+	boolean insertCondition(ConditionRequest conditionRequest);
+
+	boolean updateCondition(ConditionRequest conditionRequest);
+
+	Integer getOrderNum(Long surveySeq);
 }
