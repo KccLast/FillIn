@@ -781,6 +781,7 @@ async function findNext(target) {
     return $(this).find('.j-qseq').val() === targetNode.seq + ''; // j-seq 값이 '314'인 카드
   });
   //targetCard.removeClass('no-card');
+  totalacCards.push(targetCard);
   if (!targetCard.hasClass('ac-card')) {
     targetCard.addClass('ac-card');
   }
@@ -874,4 +875,9 @@ function displayNoneLowerOrderCards(questionSeq) {
       $(this).removeClass('ac-card'); // 적용할 클래스 이름으로 교체
       $(this).addClass('no-card');
     });
+}
+
+function paging(curPage) {
+  let startIdx = (curPage - 1) * 5;
+  let cnt = 0;
 }
