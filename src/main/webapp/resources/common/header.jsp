@@ -79,10 +79,7 @@
                             </a>
                         </li>
                         <li class="dashboard">DashBoard</li>
-                        <div id="addWorker" style="display: none;">
-                            <img src=" /resources/img/question/person-fill-add.png" data-bs-toggle="tooltip"
-                                data-bs-placement="bottom" title="공동 작업자 추가하기">
-                        </div>
+
                         <div class="d-flex align-items-center">
                             <li class="px-2 alarm-item"><img alt="alarm" src="/resources/img/common/alarm.png"
                                     width="25" height="23">

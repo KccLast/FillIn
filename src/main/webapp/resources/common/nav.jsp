@@ -1,3 +1,17 @@
+
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+	<script>
+		window.onload = function () {
+			let curWindow = location.href;
+			if (curWindow.includes('/survey/')) {
+				let pathName = window.location.pathname;
+				let surveySeq = pathName.substring(pathName.lastIndexOf('/') + 1);
+				let link = '/survey/' + surveySeq;
+				document.querySelector('.nav > .nav-link').setAttribute('href', link);
+			}
+		}
+	</script>
+
 <%@ page contentType="text/html;charset=UTF-8" language="java"%>
 <div class="sidebar">
 	<nav class="nav flex-column">
@@ -28,3 +42,4 @@
 		</a>
 	</nav>
 </div>
+

@@ -16,6 +16,7 @@
 
 .j-arrow-right {
   right: 116px;
+  top: 100px;
 }
 
 .j-card-selected {
@@ -647,8 +648,8 @@ tr:nth-child(even) {
 
 /*주소입력*/
 .btn:not(.btn-secondary) {
-    background: #005bac !important;
-    font-weight: bold !important;
+  background: #005bac !important;
+  font-weight: bold !important;
 }
 
 .j-address-box {

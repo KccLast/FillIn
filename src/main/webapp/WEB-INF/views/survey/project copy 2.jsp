@@ -1,6 +1,11 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+
 	<!DOCTYPE html>
 	<html lang="en">
+
+	<!-- <div id="loading-spinner">
+    <div class="spinner"></div> 로딩 중...
+</div> -->
 
 	<head>
 		<meta charset="UTF-8">
@@ -18,48 +23,65 @@
 		<script type="text/javascript"
 			src="//dapi.kakao.com/v2/maps/sdk.js?appkey=f7372f613dea5dbd8f49b7be0a73bbb8"></script>
 
-		<script type="text/javascript" src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
 
+		<script type="text/javascript">
+			$(function () {
+				let surveyName = "${survey.name}";
+				updateSurveyName(surveyName);
+
+			})
+			var surveyJson = '${surveyJson}';
+
+		</script>
+
+		<script type="text/javascript" src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+		<script src="/resources/js/survey/surveyPost.js"></script>
 		<script src="/resources/js/question/questionIUD.js"></script>
 		<script src="/resources/js/question/questionEvent.js"></script>
 		<script src="/resources/js/question/questionParse.js"></script>
 		<script src="/resources/js/question/condition.js"></script>
 		<script src="https://developers.kakao.com/sdk/js/kakao.js"></script>
-		<script src="/resources/common/nav.js"></script>
 		<script src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.2/kakao.min.js"
 			integrity="sha384-TiCUE00h649CAMonG018J2ujOgDKW/kVWlChEuu4jK2vxfAAD0eZxzCKakxg55G4"
 			crossorigin="anonymous"></script>
 		<script>
 			Kakao.init('127ec225729d485fc260cc987bda87a9'); // 사용하려는 앱의 JavaScript 키 입력
 		</script>
-		<script>
-			var surveyJson = '${surveyJson}';
-		</script>
+		<script src="/resources/common/statisticsNav.js"></script>
+		<script src="/resources/common/nav.js"></script>
 		<script type="text/javascript">
+
+
 
 			$(function () {
 
-				let surveyName = "${survey.name}";
-				updateSurveyName(surveyName);
-
 				$('.content').on('keyup', '.j-survey-name-input', async function () {
+
+
 					let idx = $(this).parent().parent().index();
+
 					$('.j-question-list').find('.j-question').eq(idx).find('.question-name > span').html($(this).val());
 					let nameVal = $(this).val();
 					changeNodeName(idx, nameVal);
-				})
-				let survey = '${surveyJson}';
 
+				})
+
+
+				let survey = '${surveyJson}';
 				parseJson(survey);
 				parseCondition(survey);
-				var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
-				var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-					return new bootstrap.Tooltip(tooltipTriggerEl)
-				})
-				updateButton();
+
+
+				// var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+				// var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+				// 	return new bootstrap.Tooltip(tooltipTriggerEl)
+				// })
+
 			})
 		</script>
-		<script src="/resources/js/survey/surveyPost.js"></script>
+
+
+
 
 	</head>
 
@@ -71,6 +93,9 @@
 		<%@include file="/resources/common/header.jsp" %>
 			<%-- <%@ include file="/resources/common/miniNav.jsp" %> --%>
 				<%@ include file="/resources/common/nav.jsp" %>
+
+
+
 					<div id="j-question-nav">
 						<div class="j-questionNav-tab-Box j-flex-row-center">
 							<div class="j-question-nav-tab j-question-nav-color">
@@ -79,14 +104,20 @@
 							<div class="j-deploy-nav-tab">
 								게시 정보
 							</div>
+
 						</div>
 						<div class="j-question-box">
 							<div class="j-total-question-box j-flex-row-center">
 								<span class="fw-bold">전체문항수</span>
 								<div class="j-ai-img fw-bold fs-6">AI</div>
 							</div>
+
 							<div class="j-question-list">
+
+
 							</div>
+
+
 							<div class="j-question-plus-button j-flex-row-center">
 								<button class="j-flex-row-center">
 									<div>
@@ -95,35 +126,48 @@
 									추가하기
 								</button>
 							</div>
+
 						</div>
+
 						<div class="j-nav-button-box j-flex-row-center">
+
 							<!-- <input type="button" value="저장" class="j-nav-input-button j-nav-save-button fs-6 btn"> -->
-							<button class="btn btn-primary j-nav-input-button j-nav-save-button fs-6"><span
-									class="button-text">저장</span></button>
+							<button class="btn btn-primary j-nav-input-button j-nav-save-button fs-6">저장</button>
+
 							<!-- <input type="button" value="게시" class="j-nav-input-button j-depoly-button  fs-6 btn"> -->
 							<button type="button" id="postButton"
 								class="btn btn-primary j-nav-input-button j-depoly-button fs-6 fw-bold" data-bs-toggle="modal"
 								data-bs-target="#postModal" style="display: none;">게시
 							</button>
 
-							<!-- <button type="button" id="postButton"
-								class="btn btn-primary j-nav-input-button j-depoly-button fs-6 fw-bold" data-bs-toggle="modal"
-								data-bs-target="#postModal">게시
-							</button> -->
 							<!-- 공유 버튼 -->
 							<button type="button" id="shareButton"
 								class="btn btn-primary j-nav-input-button j-share-button fs-6 fw-bold" data-bs-toggle="modal"
 								data-bs-target="#shareModal" style="display: none;">공유
 							</button>
+
 							<!-- <input type="button" value="질문 고급조건" class="j-nav-input-button j-condition-button j-con-btn fs-6 btn"> -->
+
 							<!-- <button class="btn btn-primary j-nav-input-button j-condition-button j-con-btn fs-6">응답 로직</button> -->
+
 						</div>
+
+
 					</div>
+
 					<div class="j-deploy-box">
+
+
 					</div>
+
+
 					<img class="j-arrow-content j-arrow-right" src="/resources/img/question/arrow-right.png">
+
 					<div class="content">
+
+
 					</div>
+
 					<!-- Post Modal -->
 					<div class="modal fade" id="postModal" tabindex="-1" aria-labelledby="postModalLabel" aria-hidden="true">
 						<div class="modal-dialog modal-lg modal-dialog-centered">
@@ -142,6 +186,7 @@
 											<input type="date" class="form-control" id="endDate">
 										</div>
 									</div>
+
 									<!-- 목표 설정 -->
 									<div>
 										<label class="form-label fw-bold c-main">목표 설정</label>
@@ -187,8 +232,10 @@
 									<button type="button" class="btn btn-primary" id="confirmPost">게시</button>
 								</div>
 							</div>
+
 						</div>
 					</div>
+
 					<!-- Share Modal -->
 					<div class="modal fade" id="shareModal" tabindex="-1" aria-labelledby="shareModalLabel" aria-hidden="true">
 						<div class="modal-dialog modal-lg modal-dialog-centered">
@@ -216,6 +263,8 @@
 							</div>
 						</div>
 					</div>
+
+
 					<!-- 모달 창 -->
 					<div id="optionModal" class="modifiy-modal">
 						<div class="modal-content">
@@ -231,11 +280,13 @@
 								</div>
 							</div>
 							<div class="modal-btn">
+
 								<button id="addOptionsBtn" type="button" class="btn btn-primary">옵션 저장</button>
 							</div>
 						</div>
 					</div>
 					<!-- check Box 모달 -->
+
 					<!-- chart 모달창 -->
 					<div id="preview-modal" class="modifiy-modal" style="display: none;">
 						<div class="preview-modal-content">
@@ -247,6 +298,7 @@
 						</div>
 					</div>
 					<!-- chart 모달창 -->
+
 					<!-- add type 모달창 -->
 					<div id="add-type-modal" class="add-type-modal-class">
 						<div class="add-type-modal-content">
@@ -260,21 +312,25 @@
 											<div class="j-type-name-modal">객관식</div>
 											<input type="hidden" value="7" />
 										</div>
+
 										<div class="j-typeAndImg-modal j-flex-row-center">
 											<img src="/resources/img/question/checkBox.png" />
 											<div class="j-type-name-modal">체크박스</div>
 											<input type="hidden" value="8" />
 										</div>
+
 										<div class="j-typeAndImg-modal j-flex-row-center">
 											<img src="/resources/img/question/Liner.png" />
 											<div class="j-type-name-modal">선형</div>
 											<input type="hidden" value="9" />
 										</div>
+
 										<div class="j-typeAndImg-modal j-flex-row-center">
 											<img src="/resources/img/question/dropdown.png" />
 											<div class="j-type-name-modal">드롭다운</div>
 											<input type="hidden" value="10" />
 										</div>
+
 										<div class="j-typeAndImg-modal j-flex-row-center">
 											<img src="/resources/img/question/chart.png" />
 											<div class="j-type-name-modal">객관식표</div>
@@ -285,41 +341,52 @@
 								<div class="j-qual-box j-flex-col-center">
 									<span>Qualitative</span>
 									<div class="j-type-box">
+
 										<div class="j-typeAndImg-modal j-flex-row-center">
 											<img src="/resources/img/question/short.png" />
 											<div class="j-type-name-modal">단답형</div>
 											<input type="hidden" value="12" />
 										</div>
+
 										<div class="j-typeAndImg-modal j-flex-row-center">
 											<img src="/resources/img/question/long.png" />
 											<div class="j-type-name-modal">주관식</div>
 											<input type="hidden" value="13" />
 										</div>
+
+
 									</div>
 								</div>
 								<div class="j-data-box j-flex-col-center">
 									<span>Data</span>
 									<div class="j-type-box ">
+
+
 										<div class="j-typeAndImg-modal j-flex-row-center">
 											<img src="/resources/img/question/location.png" />
 											<div class="j-type-name-modal">위치기록</div>
 											<input type="hidden" value="17" />
 										</div>
+
+
 										<div class="j-typeAndImg-modal j-flex-row-center">
 											<img src="/resources/img/question/secu.png" />
 											<div class="j-type-name-modal">개인정보</div>
 											<input type="hidden" value="18" />
 										</div>
+
 										<div class="j-typeAndImg-modal j-flex-row-center">
 											<img src="/resources/img/question/gender.png" />
 											<div class="j-type-name-modal">성별</div>
 											<input type="hidden" value="19" />
 										</div>
+
 										<div class="j-typeAndImg-modal j-flex-row-center">
 											<img src="/resources/img/question/day.png" />
 											<div class="j-type-name-modal">날짜</div>
 											<input type="hidden" value="20" />
 										</div>
+
 										<div class="j-typeAndImg-modal j-flex-row-center">
 											<img src="/resources/img/question/picture.png" />
 											<div class="j-type-name-modal">사진</div>
@@ -327,19 +394,27 @@
 										</div>
 									</div>
 								</div>
+
 								<div class="j-contact-box j-flex-col-center">
 									<span>Contact</span>
+
 									<div class="j-type-box ">
+
+
 										<div class="j-typeAndImg-modal j-flex-row-center">
 											<img src="/resources/img/question/email.png" />
 											<div class="j-type-name-modal">이메일</div>
 											<input type="hidden" value="14" />
 										</div>
+
+
 										<div class="j-typeAndImg-modal j-flex-row-center">
 											<img src="/resources/img/question/house.png" />
 											<div class="j-type-name-modal">주소</div>
 											<input type="hidden" value="15" />
 										</div>
+
+
 										<div class="j-typeAndImg-modal j-flex-row-center">
 											<img src="/resources/img/question/phones.png" />
 											<div class="j-type-name-modal">전화번호</div>
@@ -351,6 +426,8 @@
 						</div>
 					</div>
 					<!-- add type 모달창 -->
+
+
 					<!-- add type 모달창2 -->
 					<div id="add-type-modal2" class="add-type-modal-class">
 						<div class="add-type-modal-content">
@@ -364,21 +441,25 @@
 											<div class="j-type-name-modal">객관식</div>
 											<input type="hidden" value="7" />
 										</div>
+
 										<div class="j-typeAndImg-modal j-flex-row-center">
 											<img src="/resources/img/question/checkBox.png" />
 											<div class="j-type-name-modal">체크박스</div>
 											<input type="hidden" value="8" />
 										</div>
+
 										<div class="j-typeAndImg-modal j-flex-row-center">
 											<img src="/resources/img/question/Liner.png" />
 											<div class="j-type-name-modal">선형</div>
 											<input type="hidden" value="9" />
 										</div>
+
 										<div class="j-typeAndImg-modal j-flex-row-center">
 											<img src="/resources/img/question/dropdown.png" />
 											<div class="j-type-name-modal">드롭다운</div>
 											<input type="hidden" value="10" />
 										</div>
+
 										<div class="j-typeAndImg-modal j-flex-row-center">
 											<img src="/resources/img/question/chart.png" />
 											<div class="j-type-name-modal">객관식표</div>
@@ -389,41 +470,52 @@
 								<div class="j-qual-box j-flex-col-center">
 									<span>Qualitative</span>
 									<div class="j-type-box">
+
 										<div class="j-typeAndImg-modal j-flex-row-center">
 											<img src="/resources/img/question/short.png" />
 											<div class="j-type-name-modal">단답형</div>
 											<input type="hidden" value="12" />
 										</div>
+
 										<div class="j-typeAndImg-modal j-flex-row-center">
 											<img src="/resources/img/question/long.png" />
 											<div class="j-type-name-modal">주관식</div>
 											<input type="hidden" value="13" />
 										</div>
+
+
 									</div>
 								</div>
 								<div class="j-data-box j-flex-col-center">
 									<span>Data</span>
 									<div class="j-type-box ">
+
+
 										<div class="j-typeAndImg-modal j-flex-row-center">
 											<img src="/resources/img/question/location.png" />
 											<div class="j-type-name-modal">위치기록</div>
 											<input type="hidden" value="17" />
 										</div>
+
+
 										<div class="j-typeAndImg-modal j-flex-row-center">
 											<img src="/resources/img/question/secu.png" />
 											<div class="j-type-name-modal">개인정보</div>
 											<input type="hidden" value="18" />
 										</div>
+
 										<div class="j-typeAndImg-modal j-flex-row-center">
 											<img src="/resources/img/question/gender.png" />
 											<div class="j-type-name-modal">성별</div>
 											<input type="hidden" value="19" />
 										</div>
+
 										<div class="j-typeAndImg-modal j-flex-row-center">
 											<img src="/resources/img/question/day.png" />
 											<div class="j-type-name-modal">날짜</div>
 											<input type="hidden" value="20" />
 										</div>
+
 										<div class="j-typeAndImg-modal j-flex-row-center">
 											<img src="/resources/img/question/picture.png" />
 											<div class="j-type-name-modal">사진</div>
@@ -431,19 +523,27 @@
 										</div>
 									</div>
 								</div>
+
 								<div class="j-contact-box j-flex-col-center">
 									<span>Contact</span>
+
 									<div class="j-type-box ">
+
+
 										<div class="j-typeAndImg-modal j-flex-row-center">
 											<img src="/resources/img/question/email.png" />
 											<div class="j-type-name-modal">이메일</div>
 											<input type="hidden" value="14" />
 										</div>
+
+
 										<div class="j-typeAndImg-modal j-flex-row-center">
 											<img src="/resources/img/question/house.png" />
 											<div class="j-type-name-modal">주소</div>
 											<input type="hidden" value="15" />
 										</div>
+
+
 										<div class="j-typeAndImg-modal j-flex-row-center">
 											<img src="/resources/img/question/phones.png" />
 											<div class="j-type-name-modal">전화번호</div>
@@ -462,6 +562,8 @@
 							<button class="btn btn-primary">조건 펼치기</button>
 						</div>
 						<div class="j-condition-card-container" id="conditionCardCon">
+
+
 						</div>
 						<div class="condition-nav-box">
 							<input type="hidden" name="questionSeq">
@@ -481,14 +583,23 @@
 									</div>
 								</div>
 								<div class="nav-body-2">
+
+
 									<div class="accordion">
+
+
 									</div>
+
 									<div class="j-condition-plus-img j-flex-row-center">
 										<div class="fs-6">조건 추가</div>
 										<img src="/resources/img/question/plus-circle-fill-blue.png">
 									</div>
+
+
 								</div>
+
 							</div>
+
 							<div class="condition-nav-2 j-flex-row-center">
 								<div class="cur-con-question-box con-question-box">
 									<span class="fw-bold">현재 질문</span>
@@ -497,6 +608,7 @@
 										<label for="floatingInput">질문명</label>
 									</div>
 									<div class="cur-con-question-type con-question-type con-question-input j-flex-row-center">
+
 									</div>
 									<div class="form-floating cur-con-description con-question-description">
 										<textarea class="form-control" placeholder="Leave a comment here" id="floatingTextarea"
@@ -505,12 +617,14 @@
 									</div>
 								</div>
 								<div class="next-question-box con-question-box">
+
 									<span class="fw-bold">다음 질문</span>
 									<div class="form-floating con-question-input">
 										<input type="text" class="form-control" placeholder="name@example.com" value=" " readonly>
 										<label for="floatingInput">질문명</label>
 									</div>
 									<div class="next-con-question-type con-question-type con-question-input j-flex-row-center">
+
 									</div>
 									<div class="form-floating next-con-description con-question-description">
 										<textarea class="form-control" placeholder="Leave a comment here" id="floatingTextarea"
@@ -518,9 +632,12 @@
 										<label for="floatingTextarea">질문설명</label>
 									</div>
 								</div>
+
 							</div>
+
 						</div>
 					</div>
+
 	</body>
 
 	</html>

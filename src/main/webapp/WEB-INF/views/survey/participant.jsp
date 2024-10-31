@@ -52,7 +52,7 @@
           //   let $curCard = $cards.filter('.active'); // active 클래스를 가진 카드 선택
           //   $curCard.show(); // 선택된 active 카드를 보여줌
         }
-        });
+        );
 
 
 
@@ -159,9 +159,9 @@
             <img src="/resources/img/common/logo.png" alt="Logo" class="logo">
           </a>
         </div>
+        <div class="j-title">24년도 4분기 만족도 설문조사</div>
       </div>
       <div class="titleAndProgressBar">
-        <div class="j-title">24년도 4분기 만족도 설문조사</div>
         <div class="j-progress-line"></div>
       </div>
       <div class="content">
