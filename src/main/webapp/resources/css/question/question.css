@@ -1228,3 +1228,24 @@ h5 {
       -2.6em 0em 0 0em rgba(255, 255, 255, 0.7), -1.8em -1.8em 0 0em black;
   }
 }
+
+#addWorker {
+  display: flex !important;
+  justify-content: center;
+  align-items: center;
+  width: 5%;
+}
+#addWorker > img {
+  width: 25px;
+  height: 25px;
+}
+.toolti .tooltip-inner {
+  background-color: #005bac !important; /* 툴팁 배경색 */
+  color: #ffffff !important; /* 툴팁 글씨 색상 */
+  padding: 0px !important;
+  width: 100%;
+  border-width: 0px;
+}
+.bs-tooltip-bottom .tooltip-arrow::before {
+  background-color: #005bac !important; /* 화살표 색상 */
+}

@@ -426,3 +426,10 @@ body {
 .next-question-box {
   padding-right: 3%;
 }
+
+/*warning tooltip*/
+.swal2-icon-content {
+  height: 88px;
+  font-size: 1.45em;
+}
+/*warning tooltip*/

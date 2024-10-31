@@ -186,17 +186,42 @@ function saveQuestionInDB(questions) {
       data: JSON.stringify(questions), // 자바스크립트 객체를 JSON 형식으로 변환
       success: function (response) {
         console.log(response);
-        $('.content')
-          .find('.j-new-card')
-          .find('.j-q-order')
-          .val(response.data.order);
-        $('.content')
-          .find('.j-new-card')
-          .append(
-            `<input type="hidden" value="${response.data.seq}" class="j-qseq">`
-          )
-          .removeClass('j-new-card');
+        let newCard = $('.content').find('.j-new-card');
+        newCard.find('.j-q-order').val(response.data.order);
+        newCard.append(
+          `<input type="hidden" value="${response.data.seq}" class="j-qseq">`
+        );
+        newCard.removeClass('j-new-card');
 
+        if (response.data.ccSeq === 7 || response.data.ccSeq === 8) {
+          let questionItemSeq = response.data.questionItems[0].seq;
+          newCard
+            .find('.j-option-input-radio > input[type="text"]')
+            .addClass('qi ' + questionItemSeq);
+          // .each((idx, item) => {
+          //   $(item).addClass('qi ' + qi.seq);
+          // });
+        } else if (response.data.ccSeq === 9) {
+          let startSeq = response.data.questionItems[0].seq;
+          newCard.find('.j-num-start').addClass('qi ' + startSeq);
+          let endSeq = response.data.questionItems[1].seq;
+          newCard.find('.j-num-end').addClass('qi ' + endSeq);
+        } else if (response.data.ccSeq === 10) {
+          newCard.find('select').addClass('qiBox');
+        } else if (response.data.ccSeq === 11) {
+          let rowSeq = response.data.questionItems[0].seq;
+          newCard
+            .find('.j-row-input')
+            .eq(0)
+            .addClass('qi ' + rowSeq);
+          let colSeq = response.data.questionItems[1].seq;
+          newCard
+            .find('.j-col-input')
+            .eq(0)
+            .addClass('qi ' + colSeq);
+        }
+
+        newCard.removeClass('j-new-card');
         resolve(response); // 요청이 완료되면 Promise 해결
       },
       error: function (error) {

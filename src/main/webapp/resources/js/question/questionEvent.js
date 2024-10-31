@@ -94,6 +94,7 @@ $(function () {
     let seqVal = targetCard.find('.j-qseq').val();
 
     if (seqVal !== undefined) {
+      console.log('hio');
       let deleteQues = { seq: seqVal };
       storeUpdateQuestionItemInLocal(deleteQues, seqVal, 'removeQuestionList');
       sendremoveQquestionItemLocalData(
