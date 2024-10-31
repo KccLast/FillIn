@@ -83,22 +83,6 @@ public class StatisticRestController {
         return new ResponseEntity<>(wordFrequencies, HttpStatus.OK);
     }
 
-    //	감정분석
-//    @GetMapping("/analyzeEmotion")
-//    public ResponseEntity<SentimentAnalysisResult> analyzeEmotion(@RequestParam("text") String text) {
-//        SentimentAnalysisResult result = statisticService.analyzeSentiment(text);
-//
-//        return new ResponseEntity<>(result, HttpStatus.OK);
-//    }
-
-
-    // 감정분석을 POST 요청으로 처리
-//    @PostMapping("/analyzeEmotion")
-//    public ResponseEntity<SentimentAnalysisResult> analyzeEmotion(@RequestBody EmotionRequest request) {
-//        System.out.println("request = " + request);
-//        SentimentAnalysisResult result = statisticService.analyzeSentiment(request.getText());
-//        return new ResponseEntity<>(result, HttpStatus.OK);
-//    }
 
     //    가중치 적용 수정 후
     @PostMapping("/analyzeEmotion")
@@ -114,13 +98,7 @@ public class StatisticRestController {
         return tableData;
     }
 
-//    @PostMapping("/analyzeAllEmotions")
-//    public ResponseEntity<List<SentimentAnalysisResult>> analyzeAllEmotions(@RequestBody List<EmotionRequest> requestList) {
-//        List<SentimentAnalysisResult> results = requestList.stream()
-//                .map(request -> statisticService.analyzeSentiment(request.getText()))
-//                .collect(Collectors.toList());
-//        return new ResponseEntity<>(results, HttpStatus.OK);
-//    }
+
 
     @PostMapping("/analyzeAllEmotions")
     public ResponseEntity<List<SentimentAnalysisResponse>> analyzeAllEmotions(@RequestBody List<EmotionRequest> requestList) {
@@ -133,17 +111,11 @@ public class StatisticRestController {
             Integer order = request.getOrder();
             sentiResponse.add(new SentimentAnalysisResponse(maxConfidenceName,order));
         }
-//        List<SentimentAnalysisResult> results = requestList.stream()
-//                .map(request -> statisticService.analyzeSentiment(request.getText()))
-//                .collect(Collectors.toList());
-//        for (SentimentAnalysisResult result : results) {
-//            System.out.println("Positive: " + result.getPositive() +
-//                    ", Neutral: " + result.getNeutral() +
-//                    ", Negative: " + result.getNegative());
-//        }
+
+
         return ResponseEntity.ok(sentiResponse);
     }
 
-//    }
+
 
 }
