@@ -3,62 +3,62 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.kcc.fillin.survey.dao.SurveyDao">
-	<resultMap id="surveyResultMap"
-		type="multiSearchSurveyResponse">
-		<result column="seq" property="seq" />
-		<result column="name" property="name" />
-		<result column="created_at" property="createdAt" />
-		<result column="updated_at" property="updatedAt" />
-		<result column="post_date" property="postDate" />
-		<result column="end_date" property="endDate" />
-		<result column="cc_seq" property="ccSeq" />
-		<result column="answer_count" property="answerCount" />
-	</resultMap>
-	
-	<resultMap type="CommonCodeResponse" id="commonCodeResultMap">
-		<result column="seq" property="seq" />
-		<result column="parent_seq" property="parentSeq" />
-		<result column="name" property="name" />
-	</resultMap>
-	
-	<resultMap type="SurveyVO" id="surveyInfo">
-    <!-- 설문지 정보 -->
-    <id column="seq" property="seq"/>
-    <result column="name" property="name"/>
-    <result column="post_date" property="postDate"/>
-    <result column="end_date" property="endDate"/>
-    <result column="url" property="url"/>
-    <result column="created_at" property="createdAt"/>
-    <result column="updated_at" property="updatedAt"/>
-    <result column="target_people" property="targetPeople"/>
-    <result column="cc_seq" property="ccSeq"/>
-    <result column="member_seq" property="memberSeq"/>
-	<result column="totalCnt" property="totalCnt"/>
+    <resultMap id="surveyResultMap"
+               type="multiSearchSurveyResponse">
+        <result column="seq" property="seq"/>
+        <result column="name" property="name"/>
+        <result column="created_at" property="createdAt"/>
+        <result column="updated_at" property="updatedAt"/>
+        <result column="post_date" property="postDate"/>
+        <result column="end_date" property="endDate"/>
+        <result column="cc_seq" property="ccSeq"/>
+        <result column="answer_count" property="answerCount"/>
+    </resultMap>
 
-    <!-- question List -->
-    <collection property="questions" ofType="QuestionVO" >
-        <id column="question_seq" property="seq"/>
-        <result column="survey_seq" property="surveySeq"/>
-        <result column="tb_file_seq" property="tbFileSeq"/>
-        <result column="question_name" property="name"/>
-        <result column="description" property="description"/>
-        <result column="q_order" property="order"/>
-        <result column="is_essential" property="isEssential"/>
-        <result column="question_cc_seq" property="ccSeq"/>
-        <result column="q_is_active" property="isActive"/>
-        <result column="q_created_at" property="createdAt"/>
-        <result column="q_updated_at" property="updatedAt"/>
+    <resultMap type="CommonCodeResponse" id="commonCodeResultMap">
+        <result column="seq" property="seq"/>
+        <result column="parent_seq" property="parentSeq"/>
+        <result column="name" property="name"/>
+    </resultMap>
 
-        <!-- 질문 항목 리스트 -->
-        <collection property="questionItems" ofType="QuestionItemVO">
-            <id column="question_item_seq" property="seq"/>
-            <result column="qi_question_seq" property="questionSeq"/>
-            <result column="content" property="content"/>
-            <result column="qi_order" property="orderNum"/>
-            <result column="qi_is_active" property="isActive"/>
-            <result column="qi_created_at" property="createdAt"/>
-            <result column="qi_updated_at" property="updatedAt"/>
-        </collection>
+    <resultMap type="SurveyVO" id="surveyInfo">
+        <!-- 설문지 정보 -->
+        <id column="seq" property="seq"/>
+        <result column="name" property="name"/>
+        <result column="post_date" property="postDate"/>
+        <result column="end_date" property="endDate"/>
+        <result column="url" property="url"/>
+        <result column="created_at" property="createdAt"/>
+        <result column="updated_at" property="updatedAt"/>
+        <result column="target_people" property="targetPeople"/>
+        <result column="cc_seq" property="ccSeq"/>
+        <result column="member_seq" property="memberSeq"/>
+        <result column="totalCnt" property="totalCnt"/>
+
+        <!-- question List -->
+        <collection property="questions" ofType="QuestionVO">
+            <id column="question_seq" property="seq"/>
+            <result column="survey_seq" property="surveySeq"/>
+            <result column="tb_file_seq" property="tbFileSeq"/>
+            <result column="question_name" property="name"/>
+            <result column="description" property="description"/>
+            <result column="q_order" property="order"/>
+            <result column="is_essential" property="isEssential"/>
+            <result column="question_cc_seq" property="ccSeq"/>
+            <result column="q_is_active" property="isActive"/>
+            <result column="q_created_at" property="createdAt"/>
+            <result column="q_updated_at" property="updatedAt"/>
+
+            <!-- 질문 항목 리스트 -->
+            <collection property="questionItems" ofType="QuestionItemVO">
+                <id column="question_item_seq" property="seq"/>
+                <result column="qi_question_seq" property="questionSeq"/>
+                <result column="content" property="content"/>
+                <result column="qi_order" property="orderNum"/>
+                <result column="qi_is_active" property="isActive"/>
+                <result column="qi_created_at" property="createdAt"/>
+                <result column="qi_updated_at" property="updatedAt"/>
+            </collection>
 
         <!-- 조건 리스트 -->
         <collection property="conditions" ofType="ConditionVO">
@@ -72,142 +72,139 @@
             <result column="c_created_at" property="createdAt"/>
             <result column="c_updated_at" property="updatedAt"/>
         </collection>
-    </collection>
-    <!-- question List -->
-    
-</resultMap>
+        <!-- question List -->
 
-	<!-- 전체 설문지 조회 -->
-	<select id="getSurveyListWithPaging" resultMap="surveyResultMap"
-		parameterType="com.kcc.fillin.survey.Criteria">
+    </resultMap>
+
+    <!-- 전체 설문지 조회 -->
+    <select id="getSurveyListWithPaging" resultMap="surveyResultMap"
+            parameterType="com.kcc.fillin.survey.Criteria">
 		<![CDATA[
-			SELECT *
-			        FROM (
-			            SELECT
-			        		s.seq AS seq,
-			                s.name AS name,
-			                s.cc_seq AS cc_seq,
-			                s.created_at AS created_at,
-			                s.updated_at AS updated_at,
-			                s.post_date AS post_date,
-			                s.end_date AS end_date,
-			                COUNT(a.seq) AS answer_count,
-			                ROW_NUMBER() OVER (ORDER BY s.created_at DESC) AS rn
-			            FROM
-			                survey s
-		             	LEFT JOIN question q ON s.seq = q.survey_seq
-			            LEFT JOIN answer a ON q.seq = a.question_seq
-			            GROUP BY
-			                s.seq, s.name, s.cc_seq, s.created_at, s.updated_at, s.post_date, s.end_date
-			        )
-			        WHERE rn >= #{startRow} AND rn <= #{endRow}
-    	]]>
-	</select>
-	
-	<!-- 총 설문 수 조회 -->
-	<select id="getTotalSurveyCount" resultType="int">
-		SELECT COUNT(*)
-		FROM survey
-	</select>
-	
-	<!-- 공통 코드 조회 -->
-	<select id="getCommonCodes" resultMap="commonCodeResultMap">
-		SELECT seq, name, parent_seq
-		FROM common_code
-		WHERE (parent_seq = 2 AND seq BETWEEN 3 AND 5)
-    	OR parent_seq = 8 
+        SELECT *
+        FROM (SELECT s.seq        AS seq,
+                     s.name       AS name,
+                     s.cc_seq     AS cc_seq,
+                     s.created_at AS created_at,
+                     s.updated_at AS updated_at,
+                     s.post_date  AS post_date,
+                     s.end_date   AS end_date,
+                     COUNT(a.seq) AS answer_count,
+                     ROW_NUMBER()    OVER (ORDER BY s.created_at DESC) AS rn
+              FROM survey s
+                       LEFT JOIN question q ON s.seq = q.survey_seq
+                       LEFT JOIN answer a ON q.seq = a.question_seq
+              GROUP BY s.seq, s.name, s.cc_seq, s.created_at, s.updated_at, s.post_date, s.end_date)
+        WHERE rn >= #{startRow}
+          AND rn <= #{endRow}
+        ]]>
 	</select>
 
-	<!-- 다중 검색 -->
-	<select id="getFilteringSurveys" resultMap="surveyResultMap"
-		parameterType="MultiSearchSurveyRequest">
-		SELECT
-			s.seq AS seq,
-			s.name AS name,
-			s.cc_seq AS cc_seq,
-			s.created_at AS created_at,
-			s.updated_at AS updated_at,
-			s.post_date AS post_date,
-			s.end_date AS end_date,
-			COUNT(a.seq) AS answer_count
-		FROM
-			survey s
-		LEFT JOIN question q
-		ON s.seq = q.survey_seq
-		LEFT JOIN answer a
-		ON q.seq = a.question_seq
-		<where>
-			<!-- 진행 상태 -->
-			<choose>
-			    <when test="ccSeq != null and ccSeq != 0">
-			        AND s.cc_seq = #{ccSeq}
-			    </when>
-			    <otherwise>
-			        <!-- cc_seq가 null이거나 0일 경우 조건을 추가하지 않음 -->
-			    </otherwise>
-			</choose>
-			<!-- 생성일 필터 -->
-			<choose>
-				<when test="startCreatedAt != null and endCreatedAt != null">
-					AND s.created_at BETWEEN #{startCreatedAt} AND
-					#{endCreatedAt} + 1
-				</when>
-				<when test="startCreatedAt != null">
-            <![CDATA[AND s.created_at >= #{startCreatedAt} ]]>
-				</when>
-				<when test="endCreatedAt != null">
-            <![CDATA[AND s.created_at < #{endCreatedAt}]]>
-				</when>
-			</choose>
-			<!-- 수정일 필터 -->
-			<choose>
-				<when test="startUpdatedAt != null and endUpdatedAt != null">
-					AND s.updated_at BETWEEN #{startUpdatedAt} AND #{endUpdatedAt} + 1
-				</when>
-				<when test="startUpdatedAt != null">
-            		<![CDATA[AND s.updated_at >= #{startUpdatedAt} ]]>
-				</when>
-				<when test="endUpdatedAt != null">
-            		<![CDATA[AND s.updated_at < #{endUpdatedAt}]]>
-				</when>
-			</choose>
-			<!-- 제목 필터 -->
-			<if test="name != null and name != ''">
-				AND LOWER(s.name) LIKE '%'||LOWER(#{name})||'%'
-			</if>
-		</where>
-		GROUP BY
-			s.seq, s.name, s.cc_seq, s.created_at, s.updated_at,
-			s.post_date, s.end_date
-		<!-- 응답 수 필터 -->
-		<if test="minAnswerCount > 0 or maxAnswerCount > 0">
-			HAVING
-			<if test="minAnswerCount > 0">
-				<![CDATA[COUNT(a.seq) >= #{minAnswerCount}]]>
-			</if>
-			<if test="minAnswerCount > 0 and maxAnswerCount > 0">
-				AND
-			</if>
-			<if test="maxAnswerCount > 0">
-				<![CDATA[COUNT(a.seq) <= #{maxAnswerCount}]]>
-			</if>
-		</if>
-	</select>
+    <!-- 총 설문 수 조회 -->
+    <select id="getTotalSurveyCount" resultType="int">
+        SELECT COUNT(*)
+        FROM survey
+    </select>
 
-	
-	<insert id="insertNewSurvey" parameterType="SurveyVO">
-		<selectKey order="BEFORE" resultType="long" keyProperty="seq"> 
-			SELECT survey_seq.nextval 
-			FROM dual
-		</selectKey>
-	
-		INSERT INTO survey (seq,member_seq,name,cc_seq)
-		VALUES (#{seq},#{memberSeq},#{name},3)
-	</insert>
-	
-	<select id="selectSurveyBySurveySeq" resultMap="surveyInfo" parameterType="long">
+    <!-- 공통 코드 조회 -->
+    <select id="getCommonCodes" resultMap="commonCodeResultMap">
+        SELECT seq, name, parent_seq
+        FROM common_code
+        WHERE (parent_seq = 2 AND seq BETWEEN 3 AND 5)
+           OR parent_seq = 8
+    </select>
 
-		SELECT s.seq, s.name, s.post_date, s.end_date, s.url, s.target_people,
+
+    <!-- 다중 검색 -->
+    <select id="getFilteringSurveys" resultMap="surveyResultMap"
+            parameterType="MultiSearchSurveyRequest">
+        SELECT
+        s.seq AS seq,
+        s.name AS name,
+        s.cc_seq AS cc_seq,
+        s.created_at AS created_at,
+        s.updated_at AS updated_at,
+        s.post_date AS post_date,
+        s.end_date AS end_date,
+        COUNT(a.seq) AS answer_count
+        FROM
+        survey s
+        LEFT JOIN question q
+        ON s.seq = q.survey_seq
+        LEFT JOIN answer a
+        ON q.seq = a.question_seq
+        <where>
+            <!-- 진행 상태 -->
+            <choose>
+                <when test="ccSeq != null and ccSeq != 0">
+                    AND s.cc_seq = #{ccSeq}
+                </when>
+                <otherwise>
+                    <!-- cc_seq가 null이거나 0일 경우 조건을 추가하지 않음 -->
+                </otherwise>
+            </choose>
+            <!-- 생성일 필터 -->
+            <choose>
+                <when test="startCreatedAt != null and endCreatedAt != null">
+                    AND s.created_at BETWEEN #{startCreatedAt} AND
+                    #{endCreatedAt} + 1
+                </when>
+                <when test="startCreatedAt != null">
+                    <![CDATA[AND s.created_at >= #{startCreatedAt} ]]>
+                </when>
+                <when test="endCreatedAt != null">
+                    <![CDATA[AND s.created_at < #{endCreatedAt}]]>
+                </when>
+            </choose>
+            <!-- 수정일 필터 -->
+            <choose>
+                <when test="startUpdatedAt != null and endUpdatedAt != null">
+                    AND s.updated_at BETWEEN #{startUpdatedAt} AND #{endUpdatedAt} + 1
+                </when>
+                <when test="startUpdatedAt != null">
+                    <![CDATA[AND s.updated_at >= #{startUpdatedAt} ]]>
+                </when>
+                <when test="endUpdatedAt != null">
+                    <![CDATA[AND s.updated_at < #{endUpdatedAt}]]>
+                </when>
+            </choose>
+            <!-- 제목 필터 -->
+            <if test="name != null and name != ''">
+                AND LOWER(s.name) LIKE '%'||LOWER(#{name})||'%'
+            </if>
+        </where>
+        GROUP BY
+        s.seq, s.name, s.cc_seq, s.created_at, s.updated_at,
+        s.post_date, s.end_date
+        <!-- 응답 수 필터 -->
+        <if test="minAnswerCount > 0 or maxAnswerCount > 0">
+            HAVING
+            <if test="minAnswerCount > 0">
+                <![CDATA[COUNT(a.seq) >= #{minAnswerCount}]]>
+            </if>
+            <if test="minAnswerCount > 0 and maxAnswerCount > 0">
+                AND
+            </if>
+            <if test="maxAnswerCount > 0">
+                <![CDATA[COUNT(a.seq) <= #{maxAnswerCount}]]>
+            </if>
+        </if>
+    </select>
+
+
+
+    <insert id="insertNewSurvey" parameterType="SurveyVO">
+        <selectKey order="BEFORE" resultType="long" keyProperty="seq">
+            SELECT survey_seq.nextval
+            FROM dual
+        </selectKey>
+
+        INSERT INTO survey (seq,member_seq,name,cc_seq)
+        VALUES (#{seq},#{memberSeq},#{name},3)
+    </insert>
+
+    <select id="selectSurveyBySurveySeq" resultMap="surveyInfo" parameterType="long">
+
+       	SELECT s.seq, s.name, s.post_date, s.end_date, s.url, s.target_people,
 		q.seq AS question_seq, q.survey_seq, q.tb_file_seq, q.name AS question_name, q.description, q.order_num as q_order, q.is_essential, q.cc_seq AS question_cc_seq,
 		qi.seq AS question_item_seq, qi.question_seq AS qi_question_seq, qi.content, qi.order_num as qi_order,
 		c.seq AS condition_seq, c.question_seq as c_question_seq, c.next_question_seq, c.c_value, c.operation,c.order_num as condition_order
@@ -223,121 +220,145 @@
 		AND (c.IS_ACTIVE != 'N' OR c.IS_ACTIVE IS NULL)
 		WHERE s.SEQ = ${surveySeq}
 		ORDER BY q_order,qi_order
+    </select>
+
+    <select id="selectSurveyByurl" resultMap="surveyInfo" parameterType="String">
+
+        SELECT s.seq,
+               s.name,
+               s.post_date,
+               s.end_date,
+               s.url,
+               s.target_people,
+               q.seq           AS    question_seq,
+               q.survey_seq,
+               q.tb_file_seq,
+               q.name          AS    question_name,
+               q.description,
+               q.order_num     AS    q_order,
+               q.is_essential,
+               q.cc_seq        AS    question_cc_seq,
+               qi.seq          AS    question_item_seq,
+               qi.question_seq AS    qi_question_seq,
+               qi.content,
+               qi.order_num    AS    qi_order,
+               c.seq           AS    condition_seq,
+               c.question_seq  AS    c_question_seq,
+               c.next_question_seq,
+               c.c_value,
+               c.operation,
+               COUNT(DISTINCT q.seq) OVER() AS totalCnt
+        FROM SURVEY s
+                 LEFT JOIN QUESTION q ON s.SEQ = q.SURVEY_SEQ
+            AND (q.IS_ACTIVE != 'N' OR q.IS_ACTIVE IS NULL)
+                 LEFT JOIN QUESTION_ITEM qi ON q.SEQ = qi.QUESTION_SEQ
+            AND (qi.IS_ACTIVE != 'N' OR qi.IS_ACTIVE IS NULL)
+                 LEFT JOIN CONDITION c ON q.SEQ = c.QUESTION_SEQ
+            AND (c.IS_ACTIVE != 'N' OR c.IS_ACTIVE IS NULL)
+        WHERE s.URL = #{url}
+        ORDER BY q_order, qi_order
+
+    </select>
+    <!--<select id="selectSurveyByurl" resultMap="surveyInfo" parameterType="PageDTO">
 
 
-	</select>
-	
-	<select id="selectSurveyByurl" resultMap="surveyInfo" parameterType="String">
-
-		SELECT
-		s.seq, s.name, s.post_date, s.end_date, s.url, s.target_people,
-		q.seq AS question_seq, q.survey_seq, q.tb_file_seq, q.name AS question_name, q.description, q.order_num AS q_order, q.is_essential, q.cc_seq AS question_cc_seq,
-		qi.seq AS question_item_seq, qi.question_seq AS qi_question_seq, qi.content, qi.order_num AS qi_order,
-		c.seq AS condition_seq, c.question_seq AS c_question_seq, c.next_question_seq, c.c_value, c.operation, COUNT(DISTINCT q.seq) OVER() AS totalCnt
-		FROM
-		SURVEY s
-		LEFT JOIN QUESTION q ON s.SEQ = q.SURVEY_SEQ
-		AND (q.IS_ACTIVE != 'N' OR q.IS_ACTIVE IS NULL)
-		LEFT JOIN QUESTION_ITEM qi ON q.SEQ = qi.QUESTION_SEQ
-		AND (qi.IS_ACTIVE != 'N' OR qi.IS_ACTIVE IS NULL)
-		LEFT JOIN CONDITION c ON q.SEQ = c.QUESTION_SEQ
-		AND (c.IS_ACTIVE != 'N' OR c.IS_ACTIVE IS NULL)
-		WHERE
-		s.URL = #{url}
-		ORDER BY q_order, qi_order
-
-	</select>
-	<!--<select id="selectSurveyByurl" resultMap="surveyInfo" parameterType="PageDTO">
-
-
-		WITH paged_questions AS (
-		SELECT
-		s.seq,
-		s.name,
-		s.post_date,
-		s.end_date,
-		s.url,
-		s.target_people,
-		q.seq AS question_seq,
-		q.survey_seq,
-		q.tb_file_seq,
-		q.name AS question_name,
-		q.description,
-		q.order_num AS q_order,
-		q.is_essential,
-		q.cc_seq AS question_cc_seq,
-		ROWNUM AS rm,
-		COUNT(DISTINCT q.seq) OVER() AS totalCnt
-		FROM survey s
-		JOIN question q ON s.seq = q.survey_seq
-		WHERE s.url = #{surveyUrl}
-		AND (q.is_active != 'N' OR q.is_active IS NULL)
-		ORDER BY q.order_num
-		)
-		SELECT f.*
-		FROM (
-		SELECT
-		pq.seq,
-		pq.name,
-		pq.post_date,
-		pq.end_date,
-		pq.url,
-		pq.target_people,
-		pq.question_seq,
-		pq.survey_seq,
-		pq.tb_file_seq,
-		pq.question_name,
-		pq.description,
-		pq.q_order,
-		pq.is_essential,
-		pq.question_cc_seq,
-		pq.rm AS row_num,
-		pq.totalCnt,
-		qi.seq AS question_item_seq,
-		qi.question_seq AS qi_question_seq,
-		qi.content,
-		qi.order_num AS qi_order,
-		c.seq AS condition_seq,
-		c.question_seq AS c_question_seq,
-		c.next_question_seq,
-		c.c_value,
-		c.operation
-		FROM paged_questions pq
-		LEFT JOIN question_item qi ON pq.question_seq = qi.question_seq
-		LEFT JOIN condition c ON pq.question_seq = c.question_seq
-		<![CDATA[ WHERE pq.rm <= #{curPage}*#{amount} ]]>
-		) f
-		<![CDATA[ WHERE f.row_num > (#{curPage}-1)*#{amount}]]>
-		ORDER BY f.q_order, f.qi_order
-
-
-	</select>
--->
-	<select id="getTotalQuestionCount" resultType="int">
-		SELECT COUNT(q.seq)
-		FROM survey s
-		JOIN question q ON s.seq = q.survey_seq
-		WHERE s.url = #{surveyUrl}
-		AND (q.is_active != 'N' OR q.is_active IS NULL)
-	</select>
-	
-	<insert id="insertNewParticipant" parameterType="ParticipantVO">
-		<selectKey keyColumn="seq" keyProperty="seq" order="BEFORE" resultType="long">
-			SELECT participant_seq.nextval FROM dual
-		</selectKey>
-		INSERT INTO participant(seq)
-		VALUES(#{seq})
-	</insert>
-	
-	<insert id="insertCheckLog" parameterType="String">
-		INSERT INTO survey_log (seq, survey_seq, occur_date, cc_seq)
-        VALUES (
-        survey_log_seq.nextval,
-        (SELECT seq FROM survey WHERE url = #{surveyUrl}),
-        sysdate,
-        22
+        WITH paged_questions AS (
+        SELECT
+        s.seq,
+        s.name,
+        s.post_date,
+        s.end_date,
+        s.url,
+        s.target_people,
+        q.seq AS question_seq,
+        q.survey_seq,
+        q.tb_file_seq,
+        q.name AS question_name,
+        q.description,
+        q.order_num AS q_order,
+        q.is_essential,
+        q.cc_seq AS question_cc_seq,
+        ROWNUM AS rm,
+        COUNT(DISTINCT q.seq) OVER() AS totalCnt
+        FROM survey s
+        JOIN question q ON s.seq = q.survey_seq
+        WHERE s.url = #{surveyUrl}
+        AND (q.is_active != 'N' OR q.is_active IS NULL)
+        ORDER BY q.order_num
         )
-	</insert>
-	
+        SELECT f.*
+        FROM (
+        SELECT
+        pq.seq,
+        pq.name,
+        pq.post_date,
+        pq.end_date,
+        pq.url,
+        pq.target_people,
+        pq.question_seq,
+        pq.survey_seq,
+        pq.tb_file_seq,
+        pq.question_name,
+        pq.description,
+        pq.q_order,
+        pq.is_essential,
+        pq.question_cc_seq,
+        pq.rm AS row_num,
+        pq.totalCnt,
+        qi.seq AS question_item_seq,
+        qi.question_seq AS qi_question_seq,
+        qi.content,
+        qi.order_num AS qi_order,
+        c.seq AS condition_seq,
+        c.question_seq AS c_question_seq,
+        c.next_question_seq,
+        c.c_value,
+        c.operation
+        FROM paged_questions pq
+        LEFT JOIN question_item qi ON pq.question_seq = qi.question_seq
+        LEFT JOIN condition c ON pq.question_seq = c.question_seq
+        <![CDATA[ WHERE pq.rm <= #{curPage}*#{amount} ]]>
+        ) f
+        <![CDATA[ WHERE f.row_num > (#{curPage}-1)*#{amount}]]>
+        ORDER BY f.q_order, f.qi_order
+
+
+    </select>
+-->
+    <select id="getTotalQuestionCount" resultType="int">
+        SELECT COUNT(q.seq)
+        FROM survey s
+                 JOIN question q ON s.seq = q.survey_seq
+        WHERE s.url = #{surveyUrl}
+          AND (q.is_active != 'N' OR q.is_active IS NULL)
+    </select>
+
+    <insert id="insertNewParticipant" parameterType="ParticipantVO">
+        <selectKey keyColumn="seq" keyProperty="seq" order="BEFORE" resultType="long">
+            SELECT participant_seq.nextval FROM dual
+        </selectKey>
+        INSERT INTO participant(seq)
+        VALUES(#{seq})
+    </insert>
+
+    <insert id="insertCheckLog" parameterType="String">
+        INSERT INTO survey_log (seq, survey_seq, occur_date, cc_seq)
+        VALUES (survey_log_seq.nextval,
+                (SELECT seq FROM survey WHERE url = #{surveyUrl}),
+                sysdate,
+                22)
+    </insert>
+
+    <update id="updateSurveyInfo" parameterType="PostSurveyRequest">
+        UPDATE survey
+        SET post_date       = #{startDate},
+            end_date        = #{endDate},
+            target_people   = #{sampleSize},
+            reliability     = #{reliability},
+            allowable_error = #{allowableError},
+            url             = #{url}
+        WHERE seq = #{surveyId}
+    </update>
+
 </mapper>
 

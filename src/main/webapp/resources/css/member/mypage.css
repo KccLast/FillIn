@@ -1,21 +1,21 @@
 .profile-container {
-	display: flex;
-	align-items: center;
-	margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
 }
 
 .profile-image {
-	width: 100px; 
-	height: 100px;
-	border-radius: 50%; 
-	object-fit: cover; 
-	margin-right: 20px;
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-right: 20px;
 }
 
 .form-group {
-	display: flex;
+    display: flex;
     flex-direction: column;
-	margin-bottom: 13px; 
+    margin-bottom: 13px;
 }
 
 .form-group label {
@@ -24,65 +24,65 @@
 }
 
 .form-group .btn {
-	background-color: #005BAC;
-	border: none;
-	margin-bottom: 10px;
-	margin-left: 5px;
+    background-color: #005BAC;
+    border: none;
+    margin-bottom: 10px;
+    margin-left: 5px;
 }
 
 .postalCode-group {
-	width: 100%;
-	display: flex;
-	align-items: center;
+    width: 100%;
+    display: flex;
+    align-items: center;
 }
 
 .address-input {
-	flex: 1;
-	margin-bottom: 10px;
+    flex: 1;
+    margin-bottom: 10px;
 }
 
-.btn:nth-child(1) {
-	background-color: #005BAC;
-	border: none;
+.btn:nth-child(1):not(.btn-secondary) {
+    background-color: #005BAC;
+    border: none;
 }
 
 .modal-footer {
-	display: flex;
-	justify-content: center;
-	gap: 20px;
+    display: flex;
+    justify-content: center;
+    gap: 20px;
 }
 
-.modal-footer .btn{
+.modal-footer .btn {
     margin-right: 0;
 }
 
 .btn-group {
-	display: flex;
-	gap: 10px;
-	border-radius: 50%;
+    display: flex;
+    gap: 10px;
+    border-radius: 50%;
 }
 
 .profile-container .btn {
-	background-color: #005BAC;
-	border: none;
+    background-color: #005BAC;
+    border: none;
 }
 
 .change-profile {
-	background-color: #005BAC;
-	border: none;
-	color: white;
+    background-color: #005BAC;
+    border: none;
+    color: white;
 }
 
 .error-message {
-	margin-top: 10px;
-	color: #EB1C23;
+    margin-top: 10px;
+    color: #EB1C23;
 }
 
 .logoutBtn {
-	background-color: #E9ECEF;
-	border: none;
-	padding: 7px 10px;
-	margin-left: 5px;
-	cursor: pointer;
-	border-radius: 5px;
+    background-color: #E9ECEF;
+    border: none;
+    padding: 7px 10px;
+    margin-left: 5px;
+    cursor: pointer;
+    border-radius: 5px;
 }
