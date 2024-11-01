@@ -1,4 +1,4 @@
-/*document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener("DOMContentLoaded", function () {
     $('#wordCloudContainer').focus();
 
     const maxChunkSize = 1000;
@@ -29,6 +29,7 @@
     // 페이지 로드 시 전체 데이터로 워드클라우드 생성
     if (clusteringData && clusteringData.length > 0) {
         generateWordCloudFromAll();
+        analyzeEmotionByRow(clusteringData); // 전체 데이터에 대한 감정 분석 수행
     } else {
         console.warn("clusteringData is empty or undefined.");
     }
@@ -84,6 +85,9 @@
         currentData = selectedCluster !== "phrase" ? clusteringData.filter(item => item.cluster == selectedCluster) : clusteringData;
         renderTable(currentData); // 현재 데이터로 테이블 렌더링
         generateWordCloudFromCurrentData(); // 현재 데이터로 워드클라우드 생성
+
+        // 감정 분석도 자동으로 수행
+        analyzeEmotionByRow(currentData); // 현재 데이터로 감정 분석 수행
     });
 
     function calculateWordFrequency(text) {
@@ -100,9 +104,13 @@
         currentData = keyword ? clusteringData.filter(item => item.answerContent.includes(keyword)) : clusteringData; // 현재 데이터를 업데이트
         renderTable(currentData); // 현재 데이터로 테이블 렌더링
         generateWordCloudFromCurrentData(); // 현재 데이터로 워드클라우드 생성
+
+        // 감정 분석도 자동으로 수행
+        analyzeEmotionByRow(currentData); // 현재 데이터로 감정 분석 수행
     });
 
     $('#wordcloud-tab').click(function () {
+
         setActiveTab($(this));
         $(this).prop("disabled", true);
         clusteringData.length === 0 ? alert("데이터를 조회해주세요.") : generateWordCloudFromAll();
@@ -658,12 +666,15 @@ function sendDataToServer() {
         })
         .then(data => console.log("서버 응답 데이터:", data))
         .catch(error => console.error("에러 발생:", error));
-}*/
+}
 
-document.addEventListener("DOMContentLoaded", function () {
+
+/*document.addEventListener("DOMContentLoaded", function () {
     $('#wordCloudContainer').focus();
 
     const maxChunkSize = 1000;
+
+    let currentData = []; // 전역 변수로 currentData 정의
 
     const stopWords = [
         "이", "가", "을", "를", "은", "는", "의", "에", "에서", "그리고", "하지만", "또한", "너무", "아주", "매우",
@@ -690,7 +701,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // 페이지 로드 시 전체 데이터로 워드클라우드 생성
     if (clusteringData && clusteringData.length > 0) {
-        generateWordCloudFromAll();
+        generateWordCloudFromAll(); // 워드클라우드 생성
+        analyzeEmotionByRow(clusteringData); // 전체 데이터로 감정 분석 수행
     } else {
         console.warn("clusteringData is empty or undefined.");
     }
@@ -861,12 +873,16 @@ document.addEventListener("DOMContentLoaded", function () {
     $('#emotion-tab').click(function () {
         setActiveTab($(this));
         $(this).prop("disabled", true);
-        if (currentData.length === 0) {
+
+        // 전체 데이터로 감정 분석 수행
+        if (clusteringData.length === 0) {
             alert("데이터를 조회해주세요.");
             resetButtons();
             return;
         }
-        analyzeEmotionByRow(currentData); // 현재 데이터로 감정 분석 수행
+
+        // 감정 분석 수행
+        analyzeEmotionByRow(clusteringData);
     });
 
 
@@ -1400,4 +1416,5 @@ function sendDataToServer() {
         })
         .then(data => console.log("서버 응답 데이터:", data))
         .catch(error => console.error("에러 발생:", error));
-}
+}*/
+
