@@ -359,10 +359,47 @@ button.custom-btn {
     max-width: 70%;
 }
 
+/*설명바*/
+.accordion-button {
+    transition: none;
+    border: none;
+}
+
+.accordion-button:hover {
+    transform: none;
+
+}
+
+/*.analyze-btn {*/
+/*    padding: 8px 18px !important;*/
+/*    !*font-size: 12px !important;*!*/
+/*}*/
+
 .modal-dialog {
     display: flex;
     align-items: center;
     justify-content: center;
     max-width: 600px;
     margin: auto;
+}
+
+.seq { width: 10%; }
+.cluster { width: 15%; }
+.answer-content { width: 30%; }
+.answer-date { width: 20%; }
+.frequency { width: 10%; }
+.top-words { width: 10%; }
+.detail { width: 10%; }
+.emotion-result { width: 8%; }
+
+
+#content{
+    min-height: calc(100vh - 60px);
+    margin-top: 100px;
+    margin-left: 240px;
+    margin-right: 40px;
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    align-items: flex-start;
 }
