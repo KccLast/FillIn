@@ -825,7 +825,7 @@ async function getNavFrame() {
 // nav번호 다시 계산하기
 function updateQuestionNavOrder() {
   let navList = $('.j-question');
-  console.log(navList);
+
   navList.each(function (idx, item) {
     $(item)
       .find('.question-nav-order')

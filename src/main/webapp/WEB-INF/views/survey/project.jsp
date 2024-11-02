@@ -9,6 +9,7 @@
 		<link rel="stylesheet" type="text/css" href="/resources/css/question/questionNav.css">
 		<link rel="stylesheet" type="text/css" href="/resources/css/question/question.css">
 		<link rel="stylesheet" type="text/css" href="/resources/css/question/condition.css">
+		<link rel="stylesheet" type="text/css" href="/resources/css/question/questionDragAndDrop.css">
 		<link rel="stylesheet" type="text/css" href="/resources/css/survey/post.css">
 		<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 		<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/jsPlumb/2.15.6/js/jsplumb.min.js"></script> -->
@@ -19,7 +20,9 @@
 			src="//dapi.kakao.com/v2/maps/sdk.js?appkey=f7372f613dea5dbd8f49b7be0a73bbb8"></script>
 
 		<script type="text/javascript" src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.14.0/Sortable.min.js"></script>
 
+		<script src="/resources/js/question/questionDragAndDrop.js"></script>
 		<script src="/resources/js/question/questionIUD.js"></script>
 		<script src="/resources/js/question/questionEvent.js"></script>
 		<script src="/resources/js/question/questionParse.js"></script>
