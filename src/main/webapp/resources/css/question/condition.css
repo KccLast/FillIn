@@ -4,20 +4,17 @@ body {
 
 .j-condition-box {
   width: 100%;
-
   margin-left: calc(100vh - 770px);
   margin-right: 40px;
-  min-height: calc(100vh - 130px);
+  min-height: calc(100vh - 150px);
   box-sizing: border-box;
-
-  /* 부모 컨테이너는 relative */
   overflow: auto;
-  /* 컨테이너 밖 요소를 숨김 */
+  margin-top: 5px;
 }
 
 .j-condition-card-container {
   width: 50%;
-  height: 788px;
+  height: 765px;
   margin: 1%;
   border-radius: 10px;
   background-color: white;
@@ -25,7 +22,7 @@ body {
 }
 #fixedNode {
   position: fixed;
-  top: 105px;
+  top: 170px;
   right: 475px;
   width: 100px;
   height: 40px;
@@ -47,7 +44,7 @@ body {
 /*nav box*/
 .condition-nav-box {
   width: 17%;
-  height: 788px;
+  height: 765px;
   border-radius: 10px;
 }
 .nav-top {

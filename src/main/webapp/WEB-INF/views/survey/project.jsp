@@ -122,13 +122,14 @@
 					<div class="j-deploy-box">
 					</div>
 					<img class="j-arrow-content j-arrow-right" src="/resources/img/question/arrow-right.png">
-					<div class="j-progress-wrap">
-						<div class="j-fix-pro">
+					<div class="j-progress-wrap j-flex-row-center">
+						<div class="j-fix-pro j-flex-col-center j-pro-style j-pro-selected">
 							<img src="/resources/img/question/edit-blue.png">
 							<div>질문 편집</div>
 						</div>
-						<div class="j-con-pro">
-							<img src="/resources/img/question/con-blue.png">
+						<div class="j-pro-line"></div>
+						<div class="j-con-pro j-flex-col-center j-pro-style">
+							<img src="/resources/img/question/con-gray.png">
 							<div>질문 흐름</div>
 						</div>
 					</div>
@@ -472,6 +473,22 @@
 						<div id="fixedNode" class="fixed-node">
 							<button class="btn btn-primary">조건 펼치기</button>
 						</div>
+
+						<div id="node-info=box" class="node-info-box">
+							<div class="node-info default-info">
+								<img src="/resources/img/question/defaultLine.png">
+								<div class="fw-bold">
+									기본 흐름
+								</div>
+							</div>
+							<div class="node-info condition-info">
+								<img src="/resources/img/question/conditionLine.png">
+								<div class="fw-bold">
+									조건부 흐름
+								</div>
+							</div>
+						</div>
+
 						<div class="j-condition-card-container" id="conditionCardCon">
 						</div>
 						<div class="condition-nav-box">

@@ -62,12 +62,22 @@ $(function () {
     // dragInstance.repaintEverything();
     redrawNetWork();
     $('.j-arrow-right').hide();
+
+    $('.j-fix-pro').removeClass('j-pro-selected');
+    $('.j-fix-pro > img').attr('src', '/resources/img/question/edit-gray.png');
+    $('.j-con-pro').addClass('j-pro-selected');
+    $('.j-con-pro > img').attr('src', '/resources/img/question/con-blue.png');
   });
   $('.j-arrow-left').click(function () {
     $('.content').show(); // 보이기
     $('.j-condition-box').hide(); // 숨기기
     $('#j-con-modal').hide();
     $('.j-arrow-right').show();
+
+    $('.j-fix-pro').addClass('j-pro-selected');
+    $('.j-fix-pro > img').attr('src', '/resources/img/question/edit-blue.png');
+    $('.j-con-pro').removeClass('j-pro-selected');
+    $('.j-con-pro > img').attr('src', '/resources/img/question/con-gray.png');
   });
 
   //카드 클릭하면 스크롤 정렬 기본 이벤트
@@ -755,6 +765,10 @@ $(function () {
   $('.content').on('input', '.j-survey-content>textarea', function () {
     $(this).css('height', 'auto'); // 높이를 초기화
     $(this).css('height', this.scrollHeight + 'px'); // scrollHeight를 사용해 높이 설정
+  });
+
+  $('.add-type-modal-close').click(function () {
+    $(this).parents('.add-type-modal-class').hide();
   });
 });
 
