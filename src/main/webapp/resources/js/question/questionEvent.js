@@ -196,6 +196,7 @@ $(function () {
           $newContainer.find('.j-map-container').attr('id', 'map' + idx);
           setTimeout(() => createDefaultMap('map' + idx), 100);
         }
+        $newContainer.find('.j-essential').prop('checked', true);
 
         createNewNode(idx);
         await insertQuestion();
@@ -214,9 +215,10 @@ $(function () {
     if (!card.hasClass('j-u-card')) {
       card.addClass('j-u-card');
     }
-    let isEssential = $(this).data('essential') === 'N' ? 'Y' : 'N';
-
-    $(this).data('essential', isEssential);
+    let isEssential = $(this).attr('data-essential') === 'Y' ? 'N' : 'Y';
+    console.log(isEssential);
+    $(this).attr('data-essential', isEssential);
+    // es.attr('data-essential', 'N');
 
     if ($(this).hasClass('j-es-seleted')) {
       $(this).removeClass('j-es-seleted');
@@ -713,6 +715,8 @@ $(function () {
           .attr('src', newSrc);
       } catch (error) {
         console.error('AJAX 요청 실패:', error);
+      } finally {
+        $('#add-type-modal2').hide();
       }
     }
   );

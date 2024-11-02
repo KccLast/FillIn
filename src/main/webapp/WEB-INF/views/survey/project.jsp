@@ -122,7 +122,18 @@
 					<div class="j-deploy-box">
 					</div>
 					<img class="j-arrow-content j-arrow-right" src="/resources/img/question/arrow-right.png">
+					<div class="j-progress-wrap">
+						<div class="j-fix-pro">
+							<img src="/resources/img/question/edit-blue.png">
+							<div>질문 편집</div>
+						</div>
+						<div class="j-con-pro">
+							<img src="/resources/img/question/con-blue.png">
+							<div>질문 흐름</div>
+						</div>
+					</div>
 					<div class="content">
+
 					</div>
 					<!-- Post Modal -->
 					<div class="modal fade" id="postModal" tabindex="-1" aria-labelledby="postModalLabel" aria-hidden="true">

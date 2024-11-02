@@ -1,5 +1,6 @@
 .content {
   display: none;
+  margin-top: 27px !important;
 }
 .j-arrow-content {
   width: 2%;
@@ -62,7 +63,6 @@
   width: 100%;
   box-sizing: border-box;
   padding-left: 3%;
-  position: absolute;
 }
 
 .j-survey-content > textarea {
@@ -71,12 +71,11 @@
   border: none;
   resize: none;
   padding-left: 1.6% !important;
-  padding-right: 4%;
+  padding-right: 2%;
   color: #aeaeae;
   font-weight: bold;
   text-align: left;
-
-  padding-top: 4% !important;
+  padding-top: 2% !important;
   overflow: hidden;
 }
 
@@ -88,6 +87,8 @@
 
 .j-survey-content > textarea::placeholder {
   text-align: left;
+  color: #aeaeae;
+  font-size: 15px;
 }
 
 hr {
@@ -142,9 +143,9 @@ hr {
 }
 
 .j-es-seleted {
-  color: white !important;
+  /* color: white !important;
   background-color: #005bac !important;
-  border: 2px solid rgba(0, 91, 172, 0.4) !important;
+  border: 2px solid rgba(0, 91, 172, 0.4) !important; */
 }
 
 /*객관식 옵션 css*/
@@ -1250,4 +1251,14 @@ h5 {
 }
 .bs-tooltip-bottom .tooltip-arrow::before {
   background-color: #005bac !important; /* 화살표 색상 */
+}
+
+.j-progress-wrap {
+  width: 100%;
+  height: 55px;
+  margin-top: 60px;
+
+  padding-left: 32%;
+  padding-right: 14%;
+  box-sizing: border-box;
 }
