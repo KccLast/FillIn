@@ -29,11 +29,18 @@ $(function () {
         return $(this).find('.j-qseq').val() === questionSeq + '';
       });
       let ccSeq = targetCard.find('.j-cseq').val();
-
-      if (!compareConditionWhiteList(ccSeq)) {
+      console.log(ccSeq);
+      if (ccSeq === '' || ccSeq === undefined || ccSeq === null) {
         Swal.fire({
           icon: 'warning',
-          title: '조건 생성 실패',
+          title: '질문을 선택해 주세요 ',
+          text: '조건을 생성할 질문을 선택해주세요!.',
+        });
+        return;
+      } else if (!compareConditionWhiteList(ccSeq)) {
+        Swal.fire({
+          icon: 'error',
+          title: '조건 생성 실패 ',
           text: '조건을 생성할 수 있는 타입의 질문이 아닙니다.',
         });
         return;
@@ -48,7 +55,7 @@ $(function () {
         return;
       }
 
-      let conditionList = $(this).parent().prev();
+      let conditionList = $(this).parent().prev().find('.accordion');
       let getConditionFrame = await fetchConditionFrame();
 
       // 조건 프레임 추가
@@ -135,10 +142,11 @@ $(function () {
   $('.nav-body-2').on('change', '.condition-ac-body select', function () {
     //조건 번호, questionSeq,operation, nextSeq
     let body = $(this).parents('.accordion-item');
-    let questionSeq = $(this)
-      .parents('.condition-nav-box')
-      .find('input[type="hidden"]')
-      .val();
+    let questionSeq = findQuestionSeqInConditionNav(this);
+    // $(this)
+    //   .parents('.condition-nav-box')
+    //   .find('input[type="hidden"]')
+    //   .val();
     // 클래스 문자열 가져오기
     let ConditionId = body.find('input[type="hidden"]').val(); // 정규식을 사용해 숫자만 추출
     let operation = body.find('.condition-oper').val();
@@ -243,10 +251,11 @@ $(function () {
   // });
 
   $('.nav-body-2').on('click', '.accordion-button', function () {
-    let questionSeq = $(this)
-      .parents('.condition-nav-box')
-      .find('input[type="hidden"]')
-      .val();
+    let questionSeq = findQuestionSeqInConditionNav(this);
+    // $(this)
+    //   .parents('.condition-nav-box')
+    //   .find('input[type="hidden"]')
+    //   .val();
     let toSeq = $(this)
       .parents('.accordion-item')
       .find('.contition-next-se')
@@ -269,6 +278,23 @@ $(function () {
     console.log(edges.get());
     network.redraw();
   });
+
+  /*조건 삭제*/
+  $('.condition-nav-1').on(
+    'click',
+    '.ac-x-btn > img, .ac-x-btn > span',
+    function () {
+      //이거랑 condition 번호 찾아야함
+      let questionSeq = findQuestionSeqInConditionNav(this);
+      let conditionId = $(this)
+        .parent()
+        .prev()
+        .find('.contition-next-se > option')
+        .attr('class');
+
+      console.log(conditionId);
+    }
+  );
 });
 
 var container;
@@ -334,6 +360,12 @@ var options = {
   },
 };
 
+function findQuestionSeqInConditionNav(target) {
+  return $(target)
+    .parents('.condition-nav-box')
+    .find('input[type="hidden"]')
+    .val();
+}
 function saveConditionDataInLocal(saveCondition) {
   let { id, from } = saveCondition;
 

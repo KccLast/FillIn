@@ -72,14 +72,14 @@
 			<%-- <%@ include file="/resources/common/miniNav.jsp" %> --%>
 				<%@ include file="/resources/common/nav.jsp" %>
 					<div id="j-question-nav">
-						<div class="j-questionNav-tab-Box j-flex-row-center">
+						<!-- <div class="j-questionNav-tab-Box j-flex-row-center">
 							<div class="j-question-nav-tab j-question-nav-color">
 								질문 상세
 							</div>
 							<div class="j-deploy-nav-tab">
 								게시 정보
 							</div>
-						</div>
+						</div> -->
 						<div class="j-question-box">
 							<div class="j-total-question-box j-flex-row-center">
 								<span class="fw-bold">전체문항수</span>
@@ -498,24 +498,33 @@
 									<!-- <div class="top-basic condition-nav-1-top condition-nav-1-selected">
 										기본 이동
 									</div> -->
-									<div class="top-condition condition-nav-1-top">
-										조건별 이동
+									<div class="top-condition condition-nav-1-top j-flex-row-center">
+										<span>조건별 이동</span>
+										<div class="icon-div">
+											<i class="bi bi-info-circle coninfo" data-bs-toggle="tooltip" data-bs-placement="top" title="
+											조건별 이동을 통해 응답에 따라 이어지는 
+												질문을 설정할 수 있습니다."></i>
+
+										</div>
 									</div>
 								</div>
-								<div class="nav-body-1">
+								<!-- <div class="nav-body-1">
 									<div class="basic-move">
 										<span class="fs-6">다음 질문</span>
 										<select class="form-select"></select>
 									</div>
-								</div>
+								</div> -->
 								<div class="nav-body-2">
 									<div class="accordion">
 									</div>
-									<div class="j-condition-plus-img j-flex-row-center">
-										<div class="fs-6">조건 추가</div>
-										<img src="/resources/img/question/plus-circle-fill-blue.png">
-									</div>
+
 								</div>
+
+								<div class="j-condition-plus-img j-flex-row-center">
+									<div class="fs-6">조건 추가</div>
+									<img src="/resources/img/question/plus-circle-fill-blue.png">
+								</div>
+
 							</div>
 							<div class="condition-nav-2 j-flex-row-center">
 								<div class="cur-con-question-box con-question-box">
