@@ -471,17 +471,17 @@
 						<img class="j-arrow-content j-arrow-left" src="/resources/img/question/arrow-left.png">
 						<!-- 고정된 노드처럼 보이게 하는 HTML 요소 -->
 						<div id="fixedNode" class="fixed-node">
-							<button class="btn btn-primary">조건 펼치기</button>
+							<button class="btn btn-primary">조건 접기</button>
 						</div>
 
 						<div id="node-info=box" class="node-info-box">
-							<div class="node-info default-info">
+							<div class="node-info default-info j-flex-col-center">
 								<img src="/resources/img/question/defaultLine.png">
 								<div class="fw-bold">
 									기본 흐름
 								</div>
 							</div>
-							<div class="node-info condition-info">
+							<div class="node-info condition-info j-flex-col-center">
 								<img src="/resources/img/question/conditionLine.png">
 								<div class="fw-bold">
 									조건부 흐름
@@ -495,9 +495,9 @@
 							<input type="hidden" name="questionSeq">
 							<div class="condition-nav-1">
 								<div class="nav-top j-flex-row-center">
-									<div class="top-basic condition-nav-1-top condition-nav-1-selected">
+									<!-- <div class="top-basic condition-nav-1-top condition-nav-1-selected">
 										기본 이동
-									</div>
+									</div> -->
 									<div class="top-condition condition-nav-1-top">
 										조건별 이동
 									</div>
@@ -526,11 +526,11 @@
 									</div>
 									<div class="cur-con-question-type con-question-type con-question-input j-flex-row-center">
 									</div>
-									<div class="form-floating cur-con-description con-question-description">
+									<!-- <div class="form-floating cur-con-description con-question-description">
 										<textarea class="form-control" placeholder="Leave a comment here" id="floatingTextarea"
 											readonly> </textarea>
 										<label for="floatingTextarea">질문설명</label>
-									</div>
+									</div> -->
 								</div>
 								<div class="next-question-box con-question-box">
 									<span class="fw-bold">다음 질문</span>
@@ -540,11 +540,11 @@
 									</div>
 									<div class="next-con-question-type con-question-type con-question-input j-flex-row-center">
 									</div>
-									<div class="form-floating next-con-description con-question-description">
+									<!-- <div class="form-floating next-con-description con-question-description">
 										<textarea class="form-control" placeholder="Leave a comment here" id="floatingTextarea"
 											readonly> </textarea>
 										<label for="floatingTextarea">질문설명</label>
-									</div>
+									</div> -->
 								</div>
 							</div>
 						</div>

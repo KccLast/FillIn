@@ -48,13 +48,17 @@ body {
   border-radius: 10px;
 }
 .nav-top {
-  height: 9%;
+  height: 7%;
   border-bottom: 1.5px solid #e9ecef;
+  background-color: #005bac;
+  color: white;
+  border-top-right-radius: 10px;
+  border-top-left-radius: 10px;
 }
 
 .condition-nav-1 {
   border-radius: 10px;
-  height: 53%;
+  height: 73%;
   background-color: white;
   box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
 }
@@ -79,6 +83,7 @@ body {
 }
 .nav-body-1 {
   height: 80%;
+  display: none;
 }
 .basic-move {
   margin-top: 10%;
@@ -101,7 +106,6 @@ body {
   height: 100%;
   max-height: 385px; /* 최대 높이 제한 */
   overflow-y: auto; /* 세로 스크롤 추가 */
-  display: none;
 }
 
 /*옵션 추가 버튼*/
@@ -122,7 +126,7 @@ body {
 .condition-nav-2 {
   border-radius: 10px;
   margin-top: 5%;
-  height: 45%;
+  height: 25%;
   background-color: white;
   box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
 }
@@ -398,17 +402,20 @@ body {
   margin-bottom: 10%;
 }
 .con-question-input {
-  height: 17%;
+  height: 25%;
   margin-bottom: 5%;
 }
 .con-question-input > input[type='text'] {
   height: 80%;
 }
 .con-question-type {
-  height: 10%;
+  margin-top: 20%;
+  height: 25%;
   border: 1px solid #dee2e6;
   border-radius: 5px;
-  margin-bottom: 5%;
+}
+.next-con-question-type {
+  margin-top: 22%;
 }
 .con-question-type > .j-typeAndImg {
   width: 85% !important;
@@ -430,3 +437,25 @@ body {
   font-size: 1.45em;
 }
 /*warning tooltip*/
+
+/*node info*/
+.node-info-box {
+  position: fixed;
+  top: 170px;
+  left: 520px;
+  z-index: 10001;
+}
+.default-info {
+  margin-top: 1%;
+  margin-bottom: 10%;
+}
+.condition-info > div {
+  color: rgba(255, 0, 0, 0.7);
+}
+.node-info > div {
+  margin-top: 4%;
+  font-size: 13px;
+}
+.node-info > img {
+  width: 50px;
+}
