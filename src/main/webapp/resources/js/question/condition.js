@@ -284,15 +284,40 @@ $(function () {
     'click',
     '.ac-x-btn > img, .ac-x-btn > span',
     function () {
-      //이거랑 condition 번호 찾아야함
-      let questionSeq = findQuestionSeqInConditionNav(this);
-      let conditionId = $(this)
-        .parent()
-        .prev()
-        .find('.contition-next-se > option')
-        .attr('class');
-
-      console.log(conditionId);
+      var confirmResult;
+      let _this = this;
+      Swal.fire({
+        title: '정말로 조건을 삭제하시겠습니까??',
+        text: '한번 삭제한 조건은 다시는 되돌릴 수 없습니다.',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        cancelButtonText: '취소',
+        confirmButtonText: '삭제',
+      }).then((result) => {
+        if (result.isConfirmed) {
+          deleteCondition(_this)
+            .then(() => {
+              // 삭제 완료 메시지 표시
+              Swal.fire({
+                title: '삭제 완료!',
+                text: '조건을 성공적으로 삭제했습니다.',
+                icon: 'success',
+              });
+              $(_this).parents('.accordion-item').remove();
+            })
+            .catch((error) => {
+              // 오류 메시지 표시
+              Swal.fire({
+                title: '삭제 실페!',
+                text: '조건 삭제에 실패했습니다. 삭제하시려는 조건을 다시 한번 확인해주세요',
+                icon: 'error',
+              });
+              console.error('삭제 중 오류 발생:', error); // 오류 로그 출력
+            });
+        }
+      });
     }
   );
 });
@@ -359,6 +384,51 @@ var options = {
     enabled: false, // 물리 엔진 비활성화
   },
 };
+
+async function deleteCondition(target) {
+  return new Promise((resolve, reject) => {
+    try {
+      let questionSeq = findQuestionSeqInConditionNav(target);
+      let conditionId = $(target)
+        .parent()
+        .prev()
+        .find('.contition-next-se > option')
+        .attr('class');
+      let conditions = getQuestionConditions(questionSeq);
+      let findCondition = conditions.filter(
+        (con) => con.id === parseInt(conditionId)
+      )[0];
+      console.log(findCondition);
+
+      // Edge 삭제 및 DB 반영
+      let targetEdge = convertConditionToedge(
+        findCondition,
+        '조건부 흐름',
+        findCondition.id
+      );
+
+      // 비동기 작업들을 수행하고 모두 완료된 후 resolve 호출
+      deleteEdge(targetEdge.from, parseInt(conditionId));
+      deleteConditionInDB(findCondition);
+
+      // 모든 작업이 성공적으로 완료되면 resolve 호출
+      resolve();
+    } catch (error) {
+      // 에러 발생 시 reject 호출
+      reject(error);
+    }
+  });
+}
+async function deleteConditionInDB(targetCondition) {
+  return $.ajax({
+    url: '/api/question/condition',
+    type: 'DELETE',
+    data: JSON.stringify(targetCondition),
+    contentType: 'application/json',
+    success: function (response) {},
+    error: function (error) {},
+  });
+}
 
 function findQuestionSeqInConditionNav(target) {
   return $(target)
@@ -485,6 +555,7 @@ function convertConditionToedge(condition, label, conditionOrder) {
   let fromNode = nodeList.find((node) => node.seq === condition.from);
   let toNode = nodeList.find((node) => node.seq === condition.to);
   let edge;
+  console.log(toNode);
   if (label.includes('기본 흐름')) {
     edge = createEdge(fromNode.id, toNode.id);
   } else {

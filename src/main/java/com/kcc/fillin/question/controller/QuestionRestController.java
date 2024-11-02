@@ -3,6 +3,8 @@ package com.kcc.fillin.question.controller;
 import java.util.List;
 
 import com.kcc.fillin.question.dto.*;
+import jakarta.validation.Valid;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -111,6 +113,22 @@ public class QuestionRestController {
 		else{
 			return Response.setFail("조건 등록에 실패했습니다.",500);
 		}
+	}
+
+	@DeleteMapping("/condition")
+	public Response<?> deleteCondition(@RequestBody @Valid ConditionRequest conditionRequest, BindingResult br){
+		System.out.println("conditionRequest = " + conditionRequest);
+		if(br.hasErrors()){
+			return Response.setFail("조건 삭제에 실패했습니다. 입력값을 확인해주세요",400);
+		}
+		boolean result = questionService.deleteCondition(conditionRequest);
+		if(result) {
+			return Response.setSuccess(" 조건을 성공적으로 삭제했습니다.", 200);
+		}
+//		else{
+//			return Response.setFail("조건 등록에 실패했습니다.",500);
+//		}
+		return null;
 	}
 
 }

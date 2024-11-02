@@ -183,6 +183,11 @@ public class QuestionServiceImpl implements QuestionService {
 		return result;
 	}
 
+	@Override
+	public boolean deleteCondition(ConditionRequest conditionRequest) {
+		return questionDao.deleteCondition(conditionRequest);
+	}
+
 	private boolean answerIsContactData(SubmitRequest item) {
 		// TODO Auto-generated method stub
 		return false;
