@@ -90,7 +90,7 @@ public class SurveyController {
 
 		SurveyVO findSurvey = service.findSurveyBySurveySeq(surveySeq);
 		model.addAttribute("survey", findSurvey);
-		System.out.println("findSurvey = " + findSurvey);
+
 		ObjectMapper objectMapper = new ObjectMapper();
 		objectMapper.registerModule(new JavaTimeModule());
 		String jsonString = "";
@@ -103,13 +103,7 @@ public class SurveyController {
 		return "/survey/project";
 	}
 
-	@PostMapping("/api/question")
-	@ResponseBody
-	public String insertQuestion() {
 
-		return "성공";
-
-	}
 
 	@GetMapping("/url/{surveyUrl}")
 	public String getSurveyByParticipant(@PathVariable
@@ -124,8 +118,4 @@ public class SurveyController {
 		return "/survey/participant";
 	}
 
-	@GetMapping("/node/test")
-	public String nodeTest(){
-		return "/survey/node";
-	}
 }

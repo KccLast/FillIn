@@ -19,7 +19,7 @@ public class CreateAutoQuestionRequest {
     private Long seq;
     @JsonIgnore
     private Long memberSeq;
-    private String surveyName;
+    private Long surveySeq;
     private List<CreateQuestionRequest> questions;
 
     public List<QuestionVO> getConvertedCreateQuestionToQuestionVO(){

@@ -1,6 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<!DOCTYPE html>
-<html lang="en">
+	<!DOCTYPE html>
+	<html lang="en">
+
 	<head>
 		<meta charset="UTF-8">
 		<title>Title</title>
@@ -40,30 +41,31 @@
 		<script type="text/javascript">
 
 
-        $(function () {
+			$(function () {
 
-            let surveyName = "${survey.name}";
-            updateSurveyName(surveyName);
+				let surveyName = "${survey.name}";
+				updateSurveyName(surveyName);
 
-            $('.content').on('keyup', '.j-survey-name-input', async function () {
-                let idx = $(this).parent().parent().index();
-                $('.j-question-list').find('.j-question').eq(idx).find('.question-name > span').html($(this).val());
-                let nameVal = $(this).val();
-                changeNodeName(idx, nameVal);
-            })
-            let survey = '${surveyJson}';
+				$('.content').on('keyup', '.j-survey-name-input', async function () {
+					let idx = $(this).parent().parent().index();
+					$('.j-question-list').find('.j-question').eq(idx).find('.question-name > span').html($(this).val());
+					let nameVal = $(this).val();
+					changeNodeName(idx, nameVal);
+				})
+				let survey = '${surveyJson}';
 
-            parseJson(survey);
-            parseCondition(survey);
-            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
-            var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-                return new bootstrap.Tooltip(tooltipTriggerEl)
-            })
-            updateButton();
-        })
-    </script>
+				parseJson(survey);
+				parseCondition(survey);
+				var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+				var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+					return new bootstrap.Tooltip(tooltipTriggerEl)
+				})
+				updateButton();
+			})
+		</script>
 
-</head>
+	</head>
+
 	<body>
 		<div class="loading-box">
 			<span class="loader"></span>
@@ -565,4 +567,5 @@
 						</div>
 					</div>
 	</body>
-</html>
+
+	</html>
