@@ -144,11 +144,11 @@ public class QuestionRestController_JA {
 
 	// 테스트용
 	@PostMapping("/create-survey")
-	public Response createSurvey(@RequestBody CreateAutoQuestionRequest selectedQuestions, @AuthenticationPrincipal PrincipalDetail userDetails) {
+	public Response createSurvey(@RequestBody CreateAutoQuestionRequest selectedQuestions) {
 
-		Long memberSeq = userDetails.getSeq();
 
-		selectedQuestions.setMemberSeq(memberSeq);
+
+
 
 		System.out.println("Received questions: " + selectedQuestions);
 		Long surveySeq = questionService2.createAutoQuestion(selectedQuestions);

@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
+import com.kcc.fillin.survey.dto.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -15,10 +16,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.kcc.fillin.global.Common.Response;
 import com.kcc.fillin.survey.domain.SurveyVO;
-import com.kcc.fillin.survey.dto.MultiSearchSurveyRequest;
-import com.kcc.fillin.survey.dto.MultiSearchSurveyResponse;
-import com.kcc.fillin.survey.dto.PostSurveyRequest;
-import com.kcc.fillin.survey.dto.SurveyLogDTO;
 import com.kcc.fillin.survey.service.SurveyService;
 
 import lombok.RequiredArgsConstructor;
@@ -42,6 +39,12 @@ public class SurveyRestController {
 		System.out.println("필터링된 결과 크기: " + filteringSurveys.size());
 
 		return Response.setSuccess(filteringSurveys, 200);
+	}
+
+	@PostMapping("/create-survey")
+	public Response createSurvey(@RequestBody CreateSurveyRequest request) {
+		String surveyName = request.getSurveyName();
+		return Response.setSuccess(surveyName, 200);
 	}
 
 	/*	@GetMapping("/{surveyUrl}/{curPage}")

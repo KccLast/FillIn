@@ -1,8 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 	<script src="/resources/common/nav.js"></script>
-
-
-
 	<div class="sidebar">
 		<nav class="fs-5 nav flex-column">
 			<a href="#" class="nav-link">

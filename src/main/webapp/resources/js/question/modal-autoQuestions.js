@@ -1,3 +1,6 @@
+
+
+
 // 선택된 체크 박스의 select-box 동적으로 생성
 function toggleSelectBox(checkbox, selectId) {
     const $selectBox = $('#' + selectId);
@@ -88,7 +91,7 @@ function showQuestionsModal() {
             if (typeof jsonData === 'string') {
                 // 백틱 제거
                 jsonData = jsonData.replace(/```json/g, '').replace(/```/g, '').trim();
-
+                console.log("jsonData =" + jsonData);
                 try {
                     jsonData = JSON.parse(jsonData);
 
@@ -298,7 +301,7 @@ $(document).ready(function () {
                 let type = typeMapping[code.seq]; // ccSeq에 맞는 타입 확인
                 if (type) {
                     let checkboxHtml = `
-                    <div class="checkbox-item">
+                    <div class="checkbox-item d-flex align-items-center">
                         <input type="checkbox" id="${type}" name="${type}" onclick="toggleSelectBox(this, '${type}-count')" />
                         <label for="${type}" id="${type}-label">${code.name}</label>
                         <select class="form-select small-select" id="${type}-count" name="${type}-count" style="display: none;">
@@ -332,16 +335,26 @@ $(document).ready(function () {
     });
 
     $(document).on('click', '.question-select', function () {
-        const questionType = $(this).closest('.select-question-section').data('question-type');
-        const allChecked = $(`.select-question-section[data-question-type="${questionType}"] .question-select`).length ===
-            $(`.select-question-section[data-question-type="${questionType}"] .question-select:checked`).length;
+        const questionType = $(this)
+            .closest('.select-question-section')
+            .data('question-type');
+        const allChecked =
+            $(
+                `.select-question-section[data-question-type="${questionType}"] .question-select`
+            ).length ===
+            $(
+                `.select-question-section[data-question-type="${questionType}"] .question-select:checked`
+            ).length;
 
         // 하위 질문 중 하나라도 해제되면 전체 선택 체크박스도 해제
-        $(`.select-all-checkbox[data-type="${questionType}"]`).prop('checked', allChecked);
+        $(`.select-all-checkbox[data-type="${questionType}"]`).prop(
+            'checked',
+            allChecked
+        );
     });
 
     let addedQuestions = [];
-    // 선택한 질문지 추가
+// 선택한 질문지 추가
     $('#add-questions-btn').on('click', function () {
         let hasChecked = false;
 
@@ -355,8 +368,8 @@ $(document).ready(function () {
 
         if (!hasChecked) {
             Swal.fire({
-                type: "error",
-                text: "하나 이상의 질문을 선택해주세요.",
+                type: 'error',
+                text: '하나 이상의 질문을 선택해주세요.',
             });
             return;
         }
@@ -369,9 +382,9 @@ $(document).ready(function () {
             }
 
             const title = $(this).find('.question-select').data('title');
-            const dataCount = $(this).find('.question-select').data('count');
+            // const dataCount = $(this).find('.question-select').data('count');
             const type = checkbox.attr('id').split('-question')[0];
-            console.log("type =" + type);
+            console.log('type =' + type);
             const description = $(this).find('.question-content p').text();
             let ccSeq = null;
             let options = [];
@@ -393,14 +406,18 @@ $(document).ready(function () {
             }
 
             // 옵션이 있는 경우(객관식, 체크박스)
-            if (ccSeq === 7 || ccSeq === 8) {  // 객관식 또는 체크박스일 경우에만 옵션을 수집
-                $(this).find('.question-content div').each(function () { // 모든 <div> 선택
-                    const optionText = $(this).text().trim(); // div의 텍스트 가져오기
+            if (ccSeq === 7 || ccSeq === 8) {
+                // 객관식 또는 체크박스일 경우에만 옵션을 수집
+                $(this)
+                    .find('.question-content div')
+                    .each(function () {
+                        // 모든 <div> 선택
+                        const optionText = $(this).text().trim(); // div의 텍스트 가져오기
 
-                    // 정규 표현식으로 번호와 점 제거
-                    const option = optionText.replace(/^\d+\.\s*/, '')
-                    options.push(option); // 텍스트를 options 배열에 추가
-                });
+                        // 정규 표현식으로 번호와 점 제거
+                        const option = optionText.replace(/^\d+\.\s*/, '');
+                        options.push(option); // 텍스트를 options 배열에 추가
+                    });
             }
 
             addedQuestions.push({
@@ -408,151 +425,118 @@ $(document).ready(function () {
                 name: title,
                 description: description,
                 options: options.length > 0 ? options : [],
-                dataCount: dataCount
+                // dataCount: dataCount
             });
+        });
 
-            console.log('addedQuestions: ' + JSON.stringify(addedQuestions));
-
-            // 추가된 질문 목록 업데이트
-            // 질문 그룹화
-            const groupedQuestions = {};
-            addedQuestions.forEach(function (question) {
-                // 타입 별로 그룹화
-                if (!groupedQuestions[question.ccSeq]) {
-                    groupedQuestions[question.ccSeq] = [];
-                }
-                groupedQuestions[question.ccSeq].push(question.name);
-            });
-
-            const questionListContainer = $('.select-add-questions');
-            $('.vertical-line').show();
-            questionListContainer.html('<p class="fw-bold">추가된 질문 목록</p>');
-
-            // 그룹별로 출력
-            for (const type in groupedQuestions) {
-                let questionType = '';
-                switch (parseInt(type)) {
-                    case 7:
-                        questionType = '객관식';
-                        break;
-                    case 8:
-                        questionType = '체크박스';
-                        break;
-                    case 12:
-                        questionType = '단답형';
-                        break;
-                    case 13:
-                        questionType = '장문형';
-                        break;
-                }
-
-                console.log('type: ' + type);
-                console.log('questionType: ' + questionType);
-                if (groupedQuestions.hasOwnProperty(type)) {
-                    let questionClass = (parseInt(type) === 7 || parseInt(type)=== 8) ? 'j-quancolor' : (parseInt(type) === 12 || parseInt(type) === 13) ? 'j-qualcolor' : '';
-                    console.log('questionClass: ', questionClass);
-                    questionListContainer.append(`
-					  <div class="d-flex align-items-center mb-2 ${questionClass}">
-						<img src="/resources/img/question/type/type${type}.png" class="me-2 my-auto"/>
-						<p class="mb-0 ${questionClass}">${questionType}</p>
-					  </div>
-					`);
-
-                    groupedQuestions[type].forEach(function (name, index) {
-                        // 해당 그룹 내의 마지막 질문 인덱스 계산
-                        const isLastItem = index === groupedQuestions[type].length - 1;
-                        const marginStyle = isLastItem ? 'style="margin-bottom: 10px;"' : '';
-
-                        questionListContainer.append(
-                            `<div ${marginStyle}>
-								<label for="question-${type}-${index}" class="mb-1">
-									<input type="checkbox" id="question-${type}-${index}" name="question-${type}-${index}" class="added-question-checkbox">
-									${name}
-								</label>
-							</div>`
-                        );
-                    });
-                }
-            }
-
-            // 전체 선택 체크박스 처리
-            $('.select-all-checkbox').off('click').on('click', function () {
+        // 전체 선택 체크박스 처리
+        $('.select-all-checkbox')
+            .off('click')
+            .on('click', function () {
                 const isChecked = $(this).is(':checked');
                 const questionType = $(this).data('type');
 
-                $(`.select-question-section[data-question-type="${questionType}"] .question-select`).each(function () {
+                $(
+                    `.select-question-section[data-question-type="${questionType}"] .question-select`
+                ).each(function () {
                     $(this).prop('checked', isChecked);
                 });
             });
+        console.log('#####################');
+        console.log(addedQuestions);
 
-            $('.second-content').hide();
-            $('.first-content').show();
-            $('.generated-questions-list-btn').show();
-        });
-    });
-
-    $('#question-close-btn').on('click', function () {
-        $('.second-content').hide();
-        $('.first-content').show();
-        $('.generated-questions-list-btn').show();
-    });
-
-    // 생성 질문 목록 버튼
-    $('.generated-questions-list-btn').on('click', function () {
-        $('.first-content').hide();
-        $('.second-content').show();
-    });
-
-    // 선택된 질문 - 질문지 만드는 페이지로 보내기
-    $('#create-question-btn').on('click', function () {
-        let questions = [];
-        let surveyName = '';
-        surveyNames = $('#survey-name').val().trim();
-
-        if (surveyNames.length === 0) {
-            Swal.fire({
-                icon: "warning",
-                text: "설문지 이름을 입력해 주세요.",
-                backdrop: false
-            });
-            return;
-        }
-
-        let aiSurveyObject = {
-            surveyName: surveyNames
-        }
-        $('.added-question-checkbox:checked').each(function () {
-            const ccSeq = $(this).attr('id').split('-')[1];
-
-            const questionData = addedQuestions.find(que => que.ccSeq === parseInt(ccSeq) && que.name === $(this).parent().text().trim());
-
-            if (questionData) {
-                questions.push({
-                    ccSeq: questionData.ccSeq,
-                    name: questionData.name,
-                    description: questionData.description,
-                    options: questionData.options
-                });
-            }
-        });
-
-        console.log('questions: ' + JSON.stringify(questions, null, 2));
-
-        aiSurveyObject.questions = questions;
-        console.log('Request Payload 222: ', JSON.stringify(aiSurveyObject));
+        let autoData = {
+            seq: $('#surveySeq').val(),
+            questions: addedQuestions,
+        };
         $.ajax({
             url: '/api/question/create-survey',
             type: 'POST',
             contentType: 'application/json',
-            data: JSON.stringify(aiSurveyObject),
+            data: JSON.stringify(autoData),
             success: function (response) {
                 console.log(response);
-                location.href = response.data;
+                 location.href = response.data;
             },
             error: function (xhr) {
                 console.error('Error:', xhr.responseText);
-            }
+            },
         });
+
+        $('.second-content').hide();
+        $('.first-content').show();
+        //$('.generated-questions-list-btn').show();
     });
+
+
+
+
+    $('#question-close-btn').on('click', function () {
+        $('.second-content').hide();
+        $('.first-content').show();
+        //$('.generated-questions-list-btn').show();
+    });
+
+    // 생성 질문 목록 버튼
+    // $('.generated-questions-list-btn').on('click', function () {
+    //     $('.first-content').hide();
+    //     $('.second-content').show();
+    // });
+
+    // 선택된 질문 - 질문지 만드는 페이지로 보내기
+    // $('#create-question-btn').on('click', function () {
+    //     let questions = [];
+    //     let surveyName = '';
+    //     surveyNames = $('#survey-name').val().trim();
+    //
+    //     if (surveyNames.length === 0) {
+    //         Swal.fire({
+    //             icon: "warning",
+    //             text: "설문지 이름을 입력해 주세요.",
+    //             backdrop: false
+    //         });
+    //         return;
+    //     }
+    //
+    //     let aiSurveyObject = {
+    //         surveyName: surveyNames
+    //     }
+    //     $('.added-question-checkbox:checked').each(function () {
+    //         const ccSeq = $(this).attr('id').split('-')[1];
+    //
+    //         const questionData = addedQuestions.find(que => que.ccSeq === parseInt(ccSeq) && que.name === $(this).parent().text().trim());
+    //
+    //         if (questionData) {
+    //             questions.push({
+    //                 ccSeq: questionData.ccSeq,
+    //                 name: questionData.name,
+    //                 description: questionData.description,
+    //                 options: questionData.options
+    //             });
+    //         }
+    //     });
+    //
+    //     console.log('questions: ' + JSON.stringify(questions, null, 2));
+    //
+    //     aiSurveyObject.questions = questions;
+    //     console.log('Request Payload 222: ', JSON.stringify(aiSurveyObject));
+    //     $.ajax({
+    //         url: '/api/question/create-survey',
+    //         type: 'POST',
+    //         contentType: 'application/json',
+    //         data: JSON.stringify(aiSurveyObject),
+    //         success: function (response) {
+    //             console.log(response);
+    //             location.href = response.data;
+    //         },
+    //         error: function (xhr) {
+    //             console.error('Error:', xhr.responseText);
+    //         }
+    //     });
+    // });
+
+    $('.aiImgBox').click(function (){
+
+    })
 
 });

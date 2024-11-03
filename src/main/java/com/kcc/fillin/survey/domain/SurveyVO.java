@@ -27,10 +27,9 @@ public class SurveyVO {
 	private int totalCnt;
 	private List<QuestionVO> questions;
 
-	public static SurveyVO getSurveyVOFromNameAndMemberSeq(String name, Long memberSeq){
+	public static SurveyVO getSurveyVOFromNameAndMemberSeq(Long seq){
 		SurveyVO surveyVO = new SurveyVO();
-		surveyVO.name = name;
-		surveyVO.memberSeq = memberSeq;
+		surveyVO.setSeq(seq);
 		return surveyVO;
 	}
 
