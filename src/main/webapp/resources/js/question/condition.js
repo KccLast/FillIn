@@ -1124,7 +1124,8 @@ function showAllConditionFlow() {
   try {
     edges.add(conditionalEdges); // 엣지를 한 번에 추가
     network.setData({ nodes: nodes, edges: edges }); // 네트워크에 데이터 설정
-    network.redraw(); // 네트워크 다시 그리기
+    //network.redraw(); // 네트워크 다시 그리기
+    redrawNetWork();
   } catch (error) {
     console.error('조건부 엣지 추가 중 오류 발생:', error);
   }
