@@ -8,6 +8,8 @@ import com.kcc.fillin.member.dto.MemberDTO;
 import com.kcc.fillin.member.dto.ResetPasswordDTO;
 import com.kcc.fillin.member.dto.TempPasswordDTO;
 import com.kcc.fillin.member.service.EmailService;
+import com.kcc.fillin.question.service.QuestionService;
+import com.kcc.fillin.survey.dto.MemberSurveyResponse;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +26,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/member")
@@ -39,6 +42,9 @@ public class MemberRestController {
 
 
     private final MemberMapper memberMapper;
+
+    private final QuestionService questionService;
+
 
     // 이메일 중복 확인
     @GetMapping("/register/emailcheck")
@@ -169,7 +175,11 @@ public class MemberRestController {
        return Response.setSuccess(user.getUser(),200);
     }
 
-
+    @GetMapping("/survey")
+    public Response<?> getMemberSurvey(@AuthenticationPrincipal PrincipalDetail  user){
+        List<MemberSurveyResponse> response = questionService.getSurveyByMemberSeq(user.getMember().getSeq());
+        return Response.setSuccess(response,200);
+    }
 }
 
 

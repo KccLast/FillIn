@@ -36,18 +36,20 @@ public class StatisticController2 {
 		return "/statistic/keyword";
 	}
 
-	@GetMapping("/{surveyId}")
-	public String getFull(@PathVariable Long surveyId, Model model) {
-		model.addAttribute("surveyId", surveyId);
+	@GetMapping({"/{surveyId}",""})
+	public String getFull(@PathVariable(required = false) Long surveyId, Model model) {
 
-		// PostDateResponse postDateResponse = statisticService.getPostDate(surveyId);
-		model.addAttribute("postDateResponse", statisticService.getPostDate(surveyId));
-
+		if(surveyId != null) {
+			model.addAttribute("surveyId", surveyId);
+			// PostDateResponse postDateResponse = statisticService.getPostDate(surveyId);
+			model.addAttribute("postDateResponse", statisticService.getPostDate(surveyId));
+		}
 		return "/statistic/full";
 	}
 
-	@GetMapping("/clustering/{surveyId}")
-	public String getClustering(@PathVariable Long surveyId, Model model) {
+	@GetMapping({"/clustering/{surveyId}","/clustering"})
+	public String getClustering(@PathVariable(required = false) Long surveyId, Model model) {
+		if(surveyId != null)
 		model.addAttribute("surveyId", surveyId);
 
 		return "/statistic/kmeans";

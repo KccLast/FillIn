@@ -163,4 +163,10 @@
 		AND next_question_seq = #{to}
 		AND order_num = #{id}
 	</update>
+
+	<select id="selectSurveyByMemberSeq" resultType="MemberSurveyResponse">
+		SELECT seq,name,post_date,end_date,created_at
+		FROM survey
+		WHERE member_seq =  #{seq}
+	</select>
 </mapper>

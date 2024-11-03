@@ -17,14 +17,16 @@ import java.util.List;
 public class StatisticsController_JA {
     private final StatisticsService_JA service;
 
-    @GetMapping("/liner-regression/{seq}")
-    public String linerRegression(@PathVariable Long seq, Model model) {
-        System.out.println("seq: " + seq);
-        List<QuantityQuestionsResponse> survey = service.getQuantityQuestionsBySurvey(seq);
-        System.out.println("survey: " + survey);
+    @GetMapping({"/liner-regression/{seq}","/liner-regression"})
+    public String linerRegression(@PathVariable(required = false) Long seq, Model model) {
+        if(seq != null) {
+            System.out.println("seq: " + seq);
+            List<QuantityQuestionsResponse> survey = service.getQuantityQuestionsBySurvey(seq);
+            System.out.println("survey: " + survey);
 
-        model.addAttribute("surveySeq", seq);
-        model.addAttribute("survey", survey);
+            model.addAttribute("surveySeq", seq);
+            model.addAttribute("survey", survey);
+        }
         return "/statistic/linearRegression";
     }
 }

@@ -17,12 +17,21 @@ function setNavLink() {
   } else {
     surveySeq = pathName.substring(pathName.lastIndexOf('/') + 1);
   }
+  let url;
+  let parseResult = parseInt(surveySeq);
+  console.log(parseResult);
+  if (isNaN(parseResult)) {
+    url = '';
+  } else {
+    url = '/' + surveySeq;
+  }
+  console.log(url);
   // 각 링크 생성
-  let editLink = '/survey/' + surveySeq;
-  let statisticLink = '/statistic/' + surveySeq;
-  let clusterLink = '/statistic/clustering/' + surveySeq;
-  let linerLink = '/statistics/liner-regression/' + surveySeq;
-  let logLink = '/survey/logs/' + surveySeq;
+  let editLink = '/survey' + url;
+  let statisticLink = '/statistic' + url;
+  let clusterLink = '/statistic/clustering' + url;
+  let linerLink = '/statistics/liner-regression' + url;
+  let logLink = '/survey/logs' + url;
 
   // 링크가 초기화되지 않았다면 각 링크에 href 속성 설정
 

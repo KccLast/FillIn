@@ -37,7 +37,9 @@
                         }
                     })
                 }) */
-
+                function setHeadertitle(title) {
+                    $('.dashboard').text(title);
+                }
             </script>
 
         </head>
@@ -53,7 +55,7 @@
                                 <img class="logo" alt="로고" src="/resources/img/common/logo.png">
                             </a>
                         </li>
-                        <li class="dashboard">DashBoard</li>
+                        <li class="dashboard"></li>
 
                         <div class="d-flex align-items-center">
                             <li class="px-2 alarm-item"><img alt="alarm" src="/resources/img/common/alarm.png"
