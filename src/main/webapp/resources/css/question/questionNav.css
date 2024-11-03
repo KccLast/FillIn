@@ -282,3 +282,17 @@ body {
 }
 
 /* question navBar  */
+.nameAndCnt {
+  width: 80%;
+  display: flex;
+
+  gap: 15px;
+}
+
+.aiImgBox {
+  margin-right: 5%;
+}
+.aiImgBox > img {
+  width: 20px;
+  height: 15px;
+}

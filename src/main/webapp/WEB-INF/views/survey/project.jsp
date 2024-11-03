@@ -85,8 +85,13 @@
 						</div> -->
 						<div class="j-question-box">
 							<div class="j-total-question-box j-flex-row-center">
-								<span class="fw-bold">전체문항수</span>
-								<div class="j-ai-img fw-bold fs-6">AI</div>
+								<div class="nameAndCnt">
+									<span class="fw-bold">전체문항수</span>
+									<div class="j-ai-img fw-bold fs-6">AI</div>
+								</div>
+								<div class="aiImgBox">
+									<img src="/resources/img/question/ai.png" />
+								</div>
 							</div>
 							<div class="j-question-list">
 							</div>

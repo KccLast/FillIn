@@ -101,4 +101,32 @@ $(document).ready(function () {
   });
 });
 
-function sortResultUpdateInDB() {}
+async function sortResultUpdateInDB() {
+  //모든 카드의 seq와 index를 구해서 넣어야함
+  let orderAndQuestionList = [];
+  let surveySeq = $('#surveySeq').val();
+  $('.content')
+    .find('.j-question-card')
+    .each((index, item) => {
+      let targetInput = $(item).find('.j-qseq');
+      let seq = targetInput.val();
+      let idx = index + 1;
+      orderAndQuestionList.push({ surveySeq: surveySeq, seq: seq, order: idx });
+      $(item).find('.j-q-order').val(idx);
+    });
+
+  await sortResultAjax(orderAndQuestionList);
+}
+
+async function sortResultAjax(target) {
+  return $.ajax({
+    url: '/api/question/order',
+    type: 'patch',
+    contentType: 'application/json',
+    data: JSON.stringify(target),
+    success: function (response) {
+      parseCondition(JSON.stringify(response.data));
+    },
+    error: function (error) {},
+  });
+}
