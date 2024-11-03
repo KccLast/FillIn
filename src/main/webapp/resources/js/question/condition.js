@@ -86,10 +86,15 @@ $(function () {
         questionSeq,
         conditionData.id
       );
-      let filteredLength = conditions.filter(
-        (condition) => condition.id !== 0
-      ).length;
-      filteredLength++;
+      let filteredLength = $('.accordion').find('.accordion-item').length;
+      if (
+        filteredLength === '' ||
+        filteredLength === undefined ||
+        filteredLength === null
+      )
+        filteredLength = 1;
+
+      console.log(filteredLength);
       lastAccordionItem.find('.con-order').text(filteredLength);
     }
   );
@@ -388,6 +393,10 @@ var options = {
 async function deleteCondition(target) {
   return new Promise((resolve, reject) => {
     try {
+      if (target === undefined || target === null || target === '') {
+        resolve();
+      }
+
       let questionSeq = findQuestionSeqInConditionNav(target);
       let conditionId = $(target)
         .parent()
@@ -398,7 +407,6 @@ async function deleteCondition(target) {
       let findCondition = conditions.filter(
         (con) => con.id === parseInt(conditionId)
       )[0];
-      console.log(findCondition);
 
       // Edge 삭제 및 DB 반영
       let targetEdge = convertConditionToedge(
@@ -406,6 +414,8 @@ async function deleteCondition(target) {
         '조건부 흐름',
         findCondition.id
       );
+
+      if (targetEdge === false) resolve();
 
       // 비동기 작업들을 수행하고 모두 완료된 후 resolve 호출
       deleteEdge(targetEdge.from, parseInt(conditionId));
@@ -478,8 +488,10 @@ function saveConditionListInLocalStorage(conditions, questionSeq) {
   localStorage.setItem('accordionData', JSON.stringify(storedData));
 }
 
-function parseCondition(json) {
+async function parseCondition(json) {
   let question = JSON.parse(json);
+
+  //모든 엣지와 condition node들을 삭제해야함 localstoreage도 비워야함
 
   initcondition(question.questions);
   createDefaultOrder(question.questions);
@@ -496,51 +508,61 @@ function createDefaultOrder(questions) {
   }
   nodes = new vis.DataSet(nodeList);
 
+  // for (let i = 0; i < questions.length - 1; i++) {
+  //   // 로컬스토리지에서 조건 불러오기
+  //   let existingConditionList = getQuestionConditions(questions[i].seq) || [];
+  //   console.log(`기존 조건 리스트:`, existingConditionList);
+
+  //   // conditionId가 0인 조건이 있는지 확인
+  //   let conditionWithIdZero = existingConditionList.find(
+  //     (condition) => condition.id === 0
+  //   );
+
+  //   let conditionToUse;
+
+  //   if (conditionWithIdZero) {
+  //     // 조건 ID가 0인 조건이 존재하면 그대로 사용
+  //     console.log(`기존 조건 사용:`, conditionWithIdZero);
+  //     conditionToUse = conditionWithIdZero;
+  //   } else {
+  //     // 조건 ID가 0인 조건이 없는 경우 새로 생성
+  //     let defaultCondition = createDefaultCondition(
+  //       questions[i].seq,
+  //       questions[i + 1].seq
+  //     );
+  //     console.log(`새로운 기본 조건 생성:`, defaultCondition);
+
+  //     if (existingConditionList.length > 0) {
+  //       // 기존 리스트에 새 기본 조건 추가
+  //       existingConditionList.push(defaultCondition);
+  //       console.log(`새 조건이 추가된 리스트:`, existingConditionList);
+  //     } else {
+  //       // 기존 리스트가 없는 경우, 새 리스트로 초기화
+  //       existingConditionList = [defaultCondition];
+  //       console.log(
+  //         `기존 리스트가 없어 새 리스트로 초기화:`,
+  //         existingConditionList
+  //       );
+  //     }
+
+  //     // 수정된 리스트를 로컬스토리지에 저장
+  //     saveConditionListInLocalStorage(existingConditionList, questions[i].seq);
+
+  //     conditionToUse = defaultCondition;
+  //   }
+
+  //   // edgeList에 조건을 변환하여 추가
+  //   edgeList.push(convertConditionToedge(conditionToUse, '기본 흐름'));
+  // }
+
   for (let i = 0; i < questions.length - 1; i++) {
     // 로컬스토리지에서 조건 불러오기
-    let existingConditionList = getQuestionConditions(questions[i].seq) || [];
-    console.log(`기존 조건 리스트:`, existingConditionList);
+    // let existingConditionList = getQuestionConditions(questions[i].seq) || [];
+    // console.log(`기존 조건 리스트:`, existingConditionList);
 
-    // conditionId가 0인 조건이 있는지 확인
-    let conditionWithIdZero = existingConditionList.find(
-      (condition) => condition.id === 0
-    );
-
-    let conditionToUse;
-
-    if (conditionWithIdZero) {
-      // 조건 ID가 0인 조건이 존재하면 그대로 사용
-      console.log(`기존 조건 사용:`, conditionWithIdZero);
-      conditionToUse = conditionWithIdZero;
-    } else {
-      // 조건 ID가 0인 조건이 없는 경우 새로 생성
-      let defaultCondition = createDefaultCondition(
-        questions[i].seq,
-        questions[i + 1].seq
-      );
-      console.log(`새로운 기본 조건 생성:`, defaultCondition);
-
-      if (existingConditionList.length > 0) {
-        // 기존 리스트에 새 기본 조건 추가
-        existingConditionList.push(defaultCondition);
-        console.log(`새 조건이 추가된 리스트:`, existingConditionList);
-      } else {
-        // 기존 리스트가 없는 경우, 새 리스트로 초기화
-        existingConditionList = [defaultCondition];
-        console.log(
-          `기존 리스트가 없어 새 리스트로 초기화:`,
-          existingConditionList
-        );
-      }
-
-      // 수정된 리스트를 로컬스토리지에 저장
-      saveConditionListInLocalStorage(existingConditionList, questions[i].seq);
-
-      conditionToUse = defaultCondition;
-    }
-
+    edgeList.push(createEdge(i, i + 1));
     // edgeList에 조건을 변환하여 추가
-    edgeList.push(convertConditionToedge(conditionToUse, '기본 흐름'));
+    //edgeList.push(convertConditionToedge(conditionToUse, '기본 흐름'));
   }
 
   edges = new vis.DataSet(edgeList);
@@ -555,7 +577,8 @@ function convertConditionToedge(condition, label, conditionOrder) {
   let fromNode = nodeList.find((node) => node.seq === condition.from);
   let toNode = nodeList.find((node) => node.seq === condition.to);
   let edge;
-  console.log(toNode);
+  if (toNode === undefined) return false;
+
   if (label.includes('기본 흐름')) {
     edge = createEdge(fromNode.id, toNode.id);
   } else {
