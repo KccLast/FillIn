@@ -1,7 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-	<!DOCTYPE html>
-	<html lang="en">
-
+<!DOCTYPE html>
+<html lang="en">
 	<head>
 		<meta charset="UTF-8">
 		<title>Title</title>
@@ -40,32 +39,31 @@
 		</script>
 		<script type="text/javascript">
 
-			$(function () {
 
-				let surveyName = "${survey.name}";
-				updateSurveyName(surveyName);
+        $(function () {
 
-				$('.content').on('keyup', '.j-survey-name-input', async function () {
-					let idx = $(this).parent().parent().index();
-					$('.j-question-list').find('.j-question').eq(idx).find('.question-name > span').html($(this).val());
-					let nameVal = $(this).val();
-					changeNodeName(idx, nameVal);
-				})
-				let survey = '${surveyJson}';
+            let surveyName = "${survey.name}";
+            updateSurveyName(surveyName);
 
-				parseJson(survey);
-				parseCondition(survey);
-				var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
-				var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-					return new bootstrap.Tooltip(tooltipTriggerEl)
-				})
-				updateButton();
-			})
-		</script>
-		<script src="/resources/js/survey/surveyPost.js"></script>
+            $('.content').on('keyup', '.j-survey-name-input', async function () {
+                let idx = $(this).parent().parent().index();
+                $('.j-question-list').find('.j-question').eq(idx).find('.question-name > span').html($(this).val());
+                let nameVal = $(this).val();
+                changeNodeName(idx, nameVal);
+            })
+            let survey = '${surveyJson}';
 
-	</head>
+            parseJson(survey);
+            parseCondition(survey);
+            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+            var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+                return new bootstrap.Tooltip(tooltipTriggerEl)
+            })
+            updateButton();
+        })
+    </script>
 
+</head>
 	<body>
 		<div class="loading-box">
 			<span class="loader"></span>
@@ -567,5 +565,4 @@
 						</div>
 					</div>
 	</body>
-
-	</html>
+</html>
