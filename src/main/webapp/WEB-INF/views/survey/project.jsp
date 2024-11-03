@@ -27,6 +27,7 @@
 		<script src="/resources/js/question/questionEvent.js"></script>
 		<script src="/resources/js/question/questionParse.js"></script>
 		<script src="/resources/js/question/condition.js"></script>
+		<script src="/resources/js/survey/surveyPost.js"></script>
 		<script src="https://developers.kakao.com/sdk/js/kakao.js"></script>
 		<script src="/resources/common/nav.js"></script>
 		<script src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.2/kakao.min.js"
@@ -89,7 +90,7 @@
 									<span class="fw-bold">전체문항수</span>
 									<div class="j-ai-img fw-bold fs-6">AI</div>
 								</div>
-								<div class="aiImgBox">
+								<div class="aiImgBox" data-bs-toggle="modal" data-bs-target="#makeAutoQuestion-modal">
 									<img src="/resources/img/question/ai.png" />
 								</div>
 							</div>
@@ -144,6 +145,7 @@
 					<div class="content">
 
 					</div>
+					<%@include file="/WEB-INF/views/question/modal-autoQuestions.jsp" %>
 					<!-- Post Modal -->
 					<div class="modal fade" id="postModal" tabindex="-1" aria-labelledby="postModalLabel" aria-hidden="true">
 						<div class="modal-dialog modal-lg modal-dialog-centered">

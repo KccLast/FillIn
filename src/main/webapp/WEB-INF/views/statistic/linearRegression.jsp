@@ -72,7 +72,7 @@
                     </div>
                 </div>
                 <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                <button type="button" class="btn btn-primary mt-3" id="start-regression">업데이트</button>
+                    <button type="button" class="btn btn-primary mt-3" id="start-regression">분석</button>
                 </div>
             </div>
         </div>

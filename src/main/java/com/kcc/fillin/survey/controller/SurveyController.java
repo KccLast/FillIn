@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Map;
 
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.kcc.fillin.member.auth.PrincipalDetail;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,6 +32,12 @@ public class SurveyController {
 
 	private final SurveyService service;
 
+	@PostMapping("")
+	public String createSurveyWithName(SurveyVO survey, @AuthenticationPrincipal PrincipalDetail principalDetail){
+		survey.setMemberSeq(principalDetail.getMember().getSeq());
+		service.createNewSurvey(survey);
+		return "redirect:/survey/"+survey.getSeq();
+	}
 	@GetMapping("/dashboard")
 	public String dashboard(Criteria cri, Model model) {
 		System.out.println("Criteria: " + cri);

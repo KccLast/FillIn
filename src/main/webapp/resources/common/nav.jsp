@@ -3,7 +3,7 @@
 
 	<%@ page contentType="text/html;charset=UTF-8" language="java" %>
 		<div class="sidebar">
-			<nav class="nav flex-column">
+			<nav class="nav fs-5 flex-column">
 				<a href="#" class="nav-link">
 					<img src="/resources/img/common/edit.png" alt="edit">
 					<span class="menu-text">편집하기</span>
