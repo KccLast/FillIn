@@ -98,11 +98,14 @@ function handleCheckboxChange() {
 function collectSelectedQuestion() {
     // 선택한 라디오 버튼의 값
     const selectedDependentQuestion = $('input[name="dependent-radio"]:checked').val();
+    console.log(selectedDependentQuestion);
     // 선택한 체크박스 값들
     const selectedIndependentQuestions = $('input[name="independent-checkbox"]:checked')
         .map(function () {
             return $(this).val();
         }).get();
+
+    console.log(selectedIndependentQuestions);
 
     return {
         dependent: selectedDependentQuestion,

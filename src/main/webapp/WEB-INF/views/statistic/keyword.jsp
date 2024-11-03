@@ -189,13 +189,14 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap">
+    <link rel="stylesheet" type="text/css" href="/resources/common/statisticsNav.css">
 
 
     <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
 </head>
 <body>
 <%@ include file="/resources/common/header.jsp" %>
-<%@ include file="/resources/common/nav.jsp" %>
+<%@ include file="/resources/common/statisticsNav.jsp" %>
 
 <script>
     var clusteringData = ${clusteringData};
@@ -203,7 +204,7 @@
 </script>
 
 <!-- 단계 바 -->
-<div id="content" class="content" style="height: 700px; margin-top: 100px; margin-left: 100px; margin-right: 40px;">
+<div id="content" class="content">
     <div class="container">
         <%--        <div class="container" style="margin-top: 3px; margin-bottom: 28px; text-align: center;">--%>
         <div class="step-wrapper">
