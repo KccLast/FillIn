@@ -60,10 +60,15 @@ async function appendQuestionCard(question, index) {
         .find('.j-survey-content > textarea')
         .val(question.description.trim());
     }
+    let es = $newContainer.find('.j-essential');
     if (question.isEssential === 'Y') {
-      let es = $newContainer.find('.j-essential');
-      es.data('essential', 'Y');
+      // let es = $newContainer.find('.j-essential');
+      es.attr('data-essential', 'Y');
       es.addClass('j-es-seleted');
+      es.prop('checked', true);
+    } else {
+      es.attr('data-essential', 'N');
+      es.prop('checked', false);
     }
     $('.content').append($newContainer);
 

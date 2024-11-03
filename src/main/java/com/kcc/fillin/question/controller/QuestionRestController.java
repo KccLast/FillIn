@@ -3,6 +3,10 @@ package com.kcc.fillin.question.controller;
 import java.util.List;
 
 import com.kcc.fillin.question.dto.*;
+import com.kcc.fillin.survey.domain.SurveyVO;
+import com.kcc.fillin.survey.service.SurveyService;
+import jakarta.validation.Valid;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -24,7 +28,7 @@ import lombok.RequiredArgsConstructor;
 public class QuestionRestController {
 
 	private final QuestionService questionService;
-
+	private final SurveyService surveyService;
 	@PostMapping("")
 	public Response<QuestionVO> insertQuestion(@RequestBody
 	List<QuestionVO> questionVOList) {
@@ -111,6 +115,35 @@ public class QuestionRestController {
 		else{
 			return Response.setFail("조건 등록에 실패했습니다.",500);
 		}
+	}
+
+	@DeleteMapping("/condition")
+	public Response<?> deleteCondition(@RequestBody @Valid ConditionRequest conditionRequest, BindingResult br){
+		System.out.println("conditionRequest = " + conditionRequest);
+		if(br.hasErrors()){
+			return Response.setFail("조건 삭제에 실패했습니다. 입력값을 확인해주세요",400);
+		}
+		boolean result = questionService.deleteCondition(conditionRequest);
+		if(result) {
+			return Response.setSuccess(" 조건을 성공적으로 삭제했습니다.", 200);
+		}
+//		else{
+//			return Response.setFail("조건 등록에 실패했습니다.",500);
+//		}
+		return Response.setError("알 수 없는 오류로 조건 삭제에 실패했습니다. 잠시후 다시 시도해주세요",500);
+	}
+
+	@PatchMapping("/order")
+	public Response<?> patchNewSurveyQuestionOrder(@RequestBody List<UpdateQuestionRequest> request){
+		boolean result = questionService.updateQuestion(request);
+		SurveyVO findSurvey=null;
+		if(result){
+			findSurvey = surveyService.findSurveyBySurveySeq(request.get(0).getSurveySeq());
+		}
+		if(findSurvey != null)
+		return Response.setSuccess(findSurvey,200,"질문 순서를 성공적으로 변경했습니다.");
+
+		return Response.setError("질문순서 변경에 실패",500,"/api/question/order");
 	}
 
 }
