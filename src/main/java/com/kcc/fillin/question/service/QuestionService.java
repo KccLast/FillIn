@@ -25,4 +25,6 @@ public interface QuestionService {
     public Long createAutoQuestion(CreateAutoQuestionRequest selectedQuestions);
 
     boolean insertCondition(ConditionRequest conditionRequest);
+
+    boolean deleteCondition(ConditionRequest conditionRequest);
 }

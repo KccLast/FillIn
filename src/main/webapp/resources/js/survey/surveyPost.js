@@ -1,29 +1,39 @@
 var seq, url;
 
-var seq = JSON.parse(`${surveyJson}`).seq;
+// seq = JSON.parse(`${surveyJson}`).seq;
 
 // jQuery로 페이지 로드 시 오늘 날짜 설정
 $(document).ready(function () {
     const today = getTodayDate();
-    $("#startDate").val(today);
-    $("#endDate").val(today); // 필요에 따라 다르게 설정 가능
+    $('#startDate').val(today);
+    $('#endDate').val(today); // 필요에 따라 다르게 설정 가능
 
     seq = JSON.parse(`${surveyJson}`).seq;
     url = JSON.parse(`${surveyJson}`).url;
     console.log('jsjsjsjs ' + seq + ' : ' + url);
+    console.log(typeof url);
 
     $('#applyButton').click(function () {
         // 모집단 추정불가 체크 여부 확인
         const isEstimateUnknown = $('#estimateCheck').is(':checked');
-        const confidenceLevel = parseFloat($('#confidenceLevel').val().replace(/[^0-9.]/g, '')); // 신뢰도 값 가져오기
-        const marginOfError = parseFloat($('#marginOfError').val().replace(/[^0-9.]/g, '')); // 표본오차 값 가져오기
+        const confidenceLevel = parseFloat(
+            $('#confidenceLevel')
+                .val()
+                .replace(/[^0-9.]/g, '')
+        ); // 신뢰도 값 가져오기
+        const marginOfError = parseFloat(
+            $('#marginOfError')
+                .val()
+                .replace(/[^0-9.]/g, '')
+        ); // 표본오차 값 가져오기
 
         // 신뢰도에 따른 Z 값 매핑
-        const Z = {
-            "90": 1.645,
-            "95": 1.96,
-            "99": 2.576
-        }[confidenceLevel] || 1.96;  // 기본값 95% 신뢰도
+        const Z =
+            {
+                90: 1.645,
+                95: 1.96,
+                99: 2.576,
+            }[confidenceLevel] || 1.96; // 기본값 95% 신뢰도
 
         // 표본오차에 따른 E 값 매핑
         const E = marginOfError / 100;
@@ -47,10 +57,12 @@ $(document).ready(function () {
     $('#estimateCheck').on('change', function () {
         const populationInput = $('#populationEstimate');
 
-        if ($(this).is(':checked')) { // 모집단 추정 불가
-            populationInput.val('');         // 입력 초기화
-            populationInput.prop('disabled', true);  // 비활성화
-        } else { // 모집단 추정
+        if ($(this).is(':checked')) {
+            // 모집단 추정 불가
+            populationInput.val(''); // 입력 초기화
+            populationInput.prop('disabled', true); // 비활성화
+        } else {
+            // 모집단 추정
             populationInput.prop('disabled', false); // 활성화
         }
     });
@@ -60,8 +72,16 @@ $(document).ready(function () {
         var startDate = $('#startDate').val();
         var endDate = $('#endDate').val();
         const sampleSize = $('#sampleSize').val();
-        const confidenceLevel = parseFloat($('#confidenceLevel').val().replace(/[^0-9.]/g, '')); // 신뢰도 값 가져오기
-        const marginOfError = parseFloat($('#marginOfError').val().replace(/[^0-9.]/g, '')); // 표본오차 값 가져오기
+        const confidenceLevel = parseFloat(
+            $('#confidenceLevel')
+                .val()
+                .replace(/[^0-9.]/g, '')
+        ); // 신뢰도 값 가져오기
+        const marginOfError = parseFloat(
+            $('#marginOfError')
+                .val()
+                .replace(/[^0-9.]/g, '')
+        ); // 표본오차 값 가져오기
 
         // 데이터 유효성 검사
         if (!startDate || !endDate) {
@@ -84,7 +104,7 @@ $(document).ready(function () {
                 endDate: endDate,
                 sampleSize: sampleSize,
                 reliability: confidenceLevel,
-                allowableError: marginOfError
+                allowableError: marginOfError,
             }),
             success: function (response) {
                 url = response.data.url;
@@ -93,7 +113,7 @@ $(document).ready(function () {
             },
             error: function () {
                 alert('게시 요청에 실패했습니다. 다시 시도해주세요.');
-            }
+            },
         });
     });
 
@@ -101,9 +121,8 @@ $(document).ready(function () {
     $('#shareButton').on('click', function () {
         // 설문 링크를 input에 넣어주기
         const surveyUrl = `https://fillin/survey/url/` + url; // 실제 설문 URL로 변경
-        document.getElementById("surveyLink").value = surveyUrl;
+        document.getElementById('surveyLink').value = surveyUrl;
     });
-
 });
 
 // kakao 공유하기
@@ -114,24 +133,24 @@ function shareMessage() {
         templateId: 113722,
         templateArgs: {
             survey_name: title,
-            url: url
+            url: url,
         },
     });
 }
 
 // 게시 <-> 공유 버튼 업데이트
 function updateButton() {
-    // console.log(typeof url);
+    console.log('ddddddddddddddddddddddddd' + typeof url);
     if (url === null) {
         // URL이 null일 때 '게시' 버튼 표시
-        // console.log('게시');
-        document.getElementById("postButton").style.display = 'block';
-        document.getElementById("shareButton").style.display = 'none';
+        console.log('게시');
+        document.getElementById('postButton').style.display = 'block';
+        document.getElementById('shareButton').style.display = 'none';
     } else {
         // URL이 null이 아닐 때 '공유' 버튼 표시
-        // console.log('공유');
-        document.getElementById("postButton").style.display = 'none';
-        document.getElementById("shareButton").style.display = 'block';
+        console.log('공유');
+        document.getElementById('postButton').style.display = 'none';
+        document.getElementById('shareButton').style.display = 'block';
     }
 }
 
@@ -140,13 +159,13 @@ window.onload = updateButton;
 
 // 링크 복사 기능
 function copyLink() {
-    const linkInput = document.getElementById("surveyLink");
+    const linkInput = document.getElementById('surveyLink');
     linkInput.select();
     linkInput.setSelectionRange(0, 99999); // 모바일 호환성
-    document.execCommand("copy");
+    document.execCommand('copy');
 
     // 복사 알림 메시지
-    alert("링크가 복사되었습니다!");
+    alert('링크가 복사되었습니다!');
 }
 
 // 모집단 추정불가일 때 표본 크기 계산 함수

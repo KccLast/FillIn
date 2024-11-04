@@ -137,7 +137,8 @@
             <!-- 설문지 생성 버튼은 첫 페이지에만 표시 -->
             <c:if test="${pageNum == 1}">
                 <div class="col">
-                    <div class="card survey-card" data-bs-toggle="modal" data-bs-target="#makeAutoQuestion-modal">
+                    <div class="card survey-card" data-bs-toggle="modal" data-bs-target="#makeSurvey-modal">
+<%--                    <div class="card survey-card" data-bs-toggle="modal" data-bs-target="#makeAutoQuestion-modal">--%>
                         <div class="add-survey-card">
                             <img alt="plusBtn" src="/resources/img/common/plusButton.png">
                         </div>
@@ -280,6 +281,7 @@
     </div>
 </div>
 <script type="text/javascript" src="/resources/js/survey/multiSearch.js"></script>
-<%@include file="/WEB-INF/views/question/modal-autoQuestions.jsp" %>
+<%@include file="/WEB-INF/views/survey/modal-newSurvey.jsp" %>
+<%--<%@include file="/WEB-INF/views/question/modal-autoQuestions.jsp" %>--%>
 </body>
 </html>

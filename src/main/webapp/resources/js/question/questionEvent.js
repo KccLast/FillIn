@@ -62,12 +62,22 @@ $(function () {
     // dragInstance.repaintEverything();
     redrawNetWork();
     $('.j-arrow-right').hide();
+
+    $('.j-fix-pro').removeClass('j-pro-selected');
+    $('.j-fix-pro > img').attr('src', '/resources/img/question/edit-gray.png');
+    $('.j-con-pro').addClass('j-pro-selected');
+    $('.j-con-pro > img').attr('src', '/resources/img/question/con-blue.png');
   });
   $('.j-arrow-left').click(function () {
     $('.content').show(); // 보이기
     $('.j-condition-box').hide(); // 숨기기
     $('#j-con-modal').hide();
     $('.j-arrow-right').show();
+
+    $('.j-fix-pro').addClass('j-pro-selected');
+    $('.j-fix-pro > img').attr('src', '/resources/img/question/edit-blue.png');
+    $('.j-con-pro').removeClass('j-pro-selected');
+    $('.j-con-pro > img').attr('src', '/resources/img/question/con-gray.png');
   });
 
   //카드 클릭하면 스크롤 정렬 기본 이벤트
@@ -196,6 +206,7 @@ $(function () {
           $newContainer.find('.j-map-container').attr('id', 'map' + idx);
           setTimeout(() => createDefaultMap('map' + idx), 100);
         }
+        $newContainer.find('.j-essential').prop('checked', true);
 
         createNewNode(idx);
         await insertQuestion();
@@ -214,9 +225,10 @@ $(function () {
     if (!card.hasClass('j-u-card')) {
       card.addClass('j-u-card');
     }
-    let isEssential = $(this).data('essential') === 'N' ? 'Y' : 'N';
-
-    $(this).data('essential', isEssential);
+    let isEssential = $(this).attr('data-essential') === 'Y' ? 'N' : 'Y';
+    console.log(isEssential);
+    $(this).attr('data-essential', isEssential);
+    // es.attr('data-essential', 'N');
 
     if ($(this).hasClass('j-es-seleted')) {
       $(this).removeClass('j-es-seleted');
@@ -713,6 +725,8 @@ $(function () {
           .attr('src', newSrc);
       } catch (error) {
         console.error('AJAX 요청 실패:', error);
+      } finally {
+        $('#add-type-modal2').hide();
       }
     }
   );
@@ -744,52 +758,19 @@ $(function () {
     this.scrollIntoView({ behavior: 'smooth', block: 'center' });
   });
   /** 조건 카드 선택시 border이벤트 */
+  // let pathName = window.location.pathname;
+  // let surveySeq = pathName.substring(pathName.lastIndexOf('/') + 1);
+  // let link = '/survey/' + surveySeq;
+  // $('.nav > .nav-link:eq(0)').attr('href', link);
+  $('.content').on('input', '.j-survey-content>textarea', function () {
+    $(this).css('height', 'auto'); // 높이를 초기화
+    $(this).css('height', this.scrollHeight + 'px'); // scrollHeight를 사용해 높이 설정
+  });
+
+  $('.add-type-modal-close').click(function () {
+    $(this).parents('.add-type-modal-class').hide();
+  });
 });
-// function setCardPositions(cards, startTop = 20, left = 20, gap = 140) {
-//   // cards: 배치할 카드 목록 (jQuery 객체)
-//   // startTop: 첫 번째 카드의 상단 시작 위치
-//   // left: 모든 카드의 왼쪽 위치
-//   // gap: 각 카드 간의 세로 간격
-
-//   cards.each(function (index) {
-//     const topPosition = startTop + index * gap; // 각 카드의 Y축 위치 계산
-//     $(this).css({
-//       top: `${topPosition}px`,
-//       left: `${left}px`,
-//       position: 'absolute', // 위치 고정
-//     });
-//   });
-// }
-
-// //시작하면 연결하기!
-// function defaultConditionLine() {
-//   const instance = jsPlumb.getInstance({
-//     Connector: ['Straight'],
-//     Endpoint: ['Dot', { radius: 5 }],
-//     PaintStyle: { stroke: 'black', strokeWidth: 2 },
-//     EndpointStyle: { fill: 'blue' },
-//     Overlays: [['Arrow', { width: 10, length: 10, location: 1 }]],
-//     Anchors: ['Bottom', 'Top'],
-//     Container: document.querySelector('.j-condition-box'),
-//   });
-
-//   $('.j-que-con-card').draggable({
-//     containment: '.j-condition-box', // 부모 컨테이너 내부로 제한
-//     scroll: false, // 스크롤 시 움직임 방지
-//     drag: function () {
-//       instance.repaintEverything(); // 드래그 중 연결선 갱신
-//     },
-//   });
-
-//   // 카드 연결 설정
-//   instance.connect({ source: 'card1', target: 'card2', detachable: false });
-//   instance.connect({ source: 'card2', target: 'card3', detachable: false });
-
-//   // 초기 연결선 그리기
-//   instance.repaintEverything();
-
-//   return instance;
-// }
 
 //생성된 input에 name부여
 async function setQiCheckBoxAndRadioName(html, prev, next, idx) {
@@ -844,7 +825,7 @@ async function getNavFrame() {
 // nav번호 다시 계산하기
 function updateQuestionNavOrder() {
   let navList = $('.j-question');
-  console.log(navList);
+
   navList.each(function (idx, item) {
     $(item)
       .find('.question-nav-order')

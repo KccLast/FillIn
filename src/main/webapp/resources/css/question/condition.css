@@ -1,23 +1,22 @@
 body {
   overflow-x: hidden;
 }
-
+.swal2-icon-content {
+  font-size: 100% !important;
+}
 .j-condition-box {
   width: 100%;
-  margin-top: 76px;
   margin-left: calc(100vh - 770px);
   margin-right: 40px;
-  min-height: calc(100vh - 130px);
+  min-height: calc(100vh - 150px);
   box-sizing: border-box;
-
-  /* 부모 컨테이너는 relative */
   overflow: auto;
-  /* 컨테이너 밖 요소를 숨김 */
+  margin-top: 5px;
 }
 
 .j-condition-card-container {
   width: 50%;
-  height: 788px;
+  height: 765px;
   margin: 1%;
   border-radius: 10px;
   background-color: white;
@@ -25,7 +24,7 @@ body {
 }
 #fixedNode {
   position: fixed;
-  top: 102px;
+  top: 170px;
   right: 475px;
   width: 100px;
   height: 40px;
@@ -47,17 +46,21 @@ body {
 /*nav box*/
 .condition-nav-box {
   width: 17%;
-  height: 788px;
+  height: 765px;
   border-radius: 10px;
 }
 .nav-top {
-  height: 9%;
+  height: 7%;
   border-bottom: 1.5px solid #e9ecef;
+  background-color: #005bac;
+  color: white;
+  border-top-right-radius: 10px;
+  border-top-left-radius: 10px;
 }
 
 .condition-nav-1 {
   border-radius: 10px;
-  height: 53%;
+  height: 73%;
   background-color: white;
   box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
 }
@@ -68,6 +71,7 @@ body {
   font-size: 17px;
   height: 100%;
   line-height: 36px;
+  gap: 10px;
 }
 .condition-nav-1-selected {
   background-color: #005bac;
@@ -82,6 +86,7 @@ body {
 }
 .nav-body-1 {
   height: 80%;
+  display: none;
 }
 .basic-move {
   margin-top: 10%;
@@ -101,10 +106,22 @@ body {
 }
 
 .nav-body-2 {
-  height: 100%;
-  max-height: 385px; /* 최대 높이 제한 */
+  max-height: 470px; /* 최대 높이 제한 */
   overflow-y: auto; /* 세로 스크롤 추가 */
-  display: none;
+}
+.nav-body-2::-webkit-scrollbar {
+  width: 7px;
+}
+.nav-body-2::-webkit-scrollbar-thumb {
+  background-color: #005bac;
+  border-radius: 10px;
+  background-clip: padding-box;
+  border: 2px solid transparent;
+}
+.nav-body-2::-webkit-scrollbar-track {
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: inset 0px 0px 5px white;
 }
 
 /*옵션 추가 버튼*/
@@ -125,12 +142,11 @@ body {
 .condition-nav-2 {
   border-radius: 10px;
   margin-top: 5%;
-  height: 45%;
+  height: 25%;
   background-color: white;
   box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
 }
 .accordion {
-  margin-top: 4%;
 }
 .condition-ac {
   border-radius: 0px;
@@ -139,6 +155,7 @@ body {
   border-radius: 0px;
 }
 .condition-ac-body {
+  padding-bottom: 0px !important;
 }
 .condition-if {
   margin-bottom: 10%;
@@ -158,6 +175,23 @@ body {
   cursor: pointer;
   transition: background-color 0.3s;
   font-size: 1.2rem;
+}
+.ac-x-btn > img {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+}
+.ac-x-btn > span {
+  cursor: pointer;
+}
+.ac-x-btn {
+  color: rgba(255, 0, 0, 0.7);
+  font-weight: bold;
+  font-size: 13px;
+  margin-top: 10%;
+  margin-bottom: 4%;
+  gap: 9px;
+  line-height: 1.9px;
 }
 
 /* 활성화된 아코디언의 배경색 */
@@ -401,17 +435,22 @@ body {
   margin-bottom: 10%;
 }
 .con-question-input {
-  height: 17%;
+  height: 25%;
   margin-bottom: 5%;
 }
 .con-question-input > input[type='text'] {
   height: 80%;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .con-question-type {
-  height: 10%;
+  margin-top: 20%;
+  height: 25%;
   border: 1px solid #dee2e6;
   border-radius: 5px;
-  margin-bottom: 5%;
+}
+.next-con-question-type {
+  margin-top: 22%;
 }
 .con-question-type > .j-typeAndImg {
   width: 85% !important;
@@ -433,3 +472,29 @@ body {
   font-size: 1.45em;
 }
 /*warning tooltip*/
+
+/*node info*/
+.node-info-box {
+  position: fixed;
+  top: 170px;
+  left: 520px;
+  z-index: 10001;
+}
+.default-info {
+  margin-top: 1%;
+  margin-bottom: 10%;
+}
+.condition-info > div {
+  color: rgba(255, 0, 0, 0.7);
+}
+.node-info > div {
+  margin-top: 4%;
+  font-size: 13px;
+}
+.node-info > img {
+  width: 50px;
+}
+
+.icon-div {
+  padding-top: 1%;
+}

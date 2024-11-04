@@ -3,28 +3,32 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.kcc.fillin.statistic.dao.StatisticsDao_JA">
-    <select id="getQuestionsBySurveySeq" resultType="QuestionListResponse" parameterType="Long">
-        SELECT s.seq AS survey_seq,
-               q.seq AS question_seq,
-               q.order_num,
-               q.name,
-               a.seq AS answer_seq,
-               a.contents,
-               qi.seq,
-               qi.content
-        FROM survey s
-                 JOIN question q
-                      ON s.seq = q.survey_seq
-                 LEFT JOIN answer a
-                           ON q.seq = a.question_seq
-                 JOIN question_item qi
-                      ON q.seq = qi.question_seq
-        WHERE s.seq = #{surveySeq}
-    </select>
+    <!--    <select id="getQuestionsBySurveySeq" resultType="QuestionListResponse" parameterType="Long">-->
+    <!--        SELECT s.seq AS survey_seq,-->
+    <!--               q.seq AS question_seq,-->
+    <!--               q.order_num,-->
+    <!--               q.name,-->
+    <!--               a.seq AS answer_seq,-->
+    <!--               a.contents,-->
+    <!--               qi.seq,-->
+    <!--               qi.content-->
+    <!--        FROM survey s-->
+    <!--                 JOIN question q-->
+    <!--                      ON s.seq = q.survey_seq-->
+    <!--                 LEFT JOIN answer a-->
+    <!--                           ON q.seq = a.question_seq-->
+    <!--                 JOIN question_item qi-->
+    <!--                      ON q.seq = qi.question_seq-->
+    <!--        WHERE s.seq = #{surveySeq}-->
+    <!--    </select>-->
 
     <!--  정량 평가 질문 가져오기  -->
     <select id="getQuantityQuestionsBySurvey" resultType="QuantityQuestionsResponse" parameterType="Long">
-        SELECT s.seq AS survey_seq, s.name AS surveyName, q.seq AS question_seq, s.cc_seq, q.name AS questionName
+        SELECT s.seq  AS survey_seq,
+               s.name AS surveyName,
+               q.seq  AS question_seq,
+               s.cc_seq,
+               q.name AS questionName
         FROM survey s
                  JOIN question q
                       ON s.seq = q.survey_seq
@@ -33,4 +37,74 @@
                            WHERE parent_seq = 3)
           AND s.seq = #{surveySeq}
     </select>
+
+    <!--  사용자별 질문에 따른 응답 항목 조회  -->
+    <!--    <resultMap id="QuestionListResponseMap" type="com.kcc.fillin.statistic.dto.QuestionListResponse">-->
+    <!--        <result property="surveySeq" column="survey_seq"/>-->
+    <!--        <result property="participantSeq" column="participant_seq"/>-->
+    <!--        <result property="questionSeq" column="question_seq"/>-->
+    <!--        <result property="questionItemSeq" column="question_item_seq"/>-->
+    <!--        <result property="content" column="content"/>-->
+    <!--    </resultMap>-->
+    <!--    <select id="getQuestionAndAnswerByParticipant" parameterType="QuestionListRequest"-->
+    <!--            resultMap="QuestionListResponseMap">-->
+    <!--        SELECT q.survey_seq AS survey_seq,-->
+    <!--               a.participant_seq AS participant_seq,-->
+    <!--               q.seq AS question_seq,-->
+    <!--               qi.seq AS question_item_seq,-->
+    <!--               qi.content AS content-->
+    <!--        FROM question q, question_item qi, answer a-->
+    <!--        WHERE q.seq = qi.question_seq-->
+    <!--        AND qi.content = a.contents-->
+    <!--        AND q.survey_seq = #{surveySeq}-->
+    <!--        AND (q.seq = #{dependentQuestion} OR q.seq IN-->
+    <!--            <foreach item="seq" collection="seqList" open="(" separator=", " close=")">-->
+    <!--                #{seq}-->
+    <!--            </foreach>)-->
+    <!--    </select>-->
+
+    <resultMap id="QuestionListResponseMap" type="com.kcc.fillin.statistic.dto.QuestionListResponse">
+        <result property="surveySeq" column="survey_seq"/>
+        <result property="participantSeq" column="participant_seq"/>
+        <result property="independentQuestion" column="independent_question"/> <!-- 독립 질문 번호 매핑 -->
+        <result property="dependentQuestion" column="dependent_question"/> <!-- 종속 질문 번호 매핑 -->
+        <result property="independentQuestionItemSeq"
+                column="independent_question_item_seq"/> <!-- 독립 질문 응답 항목 번호 매핑 -->
+        <result property="dependentQuestionItemSeq" column="dependent_question_item_seq"/> <!-- 종속 질문 응답 항목 번호 매핑 -->
+        <result property="content" column="content"/>
+    </resultMap>
+
+    <select id="getQuestionAndAnswerByParticipant" parameterType="QuestionListRequest"
+            resultMap="QuestionListResponseMap">
+        SELECT
+            q.survey_seq AS survey_seq,
+            a.participant_seq AS participant_seq,
+            CASE
+                WHEN q.seq IN
+                <foreach item="seq" collection="seqList" open="(" separator=", " close=")">
+                    #{seq}
+                </foreach>
+                THEN q.seq
+                ELSE NULL
+            END AS independent_question,
+            #{dependentQuestion} AS dependent_question, -- 종속 질문 번호
+            qi.seq AS independent_question_item_seq, -- 독립 질문에 대한 응답 항목 번호
+            qi.content AS content,
+            -- 종속 질문 항목에 대한 응답 항목 추가
+            (SELECT di.seq
+            FROM question_item di
+            WHERE di.question_seq = #{dependentQuestion} -- 종속 질문 번호
+            AND di.content = qi.content) AS dependent_question_item_seq
+        FROM question q
+        JOIN question_item qi ON q.seq = qi.question_seq
+        JOIN answer a ON qi.content = a.contents
+        WHERE q.survey_seq = #{surveySeq}
+        AND (q.seq = #{dependentQuestion} OR q.seq IN
+        <foreach item="seq" collection="seqList" open="(" separator=", " close=")">
+            #{seq}
+        </foreach>
+        )
+    </select>
+
+
 </mapper>

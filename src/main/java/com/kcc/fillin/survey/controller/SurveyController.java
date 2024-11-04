@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Map;
 
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.kcc.fillin.member.auth.PrincipalDetail;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,6 +32,12 @@ public class SurveyController {
 
 	private final SurveyService service;
 
+	@PostMapping("")
+	public String createSurveyWithName(SurveyVO survey, @AuthenticationPrincipal PrincipalDetail principalDetail){
+		survey.setMemberSeq(principalDetail.getMember().getSeq());
+		service.createNewSurvey(survey);
+		return "redirect:/survey/"+survey.getSeq();
+	}
 	@GetMapping("/dashboard")
 	public String dashboard(Criteria cri, Model model) {
 		System.out.println("Criteria: " + cri);
@@ -78,7 +86,7 @@ public class SurveyController {
 	}
 
 	// 설문 로그 및 응답 시간 페이지를 반환하는 메서드
-	@GetMapping("/logs")
+	@GetMapping("/logs/{surveySeq}")
 	public String showSurveyLogsPage(Model model) {
 		
 		return "/survey/surveyLog";  // surveyLog.jsp 파일을 렌더링

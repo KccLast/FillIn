@@ -155,15 +155,9 @@ public class QuestionServiceImpl implements QuestionService {
 	@Override
 	@Transactional
 	public Long createAutoQuestion(CreateAutoQuestionRequest selectedQuestions) {
-		SurveyVO convertedVO = convertAutoQuestionToSurveyVO(selectedQuestions);
 
-		//새로운 survey를 일단 만들기
-		boolean surveyInserResult = surveyDao.insertNewSurvey(convertedVO);
-		//새로운 survey만들고 seq받아와서 update
-		selectedQuestions.setSeq(convertedVO.getSeq());
-		//이제 새로운 questions를 채워야함
 		List<QuestionVO> questionVOList = convertAutoQuestionToQuestionVOList(selectedQuestions);
-		System.out.println("questionVOList = " + questionVOList);
+		//System.out.println("questionVOList = " + questionVOList);
 		boolean questionVoResult = insertQuestionAndQuestionItem(questionVOList);
 
 
@@ -181,6 +175,11 @@ public class QuestionServiceImpl implements QuestionService {
 			result = questionDao.updateCondition(conditionRequest);
 		}
 		return result;
+	}
+
+	@Override
+	public boolean deleteCondition(ConditionRequest conditionRequest) {
+		return questionDao.deleteCondition(conditionRequest);
 	}
 
 	private boolean answerIsContactData(SubmitRequest item) {
@@ -204,8 +203,9 @@ public class QuestionServiceImpl implements QuestionService {
 	private boolean deleteAllQuestionItemInQuestion(Long item) {
 		return questionDao.deleteAllQuestionItem(item);
 	}
+
 	private SurveyVO convertAutoQuestionToSurveyVO(CreateAutoQuestionRequest target){
-		return SurveyVO.getSurveyVOFromNameAndMemberSeq(target.getSurveyName(),target.getMemberSeq());
+		return SurveyVO.getSurveyVOFromNameAndMemberSeq(target.getSeq());
 	}
 
 	private List<QuestionVO> convertAutoQuestionToQuestionVOList(CreateAutoQuestionRequest target){

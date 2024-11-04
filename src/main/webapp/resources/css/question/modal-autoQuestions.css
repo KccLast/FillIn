@@ -32,7 +32,7 @@ textarea {
 /* 질문 유형 선택 */
 .select-question-type {
     position: relative;
-    padding: 0 10px;
+    /*padding: 0 10px;*/
 }
 
 .vertical-line {
@@ -46,8 +46,7 @@ textarea {
 }
 
 .checkbox-group {
-    display: flex;
-    flex-direction: column;
+   gap: 0.5rem;
 }
 
 .form-group {
@@ -86,9 +85,9 @@ textarea {
     padding: 0;
 }
 
-.select-question-selection {
-    max-width: 350px;
-}
+/*.select-question-selection {*/
+/*    max-width: 350px;*/
+/*}*/
 
 .select-add-questions .question-item {
     display: block;
@@ -101,12 +100,14 @@ textarea {
 .checkbox-item {
     display: flex;
     align-items: center;
+    flex-direction: row;
+    width: 180px;
 }
 
 .checkbox-item label {
     margin-left: 5px;
-    margin-right: 10px;
-    min-width: 70px;
+    /*margin-right: 10px;*/
+    min-width: 40px;
 }
 
 .small-select {
@@ -199,4 +200,12 @@ textarea {
     color: #51971a;
     background-color: #f0fde6;
     font-weight: bold;
+}
+
+#create-auto-question-btn {
+    background-color: #005BAC !important;
+}
+
+.auto-modal-content{
+    padding: 0 !important;
 }

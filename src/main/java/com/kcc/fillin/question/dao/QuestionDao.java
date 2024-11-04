@@ -41,4 +41,6 @@ public interface QuestionDao {
 	boolean updateCondition(ConditionRequest conditionRequest);
 
 	Integer getOrderNum(Long surveySeq);
+
+    boolean deleteCondition(ConditionRequest conditionRequest);
 }

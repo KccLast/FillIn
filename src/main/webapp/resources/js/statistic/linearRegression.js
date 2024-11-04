@@ -2,7 +2,6 @@ surveySeq = $('.question-list').data('seq');
 console.log('surveySeq: ', surveySeq);
 // 헤더 타이틀 설정
 $('.dashboard').text('회귀분석');
-// $('#regression-statistics').add('red');
 
 $(document).ready(function () {
     // 설문에 대한 질문들 가져오기
@@ -18,7 +17,6 @@ $(document).ready(function () {
             collectSelectedQuestion();
 
             $('#start-regression').on('click', function () {
-
                 sendQuestions();
             });
 
@@ -40,7 +38,7 @@ function getQuestionsBySurvey(questions) {
     questions.forEach(function (question, index) {
         dependentQuestion += `
             <div class="my-2">
-                <input type="radio" name="dependent-radio" id="dependent-radio-${index}" data-index="${index}">
+                <input type="radio" name="dependent-radio" id="dependent-radio-${index}" data-index="${index}" value="${question.questionSeq}">
                 ${question.questionName}
             </div>
             <div></div>
@@ -48,7 +46,7 @@ function getQuestionsBySurvey(questions) {
 
         independentQuestion += `
             <div class="my-2">
-                <input type="checkbox" name="independent-checkbox" id="independent-checkbox-${index}" data-index="${index}">
+                <input type="checkbox" name="independent-checkbox" id="independent-checkbox-${index}" data-index="${index}" value="${question.questionSeq}">
                 ${question.questionName}
             </div>
             <div></div>
@@ -98,11 +96,15 @@ function handleCheckboxChange() {
 function collectSelectedQuestion() {
     // 선택한 라디오 버튼의 값
     const selectedDependentQuestion = $('input[name="dependent-radio"]:checked').val();
+    console.log('selectedDependentQuestion: ', selectedDependentQuestion);
+
     // 선택한 체크박스 값들
     const selectedIndependentQuestions = $('input[name="independent-checkbox"]:checked')
         .map(function () {
             return $(this).val();
         }).get();
+
+    console.log('selectedIndependentQuestions: ', selectedIndependentQuestions);
 
     return {
         dependent: selectedDependentQuestion,
@@ -112,8 +114,32 @@ function collectSelectedQuestion() {
 
 function sendQuestions() {
     const selectedQuestion = collectSelectedQuestion();
-    console.log(selectedQuestion);
+    console.log('selectedQuestion: ', selectedQuestion);
+    if(!selectedQuestion.dependent || selectedQuestion.independent.length === 0) {
+        swal({
+           type: 'warning',
+           text: '결과 질문과 원인 질문을 모두 선택해 주세요.'
+        });
+        return;
+    }
+
+    const requestData = {
+        surveySeq: $('.question-list').data('seq'),
+        dependentQuestion: selectedQuestion.dependent,
+        seqList: selectedQuestion.independent
+    };
+
     $.ajax({
-        url: ''
+        url: '/api/statistics/regression-analysis',
+        type: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify(requestData),
+        success: function (response) {
+            console.log('서버 응답:', response);
+        },
+        error: function (xhr, status, error) {
+            console.error('AJAX 요청 실패:', xhr.responseText || error);
+        }
+
     });
 }

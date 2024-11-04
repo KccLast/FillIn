@@ -72,7 +72,7 @@
                   <div class="j-question-box">
                      <div class="j-total-question-box j-flex-row-center">
                         <span>전체문항수</span>
-                        <div class="j-ai-img fw-bold fs-4"></div>
+                        <div class="j-ai-img">AI</div>
                      </div>
 
                      <div class="j-question-list">

@@ -160,7 +160,7 @@
 		UPDATE condition
 		SET is_ACTIVE = 'N'
 		WHERE question_seq = #{from}
-		next_question_seq = #{to}
+		AND next_question_seq = #{to}
 		AND order_num = #{id}
 	</update>
 </mapper>

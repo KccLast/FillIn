@@ -4,6 +4,7 @@ var participant_seq;
 var totalCount;
 var totalEssentialCnt;
 var curNum = 0;
+var totalacCards = [];
 //var pageDTO;
 $(function () {
   setCard();
@@ -233,6 +234,7 @@ function submitResponse() {
     data: localData,
     success: function () {
       alert('설문에 참여해주셔서 감사합니다.');
+      window.close();
     },
     error: function (error) {},
   });
@@ -454,7 +456,7 @@ async function setCard() {
     success: async function (response) {
       if (page === undefined || page === null) page = 1;
       //pageDTO = response.data.pageDTO;
-
+      setTitle(response.data.name);
       setEnd(response.data.totalCnt);
       setPageBtn();
 
@@ -473,7 +475,9 @@ async function setCard() {
     },
   });
 }
-
+function setTitle(source) {
+  $('.j-title').text(source);
+}
 function setEnd(totalCnt) {
   totalCount = totalCnt;
   end = Math.ceil(totalCnt / 5);
@@ -777,6 +781,7 @@ async function findNext(target) {
     return $(this).find('.j-qseq').val() === targetNode.seq + ''; // j-seq 값이 '314'인 카드
   });
   //targetCard.removeClass('no-card');
+  totalacCards.push(targetCard);
   if (!targetCard.hasClass('ac-card')) {
     targetCard.addClass('ac-card');
   }
@@ -870,4 +875,9 @@ function displayNoneLowerOrderCards(questionSeq) {
       $(this).removeClass('ac-card'); // 적용할 클래스 이름으로 교체
       $(this).addClass('no-card');
     });
+}
+
+function paging(curPage) {
+  let startIdx = (curPage - 1) * 5;
+  let cnt = 0;
 }
