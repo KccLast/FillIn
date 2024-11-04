@@ -38,7 +38,7 @@
                     <div class="form-step active">
 
                         <div class="form-group">
-                            <label for="username">이메일</label>
+                            <label for="username">이메일<span style="color: red;">*</span></label>
                             <div class="email-box">
                                 <input type="email" id="email" name="username" placeholder="이메일을 입력하세요"
                                     class="form-control" required>
@@ -48,19 +48,22 @@
 
                         </div>
                         <div class="form-group">
-                            <label for="password">비밀번호</label>
-                            <input type="password" id="password" name="password" placeholder="비밀번호를 입력해주세요 (8~20자)"
-                                class="form-control mt-3" required>
+                            <label for="password">비밀번호<span style="color: red;">*</span></label>
+                            <input type="text" id="password" name="password" placeholder="비밀번호를 입력해주세요 (8~20자)"
+                                   class="form-control mt-3" required aria-describedby="passwordHelpBlock">
+                            <input type="hidden" name="password" id="actual-password">
                             <span class="error-message" id="password-error">비밀번호는 8자 이상이어야 합니다</span>
                         </div>
+
                         <div class="form-group">
-                            <label for="password-confirm">비밀번호 확인</label>
-                            <input type="password" id="password-confirm" name="password-confirm"
-                                placeholder="비밀번호를 확인해주세요" class="form-control mt-3" required>
+                            <label for="password-confirm">비밀번호 확인<span style="color: red;">*</span></label>
+                            <input type="text" id="password-confirm" name="password-confirm"
+                                placeholder="비밀번호를 확인해주세요" class="form-control mt-3" required aria-describedby="passwordHelpBlock">
+                            <input type="hidden" name="confirm-password" id="actual-confirm-password">
                             <span class="error-message" id="password-confirm-error">비밀번호가 일치하지 않습니다</span>
                         </div>
                         <div class="form-group">
-                            <label for="name">이름</label>
+                            <label for="name">이름<span style="color: red;">*</span></label>
                             <input type="text" id="name" name="name" class="form-control mt-3" placeholder="이름을 입력하세요"
                                 required>
                             <span class="error-message" id="name-error">이름을 입력해주세요</span>

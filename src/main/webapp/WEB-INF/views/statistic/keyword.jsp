@@ -241,7 +241,7 @@
 
 
         <!-- 검색 및 필터 -->
-        <div class="container" style="margin-top: 20px;">
+<%--        <div class="container" style="margin-top: 20px;">--%>
             <div class="accordion my-4" id="accordionExample">
                 <div class="accordion-item">
                     <h2 class="accordion-header" id="headingOne">
@@ -268,7 +268,7 @@
                             <select id="phrase" class="form-select me-2" style="width: 100%;">
                                 <option selected value="phrase">문항을 선택해주세요.</option>
                             </select>
-                            <button id="update-btn" class="btn btn-primary custom-btn">업데이트</button>
+<%--                            <button id="update-btn" class="btn btn-primary custom-btn">업데이트</button>--%>
                         </div>
                     </div>
                 </div>
@@ -314,7 +314,20 @@
             </div>
 
 
-            <button id="analyzeAllBtn" class="btn btn-primary">전체 감정분석 보기</button>
+
+            <div id="cluster-topwords-container" style="margin-bottom: 20px;">
+                <!-- 각 클러스터별 상위 단어가 표시될 영역 -->
+                <h5>클러스터별 상위 3개의 키워드:</h5>
+                <div id="cluster-topwords"></div>
+            </div>
+<%--            <div id="cluster-sentiment-results" style="margin-top: 20px;">--%>
+<%--                <h5>클러스터별 감정 분석 결과:</h5>--%>
+<%--                <div id="cluster-sentiment-data">--%>
+<%--                    &lt;%&ndash; 클러스터별 감정 결과가 표시될 영역 &ndash;%&gt;--%>
+<%--                </div>--%>
+<%--            </div>--%>
+
+        <%--            <button id="analyzeAllBtn" class="btn btn-primary" style="display: flex; justify-content: flex-end;">전체 감정분석 보기</button>--%>
             <!-- 검색 결과 테이블 -->
             <div class="result-section" style="max-height: 300px; overflow-y: scroll; margin-top: 20px; border: 1px solid #ccc;">
                 <table class="result-table" style="width: 100%; border-collapse: collapse;" aria-label="검색 결과 테이블">
@@ -335,9 +348,12 @@
             </div>
             <div class="nav-buttons">
                 <button id="prevBtn" class="nav-btn" onclick="history.back()">이전 페이지</button>
-                <button id="nextBtn" class="nav-btn">다음 페이지</button>
+                <button id="nextBtn" class="nav-btn">다음 페이지
+                    <span id="spinner" class="spinner-border spinner-border-sm" role="status" aria-hidden="true" style="display: none;"></span>
+                </button>
+
             </div>
-        </div>
+<%--        </div>--%>
     </div>
 
 <%--    <!-- 모달 창 코드 -->--%>

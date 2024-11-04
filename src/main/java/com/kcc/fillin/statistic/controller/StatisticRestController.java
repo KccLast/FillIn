@@ -98,8 +98,16 @@ public class StatisticRestController {
         return tableData;
     }
 
+//    @PostMapping("/analyzeClusterSentiment")
+//    public ResponseEntity<List<ClusterSentimentResult>> analyzeClusterSentiment(
+//            @RequestBody ClusterSentimentRequest clusterSentimentRequest) {
+//        List<ClusterSentimentResult> results = statisticService.analyzeClusterSentiment(clusterSentimentRequest);
+//        return ResponseEntity.ok(results);
+//    }
 
 
+
+    //전체 감정분석 보기 버튼
     @PostMapping("/analyzeAllEmotions")
     public ResponseEntity<List<SentimentAnalysisResponse>> analyzeAllEmotions(@RequestBody List<EmotionRequest> requestList) {
         //SentimentAnalysisResult result = statisticService.analyzeSentiment(request.getText());
@@ -115,6 +123,9 @@ public class StatisticRestController {
 
         return ResponseEntity.ok(sentiResponse);
     }
+
+
+
 
 
 

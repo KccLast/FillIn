@@ -42,7 +42,7 @@
 
         </head>
 
-<<<<<<< HEAD
+
 <body>
 	<!-- 헤더 -->
 	<header class="p-2">
@@ -104,4 +104,4 @@
         </body>
 
         </html>
->>>>>>> c5fa23152ff0aace95c09f928cd2651588416479
+

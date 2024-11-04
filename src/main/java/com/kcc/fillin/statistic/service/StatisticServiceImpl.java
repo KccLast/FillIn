@@ -215,6 +215,8 @@ public class StatisticServiceImpl implements StatisticService {
     }
 
 
+
+
     // 감정 분석 API 요청 메서드
     private HttpResponse<String> sendSentimentRequest(String sentence) throws IOException, InterruptedException {
         HttpClient client = HttpClient.newHttpClient();
@@ -249,4 +251,7 @@ public class StatisticServiceImpl implements StatisticService {
     private String[] splitSentences(String text) {
         return text.split("(?<=[.,은는이가])");
     }
+
+
+
 }

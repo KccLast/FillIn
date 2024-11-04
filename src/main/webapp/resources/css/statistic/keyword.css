@@ -403,3 +403,18 @@ button.custom-btn {
     flex-wrap: wrap;
     align-items: flex-start;
 }
+
+/*input[type="password"] {*/
+/*    color: #000 !important;*/
+/*    background-color: #fff;*/
+/*}*/
+
+/*.form-control {*/
+/*    color: #000 !important; !* 텍스트 색상을 검정색으로 설정 *!*/
+/*    background-color: #fff; !* 배경색을 흰색으로 설정 *!*/
+/*}*/
+
+.form-control {
+    position: relative; /* position 설정 */
+    z-index: 1; /* z-index 설정 */
+}

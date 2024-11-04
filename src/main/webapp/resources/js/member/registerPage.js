@@ -320,11 +320,9 @@ $(document).ready(function () {
           if ($('#email-error').hasClass('error-font')) {
             $('#email-error').removeClass('error-font');
           }
-          //$('#email-error').css({'color: green !important;'});
         } else {
           $('#email-error').text('이미 사용 중인 이메일입니다.').show();
           $('#email-error').addClass('error-font');
-          //$('#email-error').css({'color: red;'});
           if ($('#email-error').hasClass('success-font')) {
             $('#email-error').removeClass('success-font');
           }
@@ -337,46 +335,74 @@ $(document).ready(function () {
     });
   });
 
+  // 실제 비밀번호를 저장할 변수
+  let actualPassword = ""; // 실제 비밀번호를 저장할 변수
+
   // 비밀번호 입력 시 실시간 형식 유효성 검사
   $('#password').on('input', function () {
     const password = $(this).val();
-    if (!passwordRegex.test(password)) {
-      $('#password-error')
-        .text(
-          '비밀번호는 8자 이상, 20자 이하이며, 문자, 숫자, 특수문자를 포함해야 합니다.'
-        )
-        .show();
+
+    // 입력된 비밀번호 길이만큼 '*'로 마스킹
+    const maskedPassword = '*'.repeat(password.length);
+    $(this).val(maskedPassword); // 입력 필드에 마스킹된 비밀번호 설정
+
+    // 비밀번호의 마지막 문자를 actualPassword에 추가
+    if (password.length > actualPassword.length) {
+      actualPassword += password[password.length - 1];
     } else {
-      $('#password-error').hide();
+      actualPassword = actualPassword.slice(0, -1); // 뒷 문자 삭제
     }
+
+    // 유효성 검사
+    if (!passwordRegex.test(actualPassword)) {
+      $('#password-error')
+          .text('비밀번호는 8자 이상, 20자 이하이며, 문자, 숫자, 특수문자를 포함해야 합니다.')
+          .show();
+    } else {
+      $('#password-error').hide(); // 유효성 검사 통과 시 에러 메시지 숨김
+    }
+
+    // 숨겨진 필드에 실제 비밀번호 설정
+    $("#actual-password").val(actualPassword);
   });
 
-  // 비밀번호 확인
-  $('#password-confirm').on('keyup', function () {
-    const password = $('#password').val();
-    const confirmPassword = $('#password-confirm').val();
+  // 비밀번호 확인을 위한 변수
+  let actualConfirmPassword = ""; // 실제 비밀번호 확인 값을 저장할 변수
 
-    if (password !== confirmPassword) {
+  // 비밀번호 확인 입력 시 실시간 처리
+  $('#password-confirm').on('input', function () {
+    const confirmPassword = $(this).val();
+
+    // 입력된 비밀번호 확인 길이만큼 '*'로 마스킹
+    const maskedConfirmPassword = '*'.repeat(confirmPassword.length);
+    $(this).val(maskedConfirmPassword); // 입력 필드에 마스킹된 비밀번호 확인 설정
+
+    // 비밀번호 확인의 마지막 문자를 actualConfirmPassword에 추가
+    if (confirmPassword.length > actualConfirmPassword.length) {
+      actualConfirmPassword += confirmPassword[confirmPassword.length - 1];
+    } else {
+      actualConfirmPassword = actualConfirmPassword.slice(0, -1); // 뒷 문자 삭제
+    }
+
+    // 비밀번호와 확인 비밀번호 비교
+    if (actualPassword !== actualConfirmPassword) {
       $('#password-confirm-error').text('비밀번호가 일치하지 않습니다.').show();
     } else {
-      $('#password-confirm-error').hide();
+      $('#password-confirm-error').hide(); // 유효성 검사 통과 시 에러 메시지 숨김
     }
+
+    // 숨겨진 필드에 실제 비밀번호 확인 값을 저장
+    $("#actual-confirm-password").val(actualConfirmPassword);
   });
 
   // 전화번호 유효성 검사 및 숫자 외 문자 제거
-  $('#phone').on('input', function () {
-    $(this).val(
-      $(this)
-        .val()
-        .replace(/[^0-9-]/g, '')
-    ); // 숫자와 '-'만 허용
+  $("#phone").on("input", function () {
+    $(this).val($(this).val().replace(/[^0-9-]/g, ''));  // 숫자와 '-'만 허용
     const phone = $(this).val();
     if (!phoneRegex.test(phone)) {
-      $('#phone-error')
-        .text('전화번호는 000-0000-0000 형식이어야 합니다.')
-        .show();
+      $("#phone-error").text("전화번호는 000-0000-0000 형식이어야 합니다.").show();
     } else {
-      $('#phone-error').hide();
+      $("#phone-error").hide();
     }
   });
 
@@ -417,125 +443,143 @@ $(document).ready(function () {
   });
 
   // 회원가입 폼 제출 시
-  $('#register-form').submit(function (event) {
-    event.preventDefault(); // 기본 폼 제출 막기
+  $("form").submit(function (event) {
+    if (isSubmitting) {
+      event.preventDefault(); // 중복 제출 방지
+      return;
+    }
+    isSubmitting = true; // 제출 시작
 
-    if (isSubmitting) return; // 중복 제출 방지
-    isSubmitting = true;
-
-    // 생년월일을 두 자리 월과 일로 맞춤
+    // 생년월일 조합
     const birthYear = $('#birth-year').val();
-    const birthMonth = $('#birth-month').val().padStart(2, '0'); // 두 자리 월
-    const birthDay = $('#birth-day').val().padStart(2, '0'); // 두 자리 일
+    const birthMonth = $('#birth-month').val();
+    const birthDay = $('#birth-day').val();
 
-    console.log($('#detailed-address').val());
+    const fullBirthDate = birthYear + '-' + ('0' + birthMonth).slice(-2) + '-' + ('0' + birthDay).slice(-2);
 
-    const formData = {
-      username: $('#email').val(),
-      password: $('#password').val(),
-      name: $('#name').val(),
-      phone: $('#phone').val(),
-      birth: `${$('#birth-year').val()}-${$('#birth-month').val()}-${$(
-        '#birth-day'
-      ).val()}`,
-      address: $('#address').val(),
-      detailedAddress: $('#detailed-address').val().trim(), // 하이픈 대신 camelCase로 수정
-      postalCode: $('#zipcode').val(), // postal_code 필드 추가
-      ccSeq: $("input[name='gender']:checked").val() === 'male' ? 1 : 2, // 성별에 따라 ccSeq 값을 설정
-    };
+    // 이미 존재하는 birth input이 있는지 확인하고, 없다면 추가
+    if ($('#birth').length === 0) {
+      $('<input>').attr({
+        type: 'hidden',
+        id: 'birth',
+        name: 'birth',
+        value: fullBirthDate
+      }).appendTo('form');
+    } else {
+      $('#birth').val(fullBirthDate);  // 이미 있으면 값만 업데이트
+    }
 
-    console.log('전송할 폼 데이터:', formData); // 폼 데이터 확인
+    // 유효성 검사
+    let isValid = true;
+    const email = $("#email").val();
+    const password = $("#password").val();
+    const confirmPassword = $("#password-confirm").val();
+    const name = $("#name").val();
+    const phone = $("#phone").val();
+    const zipcode = $("#zipcode").val();
+    const address = $("#address").val();
+    const detailedAddress = $("#detailed-address").val();
 
-    $.ajax({
-      url: '/api/member/register',
-      type: 'POST',
-      contentType: 'application/json',
-      data: JSON.stringify(formData),
+    // 이메일 형식 검증
+    if (!emailRegex.test(email)) {
+      $("#email-error").text("유효한 이메일 주소를 입력해주세요.").show();
+      isValid = false;
+    }
 
-      beforeSend: function (xhr) {
-        if (csrfHeader && csrfToken) {
-          xhr.setRequestHeader(csrfHeader, csrfToken); // CSRF 토큰 추가
-        }
-      },
+    // 비밀번호 형식 검증
+    if (!passwordRegex.test(password)) {
+      $("#password-error").text("비밀번호는 8자 이상, 20자 이하이며, 문자, 숫자, 특수문자를 포함해야 합니다.").show();
+      isValid = false;
+    }
 
-      success: function (response) {
-        alert('회원가입이 완료되었습니다.');
-        window.location.href = '/member/login'; // 회원가입 완료 후 로그인 페이지로 리다이렉트
-      },
+    // 비밀번호 확인 검증
+    if (password !== confirmPassword) {
+      $("#password-confirm-error").text("비밀번호가 일치하지 않습니다.").show();
+      isValid = false;
+    }
 
-      error: function (xhr, status, error) {
-        console.error('Error: ' + error);
-        alert('회원가입 중 오류가 발생했습니다.');
-        isSubmitting = false; // 오류 발생 시 중복 제출 방지 해제
-      },
-    });
+    // 이름 검증
+    if (name.trim() === "") {
+      $("#name-error").text("이름을 입력해주세요.").show();
+      isValid = false;
+    }
+
+    // 전화번호 검증
+    if (!phoneRegex.test(phone)) {
+      $("#phone-error").text("전화번호는 000-0000-0000 형식이어야 합니다.").show();
+      isValid = false;
+    }
+
+    // 주소 검증
+    if (zipcode.trim() === "" || address.trim() === "" || detailedAddress.trim() === "") {
+      $("#address-error").text("주소를 모두 입력해주세요.").show();
+      isValid = false;
+    }
+
+    // 최종 검증 후 제출 방지
+    if (!isValid) {
+      isSubmitting = false;  // 제출 방지 후 중복 제출 방지 플래그 리셋
+      event.preventDefault(); // 기본 제출 이벤트 방지
+    } else {
+      console.error(isValid);
+      alert("회원가입이 완료되었습니다.");
+      window.location.href = '/member/login'; // 로그인 페이지로 리다이렉트
+
+    }
   });
 
   // Kakao 우편번호 찾기 API 실행 함수
   window.execDaumPostcode = function () {
     new daum.Postcode({
       oncomplete: function (data) {
-        let address = ''; // 기본 주소를 저장할 변수
-        let extraAddress = ''; // 추가 주소 정보
+        var address = '';
+        var extraAddress = '';
 
-        if (data.userSelectedType === 'R') {
-          // 도로명 주소 선택
+        if (data.userSelectedType === 'R') { // 도로명 주소 선택
           address = data.roadAddress;
-        } else {
-          // 지번 주소 선택
+        } else { // 지번 주소 선택
           address = data.jibunAddress;
         }
 
-        // 우편번호와 기본 주소를 입력 필드에 넣음
+        // 우편번호와 주소를 입력 필드에 넣음
         document.getElementById('zipcode').value = data.zonecode;
-        // document.getElementById('address').value = address;
-        // document.getElementById('detailed-address').value = ""; // 상세 주소 필드 초기화
+        document.getElementById('address').value = address;
 
-        // 추가 주소 정보를 생성 (예를 들어 동/로/가 정보 및 건물 이름)
         if (data.userSelectedType === 'R') {
           if (data.bname !== '' && /[동|로|가]$/g.test(data.bname)) {
             extraAddress += data.bname;
           }
           if (data.buildingName !== '' && data.apartment === 'Y') {
-            extraAddress +=
-              extraAddress !== ''
-                ? ', ' + data.buildingName
-                : data.buildingName;
+            extraAddress += (extraAddress !== '' ? ', ' + data.buildingName : data.buildingName);
           }
           if (extraAddress !== '') {
             extraAddress = ' (' + extraAddress + ')';
           }
-          address += extraAddress; // 기본 주소 필드에 추가 주소 정보 포함
-
-          // document.getElementById("detailed-address").value += extraAddress; // 추가 주소 정보 필드에 값을 넣음
+          document.getElementById("address").value += extraAddress;
         }
 
-        // document.getElementById('zipcode').value = data.zonecode;
-        // 최종적으로 기본 주소 필드에 주소 문자열을 설정
-        document.getElementById('address').value = address;
-
-        // 상세주소 필드에 포커스 설정하여 사용자가 상세 주소를 입력할 수 있도록 함
-        document.getElementById('detailed-address').focus();
-      },
+        // 상세주소 필드에 포커스
+        document.getElementById("detailed-address").focus();
+      }
     }).open();
   };
 
   // 프로필 이미지 미리보기
   function previewProfileImage(event) {
-    let file = event.target.files[0];
-    let fileSizeLimit = 2 * 1024 * 1024; // 2MB 제한
+    var file = event.target.files[0];
+    var fileSizeLimit = 2 * 1024 * 1024; // 2MB 제한
 
     if (!file.type.startsWith('image/')) {
-      alert('이미지 파일만 업로드할 수 있습니다.');
+      alert("이미지 파일만 업로드할 수 있습니다.");
       return;
     }
 
     if (file.size > fileSizeLimit) {
-      alert('파일 크기가 너무 큽니다. 2MB 이하로 업로드해주세요.');
+      alert("파일 크기가 너무 큽니다. 2MB 이하로 업로드해주세요.");
       return;
     }
 
-    let reader = new FileReader();
+    var reader = new FileReader();
     reader.onload = function (e) {
       $('#profile-image').attr('src', e.target.result);
     };
@@ -543,7 +587,7 @@ $(document).ready(function () {
   }
 
   // 프로필 이미지 업로드 이벤트 연결
-  $('#profile-image-input').change(previewProfileImage);
+  $("#profile-image-input").change(previewProfileImage);
 
   // 단계바
   // 이전/다음 버튼 로직 구현
@@ -576,10 +620,13 @@ $(document).ready(function () {
   // 현재 단계의 필드 유효성 검사
   function validateCurrentStep() {
     return $('.form-step')
-      .eq(currentStep)
-      .find('input, select')
-      .toArray()
-      .every((el) => el.checkValidity());
+        .eq(currentStep)
+        .find('input, select')
+        .toArray()
+        .every((el) => el.checkValidity());
   }
   updateProgressBar();
 });
+
+
+
