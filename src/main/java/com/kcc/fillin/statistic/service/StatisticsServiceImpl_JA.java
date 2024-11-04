@@ -1,6 +1,7 @@
 package com.kcc.fillin.statistic.service;
 
 import com.kcc.fillin.statistic.dao.StatisticsDao_JA;
+import com.kcc.fillin.statistic.dto.ParticipantAnswer;
 import com.kcc.fillin.statistic.dto.QuantityQuestionsResponse;
 import com.kcc.fillin.statistic.dto.QuestionListRequest;
 import com.kcc.fillin.statistic.dto.QuestionListResponse;
@@ -26,5 +27,10 @@ public class StatisticsServiceImpl_JA implements StatisticsService_JA {
     @Override
     public List<QuestionListResponse> getQuestionAndAnswerByParticipant(QuestionListRequest request) {
         return dao.getQuestionAndAnswerByParticipant(request);
+    }
+
+    @Override
+    public List<ParticipantAnswer> getParticipantAnswers(Long surveySeq) {
+        return dao.getParticipantAnswers(surveySeq);
     }
 }

@@ -73,28 +73,29 @@
         <result property="dependentQuestionItemSeq" column="dependent_question_item_seq"/> <!-- 종속 질문 응답 항목 번호 매핑 -->
         <result property="content" column="content"/>
     </resultMap>
+    <!--    question 1 => answer 여러개-->
 
     <select id="getQuestionAndAnswerByParticipant" parameterType="QuestionListRequest"
             resultMap="QuestionListResponseMap">
         SELECT
-            q.survey_seq AS survey_seq,
-            a.participant_seq AS participant_seq,
-            CASE
-                WHEN q.seq IN
-                <foreach item="seq" collection="seqList" open="(" separator=", " close=")">
-                    #{seq}
-                </foreach>
-                THEN q.seq
-                ELSE NULL
-            END AS independent_question,
-            #{dependentQuestion} AS dependent_question, -- 종속 질문 번호
-            qi.seq AS independent_question_item_seq, -- 독립 질문에 대한 응답 항목 번호
-            qi.content AS content,
-            -- 종속 질문 항목에 대한 응답 항목 추가
-            (SELECT di.seq
-            FROM question_item di
-            WHERE di.question_seq = #{dependentQuestion} -- 종속 질문 번호
-            AND di.content = qi.content) AS dependent_question_item_seq
+        q.survey_seq AS survey_seq,
+        a.participant_seq AS participant_seq,
+        CASE
+        WHEN q.seq IN
+        <foreach item="seq" collection="seqList" open="(" separator=", " close=")">
+            #{seq}
+        </foreach>
+        THEN q.seq
+        ELSE NULL
+        END AS independent_question,
+        #{dependentQuestion} AS dependent_question, -- 종속 질문 번호
+        qi.seq AS independent_question_item_seq, -- 독립 질문에 대한 응답 항목 번호
+        qi.content AS content,
+        -- 종속 질문 항목에 대한 응답 항목 추가
+        (SELECT di.seq
+        FROM question_item di
+        WHERE di.question_seq = #{dependentQuestion} -- 종속 질문 번호
+        AND di.content = qi.content) AS dependent_question_item_seq
         FROM question q
         JOIN question_item qi ON q.seq = qi.question_seq
         JOIN answer a ON qi.content = a.contents
@@ -104,6 +105,27 @@
             #{seq}
         </foreach>
         )
+    </select>
+
+    <resultMap id="ParticipantAnswerMap" type="ParticipantAnswer">
+        <id property="participantSeq" column="participant_seq"/>
+        <collection property="questionAnswerList" ofType="QuestionAnswerRequest">
+            <result property="questionSeq" column="question_seq"/>
+            <result property="questionItemSeq" column="question_item_seq"/>
+        </collection>
+    </resultMap>
+
+    <select id="getParticipantAnswers" resultMap="ParticipantAnswerMap">
+        SELECT
+            a.participant_seq,
+            q.seq,
+            qi.seq
+        FROM question q
+            JOIN question_item qi ON q.seq = qi.question_seq
+            JOIN answer a ON qi.content = a.contents
+        WHERE q.survey_seq = #{surveySeq}
+--         GROUP BY a.participant_seq
+        ORDER BY a.participant_seq, q.seq;
     </select>
 
 
