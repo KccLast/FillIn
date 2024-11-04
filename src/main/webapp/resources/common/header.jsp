@@ -43,6 +43,7 @@
         </head>
 
 
+
         <body>
             <!-- 헤더 -->
             <header class="p-2">
@@ -61,7 +62,7 @@
                                 <div class="circle"></div>
                             </li>
                             <li class="px-2 username">
-                                <sec:authentication property="principal.member.name" />님
+                                <sec:authentication property="principal.member.name" />님(<sec:authentication property="principal.member.username"/>)
                             </li>
                             <li class="px-2">
                                 <!-- 모달 연결 -->
@@ -75,4 +76,8 @@
             <%@include file="/WEB-INF/views/member/modal-mypage.jsp" %>
         </body>
 
+
+
+
         </html>
+
