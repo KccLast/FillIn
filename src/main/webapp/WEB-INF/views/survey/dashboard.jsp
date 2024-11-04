@@ -12,6 +12,8 @@
           href="/resources/common/dashBoardNav.css">
     <link rel="stylesheet" type="text/css"
           href="/resources/css/survey/dashboard.css">
+    <link rel="stylesheet" type="text/css"
+          href="/resources/common/statisticsNav.css">
 </head>
 <body>
 <%@ include file="/resources/common/header.jsp" %>
