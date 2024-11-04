@@ -167,32 +167,16 @@
 										<!-- 목표 설정 -->
 										<div>
 											<label class="form-label fw-bold c-main">목표 설정</label>
-											<div class="accordion mt-0 mb-3" id="targetAccordion">
-												<div class="accordion-item">
-													<h2 class="accordion-header" id="headingOne">
-														<button class="accordion-button collapsed c-gray" type="button" data-bs-toggle="collapse"
-															data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
-															<i class="bi bi-info-circle me-2"></i> 목표 설정이란?
-														</button>
-													</h2>
-													<div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne"
-														data-bs-parent="#accordionExample">
-														<div class="accordion-body">
-
-														</div>
-													</div>
-												</div>
-											</div>
 											<div class="border p-3 rounded">
-
-												<div class="form-check mb-3">
-													<input class="form-check-input" type="checkbox" id="estimateCheck">
-													<label class="form-check-label" for="estimateCheck">모집단 추정불가</label>
-												</div>
 												<div class="row mb-3">
 													<div class="col">
 														<label class="form-label">예상 모집단</label>
 														<input type="text" class="form-control" id="populationEstimate" placeholder="모집단 입력">
+													</div>
+													<div class="col">
+														<label class="form-label">표본 집단</label>
+														<input type="text" class="form-control" id="sampleSize" placeholder="집단 입력" disabled
+															readonly>
 													</div>
 													<div class="col">
 														<label class="form-label">신뢰도</label>
@@ -210,12 +194,10 @@
 															<option>±10%</option>
 														</select>
 													</div>
-
-													<div class="col">
-														<label class="form-label">표본 집단</label>
-														<input type="text" class="form-control" id="sampleSize" placeholder="집단 입력" disabled
-															readonly>
-													</div>
+												</div>
+												<div class="form-check">
+													<input class="form-check-input" type="checkbox" id="estimateCheck">
+													<label class="form-check-label" for="estimateCheck">모집단 추정불가</label>
 												</div>
 												<div class="text-end mt-2">
 													<button type="button" class="btn btn-primary" id="applyButton">적용</button>
