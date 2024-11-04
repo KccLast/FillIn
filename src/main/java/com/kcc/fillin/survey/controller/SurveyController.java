@@ -86,7 +86,7 @@ public class SurveyController {
 	}
 
 	// 설문 로그 및 응답 시간 페이지를 반환하는 메서드
-	@GetMapping("/logs/{surveySeq}")
+	@GetMapping({"/logs/{surveySeq}","/logs"})
 	public String showSurveyLogsPage(Model model) {
 		
 		return "/survey/surveyLog";  // surveyLog.jsp 파일을 렌더링
@@ -98,7 +98,7 @@ public class SurveyController {
 
 		SurveyVO findSurvey = service.findSurveyBySurveySeq(surveySeq);
 		model.addAttribute("survey", findSurvey);
-		System.out.println("findSurvey = " + findSurvey);
+
 		ObjectMapper objectMapper = new ObjectMapper();
 		objectMapper.registerModule(new JavaTimeModule());
 		String jsonString = "";
@@ -111,13 +111,7 @@ public class SurveyController {
 		return "/survey/project";
 	}
 
-	@PostMapping("/api/question")
-	@ResponseBody
-	public String insertQuestion() {
 
-		return "성공";
-
-	}
 
 	@GetMapping("/url/{surveyUrl}")
 	public String getSurveyByParticipant(@PathVariable
@@ -132,8 +126,4 @@ public class SurveyController {
 		return "/survey/participant";
 	}
 
-	@GetMapping("/node/test")
-	public String nodeTest(){
-		return "/survey/node";
-	}
 }

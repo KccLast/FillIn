@@ -6,6 +6,7 @@ import java.util.List;
 import com.kcc.fillin.question.dto.*;
 import com.kcc.fillin.survey.dao.SurveyDao;
 import com.kcc.fillin.survey.domain.SurveyVO;
+import com.kcc.fillin.survey.dto.MemberSurveyResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -180,6 +181,11 @@ public class QuestionServiceImpl implements QuestionService {
 	@Override
 	public boolean deleteCondition(ConditionRequest conditionRequest) {
 		return questionDao.deleteCondition(conditionRequest);
+	}
+
+	@Override
+	public List<MemberSurveyResponse> getSurveyByMemberSeq(Long seq) {
+		return questionDao.selectSurveyByMemberSeq(seq);
 	}
 
 	private boolean answerIsContactData(SubmitRequest item) {

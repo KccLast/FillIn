@@ -5,6 +5,7 @@ import java.util.List;
 import com.kcc.fillin.question.domain.QuestionItemVO;
 import com.kcc.fillin.question.domain.QuestionVO;
 import com.kcc.fillin.question.dto.*;
+import com.kcc.fillin.survey.dto.MemberSurveyResponse;
 import com.kcc.fillin.survey.dto.SubmitRequest;
 
 public interface QuestionService {
@@ -27,4 +28,6 @@ public interface QuestionService {
     boolean insertCondition(ConditionRequest conditionRequest);
 
     boolean deleteCondition(ConditionRequest conditionRequest);
+
+    List<MemberSurveyResponse> getSurveyByMemberSeq(Long seq);
 }

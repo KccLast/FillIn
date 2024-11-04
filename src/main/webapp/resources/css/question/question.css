@@ -855,8 +855,8 @@ tr:nth-child(even) {
 
 /* email css  */
 
-/*personal data*/
-h5 {
+/* personal data*/
+/* h5 {
   font-weight: bold;
   margin-left: 2%;
   margin-bottom: 2%;
@@ -964,6 +964,127 @@ h5 {
   color: black !important;
 }
 
+.j-seq-option-Box > .input-group-text {
+  display: flex !important;
+} */
+
+/*personal data */
+
+/*personal data*/
+h5 {
+  font-weight: bold;
+  margin-left: 2%;
+  margin-bottom: 2%;
+  margin-top: 3% !important;
+}
+
+.j-group-name {
+  width: 70px;
+  border: none;
+  text-align: center;
+  box-sizing: border-box;
+  padding-left: 1%;
+  padding-right: 1%;
+}
+
+.j-goal {
+  min-width: 70px;
+  border: none;
+  text-align: center;
+  box-sizing: border-box;
+  padding-left: 1%;
+  padding-right: 1%;
+}
+
+.j-groupName {
+  box-sizing: border-box;
+  margin-bottom: 4%;
+  margin-top: 4%;
+  padding-left: 6%;
+}
+
+.j-groupName > input {
+  background-color: #fbf3f3;
+}
+
+.j-groupName > input::placeholder {
+  color: #b44437;
+}
+.j-ok-box {
+  padding-left: 6%;
+  padding-bottom: 3%;
+}
+.j-ok-box > div {
+  margin-bottom: 1%;
+  font-weight: bold;
+}
+
+.j-ok-box thead {
+  background-color: white !important;
+}
+
+.j-ok-box th {
+  text-align: center !important;
+  background-color: white !important;
+  border: 1px solid black;
+  width: 20%;
+}
+
+.j-ok-box td {
+  width: 20%;
+  border: 1px solid black;
+}
+
+.j-ok-box input {
+  width: 100%;
+  border: none;
+}
+
+.j-ok-box input:focus {
+  outline: none;
+}
+
+.j-ok-box input:hover {
+  outline: none;
+}
+
+.j-ok-box .j-td:hover {
+  background-color: white !important;
+}
+
+.j-ok-box tr:hover {
+  background-color: white !important;
+}
+
+.j-plus-ok-info {
+  text-align: center;
+  margin-top: 2%;
+  margin-bottom: 2%;
+  padding-left: 7%;
+}
+
+.j-plus-ok-info > span {
+  background-color: #fbf3f3;
+  color: #b44437;
+}
+.j-bottom {
+  padding-left: 4%;
+  margin-top: 2%;
+}
+.j-bottom-buttom {
+  margin-top: 2%;
+  margin-bottom: 1%;
+}
+
+.j-seq-option-Box {
+  background-color: white !important;
+}
+.j-seq-option-Box > input[type='text'] {
+  background-color: white !important;
+}
+.j-seq-option-Box > input[type='text']::placeholder {
+  color: black !important;
+}
 .j-seq-option-Box > .input-group-text {
   display: flex !important;
 }

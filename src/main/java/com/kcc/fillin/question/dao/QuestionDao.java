@@ -1,12 +1,15 @@
 package com.kcc.fillin.question.dao;
 
 import com.kcc.fillin.question.dto.*;
+import com.kcc.fillin.survey.dto.MemberSurveyResponse;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import com.kcc.fillin.question.domain.QuestionItemVO;
 import com.kcc.fillin.question.domain.QuestionVO;
 import com.kcc.fillin.survey.dto.SubmitRequest;
+
+import java.util.List;
 
 @Mapper
 public interface QuestionDao {
@@ -43,4 +46,6 @@ public interface QuestionDao {
 	Integer getOrderNum(Long surveySeq);
 
     boolean deleteCondition(ConditionRequest conditionRequest);
+
+    List<MemberSurveyResponse> selectSurveyByMemberSeq(Long seq);
 }

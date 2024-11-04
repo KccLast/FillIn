@@ -17,7 +17,6 @@ import java.util.stream.Collectors;
 public class CreateAutoQuestionRequest {
 
     private Long seq;
-
     private List<CreateQuestionRequest> questions;
 
     public List<QuestionVO> getConvertedCreateQuestionToQuestionVO(){
