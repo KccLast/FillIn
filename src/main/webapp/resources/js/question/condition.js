@@ -1367,10 +1367,21 @@ async function clickNode(params) {
     }
     addConditionalFlow(fromNodeId, toNodeId, condition.id);
   }
-  let findNode = conditions.filter((con) => con.id === 0);
-  if (findNode.length > 0) {
-    setConditionNav2(findNode[0].from, findNode[0].to);
+  let edgeList = edges.get();
+
+  let findEdge = edgeList.filter(
+    (eg) => eg.from === nodeData.id && eg.conditionId === 0
+  )[0];
+
+  let nextEdgeSeq = nodeList.filter((nod) => nod.id === findEdge.to)[0];
+
+  // if (findNode.length > 0) {
+  //   setConditionNav2(nodeData.seq, findNode[0].to);
+  // } else {
+  if (findEdge && nextEdgeSeq) {
+    setConditionNav2(nodeData.seq, nextEdgeSeq.seq);
   } else {
     setConditionNav2(nodeData.seq, -1);
   }
+  //}
 }
