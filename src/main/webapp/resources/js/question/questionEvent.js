@@ -208,9 +208,16 @@ $(function () {
         }
         $newContainer.find('.j-essential').prop('checked', true);
 
-        createNewNode(idx);
         await insertQuestion();
         totalQuestionCnt();
+
+        const lastCard = $('.content').children('.j-question-card').last();
+        console.log(lastCard.index());
+
+        let nodeSeq = lastCard.find('.j-qseq').val();
+        let surveySeq = $('#surveySeq').val();
+
+        await createNewNode(idx, nodeSeq, surveySeq);
       } catch (error) {
         console.error('AJAX 요청 실패:', error);
       }

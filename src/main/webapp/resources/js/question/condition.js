@@ -637,12 +637,25 @@ function createDefaultCondition(from, to) {
     operation: ' ', // 연산 또는 동작 설정
   };
 }
-function createNewNode(idx) {
-  nodes.add(
-    createNode(idx, { name: '질문명', seq: 0, surveySeq: 0 }, (idx + 1) * 120)
+async function createNewNode(idx, nodeSeq, surveySeq) {
+  console.log(edges.get());
+  console.log(nodes.get());
+  let nextNodeSeq = nodes.get().filter((node) => node.id === idx - 1).seq;
+
+  let condition = createDefaultCondition(nodeSeq, nextNodeSeq);
+
+  let newnode = createNode(
+    idx,
+    { name: '질문명', seq: nodeSeq, surveySeq: surveySeq },
+    (idx + 1) * 140
   );
+  newnode.seq = nodeSeq;
+  //node는 이렇게 만들면 됨
+  nodes.add(newnode);
+
   edges.add(createEdge(idx - 1, idx));
-  network.redraw();
+
+  redrawNetWork();
 }
 
 function createEdge(from, to) {
@@ -752,7 +765,7 @@ function reindexNodesAndEdges() {
     newNodes.push({
       ...node, // 기존 노드의 정보 유지
       id: newNodeId,
-      y: (newNodeId + 1) * 100,
+      y: (newNodeId + 1) * 140,
     });
 
     // 2. 노드가 첫 번째가 아니라면, 이전 노드와 연결하는 엣지 생성
@@ -1372,9 +1385,12 @@ async function clickNode(params) {
   let findEdge = edgeList.filter(
     (eg) => eg.from === nodeData.id && eg.conditionId === 0
   )[0];
-
-  let nextEdgeSeq = nodeList.filter((nod) => nod.id === findEdge.to)[0];
-
+  let nextEdgeSeq;
+  try {
+    nextEdgeSeq = nodeList.filter((nod) => nod.id === findEdge.to)[0];
+  } catch {
+    setConditionNav2(nodeData.seq, -1);
+  }
   // if (findNode.length > 0) {
   //   setConditionNav2(nodeData.seq, findNode[0].to);
   // } else {

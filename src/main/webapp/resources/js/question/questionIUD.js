@@ -222,6 +222,7 @@ function saveQuestionInDB(questions) {
         }
 
         newCard.removeClass('j-new-card');
+
         resolve(response); // 요청이 완료되면 Promise 해결
       },
       error: function (error) {
