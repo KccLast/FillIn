@@ -94,11 +94,11 @@
                         <div class="form-group">
                             <label for="address">주소</label>
                             <div class="j-flex-row-center">
-                                <input type="text" id="zipcode" name="zipcode" placeholder="우편번호">
+                                <input type="text" id="zipcode" name="postalCode" placeholder="우편번호">
                                 <button type="button" class="find-zipcode" onclick="execDaumPostcode()">우편번호 찾기</button>
                             </div>
                             <input type="text" id="address" name="address" placeholder="주소">
-                            <input type="text" id="detailed-address" name="detailed-address" placeholder="상세주소">
+                            <input type="text" id="detailed-address" name="detailedAddress" placeholder="상세주소">
                             <span class="error-message" id="address-error">주소를 입력해주세요</span>
                         </div>
                         <button type="button" class="prev-btn">이전</button>
