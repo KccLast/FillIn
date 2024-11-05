@@ -167,9 +167,12 @@ $(function () {
     if (optionVal === '' || optionVal === null || optionVal === undefined) {
       optionVal = ' ';
     }
+    console.log(ConditionId);
+    console.log(conditionList);
     let findCon = conditionList.filter(
       (con) => con.id === parseInt(ConditionId)
     )[0];
+    console.log(findCon.seq);
     let saveCondition = {
       seq: findCon.seq,
       id: parseInt(ConditionId),
@@ -1261,6 +1264,14 @@ function saveConditionInDB(condition) {
     data: JSON.stringify(condition),
     success: function (response) {
       console.log(response);
+      let conditions = getQuestionConditions(response.data.from + '');
+
+      let findCondition = conditions.filter(
+        (con) => con.id === response.data.id
+      )[0];
+      findCondition.seq = response.data.seq;
+      console.log(findCondition);
+      saveConditionListInLocalStorage(conditions, response.data.from);
     },
     error: function (error) {},
   });

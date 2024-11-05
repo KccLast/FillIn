@@ -171,7 +171,8 @@ public class QuestionServiceImpl implements QuestionService {
 		//int cnt = questionDao.countCondition(conditionRequest);
 		boolean result = false;
 		boolean cnt = conditionRequest.getSeq() == -1;
-
+		System.out.println("cnt = ######################################" + cnt);
+		System.out.println(cnt);
 		if(cnt){
 			result = questionDao.insertCondition(conditionRequest);
 		}else{
