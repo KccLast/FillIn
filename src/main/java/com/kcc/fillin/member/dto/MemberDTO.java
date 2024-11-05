@@ -24,5 +24,6 @@ public class MemberDTO {
 	private String address; // 주소 (주소와 상세주소분리)
 	private String detailedAddress; // 상세 주소 추가
 	private String postalCode; // 우편번호
+	private String gender;
 	private int ccSeq;
 }

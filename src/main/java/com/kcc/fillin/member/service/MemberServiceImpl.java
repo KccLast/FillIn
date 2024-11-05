@@ -5,6 +5,7 @@ package com.kcc.fillin.member.service;
 import com.kcc.fillin.member.dao.MemberMapper;
 import com.kcc.fillin.member.dto.MemberRequest;
 import com.kcc.fillin.member.dto.ResetPasswordDTO;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -23,6 +24,7 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 @Transactional
+@Slf4j
 public class MemberServiceImpl implements MemberService {
 
     private final MemberMapper memberMapper;
@@ -33,11 +35,23 @@ public class MemberServiceImpl implements MemberService {
     private Map<String, String> tempPasswordStore = new HashMap<>();
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void registerMember(MemberDTO memberDTO) {
+
+        if(memberDTO.getGender().equals("male")){
+            memberDTO.setCcSeq(1);
+        } else {
+            memberDTO.setCcSeq(2);
+        }
         // 비밀번호 암호화
         memberDTO.setPassword(passwordEncoder.encode(memberDTO.getPassword()));
         // 회원 정보 저장
-        memberMapper.insertMember(memberDTO);
+        try {
+            memberMapper.insertMember(memberDTO);
+        } catch (Exception e) {
+            log.error("Member insertion failed", e);
+            throw e; // 예외를 다시 던져서 트랜잭션 롤백을 활성화
+        }
     }
 
     @Override

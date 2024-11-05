@@ -448,6 +448,7 @@ $(document).ready(function () {
       event.preventDefault(); // 중복 제출 방지
       return;
     }
+    console.log("회원가입 시도")
     isSubmitting = true; // 제출 시작
 
     // 생년월일 조합
@@ -484,37 +485,50 @@ $(document).ready(function () {
     if (!emailRegex.test(email)) {
       $("#email-error").text("유효한 이메일 주소를 입력해주세요.").show();
       isValid = false;
+    } else {
+      isValid = true;
     }
 
     // 비밀번호 형식 검증
     if (!passwordRegex.test(password)) {
       $("#password-error").text("비밀번호는 8자 이상, 20자 이하이며, 문자, 숫자, 특수문자를 포함해야 합니다.").show();
       isValid = false;
+    } else {
+      isValid = true;
     }
 
     // 비밀번호 확인 검증
     if (password !== confirmPassword) {
       $("#password-confirm-error").text("비밀번호가 일치하지 않습니다.").show();
       isValid = false;
+    } else {
+      isValid = true;
     }
 
     // 이름 검증
     if (name.trim() === "") {
       $("#name-error").text("이름을 입력해주세요.").show();
       isValid = false;
+    } else {
+      isValid = true;
     }
 
     // 전화번호 검증
     if (!phoneRegex.test(phone)) {
       $("#phone-error").text("전화번호는 000-0000-0000 형식이어야 합니다.").show();
       isValid = false;
+    }else {
+      isValid = true;
     }
 
     // 주소 검증
     if (zipcode.trim() === "" || address.trim() === "" || detailedAddress.trim() === "") {
       $("#address-error").text("주소를 모두 입력해주세요.").show();
       isValid = false;
+    }else {
+      isValid = true;
     }
+    console.log("validation check" + isValid)
 
     // 최종 검증 후 제출 방지
     if (!isValid) {
