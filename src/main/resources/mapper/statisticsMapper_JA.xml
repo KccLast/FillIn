@@ -34,7 +34,8 @@
                       ON s.seq = q.survey_seq
         WHERE q.cc_seq IN (SELECT seq
                            FROM common_code
-                           WHERE parent_seq = 3)
+                           WHERE parent_seq = 3
+                           AND seq != 8)
           AND s.seq = #{surveySeq}
     </select>
 
@@ -109,24 +110,53 @@
 
     <resultMap id="ParticipantAnswerMap" type="ParticipantAnswer">
         <id property="participantSeq" column="participant_seq"/>
-        <collection property="questionAnswerList" ofType="QuestionAnswerRequest">
+        <collection property="answers" ofType="QuestionAnswerRequest">
             <result property="questionSeq" column="question_seq"/>
             <result property="questionItemSeq" column="question_item_seq"/>
+            <result property="contents" column="contents"/>
         </collection>
     </resultMap>
 
+    <!-- 참여자별 질문과 응답 리스트 조회   -->
     <select id="getParticipantAnswers" resultMap="ParticipantAnswerMap">
         SELECT
             a.participant_seq,
-            q.seq,
-            qi.seq
-        FROM question q
-            JOIN question_item qi ON q.seq = qi.question_seq
-            JOIN answer a ON qi.content = a.contents
+            q.seq AS question_seq,
+            a.seq AS question_item_seq,
+            a.contents AS contents
+        FROM answer a
+--    JOIN question_item qi ON q.seq = qi.question_seq
+                 join question q on q.seq = a.question_seq
+--            JOIN answer a ON qi.content = a.contents
         WHERE q.survey_seq = #{surveySeq}
---         GROUP BY a.participant_seq
-        ORDER BY a.participant_seq, q.seq;
+          and q.cc_seq in (select seq from common_code where parent_seq = 3 and seq != 8)
+        ORDER BY a.participant_seq, q.seq
     </select>
 
+
+    <resultMap id="responseMap" type="QuestionResponse">
+        <result property="participantSeq" column="participant_seq"/>
+        <result property="questionSeq" column="question_seq"/>
+        <result property="questionItemSeq" column="question_item_seq"/>
+        <result property="contents" column="contents"/>
+    </resultMap>
+    <!--  독립질문, 종속질문에 따른 참여자별 응답 조회  -->
+    <select id="getResponsesByQuestions" resultMap="responseMap" parameterType="QuestionListRequest">
+        SELECT a.participant_seq,
+        q.seq AS question_seq,
+        a.seq AS question_item_seq,
+        a.contents AS contents
+        FROM answer a
+        JOIN question q ON q.seq = a.question_seq
+        WHERE q.survey_seq = #{request.surveySeq}
+        AND (
+        q.seq = #{request.dependentQuestion} OR
+        q.seq IN
+        <foreach item="question" collection="request.independentQuestions" open="(" separator="," close=")">
+            #{question}
+        </foreach>
+        )
+        ORDER BY a.participant_seq, q.seq
+    </select>
 
 </mapper>

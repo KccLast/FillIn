@@ -1,9 +1,7 @@
 package com.kcc.fillin.statistic.service;
 
-import com.kcc.fillin.statistic.dto.ParticipantAnswer;
-import com.kcc.fillin.statistic.dto.QuantityQuestionsResponse;
-import com.kcc.fillin.statistic.dto.QuestionListRequest;
-import com.kcc.fillin.statistic.dto.QuestionListResponse;
+import com.kcc.fillin.statistic.dto.*;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -12,4 +10,5 @@ public interface StatisticsService_JA {
     public List<QuantityQuestionsResponse> getQuantityQuestionsBySurvey(Long seq);
     public List<QuestionListResponse> getQuestionAndAnswerByParticipant(QuestionListRequest request);
     public List<ParticipantAnswer> getParticipantAnswers(Long surveySeq);
+    public List<QuestionResponse> getResponsesByQuestions(QuestionListRequest request);
 }

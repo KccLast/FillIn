@@ -13,5 +13,6 @@ import java.util.List;
 @ToString
 public class ParticipantAnswer {
     private Long participantSeq;
-    private List<QuestionAnswerRequest> questionAnswerList;
+    private List<QuestionAnswerRequest> answers;
+//    private List<Long> seqList;
 }

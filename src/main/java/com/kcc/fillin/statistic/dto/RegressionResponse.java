@@ -5,12 +5,15 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
+import java.util.List;
+
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class QuestionAnswerRequest {
-    private Long questionSeq;
-    private Long questionItemSeq;
-    private String contents;
+public class RegressionResponse {
+    private String status;
+    private List<Double> coefficients;
+    private Double intercept;
+    private List<Double> predictions;
 }
