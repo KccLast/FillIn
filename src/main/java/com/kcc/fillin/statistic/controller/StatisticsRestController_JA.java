@@ -1,15 +1,10 @@
 package com.kcc.fillin.statistic.controller;
 
 import com.kcc.fillin.global.Common.Response;
-import com.kcc.fillin.statistic.dto.QuantityQuestionsResponse;
-import com.kcc.fillin.statistic.dto.QuestionListRequest;
-import com.kcc.fillin.statistic.dto.QuestionListResponse;
+import com.kcc.fillin.statistic.dto.*;
 import com.kcc.fillin.statistic.service.StatisticsService_JA;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
@@ -23,6 +18,7 @@ import java.util.List;
 public class StatisticsRestController_JA {
     private final StatisticsService_JA service;
     private final RestTemplate restTemplate = new RestTemplate();
+    private RegressionResponse latestRegressionData;
 
     @GetMapping("/question-list/{surveySeq}")
     public Response getQuestionList(@PathVariable Long surveySeq) {
@@ -32,19 +28,30 @@ public class StatisticsRestController_JA {
 
     @PostMapping("/regression-analysis")
     public Response getSelectedQuestionsByRegression(@RequestBody QuestionListRequest request) {
-        List<QuestionListResponse> questionAndAnswerByParticipant = service.getQuestionAndAnswerByParticipant(request);
-        System.out.println(questionAndAnswerByParticipant);
-        System.out.println("Seq List: " + request.getSeqList());
+        System.out.println("independentQuestions: " + request.getIndependentQuestions() + ", dependentQuestion: " + request.getDependentQuestion());
+        // 참여자 응답 가져오기
+        List<ParticipantAnswer> participantAnswers = service.getParticipantAnswers(request.getSurveySeq());
+        // 질문 응답 가져오기
+        List<QuestionResponse> questionResponses = service.getResponsesByQuestions(request);
+
+        System.out.println("Participant Answers: " + participantAnswers);
+        System.out.println("Question Responses: " + questionResponses);
+
+        // FastAPI 서버에 전송할 데이터 준비
+        RegressionAnalysisData analysisData = new RegressionAnalysisData();
+        analysisData.setIndependentQuestions(request.getIndependentQuestions());
+        analysisData.setDependentQuestion(request.getDependentQuestion());
+        analysisData.setQuestionResponses(questionResponses);
 
         // HTTP 헤더 설정
         HttpHeaders headers = new HttpHeaders();
-        headers.set("Content-Type", "application/json");
+        headers.setContentType(MediaType.APPLICATION_JSON);
 
         // JSON 데이터를 담은 HttpEntity 생성
-        HttpEntity<List<QuestionListResponse>> entity = new HttpEntity<>(questionAndAnswerByParticipant, headers);
+        HttpEntity<RegressionAnalysisData> entity = new HttpEntity<>(analysisData, headers);
 
         // FastAPI 서버의 URL
-        String pythonServerUrl = "http://localhost:8000/receive-data";  // FastAPI의 주소 및 포트 설정
+        String pythonServerUrl = "http://localhost:8000/regression-request-data";  // FastAPI 서버 주소
 
         // FastAPI 서버로 POST 요청 보내기
         try {
@@ -55,14 +62,31 @@ public class StatisticsRestController_JA {
                     String.class
             );
             System.out.println("FastAPI Server Response: " + response.getBody());
+
+            // 응답 반환
+            return Response.setSuccess(response.getBody(), 200);
         } catch (HttpServerErrorException e) {
             System.out.println("서버 오류 발생: " + e.getStatusCode());
             System.out.println("오류 메시지: " + e.getResponseBodyAsString());
+            return Response.setError("서버 오류 발생", e.getStatusCode().value());
+        }
+    }
+
+    @PostMapping("/regression-result-data")
+    public Response receiveRegressionData(@RequestBody RegressionResponse regressionResponse) {
+        System.out.println("Received data from FastAPI: " + regressionResponse);
+        latestRegressionData = regressionResponse;
+
+        return Response.setSuccess(regressionResponse, 200);
+    }
+
+    @GetMapping("/regression-result-data")
+    public Response sendRegressionData() {
+        if(latestRegressionData != null) {
+            return Response.setSuccess(latestRegressionData, 200);
         }
 
-
-
-        return Response.setSuccess(questionAndAnswerByParticipant, 200);
+        return Response.setError("No regression data available", 404);
     }
 
 }

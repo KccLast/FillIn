@@ -9,8 +9,9 @@ import lombok.ToString;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class QuestionAnswerRequest {
+public class QuestionResponse {
+    private Long participantSeq;
     private Long questionSeq;
-    private Long questionItemSeq;
+    private Long questionItemSeq;  // 질문에 대한 응답 내용
     private String contents;
 }

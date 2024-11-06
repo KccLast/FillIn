@@ -1,5 +1,8 @@
 surveySeq = $('.question-list').data('seq');
 console.log('surveySeq: ', surveySeq);
+
+let regressionChart;
+
 // 헤더 타이틀 설정
 $('.dashboard').text('회귀분석');
 
@@ -19,12 +22,12 @@ $(document).ready(function () {
             $('#start-regression').on('click', function () {
                 sendQuestions();
             });
-
         },
         error: function (xhr, status, error) {
             console.error('AJAX 요청 실패:', xhr.responseText || error);
         }
     });
+
 });
 
 // 가져온 질문 리스트 추가(결과 질문, 원인 질문)
@@ -115,6 +118,7 @@ function collectSelectedQuestion() {
 function sendQuestions() {
     const selectedQuestion = collectSelectedQuestion();
     console.log('selectedQuestion: ', selectedQuestion);
+
     if(!selectedQuestion.dependent || selectedQuestion.independent.length === 0) {
         swal({
            type: 'warning',
@@ -126,8 +130,10 @@ function sendQuestions() {
     const requestData = {
         surveySeq: $('.question-list').data('seq'),
         dependentQuestion: selectedQuestion.dependent,
-        seqList: selectedQuestion.independent
+        independentQuestions: selectedQuestion.independent
     };
+
+    console.log(requestData)
 
     $.ajax({
         url: '/api/statistics/regression-analysis',
@@ -136,10 +142,71 @@ function sendQuestions() {
         data: JSON.stringify(requestData),
         success: function (response) {
             console.log('서버 응답:', response);
+            receiveRegressionData();
         },
         error: function (xhr, status, error) {
             console.error('AJAX 요청 실패:', xhr.responseText || error);
         }
+    });
+}
 
+// 파이썬에서 회귀분석 데이터 받기
+function receiveRegressionData() {
+    $.ajax({
+        url: '/api/statistics/regression-result-data',
+        type: 'GET',
+        contentType: 'application/json',
+        dataType: 'json',
+        success: function (response) {
+            console.log("서버에서 받은 데이터:", response);
+            drawRegressionChart(response.data);
+        },
+        error: function(xhr, status, error) {
+            console.error("데이터 요청 중 에러 발생:", error);
+        }
+    });
+}
+
+
+// 회귀분석 차트 그리기
+function drawRegressionChart(response) {
+    console.log('#####');
+    console.log('response: ', response);
+
+    // 기존 차트가 존재하면 제거
+    if (regressionChart) {
+        regressionChart.destroy();
+    }
+
+    const ctx = document.getElementById('regression-chart').getContext('2d');
+
+    const chartData = response.predictions.map((prediction, index) => ({
+        x: index + 1,  // x 좌표 값으로 인덱스 사용 (1부터 시작)
+        y: prediction   // y 좌표 값은 예측값
+    }));
+
+    regressionChart = new Chart(ctx, {
+        type: 'scatter',  // 선형 그래프
+        data: {
+            datasets: [{
+                label: '회귀 분석 결과',
+                data: chartData,  // 예측값을 기반으로 한 데이터
+                borderColor: 'rgba(75, 192, 192, 1)',  // 선의 색상
+                backgroundColor: 'rgba(75, 192, 192, 0.2)',  // 영역의 색상
+                fill: true,  // 선 아래를 채움
+                tension: 0.1  // 선의 부드러움 조정
+            }]
+        },
+        options: {
+            scales: {
+                x: {
+                    type: 'linear',
+                    position: 'bottom'
+                },
+                y: {
+                    beginAtZero: true  // y 축이 0부터 시작하도록 설정
+                }
+            }
+        }
     });
 }

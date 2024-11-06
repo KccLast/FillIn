@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
+import java.util.List;
+
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
@@ -17,4 +19,7 @@ public class QuestionListResponse {
     private Long independentQuestionItemSeq; // 독립 질문에 대한 응답 항목 번호
     private Long dependentQuestionItemSeq; // 종속 질문에 대한 응답 항목 번호
     private String content;
+//
+//    private List<IndependentQuestion> independentQuestions;
+//    private DependentQuestion dependentQuestion;
 }

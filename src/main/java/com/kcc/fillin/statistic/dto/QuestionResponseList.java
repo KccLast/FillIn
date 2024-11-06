@@ -5,12 +5,12 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
+import java.util.List;
+
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class QuestionAnswerRequest {
-    private Long questionSeq;
-    private Long questionItemSeq;
-    private String contents;
+public class QuestionResponseList {
+    private List<QuestionResponse> responseList;
 }
