@@ -9,7 +9,7 @@ import java.util.List;
 
 @Mapper
 public interface SurveyLogMapper {
-    // 설문 로그를 쿼리하는 메서드 (페이징 추가)
+    // 설문 로그를 쿼리하는 메서드
     List<SurveyLogDTO> findSurveyLogs(@Param("startDate") LocalDate startDate,
                                       @Param("endDate") LocalDate endDate
                                       /*@Param("offset") int offset,

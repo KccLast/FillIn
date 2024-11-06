@@ -169,4 +169,5 @@
 		FROM survey
 		WHERE member_seq =  #{seq}
 	</select>
+
 </mapper>
