@@ -52,8 +52,11 @@ async function appendQuestionCard(question, index) {
       '<input type="hidden" value="' + question.seq + '" class="j-qseq"/>'
     );
     if (question.ccSeq === 18) {
-      $newContainer.find('.j-survey-name').remove();
-      $newContainer.find('.j-survey-content').remove();
+      $newContainer
+        .find('.j-survey-name-input')
+        .val('개인 정보 수집 및 이용 동의서')
+        .prop('readonly', true);
+      $newContainer.find('.j-survey-content').hide();
     } else {
       $newContainer.find('.j-survey-name-input').val(question.name.trim());
       $newContainer
@@ -120,6 +123,7 @@ async function setQuestionItem(question, container) {
   let contentData = await fetchContent(question.ccSeq);
   let $contentData = $(contentData);
   container.find('.j-question-content-box').append(contentData);
+
   // forEach 대신 for...of 사용하여 async/await가 제대로 동작하도록 수정
   for (let [index, qi] of question.questionItems.entries()) {
     if (question.ccSeq === 7 || question.ccSeq === 8) {
@@ -143,8 +147,9 @@ async function setQuestionItem(question, container) {
         container.find('.j-num-end').val(qi.content);
       }
     }
-
+    console.log(question.ccSeq);
     if (question.ccSeq === 10) {
+      console.log('여기 안옴?');
       let html = `<option value="${qi.content}" class="qi${qi.seq}">${qi.content}</option>`;
       //let questionSeq = `<input type="hidden" value="${qi.questionSeq}" class="j-qseq"/>`;
       container.find('.j-dropdwon > select').addClass('qiBox');

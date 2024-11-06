@@ -82,6 +82,9 @@ $(function () {
 
   //카드 클릭하면 스크롤 정렬 기본 이벤트
   $('.content').on('click', '.j-question-card', function (e) {
+    if ($(this).hasClass('j-error-card')) {
+      $(this).removeClass('j-error-card');
+    }
     changeFocus(this);
     this.scrollIntoView({ behavior: 'smooth', block: 'center' });
   });
@@ -175,8 +178,11 @@ $(function () {
           '<input type="hidden" value="' + ccSeq + '" class="j-cseq"/>'
         );
         if (ccSeq === '18') {
-          $newContainer.find('.j-survey-name').remove();
-          $newContainer.find('.j-survey-content').remove();
+          $newContainer
+            .find('.j-survey-name-input')
+            .val('개인 정보 수집 및 이용 동의서')
+            .prop('readonly', true);
+          $newContainer.find('.j-survey-content').hide();
         }
         // .content에 동적으로 새 프레임을 추가
         $('.content').append($newContainer);
@@ -290,7 +296,7 @@ $(function () {
       let idx = $prev.parents('.j-question-card').index();
       $prev.parents('.j-question-card').addClass('j-item-u');
       let next = parseInt(number) + 1;
-      let parentSeq = $(this).parent().parent().parent().next('.j-cseq').val();
+      let parentSeq = $(this).parents('.j-question-card').find('.j-cseq').val();
       let html = await fetchQuestionItem(parentSeq);
       await setQiCheckBoxAndRadioName(html, $prev, next, idx);
     }
@@ -357,6 +363,9 @@ $(function () {
   // 드롭다운 모달 모달 열기
   let currentCard;
   $(document).on('click', '.j-dropdwon-modifiy', function () {
+    if ($('#optionTextarea').hasClass('j-error-card')) {
+      $('#optionTextarea').removeClass('j-error-card');
+    }
     currentCard = $(this).closest('.j-question-card'); // 현재 카드 저장
     currSelect = $(this).prev().find('select > option');
     let mbody = '';
@@ -394,6 +403,7 @@ $(function () {
 
   // 드롭다운 모달 옵션 추가 버튼 클릭 이벤트
   $('#addOptionsBtn').click(function () {
+    $('#optionTextarea').removeClass('j-error-card');
     var optionsText = $('#optionTextarea').val(); // textarea 값 가져오기
     var options = optionsText.split('\n'); // 줄바꿈으로 구분된 옵션 배열 생성
 
@@ -402,21 +412,39 @@ $(function () {
 
     // 기존 옵션 초기화
     selectBox.find('option:not([disabled])').remove();
+    let result = true;
 
     // 새로운 옵션 추가
-    options.forEach(function (option) {
+    for (let option of options) {
       if (option.trim()) {
         // 공백은 추가하지 않음
-        selectBox.append('<option>' + option.trim() + '</option>');
+        if (
+          !isNotInputLenError($('#optionTextarea'), option.trim().length, 50)
+        ) {
+          Swal.fire({
+            icon: 'error',
+            title: '항목의 길이를 확인해 주세요',
+            text: '각 옵션별 항목의 길이는 50자를 초과할 수 없습니다!',
+          });
+          result = false;
+          break;
+        }
+        selectBox.append(
+          '<option value="' + option.trim() + '">' + option.trim() + '</option>'
+        );
       }
-    });
-    //DB에서 불라온 셀렉트 box일 경우
-    if (selectBox.hasClass('qiBox')) {
-      saveDropDownInStorage(options, currentCard.find('.j-qseq').val());
     }
-    // 드롭다운 모달 닫기 및 입력 초기화
-    $('#optionModal').fadeOut();
-    $('#optionTextarea').val('');
+    if (result === true) {
+      //DB에서 불라온 셀렉트 box일 경우
+      if (selectBox.hasClass('qiBox')) {
+        saveDropDownInStorage(options, currentCard.find('.j-qseq').val());
+      } else {
+        saveDropDownInStorage(options, currentCard.find('.j-qseq').val());
+      }
+      // 드롭다운 모달 닫기 및 입력 초기화
+      $('#optionModal').fadeOut();
+      $('#optionTextarea').val('');
+    }
   });
   /*드롭다운 모달 관련*/
 
@@ -692,8 +720,11 @@ $(function () {
           setTimeout(() => createDefaultMap('map' + idx), 100);
         }
         if (ccSeq === '18') {
-          selectDiv.find('.j-survey-name').remove();
-          selectDiv.find('.j-survey-content').remove();
+          selectDiv
+            .find('.j-survey-name-input')
+            .val('개인 정보 수집 및 이용 동의서')
+            .prop('readonly', true);
+          selectDiv.find('.j-survey-content').hide();
         } else {
           // .j-survey-content이 없으면 추가
           if (selectDiv.find('.j-survey-content').length === 0) {
@@ -730,9 +761,23 @@ $(function () {
           .eq(idx)
           .find('.question-img > img')
           .attr('src', newSrc);
+        //list의 색 바꾸기
+        removeNavBeforeColor(
+          $('.j-question-list').find('.j-question').eq(idx),
+          ccSeq
+        );
+        setNewNavColor(
+          $('.j-question-list').find('.j-question').eq(idx),
+          ccSeq
+        );
       } catch (error) {
         console.error('AJAX 요청 실패:', error);
       } finally {
+        if (ccSeq !== '18') {
+          selectDiv.find('.j-survey-name-input').prop('readonly', false);
+          selectDiv.find('.j-survey-content').show();
+        }
+
         $('#add-type-modal2').hide();
       }
     }
@@ -777,8 +822,34 @@ $(function () {
   $('.add-type-modal-close').click(function () {
     $(this).parents('.add-type-modal-class').hide();
   });
+
+  $('.content').on(
+    'change',
+    '.j-question-content-box > input[type="text"]',
+    function () {
+      isNotInputLenError(this, $(this).val().length, 50);
+    }
+  );
+  $('.content').on('change', '.j-survey-name-input', function () {
+    isNotInputLenError(this, $(this).val().length, 100);
+  });
+  $('.content').on('change', '.j-survey-content > textarea', function () {
+    isNotInputLenError(this, $(this).val().length, 500);
+  });
 });
 
+function isNotInputLenError(target, len, limit) {
+  console.log(len);
+  if (len <= limit) {
+    if ($(target).hasClass('j-error-card')) {
+      $(target).removeClass('j-error-card');
+      return true;
+    }
+  } else {
+    $(target).addClass('j-error-card');
+    return false;
+  }
+}
 //생성된 input에 name부여
 async function setQiCheckBoxAndRadioName(html, prev, next, idx) {
   let prevName = prev.find('.j-chAndRa').attr('name');
@@ -1050,5 +1121,29 @@ async function totalQuestionCnt(questionLen) {
     $('.j-ai-img').text($('.content').find('.j-question-card').length);
   } else {
     $('.j-ai-img').text(questionLen);
+  }
+}
+
+function removeNavBeforeColor(selectDiv, ccSeq) {
+  console.log('hi');
+  let target = selectDiv.find('.question-img');
+  console.log(target);
+  target.removeClass('j-contactcolor');
+  target.removeClass('j-quancolor');
+  target.removeClass('j-qualcolor');
+  target.removeClass('j-datacolor');
+}
+function setNewNavColor(selectDiv, ccSeq) {
+  console.log('hi2');
+  let target = selectDiv.find('.question-img');
+  let ccSeqInt = parseInt(ccSeq);
+  if (ccSeqInt >= 17) {
+    target.addClass('j-datacolor');
+  } else if (ccSeqInt >= 14) {
+    target.addClass('j-contactcolor');
+  } else if (ccSeqInt >= 12) {
+    target.addClass('j-qualcolor');
+  } else {
+    target.addClass('j-quancolor');
   }
 }

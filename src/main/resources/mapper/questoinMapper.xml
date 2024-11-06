@@ -137,10 +137,14 @@
 	</select>
 
 	<insert id="insertCondition" parameterType="ConditionRequest">
+		<selectKey keyProperty="seq" resultType="long" order="BEFORE">
+			SELECT condition_seq.nextval
+			FROM dual
+		</selectKey>
 		INSERT INTO condition(seq,question_seq,next_question_seq,c_value,operation,order_num)
 		VALUES
 		(
-		condition_seq.nextval
+		#{seq}
 		,#{from}
 		,#{to}
 		,#{condition}
@@ -162,6 +166,7 @@
 		WHERE question_seq = #{from}
 		AND next_question_seq = #{to}
 		AND order_num = #{id}
+		AND seq = #{seq}
 	</update>
 
 	<select id="selectSurveyByMemberSeq" resultType="MemberSurveyResponse">

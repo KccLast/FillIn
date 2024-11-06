@@ -42,30 +42,33 @@ function storeUpdateQuestionItemInLocal(updateItem, seq, listId) {
 /**save버튼 눌렀을때 실행되는 함수 */
 async function saveQuestion() {
   try {
-    await updateQuestion();
-    await updateAndInsertQuestionItem();
-    // 로컬 스토리지 데이터 가져오기
-    let updateQuestionItemlocalData = localStorage.getItem(
-      'updatedQuestionItemList'
-    ); // 로컬 스토리지의 특정 데이터 가져오기
-    if (updateQuestionItemlocalData) {
-      await sendLocalStorageData(JSON.parse(updateQuestionItemlocalData));
-    }
-    let removeQuestionLocalData = localStorage.getItem('removeQuestionList');
-    if (removeQuestionLocalData) {
-      await sendremoveQeiostnLocalData(JSON.parse(removeQuestionLocalData));
-    }
-    let removeQuestionItemData = localStorage.getItem('removeQuestionItemList');
-    if (removeQuestionItemData) {
-      await sendremoveQquestionItemLocalData(
-        JSON.parse(removeQuestionItemData)
+    if (validCheck()) {
+      await updateQuestion();
+      await updateAndInsertQuestionItem();
+      // 로컬 스토리지 데이터 가져오기
+      let updateQuestionItemlocalData = localStorage.getItem(
+        'updatedQuestionItemList'
+      ); // 로컬 스토리지의 특정 데이터 가져오기
+      if (updateQuestionItemlocalData) {
+        await sendLocalStorageData(JSON.parse(updateQuestionItemlocalData));
+      }
+      let removeQuestionLocalData = localStorage.getItem('removeQuestionList');
+      if (removeQuestionLocalData) {
+        await sendremoveQeiostnLocalData(JSON.parse(removeQuestionLocalData));
+      }
+      let removeQuestionItemData = localStorage.getItem(
+        'removeQuestionItemList'
       );
+      if (removeQuestionItemData) {
+        await sendremoveQquestionItemLocalData(
+          JSON.parse(removeQuestionItemData)
+        );
+      }
     }
     //window.location.reload();
   } catch (error) {
     console.error('오류 발생:', error);
   } finally {
-    console.log('로딩');
   }
 }
 /**save버튼 눌렀을때 실행되는 함수 */
@@ -83,12 +86,15 @@ async function handleSaveButtonClick() {
   try {
     // 저장 작업 수행
     await saveQuestion();
-
-    Swal.fire({
-      icon: 'success',
-      title: '저장 완료',
-      text: '작업을 성공적으로 저장했습니다!',
-    });
+    if (hasError.length === 0) {
+      Swal.fire({
+        icon: 'success',
+        title: '저장 완료',
+        text: '작업을 성공적으로 저장했습니다!',
+      });
+    } else {
+      showError();
+    }
   } catch (error) {
     console.error('저장 중 오류 발생:', error);
     Swal.fire({
@@ -149,14 +155,17 @@ async function insertQuestion() {
       question.surveySeq = surveySeq;
       question.order = questionOrder;
 
-      if ($item.find('.j-survey-name-input').length === 0) {
-        question.name = '개인정보동의항목';
+      if ($item.find('.j-survey-name-input').length === 0 && ccSeq === '18') {
+        question.name = '개인 정보 수집 이용 동의서';
       } else {
         question.name =
           ($item.find('.j-survey-name-input').val() || ' ').trim() || ' ';
       }
-      if ($item.find('.j-survey-content > textarea').length === 0) {
-        question.description = '개인정보동의항목';
+      if (
+        $item.find('.j-survey-content > textarea').length === 0 &&
+        ccSeq === '18'
+      ) {
+        question.description = '개인 정보 수집 이용 동의서';
       } else {
         question.description =
           ($item.find('.j-survey-content > textarea').val() || ' ').trim() ||
@@ -341,6 +350,7 @@ function getQuestionItemFor10(target) {
         questionItems.push(questionItem);
       }
     });
+
   return questionItems;
 }
 
@@ -373,6 +383,41 @@ function getQuestionItemFor11(target) {
 /**DB에 아이템을 저장할 때 타입에 따라 값이 조금씩 다름 이를 처리하기 위한 함수 모음 */
 
 /** 질문을 DB에 저장하기 위한 function모음 */
+let hasError = [];
+
+function lenValid(target, length, questionorder, type) {
+  if (target.length > length) {
+    const error = errorCreate(
+      questionorder,
+      `${type}에 대한 입력은 ${length}자까지만 가능합니다.`
+    );
+    hasError.push(error);
+    return false;
+  }
+  return true;
+}
+
+function errorCreate(order, message) {
+  return {
+    order: order,
+    message: message,
+  };
+}
+
+function showError() {
+  console.log(hasError[0]);
+  let targetCard = $('.content')
+    .find('.j-question-card')
+    .eq(parseInt(hasError[0].order - 1));
+  targetCard.addClass('j-error-card');
+  targetCard[0].scrollIntoView({ behavior: 'smooth', block: 'center' });
+  Swal.fire({
+    icon: 'error',
+    title: '작성하신 질문을 다시 확인해주세요',
+    text: hasError[0].message,
+  });
+  hasError = [];
+}
 
 /**질문을 DB에 update하기 위한 function모음 */
 async function updateQuestion() {
@@ -392,10 +437,26 @@ async function updateQuestion() {
       updateQuestion.seq = $item.find('.j-qseq').val();
       updateQuestion.surveySeq = surveySeq;
       updateQuestion.order = questionOrder;
-      updateQuestion.name =
-        ($item.find('.j-survey-name-input').val() || ' ').trim() || ' ';
+
+      // updateQuestion.name =
+      //   ($item.find('.j-survey-name-input').val() || ' ').trim() || ' ';
+      updateQuestion.name = $item.find('.j-survey-name-input').val();
+      console.log('이름' + updateQuestion.name);
+      if (
+        updateQuestion.name === '' ||
+        updateQuestion.name === null ||
+        updateQuestion.name === ' '
+      ) {
+        hasError.push(
+          createError(questionOrder, '질문명은 반드시 작성해주셔야 합니다.')
+        );
+      } else {
+        lenValid(updateQuestion.name, 100, questionOrder);
+      }
+
       updateQuestion.description =
         ($item.find('.j-survey-content > textarea').val() || ' ').trim() || ' ';
+      lenValid(updateQuestion.description, 500, questionOrder);
       updateQuestion.ccSeq = ccSeq;
       updateQuestion.isEssential = isEssential;
 
@@ -546,4 +607,51 @@ function storeItemChartListInLocal(target) {
     extractedNumber,
     'removeQuestionItemList'
   );
+}
+
+function validCheck() {
+  let errorResult = true;
+  $('.content')
+    .find('.j-question-card')
+    .each((idx, item) => {
+      let $target = $(item);
+      console.log($target);
+      let order = $target.find('.j-q-order').val();
+      let name = $target.find('.j-survey-name-input').val();
+      console.log('name' + name);
+      let description = $target.find('.j-survey-content').val();
+      let ccSeq = $target.find('.j-cseq').val();
+      notEmptyAndnotNullValid('질문명', name, order);
+      lenValid(name, 100, order, '질문명');
+      lenValid(description, 500, order, '질문 설명');
+      if (ccSeq === '8' || ccSeq === '7') {
+        //item item List
+        $(item)
+          .find('.j-question-content-box input[type="text"]')
+          .each((idx, item) => {
+            let val = $(item).val();
+            lenValid(val, 50, order, '옵션 입력');
+          });
+      } else if (ccSeq === '10') {
+        console.log('hi');
+        $(item)
+          .find('.j-dropdwon option')
+          .each((idx, item) => {
+            let val = $(item).val();
+            console.log(val);
+            lenValid(val, 50, order, '옵션 입력');
+          });
+      }
+    });
+
+  if (hasError.length !== 0) {
+    errorResult = false;
+  }
+  return errorResult;
+}
+
+function notEmptyAndnotNullValid(targetSection, target, order) {
+  if (target === '' || target === ' ' || target === null) {
+    hasError.push(errorCreate(order, targetSection + '은 반드시 입력해주세요'));
+  }
 }

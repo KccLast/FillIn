@@ -24,7 +24,15 @@ $(function () {
         .parents('.condition-nav-box')
         .find('input[type="hidden"]')
         .val();
-
+      let filteredLengthConditionList = getQuestionConditions(questionSeq);
+      let filteredLength;
+      console.log(filteredLengthConditionList);
+      if (filteredLengthConditionList) {
+        filteredLength = filteredLengthConditionList.length;
+        filteredLength++;
+      } else {
+        filteredLength = 1;
+      }
       let targetCard = $('.j-question-card').filter(function () {
         return $(this).find('.j-qseq').val() === questionSeq + '';
       });
@@ -46,15 +54,6 @@ $(function () {
         return;
       }
 
-      if (
-        questionSeq === null ||
-        questionSeq === undefined ||
-        questionSeq === ''
-      ) {
-        alert('조건을 추가할 질문을 선택해주세요!');
-        return;
-      }
-
       let conditionList = $(this).parent().prev().find('.accordion');
       let getConditionFrame = await fetchConditionFrame();
 
@@ -69,6 +68,7 @@ $(function () {
 
       // 새로운 조건 데이터를 로컬스토리지에 저장
       let conditionData = {
+        seq: '-1',
         from: parseInt(questionSeq),
         to: '', // 'to' 값은 필요에 따라 설정
         condition: ' ', // 조건에 해당하는 값 설정
@@ -86,36 +86,40 @@ $(function () {
         questionSeq,
         conditionData.id
       );
-      let filteredLength = $('.accordion').find('.accordion-item').length;
-      if (
-        filteredLength === '' ||
-        filteredLength === undefined ||
-        filteredLength === null
-      )
-        filteredLength = 1;
+
+      // if (
+      //   filteredLength === '' ||
+      //   filteredLength === undefined ||
+      //   filteredLength === null ||
+      //   filteredLength === 0
+      // ) {
+      //   filteredLength = 1;
+      // } else {
+      //   filteredLength++;
+      // }
 
       console.log(filteredLength);
       lastAccordionItem.find('.con-order').text(filteredLength);
     }
   );
 
-  $('.nav-body-2').on(
-    'change',
-    '.contition-option-se, .contition-next-se',
-    function () {
-      let questionSeq = $(this)
-        .closest('.condition-nav-box')
-        .find('input[type="hidden"]')
-        .val(); // questionSeq 가져오기
+  // $('.nav-body-2').on(
+  //   'change',
+  //   '.contition-option-se, .contition-next-se',
+  //   function () {
+  //     let questionSeq = $(this)
+  //       .closest('.condition-nav-box')
+  //       .find('input[type="hidden"]')
+  //       .val(); // questionSeq 가져오기
 
-      // 현재 select 요소와 선택된 값 가져오기
-      let selectName = $(this).attr('class'); // .contition-option-se 또는 .contition-next-se
-      let selectedValue = $(this).val();
+  //     // 현재 select 요소와 선택된 값 가져오기
+  //     let selectName = $(this).attr('class'); // .contition-option-se 또는 .contition-next-se
+  //     let selectedValue = $(this).val();
 
-      // 로컬스토리지에 저장
-      // saveSelectedOptionToLocalStorage(questionSeq, selectName, selectedValue);
-    }
-  );
+  //     // 로컬스토리지에 저장
+  //     // saveSelectedOptionToLocalStorage(questionSeq, selectName, selectedValue);
+  //   }
+  // );
 
   // 아코디언 이벤트 위임
   // 아코디언 클릭 이벤트 처리
@@ -153,6 +157,8 @@ $(function () {
     //   .find('input[type="hidden"]')
     //   .val();
     // 클래스 문자열 가져오기
+    let conditionList = getQuestionConditions(questionSeq);
+
     let ConditionId = body.find('input[type="hidden"]').val(); // 정규식을 사용해 숫자만 추출
     let operation = body.find('.condition-oper').val();
     let nextSeq = body.find('.contition-next-se').val();
@@ -161,8 +167,14 @@ $(function () {
     if (optionVal === '' || optionVal === null || optionVal === undefined) {
       optionVal = ' ';
     }
-
+    console.log(ConditionId);
+    console.log(conditionList);
+    let findCon = conditionList.filter(
+      (con) => con.id === parseInt(ConditionId)
+    )[0];
+    console.log(findCon.seq);
     let saveCondition = {
+      seq: findCon.seq,
       id: parseInt(ConditionId),
       from: parseInt(questionSeq),
       to: parseInt(nextSeq), // 'to' 값은 필요에 따라 설정
@@ -170,12 +182,13 @@ $(function () {
       operation: operation, // 연산 또는 동작 설정
     };
     console.log(saveCondition);
-    saveConditionDataInLocal(saveCondition);
+    //saveConditionDataInLocal(saveCondition);
     saveConditionInDB(saveCondition);
     let nodeId = getNodeIdByQuestionSeq(saveCondition.to, saveCondition.from);
     deleteEdge(nodeId.from, saveCondition.id);
     addConditionalFlow(nodeId.from, nodeId.to, saveCondition.id);
-    network.redraw();
+    setConditionNav2(questionSeq, nextSeq);
+    redrawNetWork();
   });
 
   $('.nav-body-2').on('change', '.contition-next-se', function () {
@@ -407,6 +420,7 @@ async function deleteCondition(target) {
       let findCondition = conditions.filter(
         (con) => con.id === parseInt(conditionId)
       )[0];
+      console.log(findCondition);
 
       // Edge 삭제 및 DB 반영
       let targetEdge = convertConditionToedge(
@@ -419,8 +433,11 @@ async function deleteCondition(target) {
 
       // 비동기 작업들을 수행하고 모두 완료된 후 resolve 호출
       deleteEdge(targetEdge.from, parseInt(conditionId));
-      deleteConditionInDB(findCondition);
+      if (findCondition.seq !== '-1') {
+        deleteConditionInDB(findCondition);
+      }
 
+      deleteConditionInLocalSt(findCondition);
       // 모든 작업이 성공적으로 완료되면 resolve 호출
       resolve();
     } catch (error) {
@@ -429,6 +446,35 @@ async function deleteCondition(target) {
     }
   });
 }
+
+function deleteConditionInLocalSt(findCondition) {
+  let storedData = JSON.parse(localStorage.getItem('accordionData')) || {};
+  console.log(storedData);
+  // 해당 questionSeq의 조건 배열 가져오기
+  let conditions = storedData[findCondition.from] || [];
+
+  console.log(findCondition);
+  console.log(conditions);
+
+  // 조건 배열에서 동일한 ID를 가진 조건의 인덱스 찾기
+  let existingIndex = conditions.findIndex(
+    (condition) =>
+      condition.id === findCondition.id &&
+      condition.from === findCondition.from &&
+      condition.seq === findCondition.seq &&
+      condition.to === findCondition.to
+  );
+
+  if (existingIndex !== -1) {
+    // 조건이 존재하면 삭제
+    conditions.splice(existingIndex, 1);
+  }
+
+  // 수정된 배열을 로컬스토리지에 다시 저장
+  storedData[findCondition.from] = conditions;
+  localStorage.setItem('accordionData', JSON.stringify(storedData));
+}
+
 async function deleteConditionInDB(targetCondition) {
   return $.ajax({
     url: '/api/question/condition',
@@ -630,6 +676,7 @@ function createNode(idx, question, yp) {
 }
 function createDefaultCondition(from, to) {
   return {
+    seq: '-1',
     id: 0,
     from: from,
     to: to, // 'to' 값은 필요에 따라 설정
@@ -818,6 +865,7 @@ async function saveAccordionToLocalStorage(nodeId, conditionData) {
   } else {
     idNum = storedData[nodeId].length + 1;
   }
+  console.log(storedData[nodeId]);
 
   // 중복된 조건이 있는지 확인
   const isDuplicate = storedData[nodeId].some(
@@ -898,16 +946,22 @@ async function fillItemOption(accorditonItem, questionSeq, conditionId) {
       resolve();
     });
   } else if (targetType === '10') {
-    let targetSelectBox = targetCard.find('select');
-    $(targetSelectBox)
-      .find('option')
-      .each(function () {
-        let option = $('<option>', {
-          class: conditionId,
-          value: $(this).val(),
-          text: $(this).val(),
+    await new Promise((resolve) => {
+      let targetSelectBox = targetCard.find('select');
+      $(targetSelectBox)
+        .find('option')
+        .each(function () {
+          if (!$(this).is(':disabled')) {
+            let option = $('<option>', {
+              class: conditionId,
+              value: $(this).val(),
+              text: $(this).val(),
+            });
+            selectBox.append(option);
+          }
         });
-      });
+      resolve();
+    });
   }
 
   // 로컬스토리지에서 저장된 값 불러오기
@@ -1210,6 +1264,14 @@ function saveConditionInDB(condition) {
     data: JSON.stringify(condition),
     success: function (response) {
       console.log(response);
+      let conditions = getQuestionConditions(response.data.from + '');
+
+      let findCondition = conditions.filter(
+        (con) => con.id === response.data.id
+      )[0];
+      findCondition.seq = response.data.seq;
+      console.log(findCondition);
+      saveConditionListInLocalStorage(conditions, response.data.from);
     },
     error: function (error) {},
   });
@@ -1224,6 +1286,7 @@ function initcondition(questions) {
       let condition = conditions[c];
       conditionSeq = condition.questionSeq;
       let saveCondition = {
+        seq: condition.seq,
         from: condition.questionSeq,
         to: condition.nextQuestionSeq,
         operation: condition.operation,
@@ -1352,7 +1415,7 @@ async function clickNode(params) {
     let getConditionFrame = await fetchConditionFrame();
     conditionList.append(getConditionFrame);
     let lastAccordionItem = conditionList.find('.accordion-item:last');
-    lastAccordionItem.find('.con-order').text(i);
+    lastAccordionItem.find('.con-order').text(i + 1);
 
     // 조건 데이터에 따라 옵션 및 프레임 설정
 

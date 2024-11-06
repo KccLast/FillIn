@@ -1409,3 +1409,7 @@ h5 {
   border: 1px solid rgba(108, 117, 125, 0.15);
   background-color: rgba(108, 117, 125, 0.15);
 }
+
+.j-error-card {
+  border: 1px solid red !important;
+}
