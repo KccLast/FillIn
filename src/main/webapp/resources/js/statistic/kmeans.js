@@ -81,13 +81,15 @@ $('#next-btn').on('click', function () {
     const clustersData = chart.w.config.series; // 차트에 있는 시리즈 데이터 접근
     const formattedData = [];
 
-    // 클러스터 데이터를 순회하면서 answerContent, answerDate, cluster 번호 추출
+    // 클러스터 데이터를 순회하면서 answerSeq, participantSeq, answerContent, answerDate, cluster 번호 추출
     clustersData.forEach((cluster, clusterIndex) => {
         cluster.data.forEach(data => {
             formattedData.push({
                 cluster: clusterIndex + 1,  // 클러스터 번호
-                answerContent: data[2],     // answerContent
-                answerDate: data[3]         // answerDate
+                answerSeq: data[2],
+                participantSeq: data[3],
+                answerContent: data[4],     // answerContent
+                answerDate: data[5]         // answerDate
             });
         });
     });
@@ -140,7 +142,7 @@ function requestKmeans(questionId, n_cluster) {
                 data: JSON.stringify(response.data),
                 dataType: 'json',
                 success: function (response) {
-                    // console.log(response);
+                    console.log('seriesData : ' + JSON.stringify(response.data));
                     const seriesData = {};
 
                     // 클러스터별로 데이터 그룹화
@@ -148,7 +150,7 @@ function requestKmeans(questionId, n_cluster) {
                         if (!seriesData[item.Cluster]) {
                             seriesData[item.Cluster] = [];
                         }
-                        seriesData[item.Cluster].push([item.PCA1, item.PCA2, item.answerContent, item.answerDate]);
+                        seriesData[item.Cluster].push([item.PCA1, item.PCA2, item.answerSeq, item.participantSeq, item.answerContent, item.answerDate]);
                     });
 
                     // ApexCharts에 맞는 시리즈 형태로 변환
@@ -213,8 +215,8 @@ function updateChart(series) {
             },
             tooltip: {
                 custom: function ({series, seriesIndex, dataPointIndex, w}) {
-                    const answerContent = w.config.series[seriesIndex].data[dataPointIndex][2]; // answerContent 추출
-                    const answerDate = w.config.series[seriesIndex].data[dataPointIndex][3];
+                    const answerContent = w.config.series[seriesIndex].data[dataPointIndex][4]; // answerContent 추출
+                    const answerDate = w.config.series[seriesIndex].data[dataPointIndex][5];
                     return `
                         <div class="tooltip-content" style="padding: 10px; border: 1px solid #ddd; border-radius: 5px; background-color: #fff; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);">
                             <div style="font-weight: bold;">응답</div>
@@ -241,9 +243,9 @@ function updateTable(series) {
         cluster.data.forEach((data, dataIndex) => {
             const row = `
                 <tr>
-                    <td>${data[3]}</td> <!-- answerDate -->
+                    <td>${data[5]}</td> <!-- answerDate -->
                     <td>${clusterIndex + 1}</td> <!-- cluster no -->
-                    <td>${data[2]}</td> <!-- answerContent -->
+                    <td>${data[4]}</td> <!-- answerContent -->
                 </tr>
             `;
             tableBody.append(row); // 테이블에 행 추가

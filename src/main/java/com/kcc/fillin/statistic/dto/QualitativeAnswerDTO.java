@@ -16,6 +16,8 @@ import lombok.ToString;
 @NoArgsConstructor
 @ToString
 public class QualitativeAnswerDTO {
+	private Long answerSeq;
+	private Long participantSeq;
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd a h:mm:ss")
 	private LocalDateTime answerDate;
 	private String answerContent;
