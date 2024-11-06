@@ -170,25 +170,4 @@
 		WHERE member_seq =  #{seq}
 	</select>
 
-<!--임계값 설정 및 사용자 제외-->
-	<select id="getSurveyResponsesAboveThreshold" parameterType="map" resultMap="surveyLogResultMap">
-		SELECT
-			sl.seq AS logSeq,
-			sl.survey_seq AS surveySeq,
-			sl.occur_date AS startDate,
-			sl_end.occur_date AS endDate,
-			(sl_end.occur_date - sl.occur_date) * 24 * 60 * 60 AS responseTime
-		FROM
-			survey_log sl
-				JOIN
-			survey_log sl_end ON sl.survey_seq = sl_end.survey_seq
-		WHERE
-			sl.cc_seq = 23 AND
-			sl_end.cc_seq = 31 AND
-			(sl_end.occur_date - sl.occur_date) * 86400 >= #{threshold}
-		ORDER BY
-			sl.survey_seq, sl.occur_date;
-	</select>
-	<!--임계값 설정 및 사용자 제외-->
-
 </mapper>

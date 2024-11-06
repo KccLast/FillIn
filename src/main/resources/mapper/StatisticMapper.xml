@@ -160,4 +160,22 @@
         FROM answer
         WHERE contents LIKE '%' || #{keyword} || '%'
     </select>
+
+
+    <!--임계값 설정 및 사용자 제외-->
+    <select id="excludeShortResponses" resultType="SurveyResponse">
+        SELECT
+            s.seq AS surveySeq,
+            s.name AS surveyName,
+            sl.occur_date AS responseDate,
+            COUNT(sl.seq) AS responseCount
+        FROM survey s
+                 JOIN survey_log sl ON s.seq = sl.survey_seq
+        WHERE sl.occur_date BETWEEN #{startDate} AND #{endDate}
+          AND (sl.occur_date - LAG(sl.occur_date, 1) OVER (PARTITION BY sl.participant_seq ORDER BY sl.occur_date)) * 86400 >= 60
+        GROUP BY s.seq, s.name, sl.occur_date
+    </select>
+
+    <!--임계값 설정 및 사용자 제외-->
+
 </mapper>
