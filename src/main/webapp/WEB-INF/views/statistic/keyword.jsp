@@ -336,11 +336,11 @@
 
 
 
-            <div id="cluster-topwords-container" style="margin-bottom: 20px;">
-                <!-- 각 클러스터별 상위 단어가 표시될 영역 -->
-                <h5>클러스터별 상위 3개의 키워드:</h5>
-                <div id="cluster-topwords"></div>
-            </div>
+<%--            <div id="cluster-topwords-container" style="margin-bottom: 20px;">--%>
+<%--                <!-- 각 클러스터별 상위 단어가 표시될 영역 -->--%>
+<%--                <h5>클러스터별 상위 3개의 키워드:</h5>--%>
+<%--                <div id="cluster-topwords"></div>--%>
+<%--            </div>--%>
 <%--            <div id="cluster-sentiment-results" style="margin-top: 20px;">--%>
 <%--                <h5>클러스터별 감정 분석 결과:</h5>--%>
 <%--                <div id="cluster-sentiment-data">--%>
