@@ -321,8 +321,8 @@
                     </button>
                 </div>
             </div>--%>
-            <div class="keyword-search" style="display: flex; align-items: center; gap: 10px;">
-                <label for="keyword-input" class="mb-0">검색 키워드 입력:</label>
+            <div class="keyword-search" style="display: flex; align-items: center; gap: 10px; width: 49%;">
+                <label for="keyword-input" class="mb-0" style="white-space: nowrap;">검색 키워드 입력:</label>
                 <input type="text" id="keyword-input" class="form-control"
                        placeholder="ex) 질문, 추가 등의 키워드를 입력하세요" style="flex-grow: 1;">
                 <button id="table-search-btn" class="btn btn-primary" data-bs-toggle="tooltip"
@@ -334,11 +334,13 @@
 
 
 
-            <div id="cluster-topwords-container" style="margin-bottom: 20px;">
-                <!-- 각 클러스터별 상위 단어가 표시될 영역 -->
-                <h5>클러스터별 상위 3개의 키워드:</h5>
-                <div id="cluster-topwords"></div>
-            </div>
+
+
+<%--            <div id="cluster-topwords-container" style="margin-bottom: 20px;">--%>
+<%--                <!-- 각 클러스터별 상위 단어가 표시될 영역 -->--%>
+<%--                <h5>클러스터별 상위 3개의 키워드:</h5>--%>
+<%--                <div id="cluster-topwords"></div>--%>
+<%--            </div>--%>
 <%--            <div id="cluster-sentiment-results" style="margin-top: 20px;">--%>
 <%--                <h5>클러스터별 감정 분석 결과:</h5>--%>
 <%--                <div id="cluster-sentiment-data">--%>

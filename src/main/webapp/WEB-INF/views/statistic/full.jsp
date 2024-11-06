@@ -41,6 +41,19 @@
         <h4 class="fw-bold mt-2 surveyTitle" data-bs-toggle="modal"
             data-bs-target="#j-user-sur-Modal">설문 전체 통계</h4>
 
+            <!-- 임계값 입력과 제외하기 버튼을 추가 -->
+            <div class="row g-3 my-auto justify-content-end">
+                <div class="col-auto">
+                    <input type="number" class="form-control" id="thresholdInput" placeholder="임계값 입력 (초)" value="60"
+                           min="20" max="60">
+                </div>
+                <div class="col-auto">
+                    <button id="exclude-btn" class="btn btn-danger">제외하기</button>
+                </div>
+            </div>
+
+            <!-- 임계값 입력과 제외하기 버튼을 추가 -->
+
         <div class="row g-3 my-auto">
             <div class="col d-flex align-items-center">
                 <label for="startDate" class="form-label fw-bold me-2 my-auto"
@@ -61,20 +74,11 @@
                         style="min-width: 270px !important;">
                 </select>
             </div>
-      
-      <!-- 임계값 입력과 제외하기 버튼을 추가 -->
-            <div class="row g-3 my-auto align-items-center">
-                <div class="col-auto">
-                    <input type="number" class="form-control" id="thresholdInput" placeholder="임계값 입력 (초)" value="60"
-                           min="60">
-                </div>
-                <div class="col-auto">
-                    <button id="exclude-btn" class="btn btn-danger">제외하기</button>
-                </div>
-            </div>
 
-            <!-- 임계값 입력과 제외하기 버튼을 추가 -->
-      
+
+
+
+
             <div class="col d-flex align-items-center">
                 <select id="itemSelect" class="form-select"
                         style="min-width: 220px !important;" disabled>
