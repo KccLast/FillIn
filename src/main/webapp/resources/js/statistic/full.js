@@ -518,4 +518,21 @@ function renderChart(questionItems) {
 
     legendContainer.appendChild(legendItem);
   });
+
+  // 임계값을 기준으로 필터링하는 설문 로그를 처리
+  document.getElementById('exclude-btn').addEventListener('click', function() {
+    var threshold = document.getElementById('thresholdInput').value;
+    if (!threshold) {
+      alert('유효한 임계값(초)을 입력하세요.');
+      return;
+    }
+    fetch(`/path/to/your/api?threshold=${threshold}`)
+        .then(response => response.json())
+        .then(data => {
+          console.log('필터링된 로그:', data);
+          // 필요에 따라 데이터 처리 및 표시
+        })
+        .catch(error => console.error('필터링된 설문 로그를 가져오는 중 오류 발생:', error));
+  });
+  // 임계값을 기준으로 필터링하는 설문 로그를 처리
 }

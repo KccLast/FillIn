@@ -23,8 +23,8 @@
                 <%@include file="/resources/common/header.jsp" %>
                     <%@ include file="/resources/common/statisticsNav.jsp" %>
                         <%@include file="/resources/common/commonSelectModal.jsp" %>
-
-                            <div class="container" style="padding-top:55px; width:80%;">
+                        <div class="content" style="">
+                            <div class="container">
                                 <h4 style="padding-bottom: 28px; text-align: left;" class="surveyTitle fw-bold"
                                     data-bs-toggle="modal" data-bs-target="#j-user-sur-Modal"></h4>
                                 <div class="filter-section">
@@ -41,11 +41,11 @@
                                     <table id="surveyLogTable" class="result-table">
                                         <thead>
                                             <tr>
-                                                <th>Log Seq</th>
-                                                <th>Survey Seq</th>
-                                                <th>Start Date</th>
-                                                <th>End Date</th>
-                                                <th>Response Time</th>
+                                                <th>로그 번호</th>
+                                                <th>설문 번호</th>
+                                                <th>시작일자</th>
+                                                <th>종료일자</th>
+                                                <th>응답시간</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -57,6 +57,7 @@
                             </div>--%>
                             <canvas id="responseTimeChart" width="400" height="200"></canvas>
                             </div>
+                        </div>
 
             </body>
 

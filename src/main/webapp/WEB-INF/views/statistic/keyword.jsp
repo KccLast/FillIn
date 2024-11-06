@@ -260,7 +260,7 @@
                 </div>
             </div>
 
-            <div class="row mb-4">
+            <%--<div class="row mb-4">
                 <div class="col-md-4">
                     <div class="mb-3">
                         <label for="phrase" style="margin-bottom:5px; margin-left:11px;">군집을 선택해주세요</label>
@@ -268,12 +268,21 @@
                             <select id="phrase" class="form-select me-2" style="width: 100%;">
                                 <option selected value="phrase">문항을 선택해주세요.</option>
                             </select>
-<%--                            <button id="update-btn" class="btn btn-primary custom-btn">업데이트</button>--%>
+&lt;%&ndash;                            <button id="update-btn" class="btn btn-primary custom-btn">업데이트</button>&ndash;%&gt;
                         </div>
                     </div>
                 </div>
+            </div>--%>
+            <div class="row mb-4">
+                <div class="col-md-4">
+                    <div class="mb-3" style="display: flex; align-items: center;">
+                        <label for="phrase" style="margin-bottom:5px; margin-right:10px;">군집을 선택해주세요:</label>
+                        <select id="phrase" class="form-select me-2" style="width: auto;">
+                            <option selected value="phrase">문항을 선택해주세요.</option>
+                        </select>
+                    </div>
+                </div>
             </div>
-
 
             <!-- 검색 키워드 입력 -->
             <div class="row mb-4">
@@ -301,7 +310,7 @@
                 <canvas id="chart-container"></canvas>
             </div>
 
-            <div class="keyword-search">
+            <%--<div class="keyword-search">
                 <label for="keyword-input" class="d-block">검색 키워드 입력</label>
                 <div style="display: flex; align-items: center;">
                     <input type="text" id="keyword-input" class="form-control mb-2"
@@ -311,7 +320,17 @@
                         <i class="fas fa-search"></i> 검색
                     </button>
                 </div>
+            </div>--%>
+            <div class="keyword-search" style="display: flex; align-items: center; gap: 10px;">
+                <label for="keyword-input" class="mb-0">검색 키워드 입력:</label>
+                <input type="text" id="keyword-input" class="form-control"
+                       placeholder="ex) 질문, 추가 등의 키워드를 입력하세요" style="flex-grow: 1;">
+                <button id="table-search-btn" class="btn btn-primary" data-bs-toggle="tooltip"
+                        data-bs-placement="top" title="키워드를 검색하여 테이블을 필터링합니다.">
+                    <i class="fas fa-search"></i> 검색
+                </button>
             </div>
+
 
 
 
@@ -333,11 +352,11 @@
                 <table class="result-table" style="width: 100%; border-collapse: collapse;" aria-label="검색 결과 테이블">
                     <thead>
                     <tr>
-                        <th>SEQ</th>
-                        <th>CLUSTER</th>
-                        <th>ANSWER_Content</th>
-                        <th>ANSWER_DATE</th>
-                        <th>Frequency</th>
+                        <th>순번</th>
+                        <th>클러스터</th>
+                        <th>응답내용</th>
+                        <th>응답날짜</th>
+                        <th>빈도수</th>
                         <th>상위 단어 추출</th>
                         <th>상세보기</th>
                         <th>감정 결과</th>

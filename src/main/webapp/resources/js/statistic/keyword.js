@@ -758,7 +758,18 @@ function drawBarChart(ctx, data) {
         },
         options: {
             responsive: true,
-            scales: {y: {beginAtZero: true}}
+            scales: {
+                y: {
+                    beginAtZero: true
+                },
+                x: {
+                    ticks: {
+                        font: {
+                            size: 16 // x축 글자크기조정
+                        }
+                    }
+                }
+            }
         }
     });
 };

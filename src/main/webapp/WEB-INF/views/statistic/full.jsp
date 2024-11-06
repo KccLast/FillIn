@@ -60,6 +60,16 @@
                                                 style="min-width: 270px !important;">
                                             </select>
                                         </div>
+
+                                        <!-- 임계값 입력과 제외하기 버튼을 추가 -->
+                                        <div class="col d-flex align-items-center justify-content-end">
+                                            <div class="input-group">
+                                                <input type="number" class="form-control" id="thresholdInput" placeholder="임계값 입력 (초)" value="60" min="1">
+                                                <button id="exclude-btn" class="btn btn-danger">제외하기</button>
+                                            </div>
+                                        </div>
+                                        <!-- 임계값 입력과 제외하기 버튼을 추가 -->
+
                                         <div class="col d-flex align-items-center">
                                             <select id="itemSelect" class="form-select"
                                                 style="min-width: 220px !important;" disabled>
