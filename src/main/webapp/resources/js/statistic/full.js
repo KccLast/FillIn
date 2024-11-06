@@ -90,6 +90,28 @@ $(document).ready(function () {
     loadData();
 });
 
+// 임계값을 기준으로 필터링하는 설문 로그를 처리
+document.getElementById('exclude-btn').addEventListener('click', function() {
+  const threshold = document.getElementById('thresholdInput').value; // 임계값을 입력 받음..
+  if (threshold < 60) {
+    alert('응답 시간은 60초 이상이어야 합니다.'); // 60초 미만 경고
+    return;
+  }
+  $.ajax({
+    url: `/api/filterResponses?threshold=${threshold}`,
+    type: 'GET',
+    success: function(response) {
+      console.log('필터링된 데이터:', response);
+
+    },
+    error: function(error) {
+      console.error('데이터를 가져오는 중 오류 발생:', error);
+    }
+  });
+});
+
+// 임계값을 기준으로 필터링하는 설문 로그를 처리
+
 function updateParticipantsPage(response) {
     const progressPercentage =
         (response.participantsCount / response.targetCount) * 100;
@@ -466,6 +488,7 @@ function renderChart(questionItems) {
                 },
             },
         },
+
     });
 
     // HTML 레전드 생성
