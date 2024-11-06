@@ -168,11 +168,15 @@ public class QuestionServiceImpl implements QuestionService {
 	@Override
 	@Transactional
 	public boolean insertCondition(ConditionRequest conditionRequest) {
-		int cnt = questionDao.countCondition(conditionRequest);
+		//int cnt = questionDao.countCondition(conditionRequest);
 		boolean result = false;
-		if(cnt == 0){
+		boolean cnt = conditionRequest.getSeq() == -1;
+		System.out.println("cnt = ######################################" + cnt);
+		System.out.println(cnt);
+		if(cnt){
 			result = questionDao.insertCondition(conditionRequest);
 		}else{
+			//이거 수정해야함
 			result = questionDao.updateCondition(conditionRequest);
 		}
 		return result;

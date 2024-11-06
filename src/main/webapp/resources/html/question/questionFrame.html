@@ -45,7 +45,8 @@
 <input type="hidden" name="order" class="j-q-order">
 
 <div class="j-survey-name j-flex-row-center">
-	<input class="j-survey-name-input fs-5 fw-bold form-control" type="text" placeholder="질문명을 작성해주세요">
+	<input class="j-survey-name-input fs-5 fw-bold form-control" type="text" placeholder="질문명을 작성해주세요(100자 제한)"
+		maxlength="100">
 	<div class="j-survey-es-type j-flex-row-center">
 		<div class="form-check form-switch j-flex-row-center">
 			<label class="form-check-label" for="j-essential">필수</label>
@@ -55,7 +56,7 @@
 	</div>
 </div>
 <div class="j-survey-content fs-6">
-	<textarea rows="" cols="" placeholder="질문에 대한 설명을 작성해주세요" class="form-control"></textarea>
+	<textarea rows="" cols="" placeholder="질문에 대한 설명을 작성해주세요(500자 제한)" class="form-control" maxlength="500"></textarea>
 	<!-- <label for="floatingTextarea2" class="text-label">질문에 대한 설명을 작성해주세요</label>  form-floating -->
 </div>
 

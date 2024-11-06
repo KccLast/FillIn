@@ -110,7 +110,7 @@ public class QuestionRestController {
 		System.out.println("conditionRequest = " + conditionRequest);
 		boolean result = questionService.insertCondition(conditionRequest);
 		if(result) {
-			return Response.setSuccess(" 조건을 성공적으로 등록", 200);
+			return Response.setSuccess(conditionRequest, 200);
 		}
 		else{
 			return Response.setFail("조건 등록에 실패했습니다.",500);

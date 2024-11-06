@@ -53,16 +53,17 @@ $(function () {
   });
 
   $('.nextBtn').on('click', '#next-btn', function () {
-    page++;
     // setCard();
+    page++;
     setPageBtn();
-    pageHideAndShow();
+    pageHideAndShow(this);
   });
   $('.nextBtn').on('click', '#prev-btn', function () {
-    page--;
     //setCard();
+
+    pageHideAndShow(this);
+    page--;
     setPageBtn();
-    pageHideAndShow();
   });
 
   $('.content').on(
@@ -225,19 +226,39 @@ function setParticipantSeq() {
   participant_seq = $('#j-participant-seq').val();
 }
 function submitResponse() {
-  const localData = localStorage.getItem('submitList');
+  // const localData = JSON.parse(localStorage.getItem('submitList'));
+  const localData = JSON.parse(localStorage.getItem('submitList'));
 
-  $.ajax({
-    url: '/api/question/submit',
-    type: 'post',
-    contentType: 'application/json',
-    data: localData,
-    success: function () {
-      alert('설문에 참여해주셔서 감사합니다.');
-      window.close();
-    },
-    error: function (error) {},
-  });
+  // showDataList와 일치하는 questionSeq 값을 가진 객체만 필터링
+  const filteredData = localData.filter((data) =>
+    showDataList.includes(Number(data.questionSeq))
+  );
+
+  console.log(filteredData);
+
+  if (responseValid(filteredData)) {
+    $.ajax({
+      url: '/api/question/submit',
+      type: 'post',
+      contentType: 'application/json',
+      data: JSON.stringify(filteredData),
+      success: function () {
+        alert('설문에 참여해주셔서 감사합니다.');
+        window.close();
+      },
+      error: function (error) {},
+    });
+  }
+}
+
+function responseValid(dataList) {
+  return lenValid(dataList) && essentialCheck(dataList);
+}
+function lenValid(dataList) {
+  return true;
+}
+function essentialCheck(dataList) {
+  return false;
 }
 function getSubmitObject(target, value) {
   let $parentCard = $(target).parents('.j-question-card'); // 부모 .j-question-card 요소
@@ -260,9 +281,40 @@ function getSubmitObject(target, value) {
   updateLineProgressBar();
 }
 
-async function pageHideAndShow() {
-  $('.j-question-card').removeClass('ac-card');
-  $('.' + page).addClass('ac-card');
+async function pageHideAndShow(target) {
+  let $id = $(target).attr('id');
+  if (!$id) return;
+
+  let targetCard;
+  let idx;
+  if ($id.includes('next')) {
+    targetCard = $('.content')
+      .children('.ac-card')
+      .last()
+      .find('.j-qseq')
+      .val();
+    let targetNode = nodeList.find((node) => {
+      return node.seq === parseInt(targetCard);
+    });
+    // idx = targetCard.index();
+    $('.j-question-card').removeClass('ac-card');
+    findNext(targetNode.next, 1);
+  } else if ($id.includes('prev')) {
+    targetCard = $('.content')
+      .children('.ac-card')
+      .first()
+      .find('.j-qseq')
+      .val();
+    let targetNode = nodeList.find((node) => {
+      return node.seq === parseInt(targetCard);
+    });
+
+    $('.j-question-card').removeClass('ac-card');
+    // idx = targetCard.index();
+    console.log(targetNode);
+    findPrev(targetNode.prev, 1);
+  }
+
   // 스크롤을 맨 위로 올립니다.
   window.scrollTo({
     top: 0,
@@ -455,6 +507,7 @@ async function setCard() {
     type: 'GET',
     success: async function (response) {
       if (page === undefined || page === null) page = 1;
+      console.log(page);
       //pageDTO = response.data.pageDTO;
       setTitle(response.data.name);
       setEnd(response.data.totalCnt);
@@ -464,7 +517,7 @@ async function setCard() {
 
       await setNodes(response.data.questions);
 
-      await findNext(nodeList[0].seq);
+      await findNext(nodeList[0].seq, 1);
       await setTotalCnt();
       await pageHideAndShow();
     },
@@ -484,13 +537,19 @@ function setEnd(totalCnt) {
 }
 
 async function processQuestions(questions) {
+  showCardLen = questions.length;
+  console.log('총 보여줄 페이지 수 = ' + showCardLen);
   for (const [index, question] of questions.entries()) {
     await appendQuestionCard(question, index); // 비동기 함수가 순차적으로 실행되도록 처리
   }
+  console.log(essentialList);
 }
-
+let showCardLen;
+let essentialList = [];
+let showDataList = []; //조건 변경으로 응답 겹치면 이거 기준으로 응답 데이터 제거
 async function appendQuestionCard(question, index) {
   let page = Math.ceil((index + 1) / 5);
+
   try {
     // submitFrame.html 불러오기
     let questionData = await fetchSubmitFrame();
@@ -515,10 +574,12 @@ async function appendQuestionCard(question, index) {
         .find('.j-survey-content')
         .text(question.description.trim());
     }
+    showDataList.push(question.seq);
     if (question.isEssential === 'Y') {
       let es = $new$contentBox.find('.j-essential');
       es.data('essential', 'Y');
       es.addClass('j-es-seleted');
+      essentialList.push(question.seq);
     }
     $('.content').append($new$contentBox);
 
@@ -691,6 +752,7 @@ function updateNumberRange(target) {
 // 선형 배율
 
 function setPageBtn() {
+  console.log(page);
   if (page <= 1) {
     $('#prev-btn').hide();
     $('#prev-btn > img').hide();
@@ -743,9 +805,10 @@ let originalNodeList;
 async function setNodes(questions) {
   for (let i = 0; i < questions.length; i++) {
     let seq = questions[i].seq;
+    let prevSeq = i > 0 ? questions[i - 1].seq : null; // 이전 seq 설정
     let nextSeq;
     let conditionList = [];
-    console.log(questions[i]);
+
     questions[i].conditions.forEach((con) => {
       let condition = {
         operation: con.operation,
@@ -763,12 +826,42 @@ async function setNodes(questions) {
     } else if (i === questions.length - 1) {
       nextSeq = null;
     }
-    nodeList.push({ seq: seq, next: nextSeq, conditionList: conditionList });
+
+    // nodeList에 현재 노드 추가
+    nodeList.push({
+      seq: seq,
+      prev: prevSeq, // prevSeq 추가
+      next: nextSeq,
+      conditionList: conditionList,
+    });
   }
   originalNodeList = nodeList;
+  console.log(originalNodeList);
 }
 //현재 질문 혹은 선택에 의한 질문이 들어가면 됨 거기서부터 next를 찾으면서 돌면된다.
-async function findNext(target) {
+async function findNext(target, depth) {
+  //nodeList에서 해당 seq를 찾기
+  let targetNode = nodeList.find((node) => {
+    return node.seq === target;
+  });
+
+  const cards = $('.content .j-question-card');
+
+  // 2. j-seq가 314인 카드 찾기
+  const targetCard = cards.filter(function () {
+    return $(this).find('.j-qseq').val() === targetNode.seq + ''; // j-seq 값이 '314'인 카드
+  });
+
+  //targetCard.removeClass('no-card');
+  totalacCards.push(targetCard);
+  if (!targetCard.hasClass('ac-card')) {
+    targetCard.addClass('ac-card');
+  }
+  if (targetNode.next === null || depth === 5) return;
+  findNext(targetNode.next, depth + 1);
+}
+async function findPrev(target, depth) {
+  console.log(target);
   //nodeList에서 해당 seq를 찾기
   let targetNode = nodeList.find((node) => {
     return node.seq === target;
@@ -785,8 +878,10 @@ async function findNext(target) {
   if (!targetCard.hasClass('ac-card')) {
     targetCard.addClass('ac-card');
   }
-  if (targetNode.next === null) return;
-  findNext(targetNode.next);
+  if (targetNode.prev === null || depth === 5) {
+    return;
+  }
+  findPrev(targetNode.prev, depth + 1);
 }
 
 function cal(operation, val, target) {
@@ -821,53 +916,84 @@ function checkConditionalFlow(targetCard, targetVal) {
     .parents('.j-question-card')
     .find('.j-qseq')
     .val();
-
+  let idx = $(targetCard).parents('.ac-card').index();
+  idx++;
   let findNode = nodeList.find((node) => node.seq === parseInt(questionSeq));
 
   if (!findNode) return;
 
   let isConditionAnswer = false;
-  // findNode.conditionList.forEach((con) => {
-  //   if (!isConditionAnswer && cal(con.operation, con.val, targetVal)) {
-  //     console.log(con.val);
-  //     findNode.next = con.next;
-  //     //targetCard 밑으로는 ac-card 다 빼버리기
-  //     displayNoneLowerOrderCards(questionSeq);
-  //     isConditionAnswer = true;
-  //   }
-  // });
+
   for (const con of findNode.conditionList) {
     if (cal(con.operation, con.val, targetVal)) {
       console.log(con.val);
       findNode.next = con.next;
+      let nodeListNext = nodeList.find((node) => node.seq === con.next);
+      nodeListNext.prev = findNode.seq;
       displayNoneLowerOrderCards(questionSeq); // 조건에 부합하면 처리
       isConditionAnswer = true;
       break; // 반복 중단
     }
   }
   console.log(nodeList);
+  setNewTotalLenAndEssentialEnd(nodeList);
 
   if (!isConditionAnswer) {
     console.log('ho');
     let findOrigin = originalNodeList.find(
       (node) => node.seq === parseInt(questionSeq)
     );
-    findNode.next = findOrigin.next;
-  }
 
-  findNext(parseInt(questionSeq));
+    let findOriginNext = originalNodeList.find(
+      (node) => node.seq === findNode.next
+    );
+    let findNodeListNext = nodeList.find((node) => node.seq === findNode.next);
+    findNode.next = findOrigin.next;
+    findNodeListNext.prev = findOriginNext.prev;
+  }
+  console.log(idx);
+  findNext(parseInt(questionSeq), idx);
+}
+
+function setNewTotalLenAndEssentialEnd(nodeList) {
+  showDataList = [];
+  essentialList = [];
+
+  console.log(showDataList);
+  console.log(essentialList);
+  showCardLen = showDataList;
+  totalCount = showCardLen;
+  setEnd();
+}
+function traverse(node) {
+  //nodeList에서 해당 seq를 찾기
+  showDataList.push(node.seq);
+
+  const cards = $('.content .j-question-card');
+
+  // j-seq가 314인 카드 찾기
+  const targetCard = cards.filter(function () {
+    return $(this).find('.j-qseq').val() === targetNode.seq + '';
+  });
+
+  // targetCard에 j-es-seleted 클래스가 있는지 검사
+  const hasEssentialButton =
+    targetCard.find('.j-essential.j-es-seleted').length > 0;
+
+  if (hasEssentialButton) essentialList.push(node.seq);
+
+  if (node.next === null) return;
+
+  traverse(targetNode.next);
 }
 
 function displayNoneLowerOrderCards(questionSeq) {
   const targetCard = $('.j-question-card').filter(function () {
     return $(this).find('.j-qseq').val() === questionSeq;
   });
-
   console.log(targetCard);
-
   // targetCard의 인덱스 찾기
   const targetIndex = $('.j-question-card').index(targetCard);
-
   // targetIndex 이후의 카드들에 removeClass 적용
   $('.j-question-card')
     .slice(targetIndex + 1)
