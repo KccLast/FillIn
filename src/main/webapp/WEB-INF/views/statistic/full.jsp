@@ -26,14 +26,15 @@
     console.log(postDate + " , " + endDate);
 </script>
 <!-- 로딩 스피너 -->
-<div id="loading" style="display: none !important;">
-    <div class="spinner-border text-primary" role="status">
-        <span class="visually-hidden">Loading...</span>
-    </div>
-    <h5>Loaing!!!!!!!!!!!!!!!!!!!!!</h5>
-</div>
+<%--                        <div id="loading" style="display: none !important;">--%>
+<%--                            <div class="spinner-border text-primary" role="status">--%>
+<%--                                <span class="visually-hidden">Loading...</span>--%>
+<%--                            </div>--%>
+<%--                            <h5>Loaing!!!!!!!!!!!!!!!!!!!!!</h5>--%>
+<%--                        </div>--%>
 <!-- 컨텐츠 내용 -->
-<div id="content" class="content" style="display: none;">
+<div id="content" class="content"> <%--style="display: none;" --%>
+
     <!-- 날짜 조회 및 질문 선택 -->
     <div class="container card">
         <%-- border p-3 rounded mb-5--%>
@@ -60,8 +61,8 @@
                         style="min-width: 270px !important;">
                 </select>
             </div>
-
-            <!-- 임계값 입력과 제외하기 버튼을 추가 -->
+      
+      <!-- 임계값 입력과 제외하기 버튼을 추가 -->
             <div class="row g-3 my-auto align-items-center">
                 <div class="col-auto">
                     <input type="number" class="form-control" id="thresholdInput" placeholder="임계값 입력 (초)" value="60"
@@ -73,7 +74,7 @@
             </div>
 
             <!-- 임계값 입력과 제외하기 버튼을 추가 -->
-
+      
             <div class="col d-flex align-items-center">
                 <select id="itemSelect" class="form-select"
                         style="min-width: 220px !important;" disabled>
