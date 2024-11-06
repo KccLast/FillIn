@@ -148,9 +148,52 @@
     </select>
 
     <select id="selectQualitativeAnswerList" resultType="QualitativeAnswerDTO">
-        SELECT answer_date AS answerDate, contents AS answerContent
+        SELECT seq AS answerSeq, participant_seq, answer_date AS answerDate, contents AS answerContent
         FROM answer
         WHERE question_seq = #{questionSeq}
+    </select>
+
+    <resultMap id="ClusterAnswerResponseMap" type="ClusterAnswerResponse">
+        <id property="questionSeq" column="question_seq"/>
+        <result property="questionOrderNum" column="question_order_num"/>
+        <result property="questionName" column="question_name"/>
+        <result property="ccSeq" column="cc_seq"/>
+        <result property="ccName" column="cc_name"/>
+        <collection property="answerList" ofType="ClusterAnswerDto">
+            <!--            <id property="answerSeq" column="answer_seq"/>-->
+            <result property="answerOrderNum" column="question_item_order_num"/>
+            <result property="answerName" column="question_item_content"/>
+            <collection property="clusterList" ofType="java.lang.Long">
+                <result column="participant_seq"/>
+            </collection>
+        </collection>
+    </resultMap>
+
+    <select id="selectQuantitativeAnswerList" resultMap="ClusterAnswerResponseMap">
+        SELECT f.*,
+        -- a.seq AS answer_seq,
+        a.participant_seq
+        FROM (SELECT q.SEQ AS question_seq,
+        q.NAME AS question_name,
+        q.ORDER_NUM AS question_order_num,
+        q.CC_SEQ AS cc_seq,
+        c.NAME AS cc_name,
+        qi.SEQ AS question_item_seq,
+        qi.CONTENT AS question_item_content,
+        qi.ORDER_NUM AS question_item_order_num
+        FROM question q
+        JOIN common_code c ON q.cc_seq = c.seq
+        JOIN question_item qi ON q.seq = qi.question_seq
+        WHERE q.survey_seq = #{surveySeq}
+        AND c.parent_seq = 3) f
+        LEFT JOIN answer a ON f.question_seq = a.question_seq
+        AND (a.participant_seq IN
+        <foreach item="participantSeq" collection="participantSeqList" open="(" separator="," close=")">
+            #{participantSeq}
+        </foreach>
+        AND f.question_item_content = a.contents)
+        ORDER BY
+        f.question_order_num, f.question_item_order_num
     </select>
 
     <!--    키워드 분석-->
