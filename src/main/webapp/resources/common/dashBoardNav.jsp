@@ -2,14 +2,11 @@
 <div class="container-fluid">
 	<!-- 내비게이션 바 -->
 	<nav id="sidebar" class="col-lg-2 fs-5">
-		<div>
-			<p class="workspace">DashBoard</p>
-			<div class="logo-border mt-2"></div>
-		</div>
-<%--		<div class="nav-menu">--%>
-<%--			<p class="workspace"><sec:authentication property="principal.member.name"/>의 DashBoard</p>--%>
-<%--			<img class="arrow-icon" alt="arrow" src="/resources/img/common/arrow.png">--%>
-<%--		</div>--%>
+		<a href="/survey/dashboard" class="nav-link ">
+			<img src="/resources/img/common/dashboard.png" alt="dashboard">
+			<span class="menu-text">대시보드</span>
+			<img class="arrow-icon" alt="arrow" src="/resources/img/common/arrow.png">
+		</a>
 		<a href="/statistic" class="nav-link ">
 			<img src="/resources/img/common/totalStatistics.png" alt="totalStatistics">
 			<span class="menu-text">설문 전체 통계</span>

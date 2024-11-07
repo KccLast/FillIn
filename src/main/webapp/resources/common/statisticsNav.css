@@ -10,6 +10,23 @@
     z-index: 1; /* 헤더와 겹치지 않도록 설정 */
 }
 
+.logo-border {
+    border: 1px solid #fff;
+    margin: 0 10px 10px 10px;
+}
+
+.nav-menu {
+    color: #fff;
+    display: flex;
+    align-items: center;
+}
+
+.arrow-icon {
+    width: 10px;
+    height: 10px;
+    margin-left: 10px; /* 이미지와 텍스트 간의 간격 조정 */
+}
+
 .nav {
     margin-top: 10px;
 }
@@ -23,6 +40,7 @@
     font-weight: bold;
     position: relative;
     margin-bottom: 30px;
+    margin-top: 20px;
 }
 
 .nav-link:hover {
