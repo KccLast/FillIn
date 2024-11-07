@@ -4,8 +4,10 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
+import com.kcc.fillin.member.auth.PrincipalDetail;
 import com.kcc.fillin.survey.dto.*;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -28,12 +30,14 @@ public class SurveyRestController {
 
 	@PostMapping("/dashboard")
 	public Response filterDashboard(@RequestBody
-	MultiSearchSurveyRequest request) {
+	MultiSearchSurveyRequest request, @AuthenticationPrincipal PrincipalDetail principalDetail) {
 		if (request == null) {
 			System.out.println("받은 요청이 null입니다.");
 		} else {
 			System.out.println("받은 요청: " + request);
 		}
+		String username = principalDetail.getUsername();
+		request.setUsername(username);
 
 		List<MultiSearchSurveyResponse> filteringSurveys = service.getFilteringSurveys(request);
 		System.out.println("필터링된 결과 크기: " + filteringSurveys.size());

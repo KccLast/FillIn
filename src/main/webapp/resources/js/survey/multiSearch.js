@@ -166,7 +166,7 @@ $(document).ready(function () {
 
         // AJAX 요청
         $.ajax({
-            url: '/api/survey/dashboard' ,
+            url: '/api/survey/dashboard',
             type: 'POST',
             contentType: 'application/json',
             data: JSON.stringify(requestData),
@@ -214,6 +214,7 @@ $(document).ready(function () {
     function filteringSurveyCards() {
         // JSP에서 변경된 카드 컨테이너 클래스명에 맞춤
         $('.row.row-cols-1').empty();
+        $('.pagination').hide();
 
         // 현재 페이지에 해당하는 설문 데이터 필터링
         const selectedCcSeq = $('#progress-ccSeq').val() || null;
@@ -238,7 +239,14 @@ $(document).ready(function () {
 
 
         if (currentSurveys.length === 0) {
-            $('.row.row-cols-1').append('<p>검색 결과와 일치하는 설문지가 없습니다.</p>');
+            $('.row.row-cols-1').append(`
+                <div class="no-results-container d-flex flex-column align-items-center justify-content-center text-center p-4 mx-auto">
+                    <div class="no-results-icon mb-3">
+                        <img src="/resources/img/survey/no-results.png" alt="No Results" class="img-fluid mb-3" style="max-width: 50px;" />
+                    </div>
+                    <p class="no-results-text h5 text-muted">검색 결과와 일치하는 설문지가 없습니다.</p>
+                </div>
+            `);
             return;
         }
 
@@ -248,10 +256,10 @@ $(document).ready(function () {
         if (currentPage === 1) {
             surveyCard =
                 `<div class="col">
-					<div class="card survey-card">
+					<div class="card survey-card" data-bs-toggle="modal" data-bs-target="#makeSurvey-modal">
 						<div class="add-survey-card">
 							<img alt="plusBtn" src="/resources/img/common/plusButton.png"
-								data-bs-toggle="modal" data-bs-target="#makeAutoQuestion-modal">
+								>
 						</div>
 					</div> 
 				</div>`;
@@ -260,7 +268,7 @@ $(document).ready(function () {
         if (Array.isArray(currentSurveys)) {
             // 필터링된 설문지 생성
             surveyCard += currentSurveys.map(survey =>
-            `<div class="col"> 
+                `<div class="col"> 
                 <a href="/survey/${survey.seq}" class="text-decoration-none text-dark">
                     <div class="card each-survey-card d-flex flex-column">
                         <div class="card-body py-1"> 
@@ -294,7 +302,7 @@ $(document).ready(function () {
             // const isFirstPage = (currentPage === 1); // 현재 페이지가 1페이지인지 확인
             const dummyCount = (currentPage === 1) ? (5 - totalCards) : (6 - totalCards);
 
-            if(dummyCount > 0) {
+            if (dummyCount > 0) {
                 const dummyCards = Array(dummyCount).fill(`<div class="col dummy-card"></div>`)
                     .join('');
                 surveyCard += dummyCards;
@@ -302,6 +310,7 @@ $(document).ready(function () {
 
             // 최종적으로 생성된 HTML을 카드 컨테이너에 추가
             $('.row.row-cols-1').append(surveyCard);
+            $('.pagination').show();
         }
     }
 
@@ -314,16 +323,16 @@ $(document).ready(function () {
 
         // 처음으로 버튼 추가
         const firstPageLink = $('<a class="page-link" href="#"> <i class="bi bi-chevron-double-left"></i> </a>')
-                .on('click', function (e) {
-                    e.preventDefault();
-                    if(currentPage > 1) {
-                        currentPage = 1; // 첫 페이지로 이동
-                        filteringSurveyCards();
-                        setupPagination();
-                    }
-                });
+            .on('click', function (e) {
+                e.preventDefault();
+                if (currentPage > 1) {
+                    currentPage = 1; // 첫 페이지로 이동
+                    filteringSurveyCards();
+                    setupPagination();
+                }
+            });
 
-        if(currentPage === 1) {
+        if (currentPage === 1) {
             firstPageLink.addClass('disabled');
         }
 
@@ -331,14 +340,14 @@ $(document).ready(function () {
 
         // 이전 버튼 추가
         const prevPageLink = $('<a class="page-link" href="#"> <i class="bi bi-chevron-left"></i> </a>')
-                .on('click', function (e) {
-                    e.preventDefault();
-                    if (currentPage > 1) {
-                        currentPage--; // 이전 페이지로 이동
-                        filteringSurveyCards();
-                        setupPagination();
-                    }
-                });
+            .on('click', function (e) {
+                e.preventDefault();
+                if (currentPage > 1) {
+                    currentPage--; // 이전 페이지로 이동
+                    filteringSurveyCards();
+                    setupPagination();
+                }
+            });
 
         if (currentPage === 1) {
             prevPageLink.addClass('disabled'); // 현재 첫 페이지일 경우 비활성화
@@ -367,14 +376,14 @@ $(document).ready(function () {
 
         // 다음 버튼 추가
         const nextPageLink = $('<a class="page-link" href="#"> <i class="bi bi-chevron-right"></i> </a>')
-                .on('click', function (e) {
-                    e.preventDefault();
-                    if (currentPage < totalPage) {
-                        currentPage++; // 다음 페이지로 이동
-                        filteringSurveyCards();
-                        setupPagination();
-                    }
-                });
+            .on('click', function (e) {
+                e.preventDefault();
+                if (currentPage < totalPage) {
+                    currentPage++; // 다음 페이지로 이동
+                    filteringSurveyCards();
+                    setupPagination();
+                }
+            });
 
         if (currentPage === totalPage) {
             nextPageLink.addClass('disabled'); // 현재 마지막 페이지일 경우 비활성화
@@ -384,14 +393,14 @@ $(document).ready(function () {
 
         // 맨 마지막으로 버튼 추가
         const lastPageLink = ($('<a class="page-link" href="#"> <i class="bi bi-chevron-double-right"></i> </a>')
-                .on('click', function (e) {
-                    e.preventDefault();
-                    if(currentPage < totalPage) {
-                        currentPage = totalPage; // 마지막 페이지로 이동
-                        filteringSurveyCards();
-                        setupPagination();
-                    }
-                }));
+            .on('click', function (e) {
+                e.preventDefault();
+                if (currentPage < totalPage) {
+                    currentPage = totalPage; // 마지막 페이지로 이동
+                    filteringSurveyCards();
+                    setupPagination();
+                }
+            }));
 
         if (currentPage === totalPage) {
             lastPageLink.addClass('disabled'); // 현재 마지막 페이지일 경우 비활성화
