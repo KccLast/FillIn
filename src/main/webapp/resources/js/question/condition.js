@@ -770,19 +770,28 @@ function addConditionalFlow(fromNode, toNode, conditionOrder) {
 
 async function redrawNetWork() {
   network.off('click');
-  network.on('click', async function (params) {
-    if (params.edges.length > 0) {
-      clickEdge(params);
-    }
 
+  network.on('click', async function (params) {
     if (params.nodes.length > 0) {
+      // 노드를 클릭한 경우
       await clickNode(params);
+    } else if (params.edges.length > 0) {
+      // 엣지를 클릭한 경우
+      await clickEdge(params);
+    } else {
+      // 노드나 엣지가 아닌 배경을 클릭한 경우
+      let conditionList = $('.accordion');
+      conditionList.empty(); // 기존 조건 프레임 초기화
+      $('.con-question-input > input').val(' ');
+      // `j`로 시작하고 `color`로 끝나는 클래스를 제거
+      $('.con-question-type').empty();
+
+      $('.condition-nav-box').find('input[type="hidden"]').val('');
     }
   });
 
   network.redraw();
 }
-
 //node의 id는 index임
 function deleteNode(nodeId) {
   // 노드에 연결된 엣지 찾기

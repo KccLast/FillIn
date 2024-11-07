@@ -43,6 +43,18 @@
 		VALUES(#{seq},#{questionSeq},#{content},#{orderNum})
 
 	</insert>
+
+	<insert id="InsertQuestionItemAuto" parameterType="QuestionItemInsertRequest">
+
+		<selectKey keyProperty="seq" resultType="long" order="BEFORE">
+			SELECT question_item_seq.nextval
+			FROM dual
+		</selectKey>
+
+		INSERT INTO question_item(seq,question_seq,content,order_num)
+		VALUES(#{seq},#{questionSeq},#{description},#{orderNum})
+
+	</insert>
 	
 	<update id="updateQuestion" parameterType="UpdateQuestionRequest">
 		UPDATE question
@@ -70,6 +82,39 @@
 		</set>
 		WHERE seq = #{seq}
 	</update>
+
+
+	<update id="updateQuestionAuto" parameterType="QuestionAutoUpdateRequest">
+		UPDATE question
+		<set>
+
+			<if test="name != null and name != ''">
+				name = #{name},
+			</if>
+
+			<if test="description != null and description != ''">
+				description = #{description},
+			</if>
+
+			<if test="order != null">
+				order_num = #{order},
+			</if>
+
+			<if test="isEssential != null">
+				is_essential = #{isEssential},
+			</if>
+
+			<if test="tb_file_Seq != null">
+				tb_file_seq = #{tb_file_Seq},
+			</if>
+
+			<if test="ccSeq != null">
+				cc_seq = #{ccSeq},
+			</if>
+		</set>
+		WHERE seq = #{seq}
+	</update>
+
 	
 	<update id="deleteAllQuestionItem" parameterType="long">
 		UPDATE question_item 
@@ -81,6 +126,12 @@
 		UPDATE question_item
 		SET content = #{content}
 		WHERE seq = #{seq}
+	</update>
+
+	<update id="updateQuestionItemAuto" parameterType="UpdateQuestionItemRequest">
+		UPDATE question_item
+		SET content = #{description}
+		WHERE seq = #{questionItemSeq}
 	</update>
 	
 	<update id="deleteQuestionItem" parameterType="DeleteQuestionItemRequest">

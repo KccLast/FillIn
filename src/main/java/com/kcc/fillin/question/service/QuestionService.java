@@ -30,4 +30,13 @@ public interface QuestionService {
     boolean deleteCondition(ConditionRequest conditionRequest);
 
     List<MemberSurveyResponse> getSurveyByMemberSeq(Long seq);
+
+	void updateQuestionAuto(QuestionAutoUpdateRequest questionAutoUpdateRequest);
+
+    void updateQuestionItemAuto(QuestionAutoUpdateRequest questionAutoUpdateRequest);
+
+	void InsertQuestionItemAuto( List<QuestionItemInsertRequest> questionAutoUpdateRequest);
+
+
+
 }
