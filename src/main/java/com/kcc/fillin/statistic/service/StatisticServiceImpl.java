@@ -7,6 +7,7 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -80,35 +81,83 @@ public class StatisticServiceImpl implements StatisticService {
 		return statisticMapper.selectQualitativeAnswerList(questionId);
 	}
 
+	// @Override
+	// public List<ClusterAnswerResponse> getQuantitativeAnswer(QuantitativeAnswersRequest quantitativeAnswersRequest) {
+	//
+	// 	List<Long> participantSeqList = quantitativeAnswersRequest.getClusterList().stream()
+	// 		.flatMap(cluster -> cluster.getParticipantList().stream())
+	// 		.collect(Collectors.toList());
+	//
+	// 	List<ClusterAnswerResponse> responseList = statisticMapper.selectQuantitativeAnswerList(
+	// 		quantitativeAnswersRequest.getSurveySeq(), participantSeqList);
+	//
+	// 	// 1. 클러스터별 참여자 리스트 맵핑하기
+	// 	Map<Long, List<Long>> clusterToParticipantsMap = quantitativeAnswersRequest.getClusterList().stream()
+	// 		.collect(Collectors.toMap(
+	// 			QuantitativeAnswersRequest.ClusterDto::getClusterId,
+	// 			QuantitativeAnswersRequest.ClusterDto::getParticipantList
+	// 		));
+	//
+	// 	// 결과 저장용 리스트 초기화
+	// 	List<Map<String, Object>> clusterCountLogs = new ArrayList<>();
+	//
+	// 	// 2. responseList에서 각 answerList 응답 항목에 대해 클러스터별 응답자 수 집계
+	// 	for (ClusterAnswerResponse response : responseList) {
+	// 		// Map<Long, Long> clusterMap = new HashMap<>(); // 항목 번호, 클러스터 번호
+	//
+	// 		for (ClusterAnswerDto answer : response.getAnswerList()) {
+	// 			// 클러스터별 응답자 수를 담을 리스트 초기화
+	// 			Map<Long, Long> clusterCount = new HashMap<>();
+	//
+	// 			// 각 클러스터에 대해 응답 항목에 해당하는 참여자 수 집계
+	// 			for (Map.Entry<Long, List<Long>> entry : clusterToParticipantsMap.entrySet()) {
+	// 				Long clusterId = entry.getKey();
+	// 				List<Long> participants = entry.getValue();
+	//
+	// 				// 해당 클러스터의 참여자 수를 계산하여 집계
+	// 				long participantCount = participants.stream()
+	// 					.filter(participantSeq -> answer.getClusterList().contains(participantSeq))
+	// 					.count();
+	//
+	// 				// 참여자 수가 0보다 크면 clusterCount에 추가
+	// 				if (participantCount > 0) {
+	// 					clusterCount.put(clusterId, participantCount);
+	// 				}
+	// 			}
+	//
+	// 			// 최대 응답자 수를 가진 클러스터만 남기기 위한 로직
+	// 			// long maxCount = clusterCount.values().stream().max(Long::compare).orElse(0L);
+	// 			// Set<Long> maxClusters = clusterCount.entrySet().stream()
+	// 			// 	.filter(entry -> entry.getValue() == maxCount)
+	// 			// 	.map(Map.Entry::getKey)
+	// 			// 	.collect(Collectors.toSet());
+	//
+	// 			// 현재 응답 항목에 대한 로그 데이터를 Map으로 만들어 clusterCountLogs에 추가
+	// 			Map<String, Object> logData = new HashMap<>();
+	// 			logData.put("questionOrderNum", response.getQuestionOrderNum());
+	// 			logData.put("answerOrderNum", answer.getAnswerOrderNum());
+	// 			logData.put("clusterCount", new HashMap<>(clusterCount)); // clusterCount 복사하여 저장
+	//
+	// 			clusterCountLogs.add(logData);
+	//
+	// 			// 클러스터별 응답자 수 결과를 `clusterCount`로 설정 (JSON 응답에 포함)
+	// 			// answer.setClusterCount(clusterCount);
+	// 			log.info(response.getQuestionOrderNum() + "번 질문 : " + answer.getAnswerOrderNum() + "번 항목 : "
+	// 				+ clusterCount.toString());
+	//
+	// 		}
+	// 	}
+	//
+	// 	// clusterCountLogs에 저장된 내용 확인
+	// 	log.info("응답자 수 클러스터 집계 결과: " + clusterCountLogs);
+	//
+	// 	log.info(responseList.toString());
+	//
+	// 	return responseList;
+	// }
+
 	@Override
 	public List<ClusterAnswerResponse> getQuantitativeAnswer(QuantitativeAnswersRequest quantitativeAnswersRequest) {
-		// // 1. participantSeq와 clusterId 매핑 정보 생성
-		// Map<Long, Long> participantClusterMap = quantitativeAnswersRequest.getClusterList().stream()
-		// 	.flatMap(cluster -> cluster.getAnswerList().stream()
-		// 		.map(answer -> Map.entry(answer.getParticipantSeq(), cluster.getClusterId())))
-		// 	.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-
-		// // 2. participantSeq 목록 생성
-		// List<Long> participantSeqList = new ArrayList<>(participantClusterMap.keySet());
-		//
-		// // 3. statisticMapper에서 데이터 가져오기
-		// List<ClusterAnswerResponse> responseList = statisticMapper.selectQuantitativeAnswerList(
-		// 	quantitativeAnswersRequest.getSurveySeq(), participantSeqList);
-		//
-		// // 4. 각 ClusterAnswerResponse의 answerList에서 clusterList를 업데이트
-		// for (ClusterAnswerResponse response : responseList) {
-		// 	for (ClusterAnswerResponse.ClusterAnswerDto answer : response.getAnswerList()) {
-		// 		// 응답 항목에 응답한 참여자들의 clusterId를 수집
-		// 		List<Long> updatedClusterList = answer.getClusterList().stream()
-		// 			.map(participantClusterMap::get)
-		// 			.filter(Objects::nonNull)
-		// 			.distinct()
-		// 			.collect(Collectors.toList());
-		//
-		// 		// 업데이트된 clusterList 설정
-		// 		answer.setClusterList(updatedClusterList);
-		// 	}
-		// }
 
 		List<Long> participantSeqList = quantitativeAnswersRequest.getClusterList().stream()
 			.flatMap(cluster -> cluster.getParticipantList().stream())
@@ -117,84 +166,177 @@ public class StatisticServiceImpl implements StatisticService {
 		List<ClusterAnswerResponse> responseList = statisticMapper.selectQuantitativeAnswerList(
 			quantitativeAnswersRequest.getSurveySeq(), participantSeqList);
 
-		// 각 응답 항목에 대해 클러스터 수집을 위한 Map 초기화
-		// answerOrderNum, clusterId, clusterCount
-		Map<Long, Map<Long, Long>> clusterAnswerCountMap = new HashMap<>();
+		// 1. 클러스터별 참여자 리스트 맵핑하기
+		Map<Long, List<Long>> clusterToParticipantsMap = quantitativeAnswersRequest.getClusterList().stream()
+			.collect(Collectors.toMap(
+				QuantitativeAnswersRequest.ClusterDto::getClusterId,
+				QuantitativeAnswersRequest.ClusterDto::getParticipantList
+			));
 
-		// 응답 항목을 순회하며 클러스터별 응답 수 집계
+		log.info("mapper 결과 : " + responseList.toString());
+		log.info("mapping 결과 : " + clusterToParticipantsMap.toString());
+
+		// 결과 저장용 리스트 초기화
+		List<Map<Integer, Map<Integer, Map<Long, Integer>>>> clusterCountLogs = new ArrayList<>();
+
+		// 2. responseList에서 각 answerList 응답 항목에 대해 클러스터별 응답자 수 집계
 		for (ClusterAnswerResponse response : responseList) {
+			// Map<Long, Long> clusterMap = new HashMap<>(); // 항목 번호, 클러스터 번호
+			Map<Integer, Map<Integer, Map<Long, Integer>>> logData = new HashMap<>();
+
+			logData.put(response.getQuestionOrderNum(), new HashMap<>());
+			log.info("response == {}", response);
 			for (ClusterAnswerDto answer : response.getAnswerList()) {
-				for (Long clusterId : answer.getClusterList()) {
+				log.info("answer == {}", answer);
+				// 클러스터별 응답자 수를 담을 리스트 초기화
+				Map<Long, Integer> clusterCount = new HashMap<>();
 
-					// if()
+				logData.get(response.getQuestionOrderNum()).put(answer.getAnswerOrderNum(), clusterCount);
+				// 각 클러스터에 대해 응답 항목에 해당하는 참여자 수 집계
+				for (Map.Entry<Long, List<Long>> entry : clusterToParticipantsMap.entrySet()) {
+					log.info("entry : " + entry);
+					Long clusterId = entry.getKey();
+					List<Long> participants = entry.getValue();
 
-					// 클러스터 별로 응답 카운트
-					clusterAnswerCountMap
-						.computeIfAbsent(answer.getAnswerOrderNum(), k -> new HashMap<>())
-						.merge(clusterId, 1L, Long::sum);
-				}
+					// 해당 클러스터의 참여자 수를 계산하여 집계
+					Long participantCount = participants.stream()
+						.filter(participantSeq -> answer.getClusterList().contains(participantSeq))
+						.count();
+					log.info("{}", participantCount);
+					// 참여자 수가 0보다 크면 clusterCount에 추가
+					if (participantCount > 0) {
 
-				// 클러스터 리스트를 비웁니다. (응답자 번호를 제거)
-				answer.setClusterList(new ArrayList<>());
-			}
-		}
-
-		// 각 응답 항목에 대해 가장 많이 선택된 클러스터 ID 찾기
-		for (ClusterAnswerResponse response : responseList) {
-			for (ClusterAnswerDto answer : response.getAnswerList()) {
-				Long mostRespondedClusterId = null;
-				Long maxCount = 0L;
-
-				// 해당 응답 항목에 대한 클러스터 카운트를 확인
-				Map<Long, Long> countMap = clusterAnswerCountMap.get(answer.getAnswerOrderNum());
-				if (countMap != null) {
-					for (Map.Entry<Long, Long> entry : countMap.entrySet()) {
-						if (entry.getValue() > maxCount) {
-							maxCount = entry.getValue();
-							mostRespondedClusterId = entry.getKey();
-						}
+						clusterCount.put(clusterId, participantCount.intValue());
 					}
 				}
 
-				// 가장 많이 선택된 클러스터 ID를 추가
-				if (mostRespondedClusterId != null) {
-					answer.getClusterList().add(mostRespondedClusterId);
-				}
+				// 최대 응답자 수를 가진 클러스터만 남기기 위한 로직
+				// long maxCount = clusterCount.values().stream().max(Long::compare).orElse(0L);
+				// Set<Long> maxClusters = clusterCount.entrySet().stream()
+				// 	.filter(entry -> entry.getValue() == maxCount)
+				// 	.map(Map.Entry::getKey)
+				// 	.collect(Collectors.toSet());
+
+				// 현재 응답 항목에 대한 로그 데이터를 Map으로 만들어 clusterCountLogs에 추가
+				//Map<String, Object> logData = new HashMap<>();
+				//logData.put("questionOrderNum", response.getQuestionOrderNum());
+				//logData.put("answerOrderNum", answer.getAnswerOrderNum());
+				//logData.put("clusterCount", new HashMap<>(clusterCount)); // clusterCount 복사하여 저장
+
+				// 클러스터별 응답자 수 결과를 `clusterCount`로 설정 (JSON 응답에 포함)
+				// answer.setClusterCount(clusterCount);
+				log.info(response.getQuestionOrderNum() + "번 질문 : " + answer.getAnswerOrderNum() + "번 항목 : "
+					+ clusterCount.toString());
+
+			}
+			clusterCountLogs.add(logData);
+		}
+		// List<Map<Integer, Map<Integer, Map<Long, Long>>>> resultLogs = new ArrayList<>();
+		//
+		// // 동일한 answerOrderNum에 대해 각 클러스터별 최댓값만 남기기 위한 로직
+		// for (Map<Integer, HashMap> questionMap : clusterCountLogs) {
+		// 	Map<Integer, Map<Long, Long>> combinedQuestionMap = new HashMap<>();
+		//
+		// 	for (Map.Entry<Integer, HashMap> questionEntry : questionMap.entrySet()) {
+		// 		Integer questionOrderNum = questionEntry.getKey();
+		// 		Map<Integer, Map<Long, Long>> answerMap = questionEntry.getValue();
+		//
+		// 		// 동일한 응답 항목에 대해 최댓값을 유지하는 새로운 map 생성
+		// 		for (Map.Entry<Integer, Map<Long, Long>> answerEntry : answerMap.entrySet()) {
+		// 			Integer answerOrderNum = answerEntry.getKey();
+		// 			Map<Long, Long> clusterCounts = answerEntry.getValue();
+		//
+		// 			// 해당 answerOrderNum에서 최대 응답 수를 가진 clusterId 찾기
+		// 			Long maxClusterId = null;
+		// 			Long maxCount = 0L;
+		//
+		// 			for (Map.Entry<Long, Long> clusterEntry : clusterCounts.entrySet()) {
+		// 				if (clusterEntry.getValue() > maxCount) {
+		// 					maxCount = clusterEntry.getValue();
+		// 					maxClusterId = clusterEntry.getKey();
+		// 				}
+		// 			}
+		//
+		// 			// maxClusterId와 maxCount만 유지
+		// 			Map<Long, Long> maxClusterMap = new HashMap<>();
+		// 			if (maxClusterId != null) {
+		// 				maxClusterMap.put(maxClusterId, maxCount);
+		// 			}
+		//
+		// 			combinedQuestionMap.put(answerOrderNum, maxClusterMap);
+		// 		}
+		// 	}
+
+		// 현재 질문에 대한 결과를 최종 결과 리스트에 추가
+		// 	resultLogs.add(Collections.singletonMap(
+		// 		clusterCountLogs.indexOf(questionMap) + 1, combinedQuestionMap));
+		// }
+
+		// System.out.println("최댓값만 남긴 결과: " + resultLogs);
+		log.info("응답자 수 클러스터 집계 결과: " + clusterCountLogs);
+
+		for (ClusterAnswerResponse response : responseList) {
+			for (ClusterAnswerDto answer : response.getAnswerList()) {
+				answer.setClusterList(new ArrayList<>()); // clusterList를 빈 리스트로 초기화
 			}
 		}
 
-		// reqeust에 있는 clusterList 반복문 돌면서 질문 별로
+		for (Map<Integer, Map<Integer, Map<Long, Integer>>> map : clusterCountLogs) {
+			log.info(map.toString());
 
-		// 각 응답 항목에 대한 최다 참여 클러스터 ID 설정
-		// for (ClusterAnswerResponse response : responseList) {
-		// 	for (ClusterAnswerDto answer : response.getAnswerList()) {
-		// 		Map<Long, Long> clusterCount = quantitativeAnswersRequest.getClusterList().stream()
-		// 			.collect(Collectors.toMap(
-		// 				QuantitativeAnswersRequest.ClusterDto::getClusterId,
-		// 				cluster -> cluster.getAnswerList().stream()
-		// 					.filter(a -> a.getAnswerSeq().equals(answer.getAnswerSeq()))
-		// 					.count()
-		// 			));
-		//
-		// 		Long maxClusterId = clusterCount.entrySet().stream()
-		// 			.max(Map.Entry.comparingByValue())
-		// 			.map(Map.Entry::getKey)
-		// 			.orElse(null);
-		//
-		// 		answer.setClusterList(maxClusterId != null ? List.of(maxClusterId) : Collections.emptyList());
-		// 	}
-		// }
+			for (Map.Entry<Integer, Map<Integer, Map<Long, Integer>>> questionInner : map.entrySet()) {
+				Map<Integer, Map<Long, Integer>> questionInnerValue = questionInner.getValue();
 
-		// List<Long> participantSeqList = quantitativeAnswersRequest.getClusterList().stream()
-		// 	.flatMap(cluster -> cluster.getAnswerList().stream())
-		// 	.map(QuantitativeAnswersRequest.AnswerDto::getParticipantSeq)
-		// 	.collect(Collectors.toList());
-		//
-		// List<ClusterAnswerResponse> responseList = statisticMapper.selectQuantitativeAnswerList(
-		// 	quantitativeAnswersRequest.getSurveySeq(), participantSeqList);
-		//
-		// log.info(responseList.toString());
+				Map<Long, Integer[]> tmpList = new HashMap<>();
 
+				for (Map.Entry<Integer, Map<Long, Integer>> answerInner : questionInnerValue.entrySet()) {
+					Map<Long, Integer> answerInnerValue = answerInner.getValue();
+
+					for (Map.Entry<Long, Integer> clInner : answerInnerValue.entrySet()) {
+
+						Long clusterId = clInner.getKey();
+						Integer count = clInner.getValue();
+						if (tmpList.containsKey(clusterId)) {
+							Integer[] arr = tmpList.get(clusterId);
+							if (arr[0] < count) {
+								arr[0] = count;
+								arr[1] = answerInner.getKey();
+
+							}
+						} else {
+							tmpList.put(clusterId, new Integer[] {count, answerInner.getKey()});
+						}
+					}
+
+				}
+				boolean flag = true;
+				for (Map.Entry<Long, Integer[]> tm : tmpList.entrySet()) {
+					log.info("id = {} array = {}", tm.getKey(), Arrays.toString(tm.getValue()));
+					// 현재 questionInner.getKey()
+					Integer questionOrderNum = questionInner.getKey();
+					Long clusterId = tm.getKey();
+					Integer answerOrderNum = tm.getValue()[1];
+
+					for (ClusterAnswerResponse car : responseList) {
+						if (car.getQuestionOrderNum().equals(questionInner.getKey())) {
+							for (ClusterAnswerDto adt : car.getAnswerList()) {
+								if (adt.getAnswerOrderNum().equals(tm.getValue()[1])) {
+
+									adt.getClusterList().add(tm.getKey());
+
+								}
+							}
+						}
+					}
+
+				}
+
+				// log.info("tmpList {}", tmpList);
+			}
+
+		}
+
+		//여기서 담아가기
 		return responseList;
 	}
 

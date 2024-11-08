@@ -17,7 +17,7 @@ import lombok.ToString;
 @ToString
 public class ClusterAnswerDto {
 	// private Long answerSeq;
-	private Long answerOrderNum;
+	private Integer answerOrderNum;
 	private String answerName;
 	private List<Long> clusterList;
 	// private List<ClusterDto> clusterList;
