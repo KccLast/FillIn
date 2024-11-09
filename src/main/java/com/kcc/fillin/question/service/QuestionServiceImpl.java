@@ -183,6 +183,7 @@ public class QuestionServiceImpl implements QuestionService {
 
 	@Override
 	public boolean deleteCondition(ConditionRequest conditionRequest) {
+
 		return questionDao.deleteCondition(conditionRequest);
 	}
 
