@@ -70,7 +70,7 @@ body {
 
 .keyword-search {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     margin-top: 20px;
 }
 
