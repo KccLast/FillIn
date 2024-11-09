@@ -336,63 +336,81 @@ $(document).ready(function () {
   });
 
   // 실제 비밀번호를 저장할 변수
-  let actualPassword = ""; // 실제 비밀번호를 저장할 변수
+  // let actualPassword = ""; // 실제 비밀번호를 저장할 변수
 
   // 비밀번호 입력 시 실시간 형식 유효성 검사
-  $('#password').on('input', function () {
+  // $('#password').on('input', function () {
+  //   const password = $(this).val();
+  //
+  //   // 입력된 비밀번호 길이만큼 '*'로 마스킹
+  //   // const maskedPassword = '*'.repeat(password.length);
+  //   // $(this).val(maskedPassword); // 입력 필드에 마스킹된 비밀번호 설정
+  //   //
+  //   // // 비밀번호의 마지막 문자를 actualPassword에 추가
+  //   // if (password.length > actualPassword.length) {
+  //   //   actualPassword += password[password.length - 1];
+  //   // } else {
+  //   //   actualPassword = actualPassword.slice(0, -1); // 뒷 문자 삭제
+  //   // }
+  //
+  //   // 유효성 검사
+  //   if (!passwordRegex.test(password)) {
+  //     $('#password-error')
+  //         .text('비밀번호는 8자 이상, 20자 이하이며, 문자, 숫자, 특수문자를 포함해야 합니다.')
+  //         .show();
+  //   } else {
+  //     $('#password-error').hide(); // 유효성 검사 통과 시 에러 메시지 숨김
+  //   }
+  //
+  //   // 숨겨진 필드에 실제 비밀번호 설정
+  //   $("#actual-password").val(actualPassword);
+  // });
+  //
+  // // 비밀번호 확인을 위한 변수
+  // let actualConfirmPassword = ""; // 실제 비밀번호 확인 값을 저장할 변수
+  //
+  // // 비밀번호 확인 입력 시 실시간 처리
+  // $('#password-confirm').on('input', function () {
+  //   const confirmPassword = $(this).val();
+  //
+  //   // 입력된 비밀번호 확인 길이만큼 '*'로 마스킹
+  //   const maskedConfirmPassword = '*'.repeat(confirmPassword.length);
+  //   $(this).val(maskedConfirmPassword); // 입력 필드에 마스킹된 비밀번호 확인 설정
+  //
+  //   // 비밀번호 확인의 마지막 문자를 actualConfirmPassword에 추가
+  //   if (confirmPassword.length > actualConfirmPassword.length) {
+  //     actualConfirmPassword += confirmPassword[confirmPassword.length - 1];
+  //   } else {
+  //     actualConfirmPassword = actualConfirmPassword.slice(0, -1); // 뒷 문자 삭제
+  //   }
+  //
+  //   // 비밀번호와 확인 비밀번호 비교
+  //   if (actualPassword !== actualConfirmPassword) {
+  //     $('#password-confirm-error').text('비밀번호가 일치하지 않습니다.').show();
+  //   } else {
+  //     $('#password-confirm-error').hide(); // 유효성 검사 통과 시 에러 메시지 숨김
+  //   }
+  //
+  //   // 숨겨진 필드에 실제 비밀번호 확인 값을 저장
+  //   $("#actual-confirm-password").val(actualConfirmPassword);
+  // });
+  $("#password").on("input", function() {
     const password = $(this).val();
-
-    // 입력된 비밀번호 길이만큼 '*'로 마스킹
-    const maskedPassword = '*'.repeat(password.length);
-    $(this).val(maskedPassword); // 입력 필드에 마스킹된 비밀번호 설정
-
-    // 비밀번호의 마지막 문자를 actualPassword에 추가
-    if (password.length > actualPassword.length) {
-      actualPassword += password[password.length - 1];
+    if (!passwordRegex.test(password)) {
+      $("#password-error").text("비밀번호는 8자 이상, 20자 이하이며, 문자, 숫자, 특수문자를 포함해야 합니다.").show();
     } else {
-      actualPassword = actualPassword.slice(0, -1); // 뒷 문자 삭제
+      $("#password-error").hide();
     }
-
-    // 유효성 검사
-    if (!passwordRegex.test(actualPassword)) {
-      $('#password-error')
-          .text('비밀번호는 8자 이상, 20자 이하이며, 문자, 숫자, 특수문자를 포함해야 합니다.')
-          .show();
-    } else {
-      $('#password-error').hide(); // 유효성 검사 통과 시 에러 메시지 숨김
-    }
-
-    // 숨겨진 필드에 실제 비밀번호 설정
-    $("#actual-password").val(actualPassword);
   });
-
-  // 비밀번호 확인을 위한 변수
-  let actualConfirmPassword = ""; // 실제 비밀번호 확인 값을 저장할 변수
-
-  // 비밀번호 확인 입력 시 실시간 처리
-  $('#password-confirm').on('input', function () {
-    const confirmPassword = $(this).val();
-
-    // 입력된 비밀번호 확인 길이만큼 '*'로 마스킹
-    const maskedConfirmPassword = '*'.repeat(confirmPassword.length);
-    $(this).val(maskedConfirmPassword); // 입력 필드에 마스킹된 비밀번호 확인 설정
-
-    // 비밀번호 확인의 마지막 문자를 actualConfirmPassword에 추가
-    if (confirmPassword.length > actualConfirmPassword.length) {
-      actualConfirmPassword += confirmPassword[confirmPassword.length - 1];
+  // 비밀번호 확인
+  $("#password-confirm").on("keyup", function() {
+    const password = $("#password").val();
+    const confirmPassword = $("#password-confirm").val();
+    if (password !== confirmPassword) {
+      $("#password-confirm-error").text("비밀번호가 일치하지 않습니다.").show();
     } else {
-      actualConfirmPassword = actualConfirmPassword.slice(0, -1); // 뒷 문자 삭제
+      $("#password-confirm-error").hide();
     }
-
-    // 비밀번호와 확인 비밀번호 비교
-    if (actualPassword !== actualConfirmPassword) {
-      $('#password-confirm-error').text('비밀번호가 일치하지 않습니다.').show();
-    } else {
-      $('#password-confirm-error').hide(); // 유효성 검사 통과 시 에러 메시지 숨김
-    }
-
-    // 숨겨진 필드에 실제 비밀번호 확인 값을 저장
-    $("#actual-confirm-password").val(actualConfirmPassword);
   });
 
   // 전화번호 유효성 검사 및 숫자 외 문자 제거
@@ -526,6 +544,7 @@ $(document).ready(function () {
       $("#address-error").text("주소를 모두 입력해주세요.").show();
       isValid = false;
     }else {
+      $("#address-error").hide(); // 에러 메시지 숨기기
       isValid = true;
     }
     console.log("validation check" + isValid)

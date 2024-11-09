@@ -18,9 +18,10 @@ public class PrincipalDetailService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+
         // 회원있는지체크
         int memberExists = memberMapper.emailExists(username);
-
+        System.out.println(memberExists);
         if (memberExists == 0) {  // 0이면 사용자 없음
             throw new UsernameNotFoundException("User not found with username: " + username);
         }

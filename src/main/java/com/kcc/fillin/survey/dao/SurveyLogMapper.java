@@ -5,13 +5,13 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Mapper
 public interface SurveyLogMapper {
     // 설문 로그를 쿼리하는 메서드
-    List<SurveyLogDTO> findSurveyLogs(@Param("startDate") LocalDate startDate,
-                                      @Param("endDate") LocalDate endDate
-                                      /*@Param("offset") int offset,
-                                      @Param("size") int size*/);
+    List<SurveyLogDTO> findSurveyLogs(
+                                      @Param("startDate") LocalDateTime startDate,
+                                      @Param("endDate") LocalDateTime endDate);
 }

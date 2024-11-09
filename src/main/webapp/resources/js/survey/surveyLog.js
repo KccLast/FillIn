@@ -32,30 +32,16 @@ $(document).ready(function () {
 
   // 데이터 로드 함수(, page, size)
   function loadMoreData(startDate, endDate) {
-    // loading = true;
-
     $.ajax({
       url: '/api/survey/logs',
       type: 'GET',
-      data: {
-        startDate: startDate, // yyyy-MM-dd 형식으로 전달
-        endDate: endDate,
-        // page: page, // 페이지 번호 전달
-        // size: size  // 페이지당 데이터 수 전달
-      },
+      data: { startDate, endDate },
       success: function (data) {
         renderTable(data);
-        if (data.some((item) => item.responseTime < 3000)) {
-          $('#warning-message').show(); // 3초 미만 응답 경고
-        } else {
-          $('#warning-message').hide();
-        }
         generateResponseTimeChart(data);
-        // loading = false;
       },
       error: function () {
         alert('데이터를 가져오는 중 오류가 발생했습니다.');
-        // loading = false;
       },
     });
   }
@@ -87,15 +73,21 @@ $(document).ready(function () {
       tbody.append("<tr><td colspan='6'>No logs found.</td></tr>");
     } else {
       data.forEach(function (item) {
-        //시분초로 변환 추가 혹은 삭제(선택)
-        const formattedResponseTime = formatTime(item.responseTime / 1000); // ms를 초로 변환
+        const answerSeq = item.answer_seq !== undefined ? item.answer_seq : "N/A";
+        const questionSeq = item.question_seq !== undefined ? item.question_seq : "N/A";
+        const participantSeq = item.participant_seq !== undefined ? item.participant_seq : "N/A";
+        const startDate = item.start_date !== undefined ? item.start_date : "N/A";
+        const endDate = item.end_date !== undefined ? item.end_date : "N/A";
+        const formattedResponseTime = item.response_time != null ? formatTime(item.response_time / 1000) : "N/A";
+
         tbody.append(`<tr>
-                    <td>${item.logSeq}</td>
-                    <td>${item.surveySeq}</td>
-                    <td>${item.startDate}</td>
-                    <td>${item.endDate}</td>
-                    <td>${formattedResponseTime}</td> <!-- 변환된 시간을 사용 -->
-                </tr>`);
+                <td>${answerSeq}</td>
+                <td>${questionSeq}</td>
+                <td>${participantSeq}</td>
+                <td>${startDate}</td>
+                <td>${endDate}</td>
+                <td>${formattedResponseTime}</td>
+            </tr>`);
       });
     }
   }

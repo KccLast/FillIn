@@ -1,6 +1,7 @@
 package com.kcc.fillin.survey.service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -85,13 +86,11 @@ public class SurveyServiceImpl implements SurveyService {
 	}
 
 	// SurveyService 인터페이스의 메서드를 구현 (페이징 포함)(, int page, int size)
-	@Override
-	public List<SurveyLogDTO> getSurveyLogs(LocalDate startDate, LocalDate endDate) {
-		//		int offset = (page - 1) * size;
-
-		// Mapper를 호출하여 데이터베이스에서 설문 로그를 조회 (offset과 size 포함), offset, size
+	public List<SurveyLogDTO> getSurveyLogs(LocalDateTime startDate, LocalDateTime endDate) {
 		return surveyLogMapper.findSurveyLogs(startDate, endDate);
 	}
+
+
 
 	@Override
 	public boolean createNewSurvey(SurveyVO newSurvey) {

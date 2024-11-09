@@ -1,6 +1,7 @@
 package com.kcc.fillin.survey.controller;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
@@ -72,28 +73,21 @@ public class SurveyRestController {
 		return Response.setSuccess(findSurvey, 200);
 	}
 
-	// 설문 로그를 필터링하는 API
-	@GetMapping("/logs")
-	public ResponseEntity<List<SurveyLogDTO>> getSurveyLogs(@RequestParam("startDate")
-	String startDateStr,
-		@RequestParam("endDate")
-		String endDateStr
-	/*@RequestParam("page") int page,
-	@RequestParam("size") int size*/) {
-		System.out.println("startDateStr = " + startDateStr);
-		System.out.println("endDateStr = " + endDateStr);
-		// 문자열을 LocalDate로 변환
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-		LocalDate startDate = LocalDate.parse(startDateStr, formatter);
-		LocalDate endDate = LocalDate.parse(endDateStr, formatter);
-
-		// 서비스를 호출하여 로그를 가져옴(, page, size)
-		List<SurveyLogDTO> logs = service.getSurveyLogs(startDate, endDate);
-		return ResponseEntity.ok(logs);
-	}
 
 	@PostMapping("/post")
 	public Response postSurvey(@RequestBody PostSurveyRequest request) {
 		return Response.setSuccess(service.addSurveyUrl(request), 200, "게시 완료");
+	}
+
+//	응답시간분석에서 날짜 범위에 따라 필터링
+	@GetMapping("/logs")
+	public ResponseEntity<List<SurveyLogDTO>> getSurveyLogs(
+//			@RequestParam("questionSeq") Long questionSeq,
+			@RequestParam("startDate") String startDateStr,
+			@RequestParam("endDate") String endDateStr) {
+		LocalDateTime startDate = LocalDateTime.parse(startDateStr);
+		LocalDateTime endDate = LocalDateTime.parse(endDateStr);
+		List<SurveyLogDTO> logs = service.getSurveyLogs(startDate, endDate);
+		return ResponseEntity.ok(logs);
 	}
 }

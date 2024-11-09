@@ -40,13 +40,14 @@
                                 <div id="data-container" class="table-section">
                                     <table id="surveyLogTable" class="result-table">
                                         <thead>
-                                            <tr>
-                                                <th>로그 번호</th>
-                                                <th>설문 번호</th>
-                                                <th>시작일자</th>
-                                                <th>종료일자</th>
-                                                <th>응답시간</th>
-                                            </tr>
+                                        <tr>
+                                            <th>응답 번호</th>
+                                            <th>질문 번호</th>
+                                            <th>참여 번호</th>
+                                            <th>설문 시작일자</th>
+                                            <th>설문 종료일자</th>
+                                            <th>응답 시간</th>
+                                        </tr>
                                         </thead>
                                         <tbody>
                                         </tbody>
