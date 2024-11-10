@@ -1,6 +1,3 @@
-
-
-
 // 선택된 체크 박스의 select-box 동적으로 생성
 function toggleSelectBox(checkbox, selectId) {
     const $selectBox = $('#' + selectId);
@@ -9,6 +6,18 @@ function toggleSelectBox(checkbox, selectId) {
 
 // 추천 질문 모달창
 function showQuestionsModal() {
+    if($('#survey-description').val().length === 0) {
+        Swal.fire({
+            text: "질문 생성에 필요한 주제나 내용을 입력해 주세요.",
+            icon: "warning",
+            backdrop: false,
+            didClose: () => {
+                $('#survey-description').focus();
+            }
+        });
+        return;
+    }
+
     if(!$('.checkbox-item input:checked').length) {
         Swal.fire({
             text: "질문 유형을 하나 이상 선택해 주세요.",
@@ -108,6 +117,13 @@ function showQuestionsModal() {
             let shortAnswerCount = 1;
             let longAnswerCount = 1;
 
+            // 각 섹션을 숨겨 초기화
+            $('#multiple-choice-section').hide();
+            $('#checkbox-section').hide();
+            $('#short-answer-section').hide();
+            $('#long-answer-section').hide();
+
+
             // 응답이 기대하는 형식인지 확인 후 질문 목록 생성
             if (jsonData && Array.isArray(jsonData.questions)) {
                 jsonData.questions.forEach(function (question, index) {
@@ -131,6 +147,7 @@ function showQuestionsModal() {
                                     question.ccSeq
                                 );
                                 $('#multiple-choice-list').append(questions);
+                                $('#multiple-choice-section').show();
                             }
                             break;
                         case '8': // 체크박스
@@ -147,6 +164,7 @@ function showQuestionsModal() {
                                     question.ccSeq
                                 );
                                 $('#checkbox-list').append(questions);
+                                $('#checkbox-section').show();
                             }
                             break;
                         case '12': // 단답형
@@ -163,6 +181,7 @@ function showQuestionsModal() {
                                     question.ccSeq
                                 );
                                 $('#short-answer-list').append(questions);
+                                $('#short-answer-section').show();
                             }
                             break;
                         case '13': // 장문형
@@ -179,6 +198,7 @@ function showQuestionsModal() {
                                     question.ccSeq
                                 );
                                 $('#long-answer-list').append(questions);
+                                $('#long-answer-section').show();
                             }
                             break;
                     }
@@ -467,9 +487,6 @@ $(document).ready(function () {
         $('.first-content').show();
         //$('.generated-questions-list-btn').show();
     });
-
-
-
 
     $('#question-close-btn').on('click', function () {
         $('.second-content').hide();
