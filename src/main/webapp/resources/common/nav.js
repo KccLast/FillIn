@@ -37,11 +37,11 @@ function setNavLink() {
 
   const navLinks = document.querySelectorAll('.nav > .nav-link');
 
-  navLinks[0].setAttribute('href', editLink);
-  navLinks[1].setAttribute('href', statisticLink);
-  navLinks[2].setAttribute('href', clusterLink);
-  navLinks[3].setAttribute('href', linerLink);
-  navLinks[4].setAttribute('href', logLink);
+  // navLinks[0].setAttribute('href', editLink);
+  // navLinks[1].setAttribute('href', statisticLink);
+  // navLinks[2].setAttribute('href', clusterLink);
+  // navLinks[3].setAttribute('href', linerLink);
+  // navLinks[4].setAttribute('href', logLink);
 
   // 초기화 완료 표시
 }

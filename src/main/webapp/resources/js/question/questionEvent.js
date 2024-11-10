@@ -962,7 +962,7 @@ $(function () {
     if (val === '') {
       val = ' ';
     }
-
+    let questionSeq = $(this).parents('.j-question-card').find('.j-qseq').val();
     if (isNotInputLenError(this, $(this).val().length, 100)) {
       let job = { job: 'title', content: val, seq: questionSeq };
       addJob(job);
