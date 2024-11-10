@@ -14,9 +14,11 @@ function parseJson(jsonString) {
   if (jsonString === 'null') {
     return;
   }
-
+  jsonString = jsonString.replace(/[\n\r]/g, '\\n');
   const surveyObject = JSON.parse(jsonString);
   const questions = surveyObject.questions;
+  console.log(surveyObject);
+  console.log(questions);
 
   // 비동기 함수로 질문을 순차적으로 처리하기 위해 async/await 사용
   try {

@@ -38,6 +38,7 @@
 		</script>
 		<script>
 			var surveyJson = '${surveyJson}';
+			surveyJson = surveyJson.replace(/[\n\r]/g, '\\n');
 		</script>
 		<script type="text/javascript">
 
@@ -54,7 +55,7 @@
 					changeNodeName(idx, nameVal);
 				})
 				let survey = '${surveyJson}';
-
+				survey = survey.replace(/[\n\r]/g, '\\n');
 				parseJson(survey);
 				parseCondition(survey);
 				var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
