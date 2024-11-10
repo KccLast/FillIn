@@ -103,17 +103,23 @@ $(function () {
     $(this).parent().parent().remove();
 
     let targetCard = $('.content').find('.j-question-card').eq(idx);
-
+    let questionSeq = targetCard.find('.j-qseq').val();
+    let surveySeq = $('#surveySeq').val();
     let seqVal = targetCard.find('.j-qseq').val();
-
-    if (seqVal !== undefined) {
-      console.log('hio');
-      let deleteQues = { seq: seqVal };
-      storeUpdateQuestionItemInLocal(deleteQues, seqVal, 'removeQuestionList');
-      sendremoveQquestionItemLocalData(
-        JSON.parse(localStorage.getItem('removeQuestionItemList'))
-      );
-    }
+    let job = {
+      job: 'deleteQuestion',
+      surveySeq: surveySeq,
+      questionSeq: questionSeq,
+    };
+    addJob(job);
+    // if (seqVal !== undefined) {
+    //   console.log('hio');
+    //   let deleteQues = { seq: seqVal };
+    //   storeUpdateQuestionItemInLocal(deleteQues, seqVal, 'removeQuestionList');
+    //   sendremoveQquestionItemLocalData(
+    //     JSON.parse(localStorage.getItem('removeQuestionItemList'))
+    //   );
+    // }
     targetCard.remove();
     deleteNode(idx);
     updateQuestionNavOrder();
@@ -239,10 +245,18 @@ $(function () {
       card.addClass('j-u-card');
     }
     let isEssential = $(this).attr('data-essential') === 'Y' ? 'N' : 'Y';
-    console.log(isEssential);
+    let questionSeq = $(this).parents('.j-question-card').find('.j-qseq').val();
+    console.log(questionSeq);
     $(this).attr('data-essential', isEssential);
     // es.attr('data-essential', 'N');
-
+    let job = {
+      job: 'essentialUpdate',
+      content: isEssential,
+      seq: questionSeq,
+      target: 'question',
+      order: '2',
+    };
+    addJob(job);
     if ($(this).hasClass('j-es-seleted')) {
       $(this).removeClass('j-es-seleted');
     } else {
@@ -277,6 +291,38 @@ $(function () {
       }
     }
   );
+
+  $('.content').on(
+    'change',
+    '.j-option-input-radio > input[type="text"]',
+    function () {
+      let val = $(this).val();
+      let id = $(this).attr('id');
+      let questionSeq = $(this)
+        .parents('.j-question-card')
+        .find('.j-qseq')
+        .val();
+      let orderNum = $(this)
+        .parents('.j-select-question-type-box')
+        .find('.j-select-optionBox').length;
+      if (val === '') val = ' ';
+      if (
+        isNotInputLenError($(this).parents('.j-question-card'), val.length, 50)
+      ) {
+        let job = {
+          job: 'updateResponseContent',
+          content: val,
+          seq: id,
+          target: 'question_item',
+          order: '2',
+          dom: this,
+          questionSeq: questionSeq,
+          orderNum: orderNum,
+        };
+        addJob(job);
+      }
+    }
+  );
   //라디오 버튼 눌렀을 때 이벤트 성별
   $('.content').on('click', '.radio-container', function () {
     let $thisRadio = $(this).find('input[type="radio"]');
@@ -299,6 +345,24 @@ $(function () {
       let parentSeq = $(this).parents('.j-question-card').find('.j-cseq').val();
       let html = await fetchQuestionItem(parentSeq);
       await setQiCheckBoxAndRadioName(html, $prev, next, idx);
+
+      let questionSeq = $prev.parents('.j-question-card').find('.j-qseq').val();
+      let questionTypeBox = $(this).parents('.j-select-question-type-box');
+      let orderNum = questionTypeBox.find('.j-select-optionBox').length;
+      console.log(orderNum);
+      let job = {
+        job: 'addResponseItem',
+        questionSeq: questionSeq,
+        content: '',
+        orderNum: orderNum,
+        dom: questionTypeBox
+          .find('.j-select-optionBox  input[type="text"]')
+          .last(),
+        target: 'question_item',
+        order: '2',
+        ccSeq: parentSeq,
+      };
+      let seq = await addJob(job);
     }
   );
 
@@ -311,25 +375,36 @@ $(function () {
       return;
     }
 
-    let inputBox = $(this).parent().prev().find('.qi');
-    if (inputBox.length !== 0) {
-      console.log(inputBox);
-      let targetSeq = seqExtract(inputBox);
-      let questionSeq = $(this)
-        .parents('.j-question-card')
-        .find('.j-qseq')
-        .val();
-      questionSeq2 = parseInt(questionSeq);
-      let deleteObject = {
-        seq: targetSeq,
-        questionSeq: questionSeq2,
-      };
-      storeUpdateQuestionItemInLocal(
-        deleteObject,
-        targetSeq,
-        'removeQuestionItemList'
-      );
-    }
+    // let inputBox = $(this).parent().prev().find('.qi');
+    // if (inputBox.length !== 0) {
+    //   console.log(inputBox);
+    //   let targetSeq = seqExtract(inputBox);
+    //   let questionSeq = $(this)
+    //     .parents('.j-question-card')
+    //     .find('.j-qseq')
+    //     .val();
+    //   questionSeq2 = parseInt(questionSeq);
+    //   let deleteObject = {
+    //     seq: targetSeq,
+    //     questionSeq: questionSeq2,
+    //   };
+    //   storeUpdateQuestionItemInLocal(
+    //     deleteObject,
+    //     targetSeq,
+    //     'removeQuestionItemList'
+    //   );
+    // }
+    let questionItemSeq = $(this)
+      .parent()
+      .prev()
+      .find('input[type="text"]')
+      .attr('id');
+    console.log(questionItemSeq);
+    job = {
+      job: 'deleteResponseItem',
+      questionItemSeq: questionItemSeq,
+    };
+    addJob(job);
 
     $(this).parent().parent().remove();
     $higherParent.find('.j-option-order').each(function (idx, el) {
@@ -354,7 +429,27 @@ $(function () {
 
   // start와 end select 변경 시 숫자 범위 업데이트
   $('.content').on('change', '.j-num-start, .j-num-end', function () {
-    $(this).addClass('j-updated');
+    console.log($(this).val());
+    let val = $(this).val();
+    let questionItemSeq = $(this).attr('id');
+
+    // orderNum 값 설정: .j-num-start일 때는 1, .j-num-end일 때는 2
+    let orderNum = $(this).hasClass('j-num-start') ? 1 : 2;
+    let questionSeq = $(this).parents('.j-question-card').find('.j-qseq').val();
+
+    let job = {
+      job: 'updateResponseContent',
+      content: val,
+      seq: questionItemSeq,
+      target: 'question_item',
+      order: '2',
+      orderNum: orderNum, // orderNum 값을 job 객체에 추가
+      dom: this,
+      questionSeq: questionSeq,
+    };
+
+    addJob(job);
+    // $(this).addClass('j-updated');
     updateNumberRange($(this).parent());
   });
   //선형 배율 관련이벤트
@@ -413,7 +508,9 @@ $(function () {
     // 기존 옵션 초기화
     selectBox.find('option:not([disabled])').remove();
     let result = true;
+    let ccSeq = currentCard.find('.j-cseq').val();
 
+    console.log(ccSeq);
     // 새로운 옵션 추가
     for (let option of options) {
       if (option.trim()) {
@@ -435,7 +532,26 @@ $(function () {
       }
     }
     if (result === true) {
+      jobList = [];
+      let questionSeq = currentCard.find('.j-qseq').val();
+
       //DB에서 불라온 셀렉트 box일 경우
+      let orderNum = 1;
+      for (let option of options) {
+        jobList.push({
+          job: 'addResponseItem',
+          questionSeq: questionSeq,
+          content: option,
+          orderNum: orderNum,
+          dom: selectBox.find('option').eq(orderNum),
+          target: 'question_item',
+          order: '2',
+          ccSeq: ccSeq,
+        });
+        orderNum++;
+      }
+      addJob(jobList);
+
       if (selectBox.hasClass('qiBox')) {
         saveDropDownInStorage(options, currentCard.find('.j-qseq').val());
       } else {
@@ -697,6 +813,7 @@ $(function () {
 
       let selectDiv = $('.content').find('.j-card-selected');
       let idx = selectDiv.index();
+      let questionSeq = selectDiv.find('.j-qseq').val();
 
       selectDiv.find('.j-cseq').val(ccSeq);
 
@@ -770,6 +887,15 @@ $(function () {
           $('.j-question-list').find('.j-question').eq(idx),
           ccSeq
         );
+        let job = {
+          job: 'typeChange',
+          questionSeq: questionSeq,
+          ccSeq: ccSeq,
+          dom: selectDiv,
+          target: 'question',
+          order: '1',
+        };
+        addJob(job);
       } catch (error) {
         console.error('AJAX 요청 실패:', error);
       } finally {
@@ -831,10 +957,41 @@ $(function () {
     }
   );
   $('.content').on('change', '.j-survey-name-input', function () {
-    isNotInputLenError(this, $(this).val().length, 100);
+    let val = $(this).val();
+
+    if (val === '') {
+      val = ' ';
+    }
+
+    if (isNotInputLenError(this, $(this).val().length, 100)) {
+      let job = { job: 'title', content: val, seq: questionSeq };
+      addJob(job);
+    }
   });
   $('.content').on('change', '.j-survey-content > textarea', function () {
-    isNotInputLenError(this, $(this).val().length, 500);
+    let val = $(this).val();
+
+    if (val === '') {
+      val = ' ';
+    }
+    let questionSeq = $(this).parents('.j-question-card').find('.j-qseq').val();
+
+    if (isNotInputLenError(this, $(this).val().length, 500)) {
+      let job = {
+        job: 'contentUpdate',
+        content: val,
+        seq: questionSeq,
+        target: 'question',
+        order: '2',
+      };
+      addJob(job);
+    }
+  });
+
+  $('.j-header-surveyName').click(function () {
+    $(this).removeClass('j-header-name-focus');
+    $(this).prop('readonly', false); // readonly 속성 제거
+    $(this).focus(); // 클릭 후 바로 입력할 수 있도록 포커스
   });
 });
 
@@ -843,8 +1000,9 @@ function isNotInputLenError(target, len, limit) {
   if (len <= limit) {
     if ($(target).hasClass('j-error-card')) {
       $(target).removeClass('j-error-card');
-      return true;
     }
+
+    return true;
   } else {
     $(target).addClass('j-error-card');
     return false;
@@ -885,6 +1043,9 @@ async function setQuestionNav(idx, ccSeq) {
   let target = navList.find('.j-question').eq(idx);
   target.prepend(nav);
   target.find('.question-nav-order').text(idx + 1);
+  if (ccSeq === '18') {
+    target.find('.question-name > span').text('개인 정보 수집 및 이용 동의서');
+  }
 
   return navList;
 }
@@ -1146,4 +1307,8 @@ function setNewNavColor(selectDiv, ccSeq) {
   } else {
     target.addClass('j-quancolor');
   }
+}
+
+function updateSurveyNames(name) {
+  $('.j-header-surveyName').val(name);
 }

@@ -14,7 +14,7 @@ public class LocalDateTypeHandler extends BaseTypeHandler<LocalDate> {
 
     @Override
     public void setNonNullParameter(PreparedStatement ps, int i, LocalDate parameter, JdbcType jdbcType) throws SQLException {
-        ps.setDate(i, Date.valueOf(parameter));  // LocalDate -> SQL Date로 변환
+        ps.setDate(i, Date.valueOf(parameter));
     }
 
     @Override

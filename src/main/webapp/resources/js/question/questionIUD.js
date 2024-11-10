@@ -204,17 +204,21 @@ function saveQuestionInDB(questions) {
 
         if (response.data.ccSeq === 7 || response.data.ccSeq === 8) {
           let questionItemSeq = response.data.questionItems[0].seq;
+          console.log(questionItemSeq);
+          console.log(newCard);
           newCard
             .find('.j-option-input-radio > input[type="text"]')
-            .addClass('qi ' + questionItemSeq);
+            .attr('id', questionItemSeq);
           // .each((idx, item) => {
           //   $(item).addClass('qi ' + qi.seq);
           // });
         } else if (response.data.ccSeq === 9) {
           let startSeq = response.data.questionItems[0].seq;
-          newCard.find('.j-num-start').addClass('qi ' + startSeq);
+          //newCard.find('.j-num-start').addClass('qi ' + startSeq);
+          newCard.find('.j-num-start').attr('id' + startSeq);
           let endSeq = response.data.questionItems[1].seq;
-          newCard.find('.j-num-end').addClass('qi ' + endSeq);
+          // newCard.find('.j-num-end').addClass('qi ' + endSeq);
+          newCard.find('.j-num-end').attr('id' + startSeq);
         } else if (response.data.ccSeq === 10) {
           newCard.find('select').addClass('qiBox');
         } else if (response.data.ccSeq === 11) {
@@ -405,12 +409,19 @@ function errorCreate(order, message) {
 }
 
 function showError() {
-  console.log(hasError[0]);
   let targetCard = $('.content')
     .find('.j-question-card')
-    .eq(parseInt(hasError[0].order - 1));
-  targetCard.addClass('j-error-card');
-  targetCard[0].scrollIntoView({ behavior: 'smooth', block: 'center' });
+    .filter(function () {
+      return $(this).find('.j-q-order').val() === hasError[0].order;
+    })
+    .eq(0); // 첫 번째 요소만 선택
+
+  console.log('ihih');
+  console.log(targetCard);
+
+  targetCard
+    .addClass('j-error-card')[0]
+    .scrollIntoView({ behavior: 'smooth', block: 'center' });
   Swal.fire({
     icon: 'error',
     title: '작성하신 질문을 다시 확인해주세요',
@@ -655,3 +666,339 @@ function notEmptyAndnotNullValid(targetSection, target, order) {
     hasError.push(errorCreate(order, targetSection + '은 반드시 입력해주세요'));
   }
 }
+
+// 작업 큐를 위한 배열 생성
+let jobQueue = [];
+
+// 작업을 등록하는 함수
+function addJob(job) {
+  jobQueue.push(job);
+}
+
+// 작업을 순차적으로 처리하는 함수
+async function processJobs() {
+  while (true) {
+    if (jobQueue.length > 0) {
+      // 큐에서 첫 번째 작업을 꺼내서 처리
+      const job = jobQueue.shift();
+
+      await handleJob(job);
+    } else {
+      // 큐가 비어있으면 잠시 대기
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+    }
+  }
+}
+
+// 각 작업에 해당하는 처리 함수들 (기존과 동일)
+const jobHandlers = {
+  title: updateSurveyNameAuto, // 설문 제목 수정
+  contentUpdate: updateSurveyContent, // 질문 내용 수정
+  deleteQuestion: deleteSurveyQuestion,
+  essentialUpdate: updateRequiredField, // 질문 필수 표시 수정
+  typeChange: updateQuestionCcseq, // 질문 타입 변경
+  addResponseItem: addSurveyResponseItem, // 질문 응답 항목 추가
+  deleteResponseItem: deleteSurveyResponseItem, // 질문 응답 항목 삭제
+  updateResponseContent: updateSurveyResponseContent, // 질문 응답 항목 내용 수정
+};
+
+// 작업 처리 함수
+async function handleJob(job) {
+  console.log('처리 중인 작업:', job);
+  let handler;
+  if (Array.isArray(job)) {
+    handler = jobHandlers[job[0].job];
+  } else {
+    handler = jobHandlers[job.job];
+  }
+  if (handler) {
+    return await handler(job);
+  } else {
+    console.log('알 수 없는 작업 코드:', job.job);
+  }
+}
+
+// 각 작업에 해당하는 함수들
+async function updateSurveyNameAuto(job) {
+  await questionUpdateProcess({ name: job.content, seq: job.seq });
+}
+
+async function updateSurveyContent(job) {
+  await questionUpdateProcess({ description: job.content, seq: job.seq });
+}
+
+async function updateRequiredField(job) {
+  await questionUpdateProcess({ isEssential: job.content, seq: job.seq });
+}
+
+async function addSurveyResponseItem(job) {
+  // job이 배열인지 확인 후 배열 형태로 변환
+  const jobList = Array.isArray(job) ? job : [job];
+
+  // jobList를 서버로 전송할 데이터 형식으로 변환
+  const requestData = jobList.map((j) => ({
+    seq: 0,
+    questionSeq: j.questionSeq,
+    orderNum: j.orderNum,
+    description: j.content,
+    ccSeq: j.ccSeq,
+  }));
+
+  // questionItemInsertProcess 호출 및 seqList 반환
+  const seqList = await questionItemInsertProcess(requestData);
+
+  console.log(seqList);
+  // seqList가 배열 형태로 반환된다고 가정하고 각 DOM 요소에 id 적용
+  jobList.forEach((j, index) => {
+    const seq = seqList[index].seq;
+    $(j.dom).attr('id', seq);
+  });
+}
+
+async function deleteSurveyResponseItem(job) {
+  await questionItemDeleteProcess({ questionItemSeq: job.questionItemSeq });
+}
+
+async function updateSurveyResponseContent(job) {
+  console.log(job);
+  if (!job.seq) {
+    return addSurveyResponseItem(job);
+  } else {
+    await questionItemUpdateProcess({
+      description: job.content,
+      questionItemSeq: job.seq,
+    });
+  }
+}
+
+async function deleteSurveyQuestion(job) {
+  await questionDeleteProcess({
+    seq: job.questionSeq,
+    SurveySeq: job.surveySeq,
+  });
+}
+
+async function updateSurveyResponseContent(job) {
+  if (!job.seq) {
+    return addSurveyResponseItem(job);
+  } else {
+    await questionItemUpdateProcess({
+      description: job.content,
+      questionItemSeq: job.seq,
+    });
+  }
+}
+
+async function updateQuestionCcseq(job) {
+  questionUpdateProcess({ seq: job.questionSeq, ccSeq: job.ccSeq });
+}
+
+// 서버로 데이터 전송 관련 함수들 (기존과 동일)
+async function questionUpdateProcess(data) {
+  let formData = new FormData();
+  for (let key in data) {
+    if (data.hasOwnProperty(key)) {
+      formData.append(key, data[key]);
+    }
+  }
+
+  return $.ajax({
+    url: '/api/question/auto',
+    type: 'PATCH',
+    data: formData,
+    processData: false,
+    contentType: false,
+  }).catch((error) => {
+    console.error('AJAX 요청 오류:', error);
+    throw error;
+  });
+}
+
+async function questionItemUpdateProcess(data) {
+  return $.ajax({
+    url: '/api/question/item/auto',
+    type: 'PATCH',
+    data: data,
+    contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+    success: function (response) {
+      console.log('요청 성공:', response);
+    },
+    error: function (error) {
+      console.error('AJAX 요청 오류:', error);
+      throw error;
+    },
+  });
+}
+
+async function questionItemInsertProcess(data) {
+  console.log(data);
+  return $.ajax({
+    url: '/api/question/item/auto',
+    type: 'POST',
+    data: JSON.stringify(data),
+    contentType: 'application/json',
+  })
+    .then((response) => {
+      console.log(response);
+      return response.data; // 응답 데이터 반환
+    })
+    .catch((error) => {
+      throw error;
+    });
+}
+
+async function questionItemDeleteProcess(data) {
+  return $.ajax({
+    url: '/api/question/item/auto',
+    type: 'DELETE',
+    data: data,
+    contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+  })
+    .then((response) => {
+      return response.data; // 응답 데이터 반환
+    })
+    .catch((error) => {
+      throw error;
+    });
+}
+
+async function questionDeleteProcess(data) {
+  return $.ajax({
+    url: '/api/question/auto',
+    type: 'DELETE',
+    data: data,
+    contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+  })
+    .then((response) => {
+      return response.data; // 응답 데이터 반환
+    })
+    .catch((error) => {
+      throw error;
+    });
+}
+
+// 초기화 시 작업 처리 시작
+processJobs();
+
+// function addJob(newJob) {
+//   // delete 작업이 들어온 경우 모든 관련 작업 제거 후 추가
+//   if (newJob.priority === 'delete') {
+//     removeJobsByQuestionSeq(newJob.questionSeq);
+//     jobQueue.push(newJob);
+//   } else {
+//     // create 또는 update 작업
+//     if (!hasDeleteJob(newJob.questionSeq)) {
+//       const existingJobIndex = findJobIndex(newJob.questionSeq, newJob.questionItemSeq);
+//       if (existingJobIndex !== -1) {
+//         // 기존 작업 덮어쓰기
+//         jobQueue[existingJobIndex] = newJob;
+//       } else {
+//         jobQueue.push(newJob);
+//       }
+//     }
+//   }
+
+//   // 우선순위별 정렬
+//   sortJobQueueByPriority();
+// }
+
+// // 특정 questionSeq에 대한 모든 작업 제거 (delete 작업을 위해)
+// function removeJobsByQuestionSeq(questionSeq) {
+//   jobQueue = jobQueue.filter((job) => job.questionSeq !== questionSeq);
+// }
+
+// // 동일 questionSeq의 delete 작업이 있는지 확인
+// function hasDeleteJob(questionSeq) {
+//   return jobQueue.some((job) => job.questionSeq === questionSeq && job.priority === 'delete');
+// }
+
+// // 동일 questionSeq와 questionItemSeq 작업 찾기
+// function findJobIndex(questionSeq, questionItemSeq) {
+//   return jobQueue.findIndex(
+//     (job) => job.questionSeq === questionSeq && job.questionItemSeq === questionItemSeq
+//   );
+// }
+
+// // 우선순위별 정렬: delete > create > update 순
+// function sortJobQueueByPriority() {
+//   const priorityOrder = { delete: 3, create: 2, update: 1 };
+//   jobQueue.sort((a, b) => priorityOrder[b.priority] - priorityOrder[a.priority]);
+// }
+
+// 작업 큐 객체로 구조화
+// let jobQueue = {};
+
+// // 작업 등록 함수
+// function addJob(newJob) {
+//   const { questionSeq, priority } = newJob;
+
+//   // questionSeq별로 작업 배열이 없으면 생성
+//   if (!jobQueue[questionSeq]) {
+//     jobQueue[questionSeq] = [];
+//   }
+
+//   // 우선순위가 delete인 경우 모든 관련 작업 제거 후 추가
+//   if (priority === 'delete') {
+//     jobQueue[questionSeq] = [newJob];
+//   } else {
+//     // delete 작업이 없는 경우에만 추가
+//     const deleteJobExists = jobQueue[questionSeq].some((job) => job.priority === 'delete');
+//     if (!deleteJobExists) {
+//       // 동일 questionItemSeq 작업이 있는지 확인
+//       const existingJobIndex = jobQueue[questionSeq].findIndex(
+//         (job) => job.questionItemSeq === newJob.questionItemSeq
+//       );
+
+//       if (existingJobIndex !== -1) {
+//         // 기존 작업 덮어쓰기
+//         jobQueue[questionSeq][existingJobIndex] = newJob;
+//       } else {
+//         // 새로운 작업 추가
+//         jobQueue[questionSeq].push(newJob);
+//       }
+//     }
+//   }
+
+//   // 우선순위별 정렬: delete > create > update 순
+//   jobQueue[questionSeq].sort((a, b) => {
+//     const priorityOrder = { delete: 3, create: 2, update: 1 };
+//     return priorityOrder[b.priority] - priorityOrder[a.priority];
+//   });
+// }
+
+// // processJobs 함수 수정
+// async function processJobs() {
+//   while (true) {
+//     const questionSeqs = Object.keys(jobQueue);
+//     if (questionSeqs.length > 0) {
+//       // 각 questionSeq에 대해 첫 번째 작업을 꺼내서 처리
+//       for (const questionSeq of questionSeqs) {
+//         const job = jobQueue[questionSeq].shift();
+//         await handleJob(job);
+
+//         // 작업 처리 후 해당 questionSeq에 작업이 더 없다면 삭제
+//         if (jobQueue[questionSeq].length === 0) {
+//           delete jobQueue[questionSeq];
+//         }
+//       }
+//     } else {
+//       // 큐가 비어있으면 잠시 대기
+//       await new Promise((resolve) => setTimeout(resolve, 1000));
+//     }
+//   }
+// }
+
+// // 예제 작업 객체
+// let job = {
+//   job: 'updateResponseContent',
+//   content: val,
+//   seq: questionItemSeq,
+//   priority: 'update', // 우선순위
+//   target: 'question_item',
+//   orderNum: orderNum, // orderNum 값을 job 객체에 추가
+//   dom: this,
+//   questionSeq: questionSeq,
+// };
+
+// // 초기화 시 작업 처리 시작
+// processJobs();

@@ -45,8 +45,8 @@
 			$(function () {
 
 				let surveyName = "${survey.name}";
-				updateSurveyName("편집하기");
-
+				updateSurveyName('대쉬보드');
+				updateSurveyNames(surveyName);
 				$('.content').on('keyup', '.j-survey-name-input', async function () {
 					let idx = $(this).parent().parent().index();
 					$('.j-question-list').find('.j-question').eq(idx).find('.question-name > span').html($(this).val());
@@ -91,7 +91,8 @@
 									<div class="j-ai-img fw-bold fs-6">AI</div>
 								</div>
 								<div class="aiImgBox" data-bs-toggle="modal" data-bs-target="#makeAutoQuestion-modal">
-									<img src="/resources/img/question/ai.png" />
+									<!-- <img src="/resources/img/question/ai.png" /> -->
+									<!-- <span class="saveFont">저장 중..</span> -->
 								</div>
 							</div>
 							<div class="j-question-list">
@@ -107,8 +108,8 @@
 						</div>
 						<div class="j-nav-button-box j-flex-row-center">
 							<!-- <input type="button" value="저장" class="j-nav-input-button j-nav-save-button fs-6 btn"> -->
-							<button class="btn btn-primary j-nav-input-button j-nav-save-button fs-6"><span
-									class="button-text">저장</span></button>
+							<!-- <button class="btn btn-primary j-nav-input-button j-nav-save-button fs-6"><span
+									class="button-text">저장</span></button> -->
 							<!-- <input type="button" value="게시" class="j-nav-input-button j-depoly-button  fs-6 btn"> -->
 							<button type="button" id="postButton"
 								class="btn btn-primary j-nav-input-button j-depoly-button fs-6 fw-bold" data-bs-toggle="modal"
@@ -131,7 +132,9 @@
 					<div class="j-deploy-box">
 					</div>
 					<img class="j-arrow-content j-arrow-right" src="/resources/img/question/arrow-right.png">
+
 					<div class="j-progress-wrap j-flex-row-center">
+
 						<div class="j-fix-pro j-flex-col-center j-pro-style j-pro-selected">
 							<img src="/resources/img/question/edit-blue.png">
 							<div>질문 편집</div>
@@ -141,6 +144,7 @@
 							<img src="/resources/img/question/con-gray.png">
 							<div>질문 흐름</div>
 						</div>
+
 					</div>
 					<div class="content">
 
@@ -316,11 +320,11 @@
 												<div class="j-type-name-modal">드롭다운</div>
 												<input type="hidden" value="10" />
 											</div>
-											<div class="j-typeAndImg-modal j-flex-row-center">
+											<!-- <div class="j-typeAndImg-modal j-flex-row-center">
 												<img src="/resources/img/question/chart.png" />
 												<div class="j-type-name-modal">객관식표</div>
 												<input type="hidden" value="11" />
-											</div>
+											</div> -->
 										</div>
 									</div>
 									<div class="j-qual-box j-flex-col-center">
@@ -420,11 +424,11 @@
 												<div class="j-type-name-modal">드롭다운</div>
 												<input type="hidden" value="10" />
 											</div>
-											<div class="j-typeAndImg-modal j-flex-row-center">
+											<!-- <div class="j-typeAndImg-modal j-flex-row-center">
 												<img src="/resources/img/question/chart.png" />
 												<div class="j-type-name-modal">객관식표</div>
 												<input type="hidden" value="11" />
-											</div>
+											</div> -->
 										</div>
 									</div>
 									<div class="j-qual-box j-flex-col-center">

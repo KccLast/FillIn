@@ -41,6 +41,12 @@
                     $('.dashboard').text(title);
                 }
             </script>
+            <style>
+                .j-header-name-focus:focus {
+                    border: none;
+                    outline: none;
+                }
+            </style>
 
         </head>
 
@@ -56,15 +62,21 @@
                                 <img class="logo" alt="로고" src="/resources/img/common/logo.png">
                             </a>
                         </li>
-                        <li class="dashboard"></li>
+                        <div style="width: 68%; display: flex; align-items: center; justify-content: center;">
+                            <li class="dashboard" style="width: 10%;">
 
+                            </li>
+                            <input class="j-header-surveyName j-header-name-focus form-control" type="text" readonly
+                                style="border: none; width: 85%;">
+                        </div>
                         <div class="d-flex align-items-center">
                             <li class="px-2 alarm-item"><img alt="alarm" src="/resources/img/common/alarm.png"
                                     width="25" height="23">
                                 <div class="circle"></div>
                             </li>
                             <li class="px-2 username">
-                                <sec:authentication property="principal.member.name" />님(<sec:authentication property="principal.member.username"/>)
+                                <sec:authentication property="principal.member.name" />님(
+                                <sec:authentication property="principal.member.username" />)
                             </li>
                             <li class="px-2">
                                 <!-- 모달 연결 -->
@@ -82,4 +94,3 @@
 
 
         </html>
-

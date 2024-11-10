@@ -7,12 +7,7 @@ import com.kcc.fillin.survey.domain.SurveyVO;
 import com.kcc.fillin.survey.service.SurveyService;
 import jakarta.validation.Valid;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.kcc.fillin.global.Common.Response;
 import com.kcc.fillin.question.domain.QuestionItemVO;
@@ -146,4 +141,36 @@ public class QuestionRestController {
 		return Response.setError("질문순서 변경에 실패",500,"/api/question/order");
 	}
 
+	@PatchMapping("/auto")
+	public Response<?> updateAutoQuestionAutoSave(@ModelAttribute QuestionAutoUpdateRequest questionAutoUpdateRequest){
+		questionService.updateQuestionAuto(questionAutoUpdateRequest);
+		return Response.setSuccess("성공적으로 질문 수정",200);
+	}
+	@PatchMapping("/item/auto")
+	public Response<?> updateAutoQuestionItemAutoSave(@ModelAttribute QuestionAutoUpdateRequest questionAutoUpdateRequest){
+		questionService.updateQuestionItemAuto(questionAutoUpdateRequest);
+		return  null;
+	}
+	@PostMapping("/item/auto")
+	public Response<?> insertAutoQuestionItemAutoSave(@RequestBody List<QuestionItemInsertRequest> questionAutoUpdateRequest){
+		System.out.println("questionAutoUpdateRequest = " + questionAutoUpdateRequest);
+		if(questionAutoUpdateRequest.size() < 1) return Response.setFail("업데이트할 데이터가 전달오류",400);
+		questionService.InsertQuestionItemAuto(questionAutoUpdateRequest);
+		return  Response.setSuccess(questionAutoUpdateRequest,200);
+	}
+
+	@DeleteMapping("/item/auto")
+	public Response<?> deleteQuestionItemAuto(@ModelAttribute QuestionAutoUpdateRequest questionAutoUpdateRequest){
+		DeleteQuestionItemRequest deleteQuestionRequest = new DeleteQuestionItemRequest();
+		deleteQuestionRequest.setSeq(questionAutoUpdateRequest.getQuestionItemSeq());
+
+		questionService.deleteQuestionItem(List.of(deleteQuestionRequest));
+		return  Response.setSuccess(questionAutoUpdateRequest.getQuestionItemSeq(),200);
+	}
+	@DeleteMapping("/auto")
+	public Response<?> deleteAutoQuestionAutoSave(@ModelAttribute	DeleteQuestionRequest questionAutoUpdateRequest){
+		System.out.println("questionAutoUpdateRequest = " + questionAutoUpdateRequest);
+		questionService.deleteQuestion(List.of( questionAutoUpdateRequest));
+		return  Response.setSuccess(questionAutoUpdateRequest,200);
+	}
 }

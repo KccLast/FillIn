@@ -171,8 +171,7 @@ public class QuestionServiceImpl implements QuestionService {
 		//int cnt = questionDao.countCondition(conditionRequest);
 		boolean result = false;
 		boolean cnt = conditionRequest.getSeq() == -1;
-		System.out.println("cnt = ######################################" + cnt);
-		System.out.println(cnt);
+
 		if(cnt){
 			result = questionDao.insertCondition(conditionRequest);
 		}else{
@@ -184,6 +183,7 @@ public class QuestionServiceImpl implements QuestionService {
 
 	@Override
 	public boolean deleteCondition(ConditionRequest conditionRequest) {
+
 		return questionDao.deleteCondition(conditionRequest);
 	}
 
@@ -191,6 +191,33 @@ public class QuestionServiceImpl implements QuestionService {
 	public List<MemberSurveyResponse> getSurveyByMemberSeq(Long seq) {
 		return questionDao.selectSurveyByMemberSeq(seq);
 	}
+
+	@Override
+	public void updateQuestionAuto(QuestionAutoUpdateRequest questionAutoUpdateRequest) {
+		if(questionAutoUpdateRequest.isCcseqNotNull()){
+			questionDao.deleteAllQuestionItem(questionAutoUpdateRequest.getSeq());
+		}
+		questionDao.updateQuestionAuto(questionAutoUpdateRequest);
+	}
+
+	@Override
+	public void updateQuestionItemAuto(QuestionAutoUpdateRequest questionAutoUpdateRequest) {
+		questionDao.updateQuestionItemAuto(questionAutoUpdateRequest);
+	}
+
+	@Override
+	public void InsertQuestionItemAuto( List<QuestionItemInsertRequest> questionAutoUpdateRequest) {
+		if(questionAutoUpdateRequest.get(0).isDropDown()){
+			questionDao.deleteAllQuestionItem(questionAutoUpdateRequest.get(0).getQuestionSeq());
+		}
+		for(QuestionItemInsertRequest que : questionAutoUpdateRequest){
+			questionDao.InsertQuestionItemAuto(que);
+		}
+
+	}
+
+
+
 
 	private boolean answerIsContactData(SubmitRequest item) {
 		// TODO Auto-generated method stub
