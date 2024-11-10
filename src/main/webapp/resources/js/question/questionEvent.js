@@ -962,7 +962,6 @@ $(function () {
     if (val === '') {
       val = ' ';
     }
-    let questionSeq = $(this).parents('.j-question-card').find('.j-qseq').val();
 
     if (isNotInputLenError(this, $(this).val().length, 100)) {
       let job = { job: 'title', content: val, seq: questionSeq };
@@ -987,6 +986,12 @@ $(function () {
       };
       addJob(job);
     }
+  });
+
+  $('.j-header-surveyName').click(function () {
+    $(this).removeClass('j-header-name-focus');
+    $(this).prop('readonly', false); // readonly 속성 제거
+    $(this).focus(); // 클릭 후 바로 입력할 수 있도록 포커스
   });
 });
 
@@ -1302,4 +1307,8 @@ function setNewNavColor(selectDiv, ccSeq) {
   } else {
     target.addClass('j-quancolor');
   }
+}
+
+function updateSurveyNames(name) {
+  $('.j-header-surveyName').val(name);
 }

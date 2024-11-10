@@ -204,9 +204,11 @@ function saveQuestionInDB(questions) {
 
         if (response.data.ccSeq === 7 || response.data.ccSeq === 8) {
           let questionItemSeq = response.data.questionItems[0].seq;
+          console.log(questionItemSeq);
+          console.log(newCard);
           newCard
             .find('.j-option-input-radio > input[type="text"]')
-            .attr('id' + questionItemSeq);
+            .attr('id', questionItemSeq);
           // .each((idx, item) => {
           //   $(item).addClass('qi ' + qi.seq);
           // });
@@ -758,6 +760,7 @@ async function deleteSurveyResponseItem(job) {
 }
 
 async function updateSurveyResponseContent(job) {
+  console.log(job);
   if (!job.seq) {
     return addSurveyResponseItem(job);
   } else {
@@ -836,6 +839,7 @@ async function questionItemInsertProcess(data) {
     contentType: 'application/json',
   })
     .then((response) => {
+      console.log(response);
       return response.data; // 응답 데이터 반환
     })
     .catch((error) => {
