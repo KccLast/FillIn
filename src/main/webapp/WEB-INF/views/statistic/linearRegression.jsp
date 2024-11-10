@@ -94,6 +94,15 @@
                                             <canvas id="regression-chart" width="400" height="200"></canvas>
                                         </div>
                                     </div>
+                            <button type="button" class="btn btn-primary mb-3">AI 분석</button>
+                            <div>
+                                <div class="card">
+                                    <div class="card-header fs-5 fw-bold">분석 결과</div>
+                                    <div class="card-body">
+
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <%@include file="/WEB-INF/views/statistic/modal-liner-regression.jsp" %>
