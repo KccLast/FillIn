@@ -9,6 +9,7 @@ $(document).ready(function () {
             success: function (response) {
                 // 질문 로드
                 updateSelectQuestion(response.data);
+                console.log(response.data);
                 $('#customRange3').val(2);
                 $('#currentRangeValue').text(2);
 
@@ -44,6 +45,7 @@ function updateSelectQuestion(response) {
     // 첫 번째 항목을 기본으로 선택
     if (response.length > 0) {
         questionSelect.val(response[0].questionId); // 첫 번째 질문 선택
+        // console.log(response[0].questionId);
     }
 }
 
@@ -67,6 +69,10 @@ $('#update-btn').on('click', function () {
     }
 
     requestKmeans(questionId, 2);
+
+    // const clustersData = chart.w.config.series; // 차트에 있는 시리즈 데이터 접근
+    //
+    // console.log(clustersData);
 });
 
 $('#next-btn').on('click', function () {
@@ -79,6 +85,8 @@ $('#next-btn').on('click', function () {
     }
 
     const clustersData = chart.w.config.series; // 차트에 있는 시리즈 데이터 접근
+
+    console.log(clustersData);
     const formattedData = [];
 
     // 클러스터 데이터를 순회하면서 answerSeq, participantSeq, answerContent, answerDate, cluster 번호 추출
@@ -86,10 +94,10 @@ $('#next-btn').on('click', function () {
         cluster.data.forEach(data => {
             formattedData.push({
                 cluster: clusterIndex + 1,  // 클러스터 번호
-                answerSeq: data[2],
-                participantSeq: data[3],
-                answerContent: data[4],     // answerContent
-                answerDate: data[5]         // answerDate
+                answerContent: data[2],
+                answerDate: data[3],
+                answerSeq: data[4],     // answerContent
+                participantSeq: data[5]         // answerDate
             });
         });
     });
@@ -145,17 +153,42 @@ function requestKmeans(questionId, n_cluster) {
                     console.log('seriesData : ' + JSON.stringify(response.data));
                     const seriesData = {};
 
-                    // 클러스터별로 데이터 그룹화
+                    // 초반 코드
                     response.data.forEach(item => {
                         if (!seriesData[item.Cluster]) {
                             seriesData[item.Cluster] = [];
                         }
-                        seriesData[item.Cluster].push([item.PCA1, item.PCA2, item.answerSeq, item.participantSeq, item.answerContent, item.answerDate]);
+                        seriesData[item.Cluster].push([item.PCA1, item.PCA2, item.answerContent, item.answerDate, item.answerSeq, item.participantSeq]);
                     });
+
+                    // // 클러스터별로 데이터 그룹화
+                    // response.data.forEach(item => {
+                    //     if (!seriesData[item.Cluster]) {
+                    //         seriesData[item.Cluster] = [];
+                    //     }
+                    //     seriesData[item.Cluster].push([item.PCA1, item.PCA2, item.answerSeq, item.participantSeq, item.answerContent, item.answerDate]);
+                    // });
+
+                    // 클러스터별로 데이터 그룹화하고 메타데이터는 따로 저장
+                    // response.data.forEach(item => {
+                    //     if (!seriesData[item.Cluster]) {
+                    //         seriesData[item.Cluster] = [];
+                    //     }
+                    //     seriesData[item.Cluster].push({
+                    //         x: item.PCA1,
+                    //         y: item.PCA2,
+                    //         meta: { // 메타데이터 추가
+                    //             answerSeq: item.answerSeq,
+                    //             participantSeq: item.participantSeq,
+                    //             answerContent: item.answerContent,
+                    //             answerDate: item.answerDate
+                    //         }
+                    //     });
+                    // });
 
                     // ApexCharts에 맞는 시리즈 형태로 변환
                     const series = Object.keys(seriesData).map(cluster => ({
-                        name: `Cluster ${cluster}`,
+                        name: `Cluster ${parseInt(cluster, 10) + 1}`,
                         data: seriesData[cluster]
                     }));
 
@@ -181,6 +214,8 @@ function updateChart(series) {
         chart.updateSeries(series); // 기존 차트에 데이터 업데이트
     } else {
         // 차트가 생성되지 않은 경우 새로운 차트 생성
+        console.log(series);
+
         var options = {
             series: series, // Ajax 응답에서 받은 데이터로 시리즈 설정
             chart: {
@@ -215,8 +250,8 @@ function updateChart(series) {
             },
             tooltip: {
                 custom: function ({series, seriesIndex, dataPointIndex, w}) {
-                    const answerContent = w.config.series[seriesIndex].data[dataPointIndex][4]; // answerContent 추출
-                    const answerDate = w.config.series[seriesIndex].data[dataPointIndex][5];
+                    const answerContent = w.config.series[seriesIndex].data[dataPointIndex][2]; // answerContent 추출
+                    const answerDate = w.config.series[seriesIndex].data[dataPointIndex][3];
                     return `
                         <div class="tooltip-content" style="padding: 10px; border: 1px solid #ddd; border-radius: 5px; background-color: #fff; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);">
                             <div style="font-weight: bold;">응답</div>
@@ -225,6 +260,25 @@ function updateChart(series) {
                             <div><strong>내용:</strong> ${answerContent}</div>
                         </div>
                     `;
+                    // const answerContent = w.config.series[seriesIndex].data[dataPointIndex][4]; // answerContent 추출
+                    // const answerDate = w.config.series[seriesIndex].data[dataPointIndex][5];
+                    // return `
+                    //     <div class="tooltip-content" style="padding: 10px; border: 1px solid #ddd; border-radius: 5px; background-color: #fff; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);">
+                    //         <div style="font-weight: bold;">응답</div>
+                    //         <hr style="margin: 5px 0;">
+                    //         <div><strong>응답일:</strong> ${answerDate}</div>
+                    //         <div><strong>내용:</strong> ${answerContent}</div>
+                    //     </div>
+                    // `;
+                    // const meta = w.config.series[seriesIndex].data[dataPointIndex].meta; // 메타데이터 추출
+                    // return `
+                    //     <div class="tooltip-content" style="padding: 10px; border: 1px solid #ddd; border-radius: 5px; background-color: #fff; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);">
+                    //         <div style="font-weight: bold;">응답</div>
+                    //         <hr style="margin: 5px 0;">
+                    //         <div><strong>응답일:</strong> ${meta.answerDate}</div>
+                    //         <div><strong>내용:</strong> ${meta.answerContent}</div>
+                    //     </div>
+                    // `;
                 }
             }
         };
@@ -243,12 +297,14 @@ function updateTable(series) {
         cluster.data.forEach((data, dataIndex) => {
             const row = `
                 <tr>
-                    <td>${data[5]}</td> <!-- answerDate -->
+                    <td>${data[3]}</td> <!-- answerDate -->
                     <td>${clusterIndex + 1}</td> <!-- cluster no -->
-                    <td>${data[4]}</td> <!-- answerContent -->
+                    <td>${data[2]}</td> <!-- answerContent -->
                 </tr>
             `;
             tableBody.append(row); // 테이블에 행 추가
         });
     });
 }
+
+
