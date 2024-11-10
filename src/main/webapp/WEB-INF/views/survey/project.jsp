@@ -45,7 +45,7 @@
 			$(function () {
 
 				let surveyName = "${survey.name}";
-				updateSurveyName('대쉬보드');
+				updateSurveyName('대시보드');
 				updateSurveyNames(surveyName);
 				$('.content').on('keyup', '.j-survey-name-input', async function () {
 					let idx = $(this).parent().parent().index();
@@ -90,7 +90,7 @@
 									<span class="fw-bold">전체문항수</span>
 									<div class="j-ai-img fw-bold fs-6">AI</div>
 								</div>
-								<div class="aiImgBox" data-bs-toggle="modal" data-bs-target="#makeAutoQuestion-modal">
+								<div class="aiImgBox">
 									<!-- <img src="/resources/img/question/ai.png" /> -->
 									<!-- <span class="saveFont">저장 중..</span> -->
 								</div>
@@ -110,6 +110,8 @@
 							<!-- <input type="button" value="저장" class="j-nav-input-button j-nav-save-button fs-6 btn"> -->
 							<!-- <button class="btn btn-primary j-nav-input-button j-nav-save-button fs-6"><span
 									class="button-text">저장</span></button> -->
+							<button class="btn btn-primary j-nav-input-button  fs-6" data-bs-toggle="modal"
+								data-bs-target="#makeAutoQuestion-modal"><span class="button-text">AI 질문 생성</span></button>
 							<!-- <input type="button" value="게시" class="j-nav-input-button j-depoly-button  fs-6 btn"> -->
 							<button type="button" id="postButton"
 								class="btn btn-primary j-nav-input-button j-depoly-button fs-6 fw-bold" data-bs-toggle="modal"
