@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
+import java.util.List;
+
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
@@ -15,4 +17,5 @@ public class QuantityQuestionsResponse {
     private Long questionSeq;
     private String questionName;
     private int ccSeq;
+    private List<String> questionContents;
 }

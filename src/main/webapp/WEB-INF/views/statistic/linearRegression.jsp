@@ -13,6 +13,7 @@
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
             integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
         <link rel="stylesheet" type="text/css" href="/resources/common/statisticsNav.css">
+        <link rel="stylesheet" type="text/css" href="/resources/common/dashBoardNav.css">
         <link rel="stylesheet" type="text/css" href="/resources/css/statistic/linearRegression.css">
         <%--  chart.js  --%>
         <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -20,7 +21,7 @@
 
     <body>
         <%@ include file="/resources/common/header.jsp" %>
-            <%@ include file="/resources/common/statisticsNav.jsp" %>
+            <%@ include file="/resources/common/dashBoardNav.jsp" %>
                 <%@include file="/resources/common/commonSelectModal.jsp" %>
 
                     <div class="content">
@@ -93,6 +94,15 @@
                                             <canvas id="regression-chart" width="400" height="200"></canvas>
                                         </div>
                                     </div>
+                            <button type="button" class="btn btn-primary mb-3">AI 분석</button>
+                            <div>
+                                <div class="card">
+                                    <div class="card-header fs-5 fw-bold">분석 결과</div>
+                                    <div class="card-body">
+
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <%@include file="/WEB-INF/views/statistic/modal-liner-regression.jsp" %>

@@ -23,19 +23,34 @@
     <!--    </select>-->
 
     <!--  정량 평가 질문 가져오기  -->
-    <select id="getQuantityQuestionsBySurvey" resultType="QuantityQuestionsResponse" parameterType="Long">
-        SELECT s.seq  AS survey_seq,
-               s.name AS surveyName,
-               q.seq  AS question_seq,
-               s.cc_seq,
-               q.name AS questionName
+    <resultMap id="QuantityQuestionsResponseMap" type="QuantityQuestionsResponse">
+        <result property="surveySeq" column="surveySeq"/>
+        <result property="surveyName" column="surveyName"/>
+        <result property="questionSeq" column="questionSeq"/>
+        <result property="questionName" column="questionName"/>
+        <result property="ccSeq" column="ccSeq"/>
+
+        <collection property="questionContents" ofType="string">
+            <result column="questionContent"/>
+        </collection>
+    </resultMap>
+
+    <select id="getQuantityQuestionsBySurvey" resultMap="QuantityQuestionsResponseMap" resultType="QuantityQuestionsResponse" parameterType="Long">
+        SELECT s.seq      AS surveySeq,
+               s.name     AS surveyName,
+               q.seq      AS questionSeq,
+               s.cc_seq   AS ccSeq,
+               q.name     AS questionName,
+               qi.content AS questionContent
         FROM survey s
                  JOIN question q
                       ON s.seq = q.survey_seq
+                 JOIN question_item qi
+                      ON q.seq = qi.question_seq
         WHERE q.cc_seq IN (SELECT seq
                            FROM common_code
                            WHERE parent_seq = 3
-                           AND seq != 8)
+                             AND seq != 8)
           AND s.seq = #{surveySeq}
     </select>
 

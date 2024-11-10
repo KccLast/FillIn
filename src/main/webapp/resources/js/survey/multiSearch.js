@@ -3,26 +3,51 @@ $(document).ready(function () {
     const pageSize = 6;
     let surveysData = [];
 
+    // 페이지 로드 시 검색 조건 불러오기
+    //loadSearchCriteria();
+
+    // 페이지 로드 시 세션에 저장된 검색 조건을 가져오는 함수
+    function loadSearchCriteria() {
+        const searchCriteria = JSON.parse(sessionStorage.getItem('searchCriteria'));
+        console.log('Loaded search criteria:', searchCriteria);
+
+        if (searchCriteria) {
+            $('#title').val(searchCriteria.name || '');
+            $('#startCreatedAt').val(searchCriteria.startCreatedAt || '');
+            $('#endCreatedAt').val(searchCriteria.endCreatedAt || '');
+            $('#startUpdatedAt').val(searchCriteria.startUpdatedAt || '');
+            $('#endUpdatedAt').val(searchCriteria.endUpdatedAt || '');
+            $('#minAnswerCount').val(searchCriteria.minAnswerCount || '');
+            $('#maxAnswerCount').val(searchCriteria.maxAnswerCount || '');
+            filteringSurveyCards(); // 검색 조건을 불러와서 필터링 실행
+        }
+    }
+
     const savedRequestData = sessionStorage.getItem("requestData");
+
     const savedResultData = sessionStorage.getItem("resultData");
 
-    if (savedRequestData && savedResultData &&
-        (performance.getEntriesByType("navigation")[0].type === 'back_forward' || performance.getEntriesByType("navigation")[0].type === 'reload')) {
-        const requestData = JSON.parse(savedRequestData);
-        const resultData = JSON.parse(savedResultData);
+    console.log('savedResultData: ', savedResultData);
+    console.log('savedRequestData: ', savedRequestData);
 
-        // 저장된 검색 조건과 결과 적용
-        $('#progress-ccSeq').val(requestData.ccSeq);
-        $('#startCreatedAt').val(requestData.startCreatedAt);
-        $('#endCreatedAt').val(requestData.endCreatedAt);
-        $('#startUpdatedAt').val(requestData.startUpdatedAt);
-        $('#endUpdatedAt').val(requestData.endUpdatedAt);
-        $('#title').val(requestData.name);
-        $('#minAnswerCount').val(requestData.minAnswerCount);
-        $('#maxAnswerCount').val(requestData.maxAnswerCount);
+    // sessionStorage에서 검색 조건 불러오기
+    var title = sessionStorage.getItem('title');
+    var startCreatedAt = sessionStorage.getItem('startCreatedAt');
+    var endCreatedAt = sessionStorage.getItem('endCreatedAt');
+    var startUpdatedAt = sessionStorage.getItem('startUpdatedAt');
+    var endUpdatedAt = sessionStorage.getItem('endUpdatedAt');
+    var minAnswerCount = sessionStorage.getItem('minAnswerCount');
+    var maxAnswerCount = sessionStorage.getItem('maxAnswerCount');
 
-        surveysData = resultData || [];
-    }
+    // 불러온 값을 폼에 자동으로 설정
+    // if (title) $('#title').val(title);
+    if (startCreatedAt) $('#startCreatedAt').val(startCreatedAt);
+    if (endCreatedAt) $('#endCreatedAt').val(endCreatedAt);
+    if (startUpdatedAt) $('#startUpdatedAt').val(startUpdatedAt);
+    if (endUpdatedAt) $('#endUpdatedAt').val(endUpdatedAt);
+    if (minAnswerCount) $('#minAnswerCount').val(minAnswerCount);
+    if (maxAnswerCount) $('#maxAnswerCount').val(maxAnswerCount);
+
 
     // 기간별 설문지 조회
     $('.date-badge').on('click', function () {
@@ -117,16 +142,35 @@ $(document).ready(function () {
     // 다중 검색 조건으로 조회
     $('#searchBtn').on('click', function () {
         currentPage = 1;
+        saveSearchCriteria();
 
-        // 날짜 값 포맷팅
+        // 검색 조건을 변수에 저장
+        var title = $('#title').val();
         var startCreatedAt = $('#startCreatedAt').val();
         var endCreatedAt = $('#endCreatedAt').val();
         var startUpdatedAt = $('#startUpdatedAt').val();
         var endUpdatedAt = $('#endUpdatedAt').val();
+        var minAnswerCount = $('#minAnswerCount').val();
+        var maxAnswerCount = $('#maxAnswerCount').val();
+
+        // sessionStorage에 저장
+        sessionStorage.setItem('title', title);
+        sessionStorage.setItem('startCreatedAt', startCreatedAt);
+        sessionStorage.setItem('endCreatedAt', endCreatedAt);
+        sessionStorage.setItem('startUpdatedAt', startUpdatedAt);
+        sessionStorage.setItem('endUpdatedAt', endUpdatedAt);
+        sessionStorage.setItem('minAnswerCount', minAnswerCount);
+        sessionStorage.setItem('maxAnswerCount', maxAnswerCount);
+
+        // 날짜 값 포맷팅
+        startCreatedAt = $('#startCreatedAt').val();
+        endCreatedAt = $('#endCreatedAt').val();
+        startUpdatedAt = $('#startUpdatedAt').val();
+        endUpdatedAt = $('#endUpdatedAt').val();
 
         // 응답 수 입력 유효성 검사
-        let minAnswerCount = $('#minAnswerCount').val();
-        let maxAnswerCount = $('#maxAnswerCount').val();
+        minAnswerCount = $('#minAnswerCount').val();
+        maxAnswerCount = $('#maxAnswerCount').val();
 
         minAnswerCount = parseInt(minAnswerCount, 10);
         maxAnswerCount = parseInt(maxAnswerCount, 10);
@@ -159,14 +203,12 @@ $(document).ready(function () {
 
         console.log(requestData);
 
-        let scrollSearching = false;
-
         // sessionStorage에 검색 조건 저장
         sessionStorage.setItem("requestData", JSON.stringify(requestData));
 
         // AJAX 요청
         $.ajax({
-            url: '/api/survey/dashboard' ,
+            url: '/api/survey/dashboard',
             type: 'POST',
             contentType: 'application/json',
             data: JSON.stringify(requestData),
@@ -191,19 +233,7 @@ $(document).ready(function () {
                 filteringSurveyCards(); // 필터링된 설문 카드 동적으로 업데이트
                 setupPagination(); // 페이지 설정
 
-                // 뒤로가기, 새로고침인 경우 페이지 정보 sessionStorage에서 가져오기
-                // if(!scrollSearching && performance.getEntriesByType("navigation")[0].type === 'back_forward'
-                //     || performance.getEntriesByType("navigation")[0].type === 'reload') {
-                //     response.data.result = JSON.parse(sessionStorage.getItem("resultData"));
-                //     scrollSearching = true;
-                // }
 
-                // sessionStorage에 검색 결과 저장
-                sessionStorage.setItem("resultData", JSON.stringify(surveysData));
-                scrollSearching = true;
-
-                // 뒤로가기 스크롤 정보 가져오기 위해 페이지 정보 저장
-                // if()
             },
             error: function (xhr, status, error) {
                 console.error('Error message:', xhr.responseText || error);
@@ -212,19 +242,36 @@ $(document).ready(function () {
     });
 
     function filteringSurveyCards() {
-        // JSP에서 변경된 카드 컨테이너 클래스명에 맞춤
+        // 세션에서 검색 조건을 불러오기
+        const searchCriteria = JSON.parse(sessionStorage.getItem('searchCriteria')) || {};
+        console.log('searchCre: ', searchCriteria);
         $('.row.row-cols-1').empty();
+        $('.pagination').hide();
+
 
         // 현재 페이지에 해당하는 설문 데이터 필터링
-        const selectedCcSeq = $('#progress-ccSeq').val() || null;
+        // const selectedCcSeq = $('#progress-ccSeq').val() || null;
+        const selectedCcSeq = searchCriteria.ccSeq || null;
 
-        const filteredSurveys = surveysData.filter(survey => {
+        let filteredSurveys = surveysData.filter(survey => {
             // ccSeq가 빈 문자열인 경우 모든 설문지를 포함
             if (selectedCcSeq === null || selectedCcSeq == '') {
                 return true; // 모든 설문지 포함
             }
             return survey.ccSeq == selectedCcSeq; // 선택된 ccSeq와 일치하는 설문지만 포함
         });
+
+        console.log(filteredSurveys);
+
+        if (searchCriteria.name) {
+            filteredSurveys = filteredSurveys.filter(survey => survey.name.includes(searchCriteria.name));
+        }
+        if (searchCriteria.minAnswerCount) {
+            filteredSurveys = filteredSurveys.filter(survey => survey.answerCount >= searchCriteria.minAnswerCount);
+        }
+        if (searchCriteria.maxAnswerCount) {
+            filteredSurveys = filteredSurveys.filter(survey => survey.answerCount <= searchCriteria.maxAnswerCount);
+        }
 
         // 페이지 범위 계산 (1페이지는 추가 버튼 포함 6개, 이후 페이지는 6개)
         const startRow = (currentPage - 1) * pageSize;
@@ -236,9 +283,15 @@ $(document).ready(function () {
 
         const currentSurveys = filteredSurveys.slice(startRow, endRow);
 
-
         if (currentSurveys.length === 0) {
-            $('.row.row-cols-1').append('<p>검색 결과와 일치하는 설문지가 없습니다.</p>');
+            $('.row.row-cols-1').append(`
+                <div class="no-results-container d-flex flex-column align-items-center justify-content-center text-center p-4 mx-auto">
+                    <div class="no-results-icon mb-3">
+                        <img src="/resources/img/survey/no-results.png" alt="No Results" class="img-fluid mb-3" style="max-width: 50px;" />
+                    </div>
+                    <p class="no-results-text h5 text-muted">검색 결과와 일치하는 설문지가 없습니다.</p>
+                </div>
+            `);
             return;
         }
 
@@ -248,10 +301,10 @@ $(document).ready(function () {
         if (currentPage === 1) {
             surveyCard =
                 `<div class="col">
-					<div class="card survey-card">
+					<div class="card survey-card" data-bs-toggle="modal" data-bs-target="#makeSurvey-modal">
 						<div class="add-survey-card">
 							<img alt="plusBtn" src="/resources/img/common/plusButton.png"
-								data-bs-toggle="modal" data-bs-target="#makeAutoQuestion-modal">
+								>
 						</div>
 					</div> 
 				</div>`;
@@ -260,7 +313,7 @@ $(document).ready(function () {
         if (Array.isArray(currentSurveys)) {
             // 필터링된 설문지 생성
             surveyCard += currentSurveys.map(survey =>
-            `<div class="col"> 
+                `<div class="col"> 
                 <a href="/survey/${survey.seq}" class="text-decoration-none text-dark">
                     <div class="card each-survey-card d-flex flex-column">
                         <div class="card-body py-1"> 
@@ -294,7 +347,7 @@ $(document).ready(function () {
             // const isFirstPage = (currentPage === 1); // 현재 페이지가 1페이지인지 확인
             const dummyCount = (currentPage === 1) ? (5 - totalCards) : (6 - totalCards);
 
-            if(dummyCount > 0) {
+            if (dummyCount > 0) {
                 const dummyCards = Array(dummyCount).fill(`<div class="col dummy-card"></div>`)
                     .join('');
                 surveyCard += dummyCards;
@@ -302,6 +355,7 @@ $(document).ready(function () {
 
             // 최종적으로 생성된 HTML을 카드 컨테이너에 추가
             $('.row.row-cols-1').append(surveyCard);
+            $('.pagination').show();
         }
     }
 
@@ -314,16 +368,17 @@ $(document).ready(function () {
 
         // 처음으로 버튼 추가
         const firstPageLink = $('<a class="page-link" href="#"> <i class="bi bi-chevron-double-left"></i> </a>')
-                .on('click', function (e) {
-                    e.preventDefault();
-                    if(currentPage > 1) {
-                        currentPage = 1; // 첫 페이지로 이동
-                        filteringSurveyCards();
-                        setupPagination();
-                    }
-                });
+            .on('click', function (e) {
+                e.preventDefault();
+                if (currentPage > 1) {
+                    currentPage = 1; // 첫 페이지로 이동
+                    //sessionStorage.setItem("currentPage", currentPage); // 페이지 이동 시 세션 업데이트
+                    filteringSurveyCards();
+                    setupPagination();
+                }
+            });
 
-        if(currentPage === 1) {
+        if (currentPage === 1) {
             firstPageLink.addClass('disabled');
         }
 
@@ -331,14 +386,14 @@ $(document).ready(function () {
 
         // 이전 버튼 추가
         const prevPageLink = $('<a class="page-link" href="#"> <i class="bi bi-chevron-left"></i> </a>')
-                .on('click', function (e) {
-                    e.preventDefault();
-                    if (currentPage > 1) {
-                        currentPage--; // 이전 페이지로 이동
-                        filteringSurveyCards();
-                        setupPagination();
-                    }
-                });
+            .on('click', function (e) {
+                e.preventDefault();
+                if (currentPage > 1) {
+                    currentPage--; // 이전 페이지로 이동
+                    filteringSurveyCards();
+                    setupPagination();
+                }
+            });
 
         if (currentPage === 1) {
             prevPageLink.addClass('disabled'); // 현재 첫 페이지일 경우 비활성화
@@ -367,14 +422,14 @@ $(document).ready(function () {
 
         // 다음 버튼 추가
         const nextPageLink = $('<a class="page-link" href="#"> <i class="bi bi-chevron-right"></i> </a>')
-                .on('click', function (e) {
-                    e.preventDefault();
-                    if (currentPage < totalPage) {
-                        currentPage++; // 다음 페이지로 이동
-                        filteringSurveyCards();
-                        setupPagination();
-                    }
-                });
+            .on('click', function (e) {
+                e.preventDefault();
+                if (currentPage < totalPage) {
+                    currentPage++; // 다음 페이지로 이동
+                    filteringSurveyCards();
+                    setupPagination();
+                }
+            });
 
         if (currentPage === totalPage) {
             nextPageLink.addClass('disabled'); // 현재 마지막 페이지일 경우 비활성화
@@ -384,14 +439,14 @@ $(document).ready(function () {
 
         // 맨 마지막으로 버튼 추가
         const lastPageLink = ($('<a class="page-link" href="#"> <i class="bi bi-chevron-double-right"></i> </a>')
-                .on('click', function (e) {
-                    e.preventDefault();
-                    if(currentPage < totalPage) {
-                        currentPage = totalPage; // 마지막 페이지로 이동
-                        filteringSurveyCards();
-                        setupPagination();
-                    }
-                }));
+            .on('click', function (e) {
+                e.preventDefault();
+                if (currentPage < totalPage) {
+                    currentPage = totalPage; // 마지막 페이지로 이동
+                    filteringSurveyCards();
+                    setupPagination();
+                }
+            }));
 
         if (currentPage === totalPage) {
             lastPageLink.addClass('disabled'); // 현재 마지막 페이지일 경우 비활성화
@@ -443,16 +498,19 @@ $(document).ready(function () {
         // 배지(span)들에 선택 상태가 있을 경우 초기화
         $('.date-badge').removeClass('selected-badge');
 
+        // 세션에서 검색 조건 삭제
+        sessionStorage.removeItem('searchCriteria');
+
         // 페이지 초기화
         currentPage = 1;
 
         const requestData = {
-            ccSeq: null, // 선택된 상태 초기화
+            ccSeq: null,
             startCreatedAt: null,
             endCreatedAt: null,
             startUpdatedAt: null,
             endUpdatedAt: null,
-            name: '', // 제목 초기화
+            name: '',
             minAnswerCount: null,
             maxAnswerCount: null
         };
@@ -487,5 +545,42 @@ $(document).ready(function () {
             }
         });
 
+        // 필터링된 설문 카드를 다시 표시
+        // filteringSurveyCards();
+        // setupPagination(); // 페이지 설정
+
     });
 });
+
+// 검색 조건을 세션 스토리지에 저장하는 함수
+function saveSearchCriteria() {
+    const searchCriteria = {
+        ccSeq: $('#progress-ccSeq').val() || null,
+        startCreatedAt: $('#startCreatedAt').val() || null,
+        endCreatedAt: $('#endCreatedAt').val() || null,
+        startUpdatedAt: $('#startUpdatedAt').val() || null,
+        endUpdatedAt: $('#endUpdatedAt').val() || null,
+        name: $('#title').val() || '',
+        minAnswerCount: $('#minAnswerCount').val() || null,
+        maxAnswerCount: $('#maxAnswerCount').val() || null
+    };
+    sessionStorage.setItem('searchCriteria', JSON.stringify(searchCriteria));
+}
+
+// 페이지 로드 시 세션에 저장된 검색 조건을 가져오는 함수
+function loadSearchCriteria() {
+    const searchCriteria = JSON.parse(sessionStorage.getItem('searchCriteria'));
+    if (searchCriteria) {
+        $('#progress-ccSeq').val(searchCriteria.ccSeq);
+        $('#startCreatedAt').val(searchCriteria.startCreatedAt);
+        $('#endCreatedAt').val(searchCriteria.endCreatedAt);
+        $('#startUpdatedAt').val(searchCriteria.startUpdatedAt);
+        $('#endUpdatedAt').val(searchCriteria.endUpdatedAt);
+        $('#title').val(searchCriteria.name);
+        $('#minAnswerCount').val(searchCriteria.minAnswerCount);
+        $('#maxAnswerCount').val(searchCriteria.maxAnswerCount);
+    }
+}
+
+
+

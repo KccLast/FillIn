@@ -206,3 +206,18 @@ body {
 #createSurveyBtn:hover {
     background-color: #45a049;
 }
+
+.no-results-container {
+    max-width: 400px;
+    margin-top: 50px;
+}
+
+.no-results-icon img {
+    max-width: 50px;
+}
+
+.no-results-text {
+    font-size: 18px;
+    font-weight: bold;
+    color: #6c757d;
+}
