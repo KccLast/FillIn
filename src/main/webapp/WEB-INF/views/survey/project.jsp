@@ -178,6 +178,23 @@
 													<div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne"
 														data-bs-parent="#accordionExample">
 														<div class="accordion-body">
+															<strong>목표 설정</strong>은 설문조사에서 필요한 응답자 수를 자동으로 계산해주는 기능입니다. 설문조사의 정확성을 위해 다음과 같은 옵션을 선택할 수 있습니다<br/><br/>
+
+															<strong>예상 모집단</strong>: 설문을 진행할 대상 인원수를 입력해주세요. 예를 들어, 1,000명이라고 입력하면 이 숫자를 기준으로 목표 인원수가 계산됩니다.<br/>
+															만약 예상 모집단을 알 수 없다면, <strong>"모집단 추정불가"</strong> 버튼을 클릭하여 신뢰도와 표본오차만 설정하면, 자동으로 목표 인원수가 계산됩니다.<br/><br/>
+
+															<strong>신뢰도</strong>: 설문조사의 신뢰수준을 설정하는 항목입니다. 신뢰도는 응답 결과의 정확성을 의미하며, 일반적으로 <strong>90%, 95%, 99%</strong> 수준으로 설정됩니다.<br/>
+
+															- <strong>90%</strong> 신뢰도는 예산이나 시간 등의 제약이 있을 때 선택하는 낮은 신뢰도 옵션입니다.<br/>
+															- <strong>95%</strong> 신뢰도는 통계적으로 자주 사용되며, 일반적인 설문조사에 적합합니다.<br/>
+															- <strong>99%</strong> 신뢰도는 정책 결정이나 중요한 서비스 개선을 위한 설문에 필요할 수 있습니다.<br/><br/>
+
+															<strong>표본오차</strong>: 설문조사의 표본오차를 설정하는 항목입니다. 설문 결과의 오차 범위이며, 일반적으로 <strong>±3%</strong>에서 <strong>±5%</strong> 범위가 사용됩니다.<br/>
+
+															- <strong>±3%</strong> 표본오차는 높은 정확도를 원할 때 사용됩니다.<br/>
+															- <strong>±5%</strong> 표본오차는 일반적인 설문조사에서 적당한 선택입니다.<br/>
+															- <strong>±10%</strong> 표본오차는 대략적인 의견을 수집할 때 유용하며, 표본 크기를 줄일 수 있습니다.
+
 
 														</div>
 													</div>
@@ -212,7 +229,7 @@
 													</div>
 
 													<div class="col">
-														<label class="form-label">표본 집단</label>
+														<label class="form-label">목표 인원</label>
 														<input type="text" class="form-control" id="sampleSize" placeholder="집단 입력" disabled
 															readonly>
 													</div>

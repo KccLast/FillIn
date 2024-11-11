@@ -26,6 +26,13 @@ $(document).ready(function () {
         })
     }
 
+    // 셀렉트 박스 변경 시 requestKmeans 요청 보내기
+    $('#question-select').on('change', function () {
+        const questionId = $(this).val();
+        const n_cluster = $('#customRange3').val(); // 슬라이더 값 사용
+        requestKmeans(questionId, n_cluster);
+    });
+
     // 슬라이더 값이 변경될 때 현재 값을 업데이트
     $('#customRange3').on('input', function () {
         const n_cluster = $(this).val();
