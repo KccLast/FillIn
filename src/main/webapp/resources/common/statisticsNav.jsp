@@ -22,7 +22,7 @@
 				<span class="menu-text">회귀분석</span>
 				<img class="arrow-icon" alt="arrow" src="/resources/img/common/arrow.png">
 			</a>
-			<a href="#" class="nav-link ">
+			<a href="#" class="nav-link" >
 				<img src="/resources/img/common/answerTime.png" alt="answerTime">
 				<span class="menu-text">응답 시간 분석</span>
 				<img class="arrow-icon" alt="arrow" src="/resources/img/common/arrow.png">

@@ -19,7 +19,8 @@ public class SurveyLogDTO {
     private LocalDateTime startDate; // 설문 시작일자
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime endDate;   // 설문 종료일자
-    private Long responseTime;       // 응답 시간 (초 단위)
+    private String responseTime;     // 응답 시간 (HH:mm:ss 형식)
+    private Long surveySeq;
 
 
 }

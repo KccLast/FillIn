@@ -4,46 +4,139 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.kcc.fillin.survey.dao.SurveyLogMapper">
 
+    <!-- 빠른응답 및 설문 이탈자/완료자 조회 -->
     <select id="findSurveyLogs" parameterType="map" resultType="SurveyLogDTO">
-
 --         SELECT
---             a.seq AS answer_seq,
---             a.question_seq,
---             a.participant_seq,
---             sl_start.occur_date AS start_date,
---             sl_end.occur_date AS end_date,
---             (sl_end.occur_date - sl_start.occur_date) * 24 * 60 * 60 AS response_time
+--         a.seq AS answer_seq,
+--         a.participant_seq,
+--         sl_start.occur_date AS start_date,
+--         sl_end.occur_date AS end_date,
+--         CASE
+--         WHEN sl_end.occur_date IS NOT NULL THEN
+--         FLOOR((sl_end.occur_date - sl_start.occur_date) * 24 * 60 * 60)
+--         ELSE NULL
+--         END AS response_time,
+--         CASE
+--         WHEN sl_end.occur_date IS NULL THEN '중간 이탈'
+--         ELSE '완료'
+--         END AS status,
+--         CASE
+--         WHEN (sl_end.occur_date - sl_start.occur_date) * 24 * 60 * 60 &lt; 60 THEN '빠른 응답'
+--         ELSE NULL
+--         END AS fast_response
 --         FROM
---             answer a
---                 LEFT JOIN
---             survey_log sl_start ON sl_start.survey_seq = a.question_seq AND sl_start.cc_seq = 23 -- 시작일자
---                 LEFT JOIN
---             survey_log sl_end ON sl_end.survey_seq = a.question_seq AND sl_end.cc_seq = 31 -- 종료일자
+--         answer a
+--         LEFT JOIN survey_log sl_start
+--         ON sl_start.answer_seq = a.seq AND sl_start.cc_seq = 23
+--         LEFT JOIN survey_log sl_end
+--         ON sl_end.answer_seq = a.seq AND sl_end.cc_seq = 31
 --         WHERE
---             sl_start.occur_date IS NOT NULL
---           AND sl_end.occur_date IS NOT NULL
+--         sl_start.occur_date IS NOT NULL
+--         AND sl_start.occur_date &gt;= #{startDate}
+--         AND sl_end.occur_date &lt;= #{endDate}
 --         ORDER BY
---             a.seq, a.participant_seq
-SELECT
-    a.seq AS answer_seq,
-    a.question_seq,
-    a.participant_seq,
-    sl_start.occur_date AS start_date,
-    sl_end.occur_date AS end_date,
-    (sl_end.occur_date - sl_start.occur_date) * 24 * 60 * 60 AS response_time
-FROM
-    answer a
-        LEFT JOIN
-    survey_log sl_start ON sl_start.answer_seq = a.seq AND sl_start.cc_seq = 23
-        LEFT JOIN
-    survey_log sl_end ON sl_end.answer_seq = a.seq AND sl_end.cc_seq = 31
-WHERE
-    sl_start.occur_date IS NOT NULL
-  AND sl_end.occur_date IS NOT NULL
-ORDER BY
-    a.seq, a.participant_seq
+--         a.participant_seq
+        SELECT
+        a.seq AS answer_seq,
+        a.participant_seq,
+        sl_start.occur_date AS start_date,
+        sl_end.occur_date AS end_date,
+        CASE
+        WHEN sl_end.occur_date IS NOT NULL THEN
+        FLOOR((sl_end.occur_date - sl_start.occur_date) * 24 * 60 * 60)
+        ELSE NULL
+        END AS response_time,
+        CASE
+        WHEN sl_end.occur_date IS NULL THEN '중간 이탈'
+        ELSE '완료'
+        END AS status,
+        CASE
+        WHEN sl_end.occur_date IS NOT NULL
+        AND (sl_end.occur_date - sl_start.occur_date) * 24 * 60 * 60 &lt;= 60 THEN '빠른 응답'
+        ELSE NULL
+        END AS fast_response
+        FROM
+        answer a
+        LEFT JOIN survey_log sl_start
+        ON sl_start.answer_seq = a.seq
+        AND sl_start.cc_seq = 23
+        LEFT JOIN survey_log sl_end
+        ON sl_end.answer_seq = a.seq
+        AND sl_end.cc_seq = 31
+        WHERE
+        sl_start.occur_date &gt;= TO_DATE(#{startDate}, 'YYYY-MM-DD') -- 기본 start_date 설정
+        AND (
+        sl_end.occur_date &lt;= TO_DATE(#{endDate}, 'YYYY-MM-DD') -- 종료일 설정
+        OR sl_end.occur_date IS NULL -- 중도 이탈자 포함
+        )
+        AND sl_start.survey_seq = #{surveySeq}
+
+        ORDER BY
+        a.participant_seq
 
     </select>
+
+    <!-- 설문 상태 비율 -->
+    <select id="findSurveyStatusCounts" parameterType="map" resultType="SurveyStatusDTO">
+--         WITH combined_data AS (
+--         SELECT
+--         CASE
+--         WHEN sl_end.occur_date IS NOT NULL
+--         AND (sl_end.occur_date - sl_start.occur_date) * 24 * 60 * 60 &lt;= 60 THEN '빠른 응답자'
+--         WHEN sl_end.occur_date IS NULL THEN '설문 이탈자'
+--         ELSE '설문 완료자'
+--         END AS status,
+--         sl_start.occur_date AS start_date,
+--         sl_end.occur_date AS end_date
+--         FROM
+--         answer a
+--         LEFT JOIN
+--         survey_log sl_start ON a.seq = sl_start.answer_seq AND sl_start.cc_seq = 23
+--         LEFT JOIN
+--         survey_log sl_end ON a.seq = sl_end.answer_seq AND sl_end.cc_seq = 31
+--         WHERE
+--         sl_start.occur_date IS NOT NULL
+--         )
+--         SELECT
+--         status,
+--         COUNT(*) AS count,
+--         ROUND(COUNT(*) * 100.0 / SUM(COUNT(*)) OVER (), 2) AS percentage
+--         FROM combined_data
+--         WHERE
+--         (TO_CHAR(start_date, 'YYYY-MM-DD') &gt;= #{startDate} AND TO_CHAR(end_date, 'YYYY-MM-DD') &lt;= #{endDate})
+--         OR (TO_CHAR(start_date, 'YYYY-MM-DD') &gt;= #{startDate} AND end_date IS NULL)
+--         GROUP BY status
+        WITH combined_data AS (
+        SELECT
+        CASE
+        WHEN sl_end.occur_date IS NOT NULL
+        AND (sl_end.occur_date - sl_start.occur_date) * 24 * 60 * 60 &lt;= 60 THEN '빠른 응답자'
+        WHEN sl_end.occur_date IS NULL THEN '설문 이탈자'
+        ELSE '설문 완료자'
+        END AS status,
+        sl_start.occur_date AS start_date,
+        sl_end.occur_date AS end_date
+        FROM
+        answer a
+        LEFT JOIN
+        survey_log sl_start ON a.seq = sl_start.answer_seq AND sl_start.cc_seq = 23
+        LEFT JOIN
+        survey_log sl_end ON a.seq = sl_end.answer_seq AND sl_end.cc_seq = 31
+        WHERE
+        sl_start.occur_date IS NOT NULL
+        AND sl_start.survey_seq = #{surveySeq}
+        )
+        SELECT
+        status,
+        COUNT(*) AS count,
+        ROUND(COUNT(*) * 100.0 / SUM(COUNT(*)) OVER (), 2) AS percentage
+        FROM combined_data
+        WHERE
+        (TO_CHAR(start_date, 'YYYY-MM-DD') &gt;= #{startDate} AND TO_CHAR(end_date, 'YYYY-MM-DD') &lt;= #{endDate})
+        OR (TO_CHAR(start_date, 'YYYY-MM-DD') &gt;= '2024-10-10' AND end_date IS NULL)
+        GROUP BY status
+</select>
+
 
 
 

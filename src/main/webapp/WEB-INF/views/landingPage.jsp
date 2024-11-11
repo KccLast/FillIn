@@ -30,7 +30,7 @@
 
     <div class="sidebar">
         <div class="form-elements">
-            <img src="/resources/img/common/logo2.png" class="sidebar-image">
+            <img src="/resources/img/common/landingPage.png" class="sidebar-image">
         </div>
     </div>
 </div>

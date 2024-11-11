@@ -163,10 +163,9 @@ public class SecurityConfig {
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 		http.csrf(csrf -> csrf
-			.ignoringRequestMatchers("/**") // 모든 경로에 대해 기본적으로 CSRF 비활성화
+			.ignoringRequestMatchers("/**")  // CSRF 비활성화
 			.requireCsrfProtectionMatcher(request -> {
 				String uri = request.getRequestURI();
-				// 로그인, 회원가입 페이지에서만 CSRF 활성화
 				return uri.equals("/member/login") || uri.equals("/member/register");
 			}));
 		http.authorizeHttpRequests(authz -> authz

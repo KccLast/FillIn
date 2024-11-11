@@ -43,7 +43,7 @@ public class SurveyController {
 		System.out.println("Criteria: " + cri);
 		int pageNum = cri.getPageNum();
 		int amount = cri.getAmount();
-		
+
 		List<MultiSearchSurveyResponse> pagedSurveys = service.getSurveyListWithPaging(cri);
 
 		Map<String, List<CommonCodeResponse>> commonCodes = service.getCommonCodes();
@@ -64,7 +64,7 @@ public class SurveyController {
 
 		int totalPages = (int)Math.ceil((double)totalSurveyCount / amount);
 		model.addAttribute("totalPages", totalPages);
-		
+
 		int pageBlock = 10; // 한 번에 보여줄 페이지
 		int startPage = ((pageNum - 1) / pageBlock) * pageBlock + 1; // 시작 페이지
 		int endPage = Math.min(startPage + pageBlock - 1, totalPages); // 마지막 페이지
@@ -72,7 +72,7 @@ public class SurveyController {
 		model.addAttribute("pageBlock", pageBlock);
 		model.addAttribute("startPage", startPage);
 		model.addAttribute("endPage", endPage);
-		
+
 		return "/survey/dashboard";
 	}
 
@@ -86,15 +86,21 @@ public class SurveyController {
 	}
 
 	// 설문 로그 및 응답 시간 페이지를 반환하는 메서드
-	@GetMapping({"/logs/{surveySeq}","/logs"})
-	public String showSurveyLogsPage(Model model) {
-		
-		return "/survey/surveyLog";  // surveyLog.jsp 파일을 렌더링
+//	@GetMapping({"/logs/{surveySeq}","/logs"})
+//	public String showSurveyLogsPage(Model model) {
+//
+//		return "/survey/surveyLog";  // surveyLog.jsp 파일을 렌더링
+//	}
+	@GetMapping({"/logs/{surveySeq}", "/logs"})
+	public String showSurveyLogsPage(@PathVariable(required = false) Long surveySeq, Model model) {
+		model.addAttribute("surveySeq", surveySeq);
+		return "/survey/surveyLog"; // surveyLog.jsp 파일 렌더링
 	}
+
 
 	@GetMapping("/{surveySeq}")
 	public String getSurvey(@PathVariable
-	Long surveySeq, Model model) {
+							Long surveySeq, Model model) {
 
 		SurveyVO findSurvey = service.findSurveyBySurveySeq(surveySeq);
 		model.addAttribute("survey", findSurvey);
@@ -115,7 +121,7 @@ public class SurveyController {
 
 	@GetMapping("/url/{surveyUrl}")
 	public String getSurveyByParticipant(@PathVariable
-	String surveyUrl, Model model) {
+										 String surveyUrl, Model model) {
 		//응답자 생성해야함
 		ParticipantVO participant = new ParticipantVO();
 		service.createNewParticipant(participant);

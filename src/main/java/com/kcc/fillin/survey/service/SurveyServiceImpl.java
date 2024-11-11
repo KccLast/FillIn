@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import com.kcc.fillin.survey.dto.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,12 +17,6 @@ import com.kcc.fillin.survey.dao.SurveyDao;
 import com.kcc.fillin.survey.dao.SurveyLogMapper;
 import com.kcc.fillin.survey.domain.ParticipantVO;
 import com.kcc.fillin.survey.domain.SurveyVO;
-import com.kcc.fillin.survey.dto.CommonCodeResponse;
-import com.kcc.fillin.survey.dto.MultiSearchSurveyRequest;
-import com.kcc.fillin.survey.dto.MultiSearchSurveyResponse;
-import com.kcc.fillin.survey.dto.PostSurveyRequest;
-import com.kcc.fillin.survey.dto.PostSurveyResponse;
-import com.kcc.fillin.survey.dto.SurveyLogDTO;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -85,10 +80,31 @@ public class SurveyServiceImpl implements SurveyService {
 		return resultMap;
 	}
 
-	// SurveyService 인터페이스의 메서드를 구현 (페이징 포함)(, int page, int size)
-	public List<SurveyLogDTO> getSurveyLogs(LocalDateTime startDate, LocalDateTime endDate) {
-		return surveyLogMapper.findSurveyLogs(startDate, endDate);
+//	설문로그 가져오는 메서드
+//	@Override
+//	public List<SurveyLogDTO> getSurveyLogs(LocalDateTime startDate, LocalDateTime endDate) {
+//		// Mapper에 startDate와 endDate를 전달하여 설문 로그 데이터 조회
+//		return surveyLogMapper.findSurveyLogs(startDate, endDate);
+//	}
+//
+////	설문 상태 비율 가져오는 메서드
+//	@Override
+//	public List<SurveyStatusDTO> getSurveyStatusCounts(LocalDateTime startDate, LocalDateTime endDate) {
+//		// Mapper에 startDate와 endDate를 전달하여 설문 상태 비율 데이터 조회
+//		return surveyLogMapper.findSurveyStatusCounts(startDate, endDate);
+//	}
+@Override
+public List<SurveyLogDTO> getSurveyLogs(Long surveySeq, LocalDateTime startDate, LocalDateTime endDate) {
+	return surveyLogMapper.findSurveyLogs(surveySeq, startDate, endDate);
+}
+
+
+
+	@Override
+	public List<SurveyStatusDTO> getAllSurveyStatusCounts(LocalDateTime startDate, LocalDateTime endDate) {
+		return surveyLogMapper.findSurveyStatusCounts(null, startDate, endDate);
 	}
+
 
 
 
@@ -144,6 +160,7 @@ public class SurveyServiceImpl implements SurveyService {
 
 		return PostSurveyResponse.builder().surveyId(request.getSurveyId()).url(url).build();
 	}
+
 
 	private String generateSurveyUrl(long surveyId) {
 		// surveyId를 문자열로 변환

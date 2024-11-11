@@ -1,124 +1,582 @@
+/*
+let responseTimeChart; // 응답 시간 차트
+let statusChart; // 설문 상태 비율 차트
+
 $(document).ready(function () {
-  setHeadertitle('응답 시간 분석');
-  // let page = 1;
-  // const size = 20; // 페이지당 로드할 데이터 크기
-  // let loading = false;// 데이터를 로드하는 중인지 확인
+    // 초기 전체 데이터 로드
+    // loadSurveyStatusCounts();
 
-  // 필터 버튼 클릭 이벤트
-  $('#filter-btn').click(function () {
-    let startDate = $('#startDate').val();
-    let endDate = $('#endDate').val();
+    // 로그 필터 버튼 클릭 이벤트
+    $("#filter-btn").click(function () {
+        const startDate = $("#startDate").val();
+        const endDate = $("#endDate").val();
 
-    // 날짜가 비어있는지, 올바른 형식인지 확인
-    if (!startDate || !endDate) {
-      alert('시작일자와 종료일자를 입력하세요.');
-      return;
+        if (!startDate || !endDate) {
+            alert("시작일자와 종료일자를 입력하세요.");
+            return;
+        }
+
+        if (new Date(startDate) > new Date(endDate)) {
+            alert("시작일자는 종료일자보다 이전이어야 합니다.");
+            return;
+        }
+
+        loadSurveyLogs(startDate, endDate);
+        loadSurveyStatusCounts(startDate, endDate);
+    });
+
+    // 설문 상태 비율 모달 열기
+    $("#showStatusChartBtn").click(function () {
+        $("#statusChartModal").show();
+    });
+
+    // 설문 상태 비율 모달 닫기
+    $(".close").click(function () {
+        $("#statusChartModal").hide();
+    });
+
+    // 설문 로그 데이터 로드
+    function loadSurveyLogs(startDate, endDate) {
+        $.ajax({
+            url: "/api/survey/logs",
+            type: "GET",
+            data: { startDate, endDate },
+            success: function (data) {
+                renderTable(data);
+                renderResponseTimeChart(data);
+            },
+            error: function () {
+                alert("로그 데이터를 가져오는 중 오류가 발생했습니다.");
+            },
+        });
     }
 
-    // 처음 데이터 로드(, page, size)
-    // page = 1;
-    loadMoreData(startDate, endDate);
-  });
+    // 설문 상태 비율 데이터 로드
+    function loadSurveyStatusCounts(startDate, endDate) {
 
-  // 스크롤 이벤트 (무한 스크롤 기능)
-  // $(window).scroll(function () {
-  //     if ($(window).scrollTop() + $(window).height() >= $(document).height() - 100 && !loading) {
-  //         page++;
-  //         let startDate = $('#startDate').val();
-  //         let endDate = $('#endDate').val();
-  //         loadMoreData(startDate, endDate, page, size);
-  //     }
-  // });
 
-  // 데이터 로드 함수(, page, size)
-  function loadMoreData(startDate, endDate) {
-    $.ajax({
-      url: '/api/survey/logs',
-      type: 'GET',
-      data: { startDate, endDate },
-      success: function (data) {
-        renderTable(data);
-        generateResponseTimeChart(data);
-      },
-      error: function () {
-        alert('데이터를 가져오는 중 오류가 발생했습니다.');
-      },
-    });
-  }
+        $.ajax({
+            url: "/api/survey/status-counts",
+            type: "GET",
+            data: { startDate, endDate },
+            success: function (data) {
+                if (data && data.length > 0) {
+                    console.log("Status Counts Data:", data);
+                    renderStatusTable(data);
+                    renderStatusChart(data);
+                } else {
 
-  // 초를 시, 분, 초 형식으로 변환하는 함수
-  function formatTime(seconds) {
-    const hrs = Math.floor(seconds / 3600);
-    const mins = Math.floor((seconds % 3600) / 60);
-    const secs = (seconds % 60).toFixed(2);
-
-    // 시, 분, 초가 한 자리수일 때 두 자리로 표시
-    const formattedHrs = hrs > 0 ? `${hrs}h ` : '';
-    const formattedMins = mins > 0 ? `${mins}m ` : '';
-    const formattedSecs = `${secs}s`;
-
-    return `${formattedHrs}${formattedMins}${formattedSecs}`;
-  }
-
-  // 테이블 데이터 렌더링
-  function renderTable(data) {
-    let tbody = $('#surveyLogTable tbody');
-    // if (page === 1) {
-    //     tbody.empty();  // 처음 페이지일 때 기존 테이블 비우기
-    // }
-    tbody.empty(); // 기존 테이블 비우기
-
-    // && page === 1
-    if (data.length === 0) {
-      tbody.append("<tr><td colspan='6'>No logs found.</td></tr>");
-    } else {
-      data.forEach(function (item) {
-        const answerSeq = item.answer_seq !== undefined ? item.answer_seq : "N/A";
-        const questionSeq = item.question_seq !== undefined ? item.question_seq : "N/A";
-        const participantSeq = item.participant_seq !== undefined ? item.participant_seq : "N/A";
-        const startDate = item.start_date !== undefined ? item.start_date : "N/A";
-        const endDate = item.end_date !== undefined ? item.end_date : "N/A";
-        const formattedResponseTime = item.response_time != null ? formatTime(item.response_time / 1000) : "N/A";
-
-        tbody.append(`<tr>
-                <td>${answerSeq}</td>
-                <td>${questionSeq}</td>
-                <td>${participantSeq}</td>
-                <td>${startDate}</td>
-                <td>${endDate}</td>
-                <td>${formattedResponseTime}</td>
-            </tr>`);
-      });
+                    alert("조회된 설문 상태 비율 데이터가 없습니다.");
+                }
+            },
+            error: function (xhr, status, error) {
+                console.error("Error fetching status counts:", xhr, status, error);
+                alert("설문 상태 비율 데이터를 가져오는 중 오류가 발생했습니다.");
+            },
+        });
     }
-  }
+    // 로그 테이블 렌더링
+    function renderTable(data) {
+        const tbody = $("#surveyLogTable tbody");
+        tbody.empty();
 
-  // 응답 시간 분석 차트 생성
-  function generateResponseTimeChart(data) {
-    const labels = data.map((item) => `Log ${item.logSeq}`);
-    const responseTimes = data.map((item) => item.responseTime);
+        if (data.length === 0) {
+            tbody.append("<tr><td colspan='5'>조회된 데이터가 없습니다.</td></tr>");
+        } else {
+            data.forEach(item => {
+                tbody.append(`
+                    <tr>
+                        <td>${item.answerSeq || "N/A"}</td>
+                        <td>${item.participantSeq || "N/A"}</td>
+                        <td>${item.startDate || "N/A"}</td>
+                        <td>${item.endDate || "설문 이탈"}</td>
+                        <td>${formatTime(item.responseTime)}</td>
+                    </tr>
+                `);
+            });
+        }
+    }
 
-    const ctx = document.getElementById('responseTimeChart').getContext('2d');
-    new Chart(ctx, {
-      type: 'bar',
-      data: {
-        labels: labels,
-        datasets: [
-          {
-            label: '응답 시간 (ms)',
-            data: responseTimes,
-            backgroundColor: 'rgba(75, 192, 192, 0.2)',
-            borderColor: 'rgba(75, 192, 192, 1)',
-            borderWidth: 1,
-          },
-        ],
-      },
-      options: {
-        scales: {
-          y: {
-            beginAtZero: true,
-          },
-        },
-      },
+    // 응답 시간 차트 렌더링
+    function renderResponseTimeChart(data) {
+        const labels = data.map(item => `응답 ${item.answerSeq}`);
+        const responseTimes = data.map(item => item.responseTime || 0);
+
+        const ctx = document.getElementById("responseTimeChart").getContext("2d");
+
+        if (responseTimeChart) {
+            responseTimeChart.destroy();
+        }
+
+        responseTimeChart = new Chart(ctx, {
+            type: "bar",
+            data: {
+                labels,
+                datasets: [
+                    {
+                        label: "응답 시간 (초)",
+                        data: responseTimes,
+                        backgroundColor: "rgba(75, 192, 192, 0.2)",
+                        borderColor: "rgba(75, 192, 192, 1)",
+                        borderWidth: 1,
+                    },
+                ],
+            },
+            options: {
+                scales: {
+                    y: { beginAtZero: true },
+                },
+            },
+        });
+    }
+
+    // 상태 비율 테이블 렌더링
+    function renderStatusTable(data) {
+        const tbody = $("#statusTable tbody");
+        tbody.empty();
+
+        data.forEach(item => {
+            tbody.append(`
+                <tr>
+                    <td>${item.status}</td>
+                    <td>${item.count}</td>
+                    <td>${item.percentage}%</td>
+                </tr>
+            `);
+        });
+    }
+
+    // 설문 상태 비율 차트 렌더링
+    function renderStatusChart(data) {
+        const labels = data.map(item => item.status);
+        const values = data.map(item => item.count);
+
+        const ctx = document.getElementById("statusChart").getContext("2d");
+
+        if (statusChart) {
+            statusChart.destroy();
+        }
+
+        statusChart = new Chart(ctx, {
+            type: "bar",
+            data: {
+                labels,
+                datasets: [
+                    {
+                        label: "응답 수",
+                        data: values,
+                        backgroundColor: ["#36a2eb", "#ff6384", "#ffce56"],
+                    },
+                ],
+            },
+            options: {
+                scales: {
+                    y: { beginAtZero: true },
+                },
+            },
+        });
+    }
+
+    // 초를 시, 분, 초 형식으로 변환
+    function formatTime(seconds) {
+        const hrs = Math.floor(seconds / 3600);
+        const mins = Math.floor((seconds % 3600) / 60);
+        const secs = seconds % 60;
+        return `${hrs > 0 ? `${hrs}h ` : ""}${mins > 0 ? `${mins}m ` : ""}${secs.toFixed(2)}s`;
+    }
+});
+*/
+
+// 페이지 로드 시에 한달전데이터까지 기준으로 데이터를 보여주고 시작하는 코드 수정 후
+/*let responseTimeChart; // 응답 시간 차트
+let statusChart; // 설문 상태 비율 차트
+
+$(document).ready(function () {
+    const surveySeq = $("#surveySeq").val(); // surveySeq가 있다면 가져옴
+    // 기본 날짜 설정
+    const today = new Date().toISOString().split("T")[0]; // 오늘 날짜
+    const oneMonthAgo = new Date();
+    oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1); // 한 달 전
+    const defaultStartDate = oneMonthAgo.toISOString().split("T")[0];
+
+    $("#startDate").val(defaultStartDate); // 기본 시작 날짜 설정
+    $("#endDate").val(today); // 기본 종료 날짜 설정
+
+    // 페이지 로드 시 기본 데이터 로드
+    loadSurveyLogs(defaultStartDate, today);
+    loadSurveyStatusCounts(defaultStartDate, today);
+
+    // 로그 필터 버튼 클릭 이벤트
+    $("#filter-btn").click(function () {
+        const startDate = $("#startDate").val();
+        const endDate = $("#endDate").val();
+
+        if (!startDate || !endDate) {
+            alert("시작일자와 종료일자를 입력하세요.");
+            return;
+        }
+
+        if (new Date(startDate) > new Date(endDate)) {
+            alert("시작일자는 종료일자보다 이전이어야 합니다.");
+            return;
+        }
+
+        loadSurveyLogs(surveySeq,startDate, endDate);
+        loadSurveyStatusCounts(surveySeq,startDate, endDate);
     });
-  }
+
+    // 설문 상태 비율 모달 열기
+    $("#showStatusChartBtn").click(function () {
+        $("#statusChartModal").show();
+    });
+
+    // 설문 상태 비율 모달 닫기
+    $(".close").click(function () {
+        $("#statusChartModal").hide();
+    });
+
+    // 설문 로그 데이터 로드
+    function loadSurveyLogs(startDate, endDate) {
+        $.ajax({
+            url: "/api/survey/logs",
+            type: "GET",
+            data: { startDate, endDate },
+            success: function (data) {
+                renderTable(data);
+                renderResponseTimeChart(data);
+            },
+            error: function () {
+                alert("로그 데이터를 가져오는 중 오류가 발생했습니다.");
+            },
+        });
+    }
+
+    // 설문 상태 비율 데이터 로드
+    function loadSurveyStatusCounts(startDate, endDate) {
+        $.ajax({
+            url: "/api/survey/status-counts",
+            type: "GET",
+            data: { startDate, endDate },
+            success: function (data) {
+                if (data && data.length > 0) {
+                    renderStatusTable(data);
+                    renderStatusChart(data);
+                } else {
+                    alert("조회된 설문 상태 비율 데이터가 없습니다.");
+                }
+            },
+            error: function (xhr, status, error) {
+                console.error("Error fetching status counts:", xhr, status, error);
+                alert("설문 상태 비율 데이터를 가져오는 중 오류가 발생했습니다.");
+            },
+        });
+    }
+
+    // 로그 테이블 렌더링
+    function renderTable(data) {
+        const tbody = $("#surveyLogTable tbody");
+        tbody.empty();
+
+        if (data.length === 0) {
+            tbody.append("<tr><td colspan='5'>조회된 데이터가 없습니다.</td></tr>");
+        } else {
+            data.forEach(item => {
+                tbody.append(`
+                    <tr>
+                        <td>${item.answerSeq || "N/A"}</td>
+                        <td>${item.participantSeq || "N/A"}</td>
+                        <td>${item.startDate || "N/A"}</td>
+                        <td>${item.endDate || "설문 이탈"}</td>
+                        <td>${formatTime(item.responseTime)}</td>
+                    </tr>
+                `);
+            });
+        }
+    }
+
+    // 응답 시간 차트 렌더링
+    function renderResponseTimeChart(data) {
+        const labels = data.map(item => `응답 ${item.answerSeq}`);
+        const responseTimes = data.map(item => item.responseTime || 0);
+
+        const ctx = document.getElementById("responseTimeChart").getContext("2d");
+
+        if (responseTimeChart) {
+            responseTimeChart.destroy();
+        }
+
+        responseTimeChart = new Chart(ctx, {
+            type: "bar",
+            data: {
+                labels,
+                datasets: [
+                    {
+                        label: "응답 시간 (초)",
+                        data: responseTimes,
+                        backgroundColor: "rgba(75, 192, 192, 0.2)",
+                        borderColor: "rgba(75, 192, 192, 1)",
+                        borderWidth: 1,
+                    },
+                ],
+            },
+            options: {
+                scales: {
+                    y: { beginAtZero: true },
+                },
+            },
+        });
+    }
+
+    // 상태 비율 테이블 렌더링
+    function renderStatusTable(data) {
+        const tbody = $("#statusTable tbody");
+        tbody.empty();
+
+        data.forEach(item => {
+            tbody.append(`
+                <tr>
+                    <td>${item.status}</td>
+                    <td>${item.count}</td>
+                    <td>${item.percentage}%</td>
+                </tr>
+            `);
+        });
+    }
+
+    // 설문 상태 비율 차트 렌더링
+    function renderStatusChart(data) {
+        const labels = data.map(item => item.status);
+        const values = data.map(item => item.count);
+
+        const ctx = document.getElementById("statusChart").getContext("2d");
+
+        if (statusChart) {
+            statusChart.destroy();
+        }
+
+        statusChart = new Chart(ctx, {
+            type: "bar",
+            data: {
+                labels,
+                datasets: [
+                    {
+                        label: "응답 수",
+                        data: values,
+                        backgroundColor: ["#36a2eb", "#ff6384", "#ffce56"],
+                    },
+                ],
+            },
+            options: {
+                scales: {
+                    y: { beginAtZero: true },
+                },
+            },
+        });
+    }
+
+    // 초를 시, 분, 초 형식으로 변환
+    function formatTime(seconds) {
+        const hrs = Math.floor(seconds / 3600);
+        const mins = Math.floor((seconds % 3600) / 60);
+        const secs = seconds % 60;
+        return `${hrs > 0 ? `${hrs}h ` : ""}${mins > 0 ? `${mins}m ` : ""}${secs.toFixed(2)}s`;
+    }
+});*/
+
+
+let responseTimeChart; // 응답 시간 차트
+let statusChart; // 설문 상태 비율 차트
+
+$(document).ready(function () {
+    const surveySeq = $("#surveySeq").val();
+    console.log("sdfsdf");
+    console.log(surveySeq);
+    // 기본 날짜 설정
+    const today = new Date().toISOString().split("T")[0]; // 오늘 날짜
+    const oneMonthAgo = new Date();
+    oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1); // 한 달 전
+    const defaultStartDate = oneMonthAgo.toISOString().split("T")[0];
+
+    $("#startDate").val(defaultStartDate); // 기본 시작 날짜 설정
+    $("#endDate").val(today); // 기본 종료 날짜 설정
+
+    // 페이지 로드 시 기본 데이터 로드
+    loadSurveyLogs(surveySeq,defaultStartDate, today);
+    loadSurveyStatusCounts(surveySeq,defaultStartDate, today);
+
+    // 로그 필터 버튼 클릭 이벤트
+    $("#filter-btn").click(function () {
+        const startDate = $("#startDate").val();
+        const endDate = $("#endDate").val();
+
+        if (!startDate || !endDate) {
+            alert("시작일자와 종료일자를 입력하세요.");
+            return;
+        }
+
+        if (new Date(startDate) > new Date(endDate)) {
+            alert("시작일자는 종료일자보다 이전이어야 합니다.");
+            return;
+        }
+
+        loadSurveyLogs(surveySeq,startDate, endDate);
+        loadSurveyStatusCounts(surveySeq,startDate, endDate);
+    });
+
+    // 설문 상태 비율 모달 열기
+    $("#showStatusChartBtn").click(function () {
+        $("#statusChartModal").show();
+    });
+
+    // 설문 상태 비율 모달 닫기
+    $(".close").click(function () {
+        $("#statusChartModal").hide();
+    });
+
+    // 설문 로그 데이터 로드
+    function loadSurveyLogs(surveySeq,startDate, endDate) {
+        $.ajax({
+            url: "/api/survey/logs",
+            type: "GET",
+            data: { surveySeq,startDate, endDate },
+            success: function (data) {
+                renderTable(data);
+                renderResponseTimeChart(data);
+            },
+            error: function () {
+                alert("로그 데이터를 가져오는 중 오류가 발생했습니다.");
+            },
+        });
+    }
+
+    // 설문 상태 비율 데이터 로드
+    function loadSurveyStatusCounts(surveySeq, startDate, endDate) {
+        $.ajax({
+            url: "/api/survey/status-counts",
+            type: "GET",
+            data: { surveySeq, startDate, endDate },
+            success: function (data) {
+                if (data && data.length > 0) {
+                    renderStatusTable(data);
+                    renderStatusChart(data);
+                } else {
+                    alert("조회된 설문 상태 비율 데이터가 없습니다.");
+                }
+            },
+            error: function (xhr, status, error) {
+                console.error("Error fetching status counts:", xhr, status, error);
+                alert("설문 상태 비율 데이터를 가져오는 중 오류가 발생했습니다.");
+            },
+        });
+    }
+
+    // 로그 테이블 렌더링
+    function renderTable(data) {
+        const tbody = $("#surveyLogTable tbody");
+        tbody.empty();
+
+        if (data.length === 0) {
+            tbody.append("<tr><td colspan='5'>조회된 데이터가 없습니다.</td></tr>");
+        } else {
+            data.forEach(item => {
+                tbody.append(`
+                    <tr>
+                        <td>${item.answerSeq || "N/A"}</td>
+                        <td>${item.participantSeq || "N/A"}</td>
+                        <td>${item.startDate || "N/A"}</td>
+                        <td>${item.endDate || "설문 이탈"}</td>
+                        <td>${formatTime(item.responseTime)}</td>
+                    </tr>
+                `);
+            });
+        }
+    }
+
+    // 응답 시간 차트 렌더링
+    function renderResponseTimeChart(data) {
+        const labels = data.map(item => `응답 ${item.answerSeq}`);
+        const responseTimes = data.map(item => item.responseTime || 0);
+
+        const ctx = document.getElementById("responseTimeChart").getContext("2d");
+
+        if (responseTimeChart) {
+            responseTimeChart.destroy();
+        }
+
+        responseTimeChart = new Chart(ctx, {
+            type: "bar",
+            data: {
+                labels,
+                datasets: [
+                    {
+                        label: "응답 시간 (초)",
+                        data: responseTimes,
+                        backgroundColor: "rgba(75, 192, 192, 0.2)",
+                        borderColor: "rgba(75, 192, 192, 1)",
+                        borderWidth: 1,
+                    },
+                ],
+            },
+            options: {
+                scales: {
+                    y: { beginAtZero: true },
+                },
+            },
+        });
+    }
+
+    // 상태 비율 테이블 렌더링
+    function renderStatusTable(data) {
+        const tbody = $("#statusTable tbody");
+        tbody.empty();
+
+        data.forEach(item => {
+            tbody.append(`
+                <tr>
+                    <td>${item.status}</td>
+                    <td>${item.count}</td>
+                    <td>${item.percentage}%</td>
+                </tr>
+            `);
+        });
+    }
+
+    // 설문 상태 비율 차트 렌더링
+    function renderStatusChart(data) {
+        const labels = data.map(item => item.status);
+        const values = data.map(item => item.count);
+
+        const ctx = document.getElementById("statusChart").getContext("2d");
+
+        if (statusChart) {
+            statusChart.destroy();
+        }
+
+        statusChart = new Chart(ctx, {
+            type: "bar",
+            data: {
+                labels,
+                datasets: [
+                    {
+                        label: "응답 수",
+                        data: values,
+                        backgroundColor: ["#36a2eb", "#ff6384", "#ffce56"],
+                    },
+                ],
+            },
+            options: {
+                scales: {
+                    y: { beginAtZero: true },
+                },
+            },
+        });
+    }
+
+    // 초를 시, 분, 초 형식으로 변환
+    function formatTime(seconds) {
+        const hrs = Math.floor(seconds / 3600);
+        const mins = Math.floor((seconds % 3600) / 60);
+        const secs = seconds % 60;
+        return `${hrs > 0 ? `${hrs}h ` : ""}${mins > 0 ? `${mins}m ` : ""}${secs.toFixed(2)}s`;
+    }
 });

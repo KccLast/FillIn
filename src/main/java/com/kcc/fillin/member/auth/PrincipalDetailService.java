@@ -29,6 +29,10 @@ public class PrincipalDetailService implements UserDetailsService {
         // 이메일로 사용자 정보 가져오기
         MemberDTO member = memberMapper.getMemberByEmail(username);
 
+        if (member == null) {  // 사용자가 없는 경우 예외 처리
+            throw new UsernameNotFoundException("User not found with username: " + username);
+        }
+
         // PrincipalDetail 객체로 반환하여 Spring Security 인증에 사용
         return new PrincipalDetail(member);
     }
