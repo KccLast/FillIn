@@ -1,5 +1,6 @@
 package com.kcc.fillin.survey.service;
 
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -95,14 +96,22 @@ public class SurveyServiceImpl implements SurveyService {
 //	}
 @Override
 public List<SurveyLogDTO> getSurveyLogs(Long surveySeq, LocalDateTime startDate, LocalDateTime endDate) {
-	return surveyLogMapper.findSurveyLogs(surveySeq, startDate, endDate);
+	List<SurveyLogDTO> surveyLogs ;
+		try {
+		surveyLogs = surveyLogMapper.findSurveyLogs(surveySeq, startDate, endDate);
+	} catch (Exception e) {
+			e.printStackTrace();
+
+        return null;
+	}
+		return surveyLogs;
 }
 
 
 
 	@Override
-	public List<SurveyStatusDTO> getAllSurveyStatusCounts(LocalDateTime startDate, LocalDateTime endDate) {
-		return surveyLogMapper.findSurveyStatusCounts(null, startDate, endDate);
+	public List<SurveyStatusDTO> getAllSurveyStatusCounts(Long surveySeq, LocalDateTime startDate, LocalDateTime endDate) {
+		return surveyLogMapper.findSurveyStatusCounts(surveySeq, startDate, endDate);
 	}
 
 

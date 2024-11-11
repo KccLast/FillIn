@@ -388,8 +388,8 @@ let responseTimeChart; // 응답 시간 차트
 let statusChart; // 설문 상태 비율 차트
 
 $(document).ready(function () {
-    const surveySeq = $("#surveySeq").val();
-    console.log("sdfsdf");
+    const surveySeq = $('.log-survey-seq').val();
+
     console.log(surveySeq);
     // 기본 날짜 설정
     const today = new Date().toISOString().split("T")[0]; // 오늘 날짜
@@ -435,10 +435,14 @@ $(document).ready(function () {
 
     // 설문 로그 데이터 로드
     function loadSurveyLogs(surveySeq,startDate, endDate) {
+        console.log(surveySeq + startDate + endDate + "보내기")
         $.ajax({
             url: "/api/survey/logs",
             type: "GET",
-            data: { surveySeq,startDate, endDate },
+            dataType: "json",
+            data: { surveySeq: surveySeq,
+                startDate: startDate,
+                endDate: endDate },
             success: function (data) {
                 renderTable(data);
                 renderResponseTimeChart(data);

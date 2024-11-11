@@ -39,6 +39,6 @@ public interface SurveyService {
 	List<SurveyLogDTO> getSurveyLogs(Long surveySeq, LocalDateTime startDate, LocalDateTime endDate);
 
 
-	List<SurveyStatusDTO> getAllSurveyStatusCounts(LocalDateTime startDate, LocalDateTime endDate);
+	List<SurveyStatusDTO> getAllSurveyStatusCounts(Long surveySeq,LocalDateTime startDate, LocalDateTime endDate);
 
 }

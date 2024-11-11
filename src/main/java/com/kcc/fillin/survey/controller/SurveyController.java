@@ -92,7 +92,7 @@ public class SurveyController {
 //		return "/survey/surveyLog";  // surveyLog.jsp 파일을 렌더링
 //	}
 	@GetMapping({"/logs/{surveySeq}", "/logs"})
-	public String showSurveyLogsPage(@PathVariable(required = false) Long surveySeq, Model model) {
+	public String showSurveyLogsPage(@PathVariable(required = false) Long surveySeq, Model model, @AuthenticationPrincipal PrincipalDetail principalDetail) {
 		model.addAttribute("surveySeq", surveySeq);
 		return "/survey/surveyLog"; // surveyLog.jsp 파일 렌더링
 	}

@@ -105,12 +105,15 @@ public class SurveyRestController {
 //		return ResponseEntity.ok(statusCounts);
 //	}
 // 설문 로그 조회 API
-    @GetMapping("/logs/{surveySeq}")
+    @GetMapping("/logs")
     public ResponseEntity<List<SurveyLogDTO>> getSurveyLogs(
+            @RequestParam("surveySeq") Long surveySeq,
             @RequestParam("startDate") String startDateStr,
-            @RequestParam("endDate") String endDateStr,
-            @RequestParam("surveySeq") Long surveySeq) {
+            @RequestParam("endDate") String endDateStr
+            ) {
 
+        System.out.println("surveySeq = " + surveySeq);
+        System.out.println("클라이언트에서온 데이터 " + surveySeq + startDateStr+ endDateStr);
         LocalDate startDate = LocalDate.parse(startDateStr);
         LocalDate endDate = LocalDate.parse(endDateStr);
 
@@ -124,16 +127,19 @@ public class SurveyRestController {
 
     @GetMapping("/status-counts")
     public ResponseEntity<List<SurveyStatusDTO>> getSurveyStatusCounts(
+            @RequestParam("surveySeq") Long surveySeq,
             @RequestParam("startDate") String startDateStr,
             @RequestParam("endDate") String endDateStr) {
-
+        System.out.println("surveySeq = " + surveySeq);
+        System.out.println("클라이언트에서온 데이터 2: "  + startDateStr+"    "+ endDateStr);
         LocalDate startDate = LocalDate.parse(startDateStr);
         LocalDate endDate = LocalDate.parse(endDateStr);
 
         LocalDateTime startDateTime = startDate.atStartOfDay();
         LocalDateTime endDateTime = endDate.atTime(23, 59, 59);
 
-        List<SurveyStatusDTO> statusCounts = service.getAllSurveyStatusCounts(startDateTime, endDateTime);
+
+        List<SurveyStatusDTO> statusCounts = service.getAllSurveyStatusCounts(surveySeq,startDateTime, endDateTime);
 
         return ResponseEntity.ok(statusCounts);
     }

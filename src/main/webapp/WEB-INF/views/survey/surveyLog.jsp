@@ -34,7 +34,7 @@
     <div class="container">
         <h4 style="padding-bottom: 28px; text-align: left;" class="surveyTitle fw-bold"
             data-bs-toggle="modal" data-bs-target="#j-user-sur-Modal"></h4>
-<%--        <input type="hidden" value="${surveySeq}">--%>
+        <input class="log-survey-seq" type="hidden" value="${surveySeq}">
 
 
 
