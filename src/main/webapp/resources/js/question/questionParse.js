@@ -14,9 +14,11 @@ function parseJson(jsonString) {
   if (jsonString === 'null') {
     return;
   }
-
+  jsonString = jsonString.replace(/[\n\r]/g, '\\n');
   const surveyObject = JSON.parse(jsonString);
   const questions = surveyObject.questions;
+  console.log(surveyObject);
+  console.log(questions);
 
   // 비동기 함수로 질문을 순차적으로 처리하기 위해 async/await 사용
   try {
@@ -139,17 +141,18 @@ async function setQuestionItem(question, container) {
       }
     }
     if (question.ccSeq === 9) {
-      if (index === 0) {
-        container.find('.j-num-start').addClass('qi ' + qi.seq);
+      if (qi.orderNum === 1) {
+        //container.find('.j-num-start').addClass('qi ' + qi.seq);
+        container.find('.j-num-start').attr('id', qi.seq);
         container.find('.j-num-start').val(qi.content);
       } else {
-        container.find('.j-num-end').addClass('qi ' + qi.seq);
+        //container.find('.j-num-end').addClass('qi ' + qi.seq);
+        container.find('.j-num-end').attr('id', qi.seq);
         container.find('.j-num-end').val(qi.content);
       }
     }
-    console.log(question.ccSeq);
+
     if (question.ccSeq === 10) {
-      console.log('여기 안옴?');
       let html = `<option value="${qi.content}" class="qi${qi.seq}">${qi.content}</option>`;
       //let questionSeq = `<input type="hidden" value="${qi.questionSeq}" class="j-qseq"/>`;
       container.find('.j-dropdwon > select').addClass('qiBox');
@@ -212,10 +215,18 @@ function type7Common(target, qi) {
   target
     .find('.j-option-input-radio > input[type="text"]')
     .each((idx, item) => {
-      $(item).addClass('qi ' + qi.seq);
+      //$(item).addClass('qi ' + qi.seq);
+      $(item).attr('id', qi.seq);
     });
+  let typeBox = target.find('.j-select-question-type-box');
+  let order;
+  if (typeBox.length > 0) {
+    order = typeBox.find('.j-select-optionBox').length;
+  } else {
+    order = target.parent().find('.j-select-optionBox').length;
+  }
 
-  target.find('.j-option-order').text(qi.orderNum);
+  target.find('.j-option-order').text(order);
   target.find('.j-option-input-radio > input[type="text"]').val(qi.content);
   target.find('.j-chAndRa').attr('name', qi.questionSeq);
 }

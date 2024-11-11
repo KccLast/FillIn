@@ -35,7 +35,7 @@
                     </button>
                 </div>
                 <div class="mb-3">
-                    <textarea class="form-control" id="survey-description" placeholder="여기에 설문지 설명을 입력하세요."></textarea>
+                    <textarea class="form-control" id="survey-description" placeholder="자동 생성하고 싶은 질문에 대한 내용을 입력해 주세요."></textarea>
                 </div>
                 <!-- 생성할 질문 유형 선택 체크박스 -->
                 <div class="select-question-type justify-content-between">

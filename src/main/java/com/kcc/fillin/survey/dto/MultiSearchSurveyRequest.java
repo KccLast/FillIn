@@ -18,6 +18,7 @@ public class MultiSearchSurveyRequest {
 	private String name;
 	private int minAnswerCount;
 	private int maxAnswerCount;
+	private String username;
 
 	// 페이징 처리
 	private int page; // 요청하는 페이지 번호

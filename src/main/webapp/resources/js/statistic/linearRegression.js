@@ -1,7 +1,7 @@
 surveySeq = $('.question-list').data('seq');
-console.log('surveySeq: ', surveySeq);
 
 let regressionChart;
+let answerData;
 
 // 헤더 타이틀 설정
 $('.dashboard').text('회귀분석');
@@ -20,7 +20,8 @@ $(document).ready(function () {
             collectSelectedQuestion();
 
             $('#start-regression').on('click', function () {
-                sendQuestions();
+                sendQuestions(response.data);
+                getAnswerData();
             });
         },
         error: function (xhr, status, error) {
@@ -115,14 +116,14 @@ function collectSelectedQuestion() {
     };
 }
 
-function sendQuestions() {
+function sendQuestions(surveyData) {
     const selectedQuestion = collectSelectedQuestion();
     console.log('selectedQuestion: ', selectedQuestion);
 
-    if(!selectedQuestion.dependent || selectedQuestion.independent.length === 0) {
+    if (!selectedQuestion.dependent || selectedQuestion.independent.length === 0) {
         swal({
-           type: 'warning',
-           text: '결과 질문과 원인 질문을 모두 선택해 주세요.'
+            type: 'warning',
+            text: '결과 질문과 원인 질문을 모두 선택해 주세요.'
         });
         return;
     }
@@ -142,7 +143,7 @@ function sendQuestions() {
         data: JSON.stringify(requestData),
         success: function (response) {
             console.log('서버 응답:', response);
-            receiveRegressionData();
+            receiveRegressionData(surveyData, selectedQuestion);
         },
         error: function (xhr, status, error) {
             console.error('AJAX 요청 실패:', xhr.responseText || error);
@@ -151,7 +152,7 @@ function sendQuestions() {
 }
 
 // 파이썬에서 회귀분석 데이터 받기
-function receiveRegressionData() {
+function receiveRegressionData(questionContents, selectedQuestion) {
     $.ajax({
         url: '/api/statistics/regression-result-data',
         type: 'GET',
@@ -159,54 +160,127 @@ function receiveRegressionData() {
         dataType: 'json',
         success: function (response) {
             console.log("서버에서 받은 데이터:", response);
-            drawRegressionChart(response.data);
+            drawRegressionChart(response.data, questionContents, selectedQuestion, answerData);
         },
-        error: function(xhr, status, error) {
+        error: function (xhr, status, error) {
             console.error("데이터 요청 중 에러 발생:", error);
         }
     });
 }
 
+// 사용자 응답 가져오기
+function getAnswerData() {
+    $.ajax({
+       url: '/api/statistics/answer-data',
+       type: 'GET',
+       dataType: 'json',
+       success: function (response) {
+           console.log('사용자 응답 response: ', response);
+           console.log("Participant Answers:", response.data.questionResponses);
+           answerData = response.data.questionResponses;
+       },
+        error: function(xhr, status, error) {
+            console.error("AJAX 요청 실패:", status, error);
+        }
+    });
+}
 
 // 회귀분석 차트 그리기
-function drawRegressionChart(response) {
-    console.log('#####');
-    console.log('response: ', response);
-
+function drawRegressionChart(response, questionContents, selectedQuestion, answerData) {
     // 기존 차트가 존재하면 제거
     if (regressionChart) {
         regressionChart.destroy();
     }
 
-    const ctx = document.getElementById('regression-chart').getContext('2d');
+    console.log("회귀 계수:", response.coefficients);
+    console.log("절편:", response.intercept);
+    console.log('answerData: ', answerData);
 
-    const chartData = response.predictions.map((prediction, index) => ({
-        x: index + 1,  // x 좌표 값으로 인덱스 사용 (1부터 시작)
-        y: prediction   // y 좌표 값은 예측값
+
+    // 종속 질문에 해당하는 데이터 찾기
+    const dependentAnswer = questionContents.find(question => question.questionSeq === Number(selectedQuestion.dependent));
+    const dependentQuestionName = dependentAnswer.questionName;
+
+    console.log('selectedQuestion: ', selectedQuestion);
+
+    // x축 값 (질문 순서 또는 인덱스)
+    // const xValues = Array.from({ length: answerData.length }, (_, i) => i + 1);
+    //const xValues = answerData.map((answer) => selectedQuestion.map(seq => answer[seq]));
+    const xValues = answerData.map(answer => {
+        return selectedQuestion.independent.map(seq => {
+            if (answer.questionSeq === seq) {
+                return answer.questionItemSeq;
+            }
+            return null;
+        }).filter(item => item !== null);
+    }).flat();
+
+    console.log("xValues:", xValues);
+    // 회귀 직선의 y 값 계산
+    const regressionLine = xValues.map(x => response.coefficients[0] * x + response.intercept);
+
+    // 실제 응답 데이터
+    const chartData = answerData.map((answer, index) => ({
+        x: index + 1, // 순서
+        y: answer.questionItemSeq // 실제 응답값을 수치로 변환 필요
     }));
 
+    console.log("응답 데이터:", chartData.map(d => d.y));
+
+    // y 축 자동 범위 계산
+    const yMin = Math.min(...chartData.map(d => d.y), ...regressionLine);
+    const yMax = Math.max(...chartData.map(d => d.y), ...regressionLine);
+
+    const ctx = document.getElementById('regression-chart').getContext('2d');
+
     regressionChart = new Chart(ctx, {
-        type: 'scatter',  // 선형 그래프
         data: {
-            datasets: [{
-                label: '회귀 분석 결과',
-                data: chartData,  // 예측값을 기반으로 한 데이터
-                borderColor: 'rgba(75, 192, 192, 1)',  // 선의 색상
-                backgroundColor: 'rgba(75, 192, 192, 0.2)',  // 영역의 색상
-                fill: true,  // 선 아래를 채움
-                tension: 0.1  // 선의 부드러움 조정
-            }]
+            labels: xValues,
+            datasets: [
+                {
+                    type: 'scatter',
+                    label: '실제 데이터',
+                    data: chartData,
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    fill: true,
+                    tension: 0.1
+                },
+                {
+                    type: 'line',
+                    label: '회귀 직선',
+                    data: xValues.map((x, index) => ({ x: x, y: regressionLine[index] })),
+                    borderColor: 'rgba(255, 99, 132, 1)',
+                    borderWidth: 2,
+                    fill: false,
+                    tension: 0
+                }
+            ]
         },
         options: {
+            responsive: true,
             scales: {
                 x: {
-                    type: 'linear',
-                    position: 'bottom'
+                    title: {
+                        display: true,
+                        text: '질문 항목 순서'
+                    },
                 },
                 y: {
-                    beginAtZero: true  // y 축이 0부터 시작하도록 설정
+                    title: {
+                        display: true,
+                        text: dependentQuestionName
+                    },
+                    // min: yMin - 5, // 범위 여백 조정
+                    // max: yMax + 5, // 범위 여백 조정
+                    min: 350,  // 데이터와 회귀 직선이 겹치는 범위로 조정
+                    max: 400,
+                    ticks: {
+                        stepSize: Math.round((yMax - yMin) / 5) // 적절한 스텝 크기
+                    }
                 }
             }
         }
     });
 }
+

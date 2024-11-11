@@ -151,6 +151,7 @@ $(function () {
   $('.nav-body-2').on('change', '.condition-ac-body select', function () {
     //조건 번호, questionSeq,operation, nextSeq
     let body = $(this).parents('.accordion-item');
+    let conOrder = body.find('.con-order').text();
     let questionSeq = findQuestionSeqInConditionNav(this);
     // $(this)
     //   .parents('.condition-nav-box')
@@ -186,7 +187,7 @@ $(function () {
     saveConditionInDB(saveCondition);
     let nodeId = getNodeIdByQuestionSeq(saveCondition.to, saveCondition.from);
     deleteEdge(nodeId.from, saveCondition.id);
-    addConditionalFlow(nodeId.from, nodeId.to, saveCondition.id);
+    addConditionalFlow(nodeId.from, nodeId.to, saveCondition.id, conOrder);
     setConditionNav2(questionSeq, nextSeq);
     redrawNetWork();
   });
@@ -323,7 +324,8 @@ $(function () {
                 text: '조건을 성공적으로 삭제했습니다.',
                 icon: 'success',
               });
-              $(_this).parents('.accordion-item').remove();
+              //아코디언 아이템 삭제와 동시에 재졍렬 해줘야함
+              sortConditionAccordion(_this);
             })
             .catch((error) => {
               // 오류 메시지 표시
@@ -403,6 +405,37 @@ var options = {
   },
 };
 
+function sortConditionAccordion(target) {
+  let $parentsAccordion = $(target).parents('.accordion');
+
+  let questionSeq = $(target)
+    .parents('.condition-nav-box')
+    .find('input[type="hidden"]')
+    .val();
+  console.log(questionSeq);
+  let nodeList = nodes.get();
+  console.log(nodeList);
+  let findnode = nodeList.filter((node) => node.seq === parseInt(questionSeq));
+  console.log(findnode);
+  let nodeId = findnode[0].id;
+  //일단 conditions를 가지고 와야함
+  $(target).parents('.accordion-item').remove();
+
+  $parentsAccordion.find('.accordion-item').each((idx, item) => {
+    $(item)
+      .find('.con-order')
+      .text(idx + 1);
+  });
+
+  redrawNetWork();
+
+  console.log(nodeId);
+  if (nodeId !== undefined) {
+    // 노드를 선택한 후 강제로 클릭 이벤트 발생
+    network.selectNodes([nodeId]); // 노드를 선택
+    network.emit('click', { nodes: [nodeId] }); // 해당 노드에 click 이벤트 트리거
+  }
+}
 async function deleteCondition(target) {
   return new Promise((resolve, reject) => {
     try {
@@ -417,6 +450,7 @@ async function deleteCondition(target) {
         .find('.contition-next-se > option')
         .attr('class');
       let conditions = getQuestionConditions(questionSeq);
+
       let findCondition = conditions.filter(
         (con) => con.id === parseInt(conditionId)
       )[0];
@@ -618,7 +652,7 @@ function createDefaultOrder(questions) {
   network = new vis.Network(container, data, options);
 }
 
-function convertConditionToedge(condition, label, conditionOrder) {
+function convertConditionToedge(condition, label, conditionOrder, viewIdx) {
   let nodeList = nodes.get();
   let fromNode = nodeList.find((node) => node.seq === condition.from);
   let toNode = nodeList.find((node) => node.seq === condition.to);
@@ -628,7 +662,7 @@ function convertConditionToedge(condition, label, conditionOrder) {
   if (label.includes('기본 흐름')) {
     edge = createEdge(fromNode.id, toNode.id);
   } else {
-    edge = createConditionedge(fromNode.id, toNode.id, conditionOrder);
+    edge = createConditionedge(fromNode.id, toNode.id, conditionOrder, viewIdx);
   }
 
   return edge;
@@ -716,11 +750,11 @@ function createEdge(from, to) {
   };
 }
 
-function createConditionedge(from, to, conditionOrder) {
+function createConditionedge(from, to, conditionOrder, viewIdx) {
   return {
     from: from,
     to: to,
-    label: `조건부 흐름 (${conditionOrder})`,
+    label: `조건부 흐름 (${viewIdx})`,
     color: { color: 'red' },
     dashes: true,
     width: 2,
@@ -734,7 +768,7 @@ function createConditionedge(from, to, conditionOrder) {
 }
 
 // 조건부 흐름 추가 함수 (간격 조정 포함)
-function addConditionalFlow(fromNode, toNode, conditionOrder) {
+function addConditionalFlow(fromNode, toNode, conditionOrder, conViewOrder) {
   // 조건부 흐름의 노드 위치 계산
   var nodeData = nodes.get(toNode);
 
@@ -753,7 +787,7 @@ function addConditionalFlow(fromNode, toNode, conditionOrder) {
   edges.add({
     from: fromNode,
     to: toNode,
-    label: `조건부 흐름 (${conditionOrder})`,
+    label: `조건부 흐름 (${conViewOrder})`,
     color: { color: 'red' },
     dashes: true,
     width: 2,
@@ -770,19 +804,28 @@ function addConditionalFlow(fromNode, toNode, conditionOrder) {
 
 async function redrawNetWork() {
   network.off('click');
-  network.on('click', async function (params) {
-    if (params.edges.length > 0) {
-      clickEdge(params);
-    }
 
+  network.on('click', async function (params) {
     if (params.nodes.length > 0) {
+      // 노드를 클릭한 경우
       await clickNode(params);
+    } else if (params.edges.length > 0) {
+      // 엣지를 클릭한 경우
+      await clickEdge(params);
+    } else {
+      // 노드나 엣지가 아닌 배경을 클릭한 경우
+      let conditionList = $('.accordion');
+      conditionList.empty(); // 기존 조건 프레임 초기화
+      $('.con-question-input > input').val(' ');
+      // `j`로 시작하고 `color`로 끝나는 클래스를 제거
+      $('.con-question-type').empty();
+
+      $('.condition-nav-box').find('input[type="hidden"]').val('');
     }
   });
 
   network.redraw();
 }
-
 //node의 id는 index임
 function deleteNode(nodeId) {
   // 노드에 연결된 엣지 찾기
@@ -863,7 +906,14 @@ async function saveAccordionToLocalStorage(nodeId, conditionData) {
     storedData[nodeId] = [];
     idNum = 1;
   } else {
-    idNum = storedData[nodeId].length + 1;
+    // 가장 큰 id를 찾기
+    const maxId = storedData[nodeId].reduce(
+      (max, item) => Math.max(max, item.id),
+      0
+    );
+
+    console.log('가장 큰 id:', maxId);
+    idNum = maxId + 1;
   }
   console.log(storedData[nodeId]);
 
@@ -1178,8 +1228,13 @@ function showAllConditionFlow() {
     let conditions = storedData[key].filter((condition) => condition.id !== 0);
 
     // 각 조건을 엣지로 변환하여 추가
-    conditions.forEach((condition) => {
-      let edge = convertConditionToedge(condition, `조건부 흐름`, condition.id);
+    conditions.forEach((condition, index) => {
+      let edge = convertConditionToedge(
+        condition,
+        `조건부 흐름`,
+        condition.id,
+        index + 1
+      );
       console.log('생성된 엣지:', edge); // 디버깅용 로그
       if (edge) {
         conditionalEdges.push(edge);
@@ -1426,6 +1481,7 @@ async function clickNode(params) {
   deleteAllConditionalFlow();
 
   let nodeList = nodes.get();
+  console.log(conditions);
   for (let i = 0; i < conditions.length; i++) {
     let condition = conditions[i];
     if (condition.id === 0) continue;
@@ -1441,7 +1497,13 @@ async function clickNode(params) {
       console.warn('노드 ID를 찾을 수 없습니다.');
       continue; // 다음 반복으로 넘어감
     }
-    addConditionalFlow(fromNodeId, toNodeId, condition.id);
+
+    let conViewOrder = conditionList
+      .find('.accordion-item')
+      .eq(i)
+      .find('.con-order')
+      .text();
+    addConditionalFlow(fromNodeId, toNodeId, condition.id, conViewOrder);
   }
   let edgeList = edges.get();
 
