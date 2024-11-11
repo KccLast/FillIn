@@ -26,6 +26,10 @@
 	align-items: center;
 }
 
+.nav-link {
+    margin-bottom: 10px;
+}
+
 .arrow-icon {
 	width: 10px;
 	height: 10px;

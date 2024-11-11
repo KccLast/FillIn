@@ -30,7 +30,7 @@ function setNavLink() {
   let editLink = '/survey' + url;
   let statisticLink = '/statistic' + url;
   let clusterLink = '/statistic/clustering' + url;
-  let linerLink = '/statistics/liner-regression' + url;
+  // let linerLink = '/statistics/liner-regression' + url;
   let logLink = '/survey/logs' + url;
 
   // 링크가 초기화되지 않았다면 각 링크에 href 속성 설정
@@ -40,8 +40,8 @@ function setNavLink() {
   navLinks[0].setAttribute('href', editLink);
   navLinks[1].setAttribute('href', statisticLink);
   navLinks[2].setAttribute('href', clusterLink);
-  navLinks[3].setAttribute('href', linerLink);
-  navLinks[4].setAttribute('href', logLink);
+  // navLinks[3].setAttribute('href', linerLink);
+  navLinks[3].setAttribute('href', logLink);
 
   // 초기화 완료 표시
 }

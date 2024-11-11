@@ -4,7 +4,7 @@
 	<%@ page contentType="text/html;charset=UTF-8" language="java" %>
 		<div class="sidebar">
 			<nav class="nav fs-5 flex-column">
-				<a href="#" class="nav-link">
+				<a href="/survey/dashboard" class="nav-link">
 					<img src="/resources/img/common/dashboard.png" alt="dashboard">
 					<span class="menu-text">대시보드</span>
 					<img class="arrow-icon" alt="arrow" src="/resources/img/common/arrow.png">
