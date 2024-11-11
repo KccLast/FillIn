@@ -1002,3 +1002,28 @@ processJobs();
 
 // // 초기화 시 작업 처리 시작
 // processJobs();
+
+// // 작업 큐를 즉시 서버에 전송하는 함수
+// function sendRemainingJobs() {
+//   const remainingJobs = Object.values(jobQueue).flat(); // 남은 작업 모두 수집
+
+//   if (remainingJobs.length === 0) return; // 남은 작업이 없으면 종료
+
+//   // `sendBeacon` 사용 - 작은 데이터 전송에 유리
+//   if (navigator.sendBeacon) {
+//     navigator.sendBeacon("/api/jobs/processRemainingJobs", JSON.stringify(remainingJobs));
+//   } else {
+//     // 동기 `fetch` 요청 사용 - 반드시 완료해야 할 작업일 경우
+//     fetch("/api/jobs/processRemainingJobs", {
+//       method: "POST",
+//       headers: { "Content-Type": "application/json" },
+//       body: JSON.stringify(remainingJobs),
+//       keepalive: true, // 크롬 등의 브라우저에서 사용 가능
+//     });
+//   }
+// }
+
+// // 페이지가 닫힐 때 남은 작업 전송
+// window.addEventListener("beforeunload", function (event) {
+//   sendRemainingJobs(); // 남은 작업 전송
+// });

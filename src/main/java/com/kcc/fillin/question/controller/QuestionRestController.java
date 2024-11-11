@@ -173,4 +173,9 @@ public class QuestionRestController {
 		questionService.deleteQuestion(List.of( questionAutoUpdateRequest));
 		return  Response.setSuccess(questionAutoUpdateRequest,200);
 	}
+	@GetMapping("/hi")
+	public String hi(){
+		System.out.println("hi");
+		return "hi";
+	}
 }

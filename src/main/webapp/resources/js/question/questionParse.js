@@ -36,6 +36,91 @@ async function processQuestions(questions) {
   }
 }
 
+// async function processQuestions(questions) {
+//   const questionCards = []; // 모든 질문 카드를 저장할 배열
+
+//   // 각 질문 카드를 메모리에 생성하고 배열에 추가
+//   for (const [index, question] of questions.entries()) {
+//     const questionCard = await appendQuestionCard(question, index);
+//     questionCards.push(questionCard); // 생성된 카드를 배열에 추가
+//   }
+
+//   // 모든 질문 카드를 한 번에 DOM에 추가
+//   $('.content').append(questionCards);
+// }
+// async function appendQuestionCard(question, index) {
+//   try {
+//     // questionFrame.html 불러오기
+//     const questionData = await fetchQuestionFrame();
+
+//     // 새롭게 추가할 고유한 컨테이너 생성
+//     const $newContainer = $(
+//       '<div class="j-question-card j-flex-col-center"></div>'
+//     );
+//     $newContainer.html(questionData);
+//     $newContainer.append(
+//       `<input type="hidden" value="${question.ccSeq}" class="j-cseq"/>`
+//     );
+//     $newContainer.append(
+//       `<input type="hidden" value="${question.seq}" class="j-qseq"/>`
+//     );
+
+//     // 질문 제목 및 내용 설정
+//     if (question.ccSeq === 18) {
+//       $newContainer
+//         .find('.j-survey-name-input')
+//         .val('개인 정보 수집 및 이용 동의서')
+//         .prop('readonly', true);
+//       $newContainer.find('.j-survey-content').hide();
+//     } else {
+//       $newContainer.find('.j-survey-name-input').val(question.name.trim());
+//       $newContainer
+//         .find('.j-survey-content > textarea')
+//         .val(question.description.trim());
+//     }
+
+//     // 필수 여부 설정
+//     const es = $newContainer.find('.j-essential');
+//     es.attr(
+//       'data-essential',
+//       question.isEssential === 'Y' ? 'Y' : 'N'
+//     ).toggleClass('j-es-seleted', question.isEssential === 'Y');
+//     es.prop('checked', question.isEssential === 'Y');
+
+//     $newContainer.find('.j-q-order').val(question.order);
+
+//     // 헤더 및 콘텐츠 설정
+//     const headerData = await fetchHeader(question.ccSeq);
+//     $newContainer.find('.j-survey-es-type').append(headerData);
+
+//     if (question.questionItemExist) {
+//       await setQuestionItem(question, $newContainer);
+//     } else {
+//       const contentData = await fetchContent(question.ccSeq);
+//       $newContainer.find('.j-question-content-box').append(contentData);
+//     }
+
+//     // 색상 클래스 설정
+//     const ccSeq = parseInt(question.ccSeq, 10);
+//     const typeAndImg = $newContainer.find('.j-typeAndImg');
+//     if (ccSeq <= 11) typeAndImg.addClass('j-quancolor');
+//     else if (ccSeq <= 13) typeAndImg.addClass('j-qualcolor');
+//     else if (ccSeq <= 16) typeAndImg.addClass('j-contactcolor');
+//     else typeAndImg.addClass('j-datacolor');
+
+//     // 지도 설정
+//     if (question.ccSeq === 17) {
+//       $newContainer.find('.j-map-container').attr('id', `map${question.seq}`);
+//       setTimeout(() => createDefaultMap(`map${question.seq}`), 100);
+//     }
+
+//     // 완성된 카드 반환
+//     return $newContainer;
+//   } catch (error) {
+//     console.error('AJAX 요청 실패:', error);
+//   }
+// }
+
 async function appendQuestionCard(question, index) {
   try {
     //일단 제목하고 내용가지고 프레임 불러와서 만들기 해야함
