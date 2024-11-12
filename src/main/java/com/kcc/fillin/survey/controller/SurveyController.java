@@ -39,11 +39,14 @@ public class SurveyController {
 		return "redirect:/survey/"+survey.getSeq();
 	}
 	@GetMapping("/dashboard")
-	public String dashboard(Criteria cri, Model model) {
+	public String dashboard(Criteria cri, Model model, @AuthenticationPrincipal PrincipalDetail principalDetail) {
 		System.out.println("Criteria: " + cri);
 		int pageNum = cri.getPageNum();
 		int amount = cri.getAmount();
 
+
+		String username = principalDetail.getUsername();
+		cri.setUsername(username);
 		List<MultiSearchSurveyResponse> pagedSurveys = service.getSurveyListWithPaging(cri);
 
 		Map<String, List<CommonCodeResponse>> commonCodes = service.getCommonCodes();
@@ -58,7 +61,7 @@ public class SurveyController {
 		System.out.println("pageNum: " + pageNum);
 		System.out.println("amount: " + amount);
 
-		int totalSurveyCount = service.getTotalSurveyCount();
+		int totalSurveyCount = service.getTotalSurveyCount(username);
 		model.addAttribute("totalSurveyCount", totalSurveyCount);
 		System.out.println("totalSurveyCount: " + totalSurveyCount);
 

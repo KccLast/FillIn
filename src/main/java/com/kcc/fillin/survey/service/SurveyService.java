@@ -17,7 +17,7 @@ public interface SurveyService {
 
 	public List<MultiSearchSurveyResponse> getSurveyListWithPaging(Criteria cri);
 
-	public int getTotalSurveyCount();
+	public int getTotalSurveyCount(String username);
 
 	public Map<String, List<CommonCodeResponse>> getCommonCodes();
 

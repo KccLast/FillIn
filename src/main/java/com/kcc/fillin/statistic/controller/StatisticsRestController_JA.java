@@ -10,7 +10,9 @@ import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -19,6 +21,9 @@ public class StatisticsRestController_JA {
     private final StatisticsService_JA service;
     private final RestTemplate restTemplate = new RestTemplate();
     private RegressionResponse latestRegressionData;
+
+    private List<QuestionResponse> questionResponses;
+    private List<ParticipantAnswer> participantAnswers;
 
     @GetMapping("/question-list/{surveySeq}")
     public Response getQuestionList(@PathVariable Long surveySeq) {
@@ -30,9 +35,9 @@ public class StatisticsRestController_JA {
     public Response getSelectedQuestionsByRegression(@RequestBody QuestionListRequest request) {
         System.out.println("independentQuestions: " + request.getIndependentQuestions() + ", dependentQuestion: " + request.getDependentQuestion());
         // 참여자 응답 가져오기
-        List<ParticipantAnswer> participantAnswers = service.getParticipantAnswers(request.getSurveySeq());
+        participantAnswers = service.getParticipantAnswers(request.getSurveySeq());
         // 질문 응답 가져오기
-        List<QuestionResponse> questionResponses = service.getResponsesByQuestions(request);
+        questionResponses = service.getResponsesByQuestions(request);
 
         System.out.println("Participant Answers: " + participantAnswers);
         System.out.println("Question Responses: " + questionResponses);
@@ -72,6 +77,18 @@ public class StatisticsRestController_JA {
         }
     }
 
+    @GetMapping("/answer-data")
+    public Response getAnswerData() {
+        System.out.println("출렴됨? getAnswerData");
+        Map<String, Object> responseData = new HashMap<>();
+        responseData.put("participantAnswers", participantAnswers);
+        responseData.put("questionResponses", questionResponses);
+
+        System.out.println("responseData: " + responseData);
+
+        return Response.setSuccess(responseData, 200);
+    }
+
     @PostMapping("/regression-result-data")
     public Response receiveRegressionData(@RequestBody RegressionResponse regressionResponse) {
         System.out.println("Received data from FastAPI: " + regressionResponse);
@@ -87,6 +104,13 @@ public class StatisticsRestController_JA {
         }
 
         return Response.setError("No regression data available", 404);
+    }
+
+    @GetMapping("/regression-result-gpt")
+    public Response regressionWithGpt() {
+
+
+        return Response.setSuccess(null, 200);
     }
 
 }

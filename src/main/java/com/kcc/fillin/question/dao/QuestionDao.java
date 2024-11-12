@@ -48,4 +48,12 @@ public interface QuestionDao {
     boolean deleteCondition(ConditionRequest conditionRequest);
 
     List<MemberSurveyResponse> selectSurveyByMemberSeq(Long seq);
+
+	void updateQuestionAuto(QuestionAutoUpdateRequest questionAutoUpdateRequest);
+
+    void updateQuestionItemAuto(QuestionAutoUpdateRequest questionAutoUpdateRequest);
+
+
+
+	void InsertQuestionItemAuto(QuestionItemInsertRequest questionAutoUpdateRequest);
 }

@@ -6,9 +6,11 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 
+import com.kcc.fillin.member.auth.PrincipalDetail;
 import com.kcc.fillin.survey.dto.*;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -27,84 +29,58 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/api/survey")
 @RequiredArgsConstructor
 public class SurveyRestController {
-    private final SurveyService service;
 
-    @PostMapping("/dashboard")
-    public Response filterDashboard(@RequestBody
-                                    MultiSearchSurveyRequest request) {
-        if (request == null) {
-            System.out.println("받은 요청이 null입니다.");
-        } else {
-            System.out.println("받은 요청: " + request);
-        }
+	private final SurveyService service;
 
-        List<MultiSearchSurveyResponse> filteringSurveys = service.getFilteringSurveys(request);
-        System.out.println("필터링된 결과 크기: " + filteringSurveys.size());
+	@PostMapping("/dashboard")
+	public Response filterDashboard(@RequestBody
+	MultiSearchSurveyRequest request, @AuthenticationPrincipal PrincipalDetail principalDetail) {
+		if (request == null) {
+			System.out.println("받은 요청이 null입니다.");
+		} else {
+			System.out.println("받은 요청: " + request);
+		}
+		String username = principalDetail.getUsername();
+		request.setUsername(username);
 
-        return Response.setSuccess(filteringSurveys, 200);
-    }
+		List<MultiSearchSurveyResponse> filteringSurveys = service.getFilteringSurveys(request);
+		System.out.println("필터링된 결과 크기: " + filteringSurveys.size());
 
-    @PostMapping("/create-survey")
-    public Response createSurvey(@RequestBody CreateSurveyRequest request) {
-        String surveyName = request.getSurveyName();
-        return Response.setSuccess(surveyName, 200);
-    }
+		return Response.setSuccess(filteringSurveys, 200);
+	}
 
-    /*	@GetMapping("/{surveyUrl}/{curPage}")
-        public Response<SubmitPageResponseDTO> getSurveyByParticipant(@PathVariable String surveyUrl, @PathVariable Integer curPage){
+	@PostMapping("/create-survey")
+	public Response createSurvey(@RequestBody CreateSurveyRequest request) {
+		String surveyName = request.getSurveyName();
+		return Response.setSuccess(surveyName, 200);
+	}
 
+	/*	@GetMapping("/{surveyUrl}/{curPage}")
+		public Response<SubmitPageResponseDTO> getSurveyByParticipant(@PathVariable String surveyUrl, @PathVariable Integer curPage){
+	
+	
+			PageDTO page = new PageDTO(curPage,surveyUrl);
+			SurveyVO findSurvey = service.getSurveyByUrl(page);
+	
+			page.setEnd(findSurvey.getTotalCnt());
+			SubmitPageResponseDTO responseDTO = new SubmitPageResponseDTO(findSurvey,page);
+	
+			return Response.setSuccess(responseDTO,200);
+		}*/
+	@GetMapping("/{surveyUrl}")
+	public Response<SurveyVO> getSurveyByParticipant(@PathVariable
+	String surveyUrl) {
 
-            PageDTO page = new PageDTO(curPage,surveyUrl);
-            SurveyVO findSurvey = service.getSurveyByUrl(page);
+		//PageDTO page = new PageDTO(curPage,surveyUrl);
+		SurveyVO findSurvey = service.getSurveyByUrl(surveyUrl);
 
-            page.setEnd(findSurvey.getTotalCnt());
-            SubmitPageResponseDTO responseDTO = new SubmitPageResponseDTO(findSurvey,page);
+		//		page.setEnd(findSurvey.getTotalCnt());
+		//		SubmitPageResponseDTO responseDTO = new SubmitPageResponseDTO(findSurvey,page);
 
-            return Response.setSuccess(responseDTO,200);
-        }*/
-    @GetMapping("/{surveyUrl}")
-    public Response<SurveyVO> getSurveyByParticipant(@PathVariable
-                                                     String surveyUrl) {
+		return Response.setSuccess(findSurvey, 200);
+	}
 
-        //PageDTO page = new PageDTO(curPage,surveyUrl);
-        SurveyVO findSurvey = service.getSurveyByUrl(surveyUrl);
-
-        //		page.setEnd(findSurvey.getTotalCnt());
-        //		SubmitPageResponseDTO responseDTO = new SubmitPageResponseDTO(findSurvey,page);
-
-        return Response.setSuccess(findSurvey, 200);
-    }
-
-
-    @PostMapping("/post")
-    public Response postSurvey(@RequestBody PostSurveyRequest request) {
-        return Response.setSuccess(service.addSurveyUrl(request), 200, "게시 완료");
-    }
-
-    //	응답시간분석에서 날짜 범위에 따라 필터링
-//@GetMapping("/logs")
-//public ResponseEntity<List<SurveyLogDTO>> getSurveyLogs(
-//		@RequestParam("startDate") String startDateStr,
-//		@RequestParam("endDate") String endDateStr) {
-//	LocalDateTime startDate = LocalDateTime.parse(startDateStr);
-//	LocalDateTime endDate = LocalDateTime.parse(endDateStr);
-//	List<SurveyLogDTO> logs = service.getSurveyLogs(startDate, endDate);
-//	return ResponseEntity.ok(logs);
-//}
-//
-//	@GetMapping("/status-counts")
-//	public ResponseEntity<List<SurveyStatusDTO>> getSurveyStatusCounts(
-//			@RequestParam("startDate") String startDateStr,
-//			@RequestParam("endDate") String endDateStr) {
-//		// 문자열로 받은 날짜를 LocalDateTime으로 변환
-//		LocalDateTime startDate = LocalDateTime.parse(startDateStr);
-//		LocalDateTime endDate = LocalDateTime.parse(endDateStr);
-//
-//		// 서비스 계층에 startDate와 endDate를 전달하여 데이터 조회
-//		List<SurveyStatusDTO> statusCounts = service.getSurveyStatusCounts(startDate, endDate);
-//		return ResponseEntity.ok(statusCounts);
-//	}
-// 설문 로그 조회 API
+	// 설문 로그 조회 API
     @GetMapping("/logs")
     public ResponseEntity<List<SurveyLogDTO>> getSurveyLogs(
             @RequestParam("surveySeq") Long surveySeq,
@@ -143,4 +119,10 @@ public class SurveyRestController {
 
         return ResponseEntity.ok(statusCounts);
     }
+
+	@PostMapping("/post")
+	public Response postSurvey(@RequestBody PostSurveyRequest request) {
+		return Response.setSuccess(service.addSurveyUrl(request), 200, "게시 완료");
+	}
+
 }

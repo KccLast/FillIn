@@ -77,6 +77,8 @@
 
     </resultMap>
 
+    <!-- 회원별 설문지 조회   -->
+
     <!-- 전체 설문지 조회 -->
     <select id="getSurveyListWithPaging" resultMap="surveyResultMap"
             parameterType="com.kcc.fillin.survey.Criteria">
@@ -94,6 +96,8 @@
               FROM survey s
                        LEFT JOIN question q ON s.seq = q.survey_seq
                        LEFT JOIN answer a ON q.seq = a.question_seq
+                       JOIN member m ON m.seq = s.member_seq
+              WHERE m.username= #{username}
               GROUP BY s.seq, s.name, s.cc_seq, s.created_at, s.updated_at, s.post_date, s.end_date)
         WHERE rn >= #{startRow}
           AND rn <= #{endRow}
@@ -101,9 +105,11 @@
     </select>
 
     <!-- 총 설문 수 조회 -->
-    <select id="getTotalSurveyCount" resultType="int">
+    <select id="getTotalSurveyCount" resultType="int" parameterType="String">
         SELECT COUNT(*)
-        FROM survey
+        FROM survey s
+                 JOIN member m ON m.seq = s.member_seq
+        WHERE m.username = #{username}
     </select>
 
     <!-- 공통 코드 조회 -->
@@ -133,7 +139,12 @@
         ON s.seq = q.survey_seq
         LEFT JOIN answer a
         ON q.seq = a.question_seq
+        JOIN member m
+        ON m.seq = s.member_seq
         <where>
+            <if test="username != null and username != ''">
+                AND m.username = #{username}
+            </if>
             <!-- 진행 상태 -->
             <choose>
                 <when test="ccSeq != null and ccSeq != 0">

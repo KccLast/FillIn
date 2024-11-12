@@ -283,6 +283,7 @@ body {
 
 /* question navBar  */
 .nameAndCnt {
+  margin-left: 5%;
   width: 80%;
   display: flex;
 
@@ -295,4 +296,8 @@ body {
 .aiImgBox > img {
   width: 20px;
   height: 15px;
+}
+
+.j-header-surveyName {
+  font-weight: bold !important;
 }

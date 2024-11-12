@@ -45,6 +45,7 @@ public class SurveyServiceImpl implements SurveyService {
 	public List<MultiSearchSurveyResponse> getSurveyListWithPaging(Criteria cri) {
 		int pageNum = cri.getPageNum();
 		int amount = cri.getAmount();
+		String username = cri.getUsername();
 
 		// 1페이지라면 amount에서 1을 뺀 값으로 조정
 		int newAmount = (pageNum == 1) ? amount - 1 : amount;
@@ -52,12 +53,12 @@ public class SurveyServiceImpl implements SurveyService {
 		int startRow = (pageNum - 1) * newAmount + 1;
 		int endRow = pageNum * newAmount;
 
-		return mapper.getSurveyListWithPaging(startRow, endRow);
+		return mapper.getSurveyListWithPaging(startRow, endRow, username);
 	}
 
 	@Override
-	public int getTotalSurveyCount() {
-		return mapper.getTotalSurveyCount();
+	public int getTotalSurveyCount(String username) {
+		return mapper.getTotalSurveyCount(username);
 	}
 
 	@Override
