@@ -43,12 +43,12 @@
 
             <!-- 임계값 입력과 제외하기 버튼을 추가 -->
             <div class="row g-3 my-auto justify-content-end">
+<%--                <div class="col-auto">--%>
+<%--                    <input type="number" class="form-control" id="thresholdInput" placeholder="임계값 입력 (초)" value="60"--%>
+<%--                           min="20" max="60">--%>
+<%--                </div>--%>
                 <div class="col-auto">
-                    <input type="number" class="form-control" id="thresholdInput" placeholder="임계값 입력 (초)" value="60"
-                           min="20" max="60">
-                </div>
-                <div class="col-auto">
-                    <button id="exclude-btn" class="btn btn-danger">제외하기</button>
+                    <button id="exclude-btn" class="btn btn-danger">비정상 응답 필터</button>
                 </div>
             </div>
 

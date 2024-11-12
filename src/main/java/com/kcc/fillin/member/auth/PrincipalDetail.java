@@ -51,9 +51,9 @@ public class PrincipalDetail implements UserDetails {
     public String getAddress(){
         return member.getAddress();
     }
-    
+
     public String getPhone() {
-    	return member.getPhone();
+        return member.getPhone();
     }
 
 //    public Long getSeq() { return member.getSeq(); }

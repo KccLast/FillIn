@@ -24,13 +24,13 @@
         <p>온라인 양식과 설문조사를 손쉽게 만들고 공유하며 실시간으로 <br>응답을 분석할 수 있습니다.</p>
         <div class="buttons">
             <a href="/member/register" class="solid-btn">가입하기</a>
-            <a href="/member/login" class="outline-btn">Forms로 이동</a>
+            <a href="/member/login" class="outline-btn">로그인하기</a>
         </div>
     </div>
 
     <div class="sidebar">
         <div class="form-elements">
-            <img src="/resources/img/common/logo2.png" class="sidebar-image">
+            <img src="/resources/img/common/landingPage.png" class="sidebar-image">
         </div>
     </div>
 </div>
