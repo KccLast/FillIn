@@ -133,6 +133,7 @@ select {
   display: block;
   margin-bottom: 10px;
   display: none;
+  margin-top: 5px;
 }
 
 button.check-button,

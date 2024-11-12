@@ -3,6 +3,7 @@ package com.kcc.fillin.member.controller;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -26,6 +27,7 @@ import org.springframework.web.servlet.ModelAndView;
 @Controller
 @RequestMapping("/member")
 @RequiredArgsConstructor
+@Slf4j
 public class MemberController {
 
 	private final MemberService memberService;
@@ -61,7 +63,8 @@ public class MemberController {
 	@PostMapping("/register")
 	public String registerMember(@ModelAttribute MemberDTO memberDTO) {
 		// 비밀번호 암호화 후 회원 저장
-		memberDTO.setPassword(passwordEncoder.encode(memberDTO.getPassword()));
+		log.info("memberDto: {}", memberDTO.getPassword().substring(0, memberDTO.getPassword().length()-1));
+		memberDTO.setPassword(memberDTO.getPassword().substring(0, memberDTO.getPassword().length()-1));
 		memberService.registerMember(memberDTO);
 		return "redirect:/member/login";  // 회원가입 완료 후 로그인 페이지로 리다이렉트
 	}

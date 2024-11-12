@@ -1,11 +1,14 @@
 package com.kcc.fillin.survey.controller;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Map;
 
 import com.kcc.fillin.member.auth.PrincipalDetail;
 import com.kcc.fillin.survey.dto.*;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,6 +29,7 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/api/survey")
 @RequiredArgsConstructor
 public class SurveyRestController {
+
 	private final SurveyService service;
 
 	@PostMapping("/dashboard")
@@ -76,28 +80,49 @@ public class SurveyRestController {
 		return Response.setSuccess(findSurvey, 200);
 	}
 
-	// 설문 로그를 필터링하는 API
-	@GetMapping("/logs")
-	public ResponseEntity<List<SurveyLogDTO>> getSurveyLogs(@RequestParam("startDate")
-	String startDateStr,
-		@RequestParam("endDate")
-		String endDateStr
-	/*@RequestParam("page") int page,
-	@RequestParam("size") int size*/) {
-		System.out.println("startDateStr = " + startDateStr);
-		System.out.println("endDateStr = " + endDateStr);
-		// 문자열을 LocalDate로 변환
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-		LocalDate startDate = LocalDate.parse(startDateStr, formatter);
-		LocalDate endDate = LocalDate.parse(endDateStr, formatter);
+	// 설문 로그 조회 API
+    @GetMapping("/logs")
+    public ResponseEntity<List<SurveyLogDTO>> getSurveyLogs(
+            @RequestParam("surveySeq") Long surveySeq,
+            @RequestParam("startDate") String startDateStr,
+            @RequestParam("endDate") String endDateStr
+            ) {
 
-		// 서비스를 호출하여 로그를 가져옴(, page, size)
-		List<SurveyLogDTO> logs = service.getSurveyLogs(startDate, endDate);
-		return ResponseEntity.ok(logs);
-	}
+        System.out.println("surveySeq = " + surveySeq);
+        System.out.println("클라이언트에서온 데이터 " + surveySeq + startDateStr+ endDateStr);
+        LocalDate startDate = LocalDate.parse(startDateStr);
+        LocalDate endDate = LocalDate.parse(endDateStr);
+
+        LocalDateTime startDateTime = startDate.atStartOfDay();
+        LocalDateTime endDateTime = endDate.atTime(23, 59, 59);
+
+        List<SurveyLogDTO> logs = service.getSurveyLogs(surveySeq, startDateTime, endDateTime);
+
+        return ResponseEntity.ok(logs);
+    }
+
+    @GetMapping("/status-counts")
+    public ResponseEntity<List<SurveyStatusDTO>> getSurveyStatusCounts(
+            @RequestParam("surveySeq") Long surveySeq,
+            @RequestParam("startDate") String startDateStr,
+            @RequestParam("endDate") String endDateStr) {
+        System.out.println("surveySeq = " + surveySeq);
+        System.out.println("클라이언트에서온 데이터 2: "  + startDateStr+"    "+ endDateStr);
+        LocalDate startDate = LocalDate.parse(startDateStr);
+        LocalDate endDate = LocalDate.parse(endDateStr);
+
+        LocalDateTime startDateTime = startDate.atStartOfDay();
+        LocalDateTime endDateTime = endDate.atTime(23, 59, 59);
+
+
+        List<SurveyStatusDTO> statusCounts = service.getAllSurveyStatusCounts(surveySeq,startDateTime, endDateTime);
+
+        return ResponseEntity.ok(statusCounts);
+    }
 
 	@PostMapping("/post")
 	public Response postSurvey(@RequestBody PostSurveyRequest request) {
 		return Response.setSuccess(service.addSurveyUrl(request), 200, "게시 완료");
 	}
+
 }
