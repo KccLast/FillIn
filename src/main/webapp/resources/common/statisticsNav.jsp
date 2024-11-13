@@ -18,11 +18,6 @@
 				<img class="arrow-icon" alt="arrow" src="/resources/img/common/arrow.png">
 			</a>
 
-<%--			<a href="#" id="regression-statistics" class="nav-link">--%>
-<%--				<img src="/resources/img/statistic/regression.png" alt="regression">--%>
-<%--				<span class="menu-text">회귀분석</span>--%>
-<%--				<img class="arrow-icon" alt="arrow" src="/resources/img/common/arrow.png">--%>
-<%--			</a>--%>
 			<a href="#" class="nav-link ">
 
 				<img src="/resources/img/common/answerTime.png" alt="answerTime">

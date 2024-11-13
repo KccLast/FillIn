@@ -32,6 +32,7 @@ public class SurveyController {
 
 	private final SurveyService service;
 
+
 	@PostMapping("")
 	public String createSurveyWithName(SurveyVO survey, @AuthenticationPrincipal PrincipalDetail principalDetail){
 		survey.setMemberSeq(principalDetail.getMember().getSeq());
@@ -97,6 +98,12 @@ public class SurveyController {
 //	}
 	@GetMapping({"/logs/{surveySeq}", "/logs"})
 	public String showSurveyLogsPage(@PathVariable(required = false) Long surveySeq, Model model, @AuthenticationPrincipal PrincipalDetail principalDetail) {
+		if(surveySeq == null){
+			Long lastSurveySeq = service.getLastSurveySeq(principalDetail.getMember().getSeq());
+			if(lastSurveySeq == null) return "redirect:/survey/dashboard";
+			return "redirect:/survey/logs/"+lastSurveySeq;
+
+		}
 		model.addAttribute("surveySeq", surveySeq);
 		return "/survey/surveyLog"; // surveyLog.jsp 파일 렌더링
 	}

@@ -115,7 +115,10 @@ public List<SurveyLogDTO> getSurveyLogs(Long surveySeq, LocalDateTime startDate,
 		return surveyLogMapper.findSurveyStatusCounts(surveySeq, startDate, endDate);
 	}
 
-
+	@Override
+	public Long getLastSurveySeq(Long memberSeq) {
+		return mapper.getLastSurveySeq(memberSeq);
+	}
 
 
 	@Override

@@ -307,4 +307,9 @@
         WHERE seq = #{surveyId}
     </update>
 
+    <select id="getLastSurveySeq" parameterType="Long">
+        SELECT Min(seq)
+        FROM survey
+        WHERE member_seq = #{memberSeq}
+    </select>
 </mapper>
