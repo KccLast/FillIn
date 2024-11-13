@@ -303,7 +303,8 @@
         target_people   = #{sampleSize},
         reliability     = #{reliability},
         allowable_error = #{allowableError},
-        url             = #{url}
+        url             = #{url},
+        cc_seq = 4
         WHERE seq = #{surveyId}
     </update>
 
