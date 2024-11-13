@@ -4,6 +4,7 @@
     <title>Title</title>
     <meta charset="UTF-8">
     <link rel="stylesheet" type="text/css" href="/resources/common/dashBoardNav.css">
+    <link rel="stylesheet" type="text/css" href="/resources/common/statisticsNav.css">
     <link rel="stylesheet" type="text/css" href="/resources/css/statistic/compareClustering.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3-alpha1/dist/css/bootstrap.min.css"
           rel="stylesheet">
@@ -181,7 +182,7 @@
                     <p>건강 관리 방식과 건강 만족도의 상관관계: 건강 관리 방법이 건강에 대한 만족도에 중요한 영향을 미칩니다. 운동과 식습관 관리에 집중하는 군집 1은 건강에 대해 매우 높은
                         만족도를
                         보이며...</p>
-                    <!-- 추가 텍스트를 여기에 입력 -->
+                    <!-- 추가 텍스트를 여기에 입력 -->0
                 </div>
             </div>
         </div>

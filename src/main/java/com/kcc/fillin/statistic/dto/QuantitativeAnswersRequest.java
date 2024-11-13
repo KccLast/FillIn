@@ -26,7 +26,7 @@ public class QuantitativeAnswersRequest {
 		private Long clusterId;
 		private List<Long> participantList;
 	}
-	
+
 	// @Getter
 	// @Builder
 	// @AllArgsConstructor

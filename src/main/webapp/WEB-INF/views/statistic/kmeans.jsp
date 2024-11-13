@@ -99,14 +99,14 @@
                                     </div>
 
                                     <div class="d-flex justify-content-between">
-                                        <div class="col-9">
+<%--                                        <div class="col-9">--%>
                                             <select id="question-select" class="form-select"
                                                 aria-label="Default select example">
                                                 <%-- <option selected value="">문항을 선택해주세요.</option>--%>
                                             </select>
-                                        </div>
-                                        <button id="update-btn" type="button"
-                                            class="col-2 btn btn-primary">업데이트</button>
+<%--                                        </div>--%>
+<%--                                        <button id="update-btn" type="button"--%>
+<%--                                            class="col-2 btn btn-primary">업데이트</button>--%>
                                     </div>
 
                                     <div class="d-flex justify-content-between">
