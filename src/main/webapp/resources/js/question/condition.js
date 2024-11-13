@@ -153,27 +153,23 @@ $(function () {
     let body = $(this).parents('.accordion-item');
     let conOrder = body.find('.con-order').text();
     let questionSeq = findQuestionSeqInConditionNav(this);
-    // $(this)
-    //   .parents('.condition-nav-box')
-    //   .find('input[type="hidden"]')
-    //   .val();
-    // 클래스 문자열 가져오기
+
     let conditionList = getQuestionConditions(questionSeq);
 
-    let ConditionId = body.find('input[type="hidden"]').val(); // 정규식을 사용해 숫자만 추출
-    let operation = body.find('.condition-oper').val();
+    let ConditionId = body.find('input[type="hidden"]').val();
+    let operation = '같음';
     let nextSeq = body.find('.contition-next-se').val();
     let optionVal = body.find('.contition-option-se').val();
 
     if (optionVal === '' || optionVal === null || optionVal === undefined) {
-      optionVal = ' ';
+      optionVal = '같음';
     }
     console.log(ConditionId);
     console.log(conditionList);
     let findCon = conditionList.filter(
       (con) => con.id === parseInt(ConditionId)
     )[0];
-    console.log(findCon.seq);
+    console.log('찾은조건=', findCon.seq);
     let saveCondition = {
       seq: findCon.seq,
       id: parseInt(ConditionId),
@@ -183,7 +179,7 @@ $(function () {
       operation: operation, // 연산 또는 동작 설정
     };
     console.log(saveCondition);
-    //saveConditionDataInLocal(saveCondition);
+    saveConditionDataInLocal(saveCondition);
     saveConditionInDB(saveCondition);
     let nodeId = getNodeIdByQuestionSeq(saveCondition.to, saveCondition.from);
     deleteEdge(nodeId.from, saveCondition.id);
@@ -562,9 +558,10 @@ function getQuestionConditions(questionSeq) {
 }
 
 function saveConditionListInLocalStorage(conditions, questionSeq) {
+  console.log('저장할 condition = ', conditions);
   let storedData = JSON.parse(localStorage.getItem('accordionData')) || {};
   storedData[questionSeq] = conditions;
-  console.log(storedData);
+
   localStorage.setItem('accordionData', JSON.stringify(storedData));
 }
 
@@ -1324,8 +1321,10 @@ function saveConditionInDB(condition) {
       let findCondition = conditions.filter(
         (con) => con.id === response.data.id
       )[0];
+
       findCondition.seq = response.data.seq;
-      console.log(findCondition);
+
+      console.log('찾은 컨디션 = ', findCondition);
       saveConditionListInLocalStorage(conditions, response.data.from);
     },
     error: function (error) {},
@@ -1357,6 +1356,8 @@ function initcondition(questions) {
       conditionSeq !== undefined &&
       conditionSeq !== ''
     ) {
+      conditionList.sort((a, b) => a.id - b.id);
+
       saveConditionListInLocalStorage(conditionList, conditionSeq);
     }
   }
@@ -1494,16 +1495,16 @@ async function clickNode(params) {
 
     // fromNodeId나 toNodeId가 없는 경우 처리
     if (fromNodeId === null || toNodeId === null) {
-      console.warn('노드 ID를 찾을 수 없습니다.');
+      // console.warn('노드 ID를 찾을 수 없습니다.');
       continue; // 다음 반복으로 넘어감
+    } else {
+      let conViewOrder = conditionList
+        .find('.accordion-item')
+        .eq(i)
+        .find('.con-order')
+        .text();
+      addConditionalFlow(fromNodeId, toNodeId, condition.id, conViewOrder);
     }
-
-    let conViewOrder = conditionList
-      .find('.accordion-item')
-      .eq(i)
-      .find('.con-order')
-      .text();
-    addConditionalFlow(fromNodeId, toNodeId, condition.id, conViewOrder);
   }
   let edgeList = edges.get();
 

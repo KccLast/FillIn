@@ -204,7 +204,7 @@
 		,#{from}
 		,#{to}
 		,#{condition}
-		,#{operation}
+		,'같음'
 		,#{id}
 		)
 	</insert>

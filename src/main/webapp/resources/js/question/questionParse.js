@@ -35,6 +35,94 @@ async function processQuestions(questions) {
     await appendQuestionCard(question, index); // 비동기 함수가 순차적으로 실행되도록 처리
   }
 }
+// 캐시 객체를 사용하여 AJAX 요청 최소화
+let questionFrameCache,
+  headerCache = {},
+  contentCache = {};
+// async function processQuestions(questions) {
+//   const questionCards = []; // 모든 질문 카드를 저장할 배열
+
+//   // 각 질문 카드를 메모리에 생성하고 배열에 추가
+//   for (const [index, question] of questions.entries()) {
+//     const questionCard = await appendQuestionCard(question, index);
+//     questionCards.push(questionCard); // 생성된 카드를 배열에 추가
+//   }
+
+//   // 모든 질문 카드를 한 번에 DOM에 추가
+//   $('.content').append(questionCards);
+// }
+// async function appendQuestionCard(question, index) {
+//   try {
+//     // questionFrame.html 불러오기
+//     const questionData = await fetchQuestionFrame();
+
+//     // 새롭게 추가할 고유한 컨테이너 생성
+//     const $newContainer = $(
+//       '<div class="j-question-card j-flex-col-center"></div>'
+//     );
+//     $newContainer.html(questionData);
+//     $newContainer.append(
+//       `<input type="hidden" value="${question.ccSeq}" class="j-cseq"/>`
+//     );
+//     $newContainer.append(
+//       `<input type="hidden" value="${question.seq}" class="j-qseq"/>`
+//     );
+
+//     // 질문 제목 및 내용 설정
+//     if (question.ccSeq === 18) {
+//       $newContainer
+//         .find('.j-survey-name-input')
+//         .val('개인 정보 수집 및 이용 동의서')
+//         .prop('readonly', true);
+//       $newContainer.find('.j-survey-content').hide();
+//     } else {
+//       $newContainer.find('.j-survey-name-input').val(question.name.trim());
+//       $newContainer
+//         .find('.j-survey-content > textarea')
+//         .val(question.description.trim());
+//     }
+
+//     // 필수 여부 설정
+//     const es = $newContainer.find('.j-essential');
+//     es.attr(
+//       'data-essential',
+//       question.isEssential === 'Y' ? 'Y' : 'N'
+//     ).toggleClass('j-es-seleted', question.isEssential === 'Y');
+//     es.prop('checked', question.isEssential === 'Y');
+
+//     $newContainer.find('.j-q-order').val(question.order);
+
+//     // 헤더 및 콘텐츠 설정
+//     const headerData = await fetchHeader(question.ccSeq);
+//     $newContainer.find('.j-survey-es-type').append(headerData);
+
+//     if (question.questionItemExist) {
+//       await setQuestionItem(question, $newContainer);
+//     } else {
+//       const contentData = await fetchContent(question.ccSeq);
+//       $newContainer.find('.j-question-content-box').append(contentData);
+//     }
+
+//     // 색상 클래스 설정
+//     const ccSeq = parseInt(question.ccSeq, 10);
+//     const typeAndImg = $newContainer.find('.j-typeAndImg');
+//     if (ccSeq <= 11) typeAndImg.addClass('j-quancolor');
+//     else if (ccSeq <= 13) typeAndImg.addClass('j-qualcolor');
+//     else if (ccSeq <= 16) typeAndImg.addClass('j-contactcolor');
+//     else typeAndImg.addClass('j-datacolor');
+
+//     // 지도 설정
+//     if (question.ccSeq === 17) {
+//       $newContainer.find('.j-map-container').attr('id', `map${question.seq}`);
+//       setTimeout(() => createDefaultMap(`map${question.seq}`), 100);
+//     }
+
+//     // 완성된 카드 반환
+//     return $newContainer;
+//   } catch (error) {
+//     console.error('AJAX 요청 실패:', error);
+//   }
+// }
 
 async function appendQuestionCard(question, index) {
   try {
@@ -209,6 +297,21 @@ async function fetchQuestionItem(seq) {
     type: 'GET',
   });
 }
+let questionItemCache = {};
+async function fetchQuestionItem(seq) {
+  if (!questionItemCache[seq]) {
+    try {
+      questionItemCache[seq] = await $.ajax({
+        url: '/resources/html/question/questionItem/qi' + seq + '.html',
+        type: 'GET',
+      });
+    } catch (error) {
+      console.error(`Question item 불러오기 실패 (seq: ${seq}):`, error);
+      questionItemCache[seq] = null;
+    }
+  }
+  return questionItemCache[seq];
+}
 
 function type7Common(target, qi) {
   target.find('.j-select-optionBox').addClass(qi.seq + ' ' + qi.questionSeq);
@@ -235,25 +338,70 @@ function type9Common(target, qi) {}
 
 /** 질문 업데이트 관련 제목, 내용, 타입이 수정될 수 있음 */
 // questionFrame.html 파일 불러오기
+
+// async function fetchQuestionFrame() {
+//   return $.ajax({
+//     url: '/resources/html/question/questionFrame.html',
+//     type: 'GET',
+//   });
+// }
 async function fetchQuestionFrame() {
-  return $.ajax({
-    url: '/resources/html/question/questionFrame.html',
-    type: 'GET',
-  });
+  if (!questionFrameCache) {
+    try {
+      questionFrameCache = await $.ajax({
+        url: '/resources/html/question/questionFrame.html',
+        type: 'GET',
+      });
+    } catch (error) {
+      console.error('Question frame 불러오기 실패:', error);
+      questionFrameCache = null;
+    }
+  }
+  return questionFrameCache;
 }
 
 // header 파일 불러오기
+// async function fetchHeader(ccSeq) {
+//   return $.ajax({
+//     url: '/resources/html/question/header/header' + ccSeq + '.html',
+//     type: 'GET',
+//   });
+// }
+
 async function fetchHeader(ccSeq) {
-  return $.ajax({
-    url: '/resources/html/question/header/header' + ccSeq + '.html',
-    type: 'GET',
-  });
+  if (!headerCache[ccSeq]) {
+    try {
+      headerCache[ccSeq] = await $.ajax({
+        url: `/resources/html/question/header/header${ccSeq}.html`,
+        type: 'GET',
+      });
+    } catch (error) {
+      console.error(`Header 불러오기 실패 (ccSeq: ${ccSeq}):`, error);
+      headerCache[ccSeq] = null;
+    }
+  }
+  return headerCache[ccSeq];
 }
 
 // content 파일 불러오기
+// async function fetchContent(ccSeq) {
+//   return $.ajax({
+//     url: '/resources/html/question/content/content' + ccSeq + '.html',
+//     type: 'GET',
+//   });
+// }
+
 async function fetchContent(ccSeq) {
-  return $.ajax({
-    url: '/resources/html/question/content/content' + ccSeq + '.html',
-    type: 'GET',
-  });
+  if (!contentCache[ccSeq]) {
+    try {
+      contentCache[ccSeq] = await $.ajax({
+        url: `/resources/html/question/content/content${ccSeq}.html`,
+        type: 'GET',
+      });
+    } catch (error) {
+      console.error(`Content 불러오기 실패 (ccSeq: ${ccSeq}):`, error);
+      contentCache[ccSeq] = null;
+    }
+  }
+  return contentCache[ccSeq];
 }

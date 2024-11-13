@@ -130,6 +130,7 @@ $(function () {
 
   $('.content').on('click', '.j-number > span', function () {
     getSubmitObject(this, $(this).text());
+    checkConditionalFlow(this, $(this).text());
     // storeCheckBoxsubmitInLocal(
     //   submitObject,
     //   submitObject.questionSeq,
@@ -139,6 +140,7 @@ $(function () {
 
   $('.content').on('change', '.qiBox', function () {
     getSubmitObject(this, $(this).find('option:selected').text());
+    checkConditionalFlow(this, $(this).find('option:selected').text());
   });
 
   $('.content').on(
@@ -497,6 +499,7 @@ function execDaumPostcode(button) {
 //주소입력
 
 //카드셋팅
+let originQuestionList;
 async function setCard() {
   const currentUrl = window.location.href;
   const lastSlashIndex = currentUrl.lastIndexOf('/');
@@ -507,18 +510,26 @@ async function setCard() {
     type: 'GET',
     success: async function (response) {
       if (page === undefined || page === null) page = 1;
-      console.log(page);
+      originQuestionList = response.data.questions;
       //pageDTO = response.data.pageDTO;
+      //제목 설정하는 부분
       setTitle(response.data.name);
+
+      //처음 end 설정하는 부분
       setEnd(response.data.totalCnt);
+      //버튼 설정하는 부분
       setPageBtn();
 
-      await processQuestions(response.data.questions);
+      //질문 파싱
+      await processQuestions(originQuestionList);
 
-      await setNodes(response.data.questions);
-
+      //여기가 굉장히 중요
+      await setNodes(originQuestionList);
+      //여기도 중요
       await findNext(nodeList[0].seq, 1);
-      await setTotalCnt();
+
+      await setTotalCnt(nodeList[0].seq);
+
       await pageHideAndShow();
     },
     error: function (xhr, status, error) {
@@ -531,9 +542,10 @@ async function setCard() {
 function setTitle(source) {
   $('.j-title').text(source);
 }
-function setEnd(totalCnt) {
+async function setEnd(totalCnt) {
   totalCount = totalCnt;
   end = Math.ceil(totalCnt / 5);
+  setPageBtn();
 }
 
 async function processQuestions(questions) {
@@ -752,6 +764,13 @@ function updateNumberRange(target) {
 // 선형 배율
 
 function setPageBtn() {
+  if (page >= end) {
+    page = end;
+  }
+  if (page < 1) {
+    page = 1;
+  }
+
   console.log(page);
   if (page <= 1) {
     $('#prev-btn').hide();
@@ -805,6 +824,7 @@ let originalNodeList;
 async function setNodes(questions) {
   for (let i = 0; i < questions.length; i++) {
     let seq = questions[i].seq;
+    let isEssential = questions[i].isEssential;
     let prevSeq = i > 0 ? questions[i - 1].seq : null; // 이전 seq 설정
     let nextSeq;
     let conditionList = [];
@@ -833,10 +853,10 @@ async function setNodes(questions) {
       prev: prevSeq, // prevSeq 추가
       next: nextSeq,
       conditionList: conditionList,
+      isEssential: isEssential,
     });
   }
-  originalNodeList = nodeList;
-  console.log(originalNodeList);
+  originalNodeList = JSON.parse(JSON.stringify(nodeList));
 }
 //현재 질문 혹은 선택에 의한 질문이 들어가면 됨 거기서부터 next를 찾으면서 돌면된다.
 async function findNext(target, depth) {
@@ -904,8 +924,10 @@ function cal(operation, val, target) {
 }
 
 async function setTotalCnt() {
-  totalCount = $('.content .ac-card').length;
-  totalEssentialCnt = $('.content .ac-card').find('.j-es-seleted').length;
+  //돌면서 esssential 수를 세어야함
+  //여기서 essential 갯수를 세어야함
+  //totalCount = $('.content .ac-card').length;
+  //totalEssentialCnt = $('.content .ac-card').find('.j-es-seleted').length;
 }
 function addAllCardDisplayNone() {
   $('.content .j-question-card').removeClass('ac-card');
@@ -916,8 +938,14 @@ function checkConditionalFlow(targetCard, targetVal) {
     .parents('.j-question-card')
     .find('.j-qseq')
     .val();
-  let idx = $(targetCard).parents('.ac-card').index();
+  // let idx = $(targetCard).parents('.ac-card').index();
+  let idx = $(targetCard)
+    .parents('.ac-card')
+    .filter(':visible')
+    .index('.ac-card:visible');
+  console.log(idx);
   idx++;
+  console.log(idx);
   let findNode = nodeList.find((node) => node.seq === parseInt(questionSeq));
 
   if (!findNode) return;
@@ -930,16 +958,14 @@ function checkConditionalFlow(targetCard, targetVal) {
       findNode.next = con.next;
       let nodeListNext = nodeList.find((node) => node.seq === con.next);
       nodeListNext.prev = findNode.seq;
-      displayNoneLowerOrderCards(questionSeq); // 조건에 부합하면 처리
+      //displayNoneLowerOrderCards(questionSeq); // 조건에 부합하면 처리
       isConditionAnswer = true;
       break; // 반복 중단
     }
   }
   console.log(nodeList);
-  setNewTotalLenAndEssentialEnd(nodeList);
 
   if (!isConditionAnswer) {
-    console.log('ho');
     let findOrigin = originalNodeList.find(
       (node) => node.seq === parseInt(questionSeq)
     );
@@ -951,11 +977,13 @@ function checkConditionalFlow(targetCard, targetVal) {
     findNode.next = findOrigin.next;
     findNodeListNext.prev = findOriginNext.prev;
   }
-  console.log(idx);
+  displayNoneLowerOrderCards(questionSeq);
+  setNewTotalLenAndEssentialEnd(nodeList);
   findNext(parseInt(questionSeq), idx);
 }
 
-function setNewTotalLenAndEssentialEnd(nodeList) {
+async function setNewTotalLenAndEssentialEnd(nodeList) {
+  //끝페이지만 설정해주면됨
   showDataList = [];
   essentialList = [];
 
@@ -963,8 +991,24 @@ function setNewTotalLenAndEssentialEnd(nodeList) {
   console.log(essentialList);
   showCardLen = showDataList;
   totalCount = showCardLen;
-  setEnd();
+
+  let lens = await findLength(nodeList[0].seq);
+  await setEnd(lens);
 }
+
+async function findLength(targetSeq) {
+  let length = 0;
+  let currentNode = nodeList.find((node) => node.seq === targetSeq);
+
+  while (currentNode) {
+    length++;
+    if (currentNode.next === null) break; // 다음 노드가 없으면 종료
+    currentNode = nodeList.find((node) => node.seq === currentNode.next); // 다음 노드 탐색
+  }
+
+  return length;
+}
+
 function traverse(node) {
   //nodeList에서 해당 seq를 찾기
   showDataList.push(node.seq);

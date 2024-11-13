@@ -33,4 +33,7 @@ public class SurveyVO {
 		return surveyVO;
 	}
 
+    public boolean isAuthSurvey(Long userSeq) {
+		return this.memberSeq == userSeq;
+    }
 }
