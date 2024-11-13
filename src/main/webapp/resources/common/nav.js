@@ -27,7 +27,7 @@ function setNavLink() {
   }
   console.log(url);
   // 각 링크 생성
-  let editLink = '/survey' + url;
+  let editLink = '/survey/dashboard';
   let statisticLink = '/statistic' + url;
   let clusterLink = '/statistic/clustering' + url;
   let linerLink = '/statistics/liner-regression' + url;
@@ -35,13 +35,12 @@ function setNavLink() {
 
   // 링크가 초기화되지 않았다면 각 링크에 href 속성 설정
 
-  const navLinks = document.querySelectorAll('.nav > .nav-link');
+  const navLinks = document.querySelectorAll('.nav-link');
 
-  // navLinks[0].setAttribute('href', editLink);
-  // navLinks[1].setAttribute('href', statisticLink);
-  // navLinks[2].setAttribute('href', clusterLink);
-  // navLinks[3].setAttribute('href', linerLink);
-  // navLinks[4].setAttribute('href', logLink);
+  navLinks[0].setAttribute('href', editLink);
+  navLinks[1].setAttribute('href', statisticLink);
+  navLinks[2].setAttribute('href', clusterLink);
+  navLinks[3].setAttribute('href', logLink);
 
   // 초기화 완료 표시
 }

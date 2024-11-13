@@ -994,14 +994,14 @@ $(function () {
     $(this).focus(); // 클릭 후 바로 입력할 수 있도록 포커스
   });
 });
-window.addEventListener('beforeunload', function (event) {
-  console.log('hi');
-  // 실행될 코드 작성
-  var confirmationMessage = '이 페이지를 떠나시겠습니까?';
-  (event || window.event).returnValue = confirmationMessage; // 대부분의 브라우저에서 사용\
-  console.log('hi');
-  return confirmationMessage; // 최신 브라우저에서 사용
-});
+// window.addEventListener('beforeunload', function (event) {
+//   console.log('hi');
+//   // 실행될 코드 작성
+//   var confirmationMessage = '이 페이지를 떠나시겠습니까?';
+//   (event || window.event).returnValue = confirmationMessage; // 대부분의 브라우저에서 사용\
+//   console.log('hi');
+//   return confirmationMessage; // 최신 브라우저에서 사용
+// });
 function isNotInputLenError(target, len, limit) {
   console.log(len);
   if (len <= limit) {

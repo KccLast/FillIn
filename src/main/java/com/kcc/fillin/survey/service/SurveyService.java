@@ -41,4 +41,6 @@ public interface SurveyService {
 
 	List<SurveyStatusDTO> getAllSurveyStatusCounts(Long surveySeq,LocalDateTime startDate, LocalDateTime endDate);
 
+	public Long getLastSurveySeq(Long memberSeq);
+
 }
