@@ -216,7 +216,7 @@
 
     <select id="selectSurveyBySurveySeq" resultMap="surveyInfo" parameterType="long">
 
-        SELECT s.seq, s.name, s.post_date, s.end_date, s.url, s.target_people,
+        SELECT s.seq, s.name, s.post_date, s.end_date, s.url, s.target_people,s.member_seq,
         q.seq AS question_seq, q.survey_seq, q.tb_file_seq, q.name AS question_name, q.description, q.order_num as q_order, q.is_essential, q.cc_seq AS question_cc_seq,
         qi.seq AS question_item_seq, qi.question_seq AS qi_question_seq, qi.content, qi.order_num as qi_order,
         c.seq AS condition_seq, c.question_seq as c_question_seq, c.next_question_seq, c.c_value, c.operation,c.order_num as condition_order

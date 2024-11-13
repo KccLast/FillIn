@@ -80,9 +80,10 @@ public class SurveyController {
 	}
 
 	@PostMapping("/project")
-	public String newProject(SurveyVO newSurvey) {
+	public String newProject(SurveyVO newSurvey,  @AuthenticationPrincipal PrincipalDetail principalDetail) {
 		//test용으로 memberId 설정함 (추후 삭제 반드시 필요)
-		newSurvey.setMemberSeq(1);
+		newSurvey.setMemberSeq(principalDetail.getMember().getSeq());
+		System.out.println("newSurvey = " + newSurvey);
 		boolean result = service.createNewSurvey(newSurvey);
 		//survey 등록 실패 관련 로직 필요
 		return "redirect:/survey/" + newSurvey.getSeq();
