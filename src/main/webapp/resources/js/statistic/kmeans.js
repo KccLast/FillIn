@@ -84,6 +84,8 @@ $('#update-btn').on('click', function () {
 
 $('#next-btn').on('click', function () {
     var questionId = $('#question-select').val();
+    var questionText = $('#question-select option:selected').text().replace(/^\d+번\s*/, '');  // 선택된 질문명
+    console.log(questionText);
 
     // 클러스터링된 데이터를 가져와서 필요한 정보만 추출
     if (!chart) {
@@ -120,6 +122,13 @@ $('#next-btn').on('click', function () {
         .attr('name', 'clusteringData')
         .attr('value', JSON.stringify(formattedData));
     form.append(input);
+
+    // 질문명은 한 번만 숨겨진 필드로 추가
+    var questionInput = $('<input>')
+        .attr('type', 'hidden')
+        .attr('name', 'questionText')
+        .attr('value', JSON.stringify(questionText));
+    form.append(questionInput);
 
     // 폼을 body에 추가하고 제출
     $('body').append(form);
