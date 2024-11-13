@@ -12,17 +12,19 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kcc.fillin.statistic.service.StatisticService;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Controller
 @RequestMapping("/statistic")
 @RequiredArgsConstructor
+@Slf4j
 public class StatisticController2 {
 
 	private final StatisticService statisticService;
 
 	@PostMapping("/keyword")
 	public String showKeywordAnalysisPage(@RequestParam Long surveySeq, @RequestParam Long questionSeq,
-		@RequestParam String clusteringData, Model model) {
+		@RequestParam String clusteringData, @RequestParam("questionText") String questionName, Model model) {
 		// System.out.println(clusteringData);
 
 		// clusteringData를 파싱하여 모델에 추가
@@ -32,6 +34,9 @@ public class StatisticController2 {
 		model.addAttribute("surveySeq", surveySeq);
 		model.addAttribute("questionSeq", questionSeq);
 		model.addAttribute("clusteringData", clusteringData);
+		model.addAttribute("questionName", questionName);
+
+		log.info("qqqqqqqqqqqqn : " + questionName);
 
 		return "/statistic/keyword";
 	}

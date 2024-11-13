@@ -122,21 +122,7 @@
                                 <th>유형</th>
                             </tr>
                             </thead>
-                            <tr>
-                                <td><span class="circle-number">1</span></td>
-                                <td>사용자 경험 조사</td>
-                                <td><span class="type-icon">📝</span> 객관식</td>
-                            </tr>
-                            <tr>
-                                <td><span class="circle-number">2</span></td>
-                                <td>사용자 경험 조사</td>
-                                <td><span class="type-icon">☑️</span> 체크박스</td>
-                            </tr>
-                            <tr>
-                                <td><span class="circle-number">2</span></td>
-                                <td>사용자 경험 조사</td>
-                                <td><span class="type-icon">📊</span> 선형</td>
-                            </tr>
+                            <tbody>
                             <!-- 추가 행들... -->
                             </tbody>
                         </table>
@@ -154,16 +140,6 @@
                             </tr>
                             </thead>
                             <tbody>
-                            <tr>
-                                <td>1</td>
-                                <td>C</td>
-                                <td>Cluster 1, Cluster 2</td>
-                            </tr>
-                            <tr>
-                                <td>1</td>
-                                <td>Java</td>
-                                <td>Cluster 3</td>
-                            </tr>
                             <!-- 더 많은 행을 추가할 수 있습니다. -->
                             </tbody>
                         </table>
@@ -173,16 +149,13 @@
                 <!-- AI 분석 버튼 -->
                 <div class="ai-analysis-button-container">
                     <button class="ai-analysis-button btn-primary fw-bold">
-                        <i class="bi bi-clipboard-data"></i> AI 분석
+                        <i class="bi bi-clipboard-data"></i> 분석
                     </button>
                 </div>
 
                 <!-- 분석 결과 텍스트 -->
                 <div class="analysis-text">
-                    <p>건강 관리 방식과 건강 만족도의 상관관계: 건강 관리 방법이 건강에 대한 만족도에 중요한 영향을 미칩니다. 운동과 식습관 관리에 집중하는 군집 1은 건강에 대해 매우 높은
-                        만족도를
-                        보이며...</p>
-                    <!-- 추가 텍스트를 여기에 입력 -->0
+                    <p id="analysisContent"></p>
                 </div>
             </div>
         </div>

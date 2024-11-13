@@ -30,10 +30,12 @@ import com.kcc.fillin.question.service.QuestionService_JA;
 import com.kcc.fillin.util.jina.QuestionType;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @RequestMapping("/api/question/")
 @RequiredArgsConstructor
+@Slf4j
 public class QuestionRestController_JA {
 	private final OpenAiChatModel openAiChatModel;
 	private final QuestionService_JA questionService;
@@ -139,6 +141,20 @@ public class QuestionRestController_JA {
 		System.out.println("response = " + response);
 
 		// 결과 반환
+		return Response.setSuccess(response, 200);
+	}
+
+	@PostMapping("/make-clustering")
+	public Response makeClustering(@RequestBody ClusteringAutoQuestionRequest request) {
+		log.info(request.toString());
+
+		String command = request.generateSummary();
+
+		log.info("command: " + command);
+		Message userMessage = new UserMessage(command);
+
+		String response = chatModel.call(userMessage);
+
 		return Response.setSuccess(response, 200);
 	}
 

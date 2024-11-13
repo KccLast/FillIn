@@ -157,6 +157,7 @@
         <id property="questionSeq" column="question_seq"/>
         <result property="questionOrderNum" column="question_order_num"/>
         <result property="questionName" column="question_name"/>
+        <result property="parentSeq" column="parent_seq"/>
         <result property="ccSeq" column="cc_seq"/>
         <result property="ccName" column="cc_name"/>
         <collection property="answerList" ofType="ClusterAnswerDto">

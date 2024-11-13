@@ -200,6 +200,8 @@
 
 <script>
     var clusteringData = ${clusteringData};
+    var questionName = ${questionName};
+    console.log(questionName);
     console.log("Received Clustering Data: ", clusteringData);
 </script>
 
