@@ -54,6 +54,7 @@
       const currentPath = window.location.pathname;
       const lastSegment = currentPath.split('/').pop(); // URL의 마지막 부분을 가져옴
       const surveyNumber = /^\d+$/.test(lastSegment) ? lastSegment : null; // 숫자인지 확인
+
       let target = $('.surveyTitle');
       let matchingTitle = '설문 선택'
       if (surveyNumber) {
@@ -138,7 +139,7 @@
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content j-user-sur-content">
         <div class="modal-header j-user-sur-header">
-          <h1 class="modal-title fs-5" id="exampleModalLabel">설문 선택</h1>
+          <h1 class="modal-title fs-5" id="exampleModalLabel"></h1>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body j-user-sur-body">
@@ -161,7 +162,7 @@
         </div>
         <div class="modal-footer j-user-sur-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
-          <button type="button" class="btn btn-primary">선택</button>
+
         </div>
       </div>
     </div>

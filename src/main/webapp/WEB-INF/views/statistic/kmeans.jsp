@@ -8,6 +8,7 @@
             <%-- <meta name="viewport" content="width=device-width, initial-scale=1.0">--%>
                 <title>Insert title here</title>
                 <link rel="stylesheet" type="text/css" href="/resources/common/statisticsNav.css">
+                <link rel="stylesheet" type="text/css" href="/resources/common/dashBoardNav.css">
                 <link rel="stylesheet" type="text/css" href="/resources/css/statistic/kmeans.css">
                 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3-alpha1/dist/css/bootstrap.min.css"
                     rel="stylesheet">
@@ -23,14 +24,14 @@
                     href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap">
                 <!-- 버전 맞춤 -->
                 <link rel="stylesheet" type="text/css" href="/resources/common/progressBar.css">
-
+                <script src="/resources/common/nav.js"></script>
 
                 <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
         </head>
 
         <body>
             <%@include file="/resources/common/header.jsp" %>
-                <%@include file="/resources/common/statisticsNav.jsp" %>
+                <%@include file="/resources/common/dashBoardNav.jsp" %>
                     <%@include file="/resources/common/commonSelectModal.jsp" %>
                         <%--<%@include file="/resources/common/progressBar.css" %>--%>
 

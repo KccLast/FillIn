@@ -40,4 +40,6 @@ public interface SurveyDao {
 
 	public boolean updateSurveyInfo(PostSurveyRequest postSurveyRequest);
 
+	Long getLastSurveySeq(Long seq);
+
 }
