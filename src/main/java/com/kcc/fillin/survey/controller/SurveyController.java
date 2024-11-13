@@ -103,9 +103,13 @@ public class SurveyController {
 
 	@GetMapping("/{surveySeq}")
 	public String getSurvey(@PathVariable
-							Long surveySeq, Model model) {
+							Long surveySeq, Model model,@AuthenticationPrincipal PrincipalDetail principalDetail) {
 
 		SurveyVO findSurvey = service.findSurveyBySurveySeq(surveySeq);
+
+		if(!findSurvey.isAuthSurvey(principalDetail.getMember().getSeq())){
+			return "redirect:/survey/dashboard?auth=false";
+		}
 		model.addAttribute("survey", findSurvey);
 
 		ObjectMapper objectMapper = new ObjectMapper();

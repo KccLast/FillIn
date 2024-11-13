@@ -130,6 +130,7 @@ $(function () {
 
   $('.content').on('click', '.j-number > span', function () {
     getSubmitObject(this, $(this).text());
+    checkConditionalFlow(this, $(this).text());
     // storeCheckBoxsubmitInLocal(
     //   submitObject,
     //   submitObject.questionSeq,
@@ -139,6 +140,7 @@ $(function () {
 
   $('.content').on('change', '.qiBox', function () {
     getSubmitObject(this, $(this).find('option:selected').text());
+    checkConditionalFlow(this, $(this).find('option:selected').text());
   });
 
   $('.content').on(
