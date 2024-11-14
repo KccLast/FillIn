@@ -464,17 +464,35 @@ public class StatisticServiceImpl implements StatisticService {
 	}
 
 	// 감정 분석 API 요청 메서드
-	private HttpResponse<String> sendSentimentRequest(String sentence) throws IOException, InterruptedException {
+//	private HttpResponse<String> sendSentimentRequest(String sentence) throws IOException, InterruptedException {
+//		HttpClient client = HttpClient.newHttpClient();
+//		HttpRequest request = HttpRequest.newBuilder()
+//			.uri(URI.create("https://naveropenapi.apigw.ntruss.com/sentiment-analysis/v1/analyze"))
+//			.header("Content-Type", "application/json")
+//			.header("X-NCP-APIGW-API-KEY-ID", client_id)
+//			.header("X-NCP-APIGW-API-KEY", client_secret)
+//			.POST(HttpRequest.BodyPublishers.ofString("{\"content\":\"" + sentence + "\"}"))
+//			.build();
+//
+//		return client.send(request, HttpResponse.BodyHandlers.ofString());
+//	}
+	private HttpResponse<String> sendSentimentRequest(String sentence) {
 		HttpClient client = HttpClient.newHttpClient();
 		HttpRequest request = HttpRequest.newBuilder()
-			.uri(URI.create("https://naveropenapi.apigw.ntruss.com/sentiment-analysis/v1/analyze"))
-			.header("Content-Type", "application/json")
-			.header("X-NCP-APIGW-API-KEY-ID", client_id)
-			.header("X-NCP-APIGW-API-KEY", client_secret)
-			.POST(HttpRequest.BodyPublishers.ofString("{\"content\":\"" + sentence + "\"}"))
-			.build();
+				.uri(URI.create("https://naveropenapi.apigw.ntruss.com/sentiment-analysis/v1/analyze"))
+				.header("Content-Type", "application/json")
+				.header("X-NCP-APIGW-API-KEY-ID", client_id)
+				.header("X-NCP-APIGW-API-KEY", client_secret)
+				.POST(HttpRequest.BodyPublishers.ofString("{\"content\":\"" + sentence + "\"}"))
+				.build();
 
-		return client.send(request, HttpResponse.BodyHandlers.ofString());
+		try {
+			return client.send(request, HttpResponse.BodyHandlers.ofString());
+		} catch (IOException | InterruptedException e) {
+			System.err.println("HTTPS 요청 실패: " + e.getMessage());
+			e.printStackTrace();
+			return null;
+		}
 	}
 
 	// 가중치 적용 메서드
