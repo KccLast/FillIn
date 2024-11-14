@@ -43,4 +43,5 @@ public interface SurveyService {
 
 	public Long getLastSurveySeq(Long memberSeq);
 
+    boolean deleteSurvey(Long surveySeq);
 }

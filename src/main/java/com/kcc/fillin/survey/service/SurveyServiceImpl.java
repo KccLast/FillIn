@@ -1,7 +1,6 @@
 package com.kcc.fillin.survey.service;
 
-import java.sql.SQLException;
-import java.time.LocalDate;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -9,6 +8,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+
+import com.kcc.fillin.question.domain.QuestionItemVO;
+import com.kcc.fillin.question.domain.QuestionVO;
+import com.kcc.fillin.question.service.QuestionService;
 import com.kcc.fillin.survey.dto.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,9 +30,10 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class SurveyServiceImpl implements SurveyService {
 	private final SurveyDao mapper;
-
+	private final QuestionService questionService;
 	//설문 로그
 	private final SurveyLogMapper surveyLogMapper;
+
 
 	@Override
 	public List<MultiSearchSurveyResponse> getAllSurveys() {
@@ -120,11 +124,41 @@ public List<SurveyLogDTO> getSurveyLogs(Long surveySeq, LocalDateTime startDate,
 		return mapper.getLastSurveySeq(memberSeq);
 	}
 
-
 	@Override
-	public boolean createNewSurvey(SurveyVO newSurvey) {
+	public boolean deleteSurvey(Long surveySeq) {
 
-		return mapper.insertNewSurvey(newSurvey);
+		mapper.deleteSurveyQuestionItem(surveySeq);
+		mapper.deleteSurveyQuestion(surveySeq);
+		mapper.deleteSurvey(surveySeq);
+		return true;
+	}
+
+
+	//	@Override
+//	public boolean createNewSurvey(SurveyVO newSurvey) {
+//
+//		return mapper.insertNewSurvey(newSurvey);
+//	}
+	@Override
+	@Transactional
+	public boolean createNewSurvey(SurveyVO newSurvey) {
+		mapper.insertNewSurvey(newSurvey);
+		QuestionVO questionVO = new QuestionVO();
+		questionVO.setSurveySeq(newSurvey.getSeq());
+		questionVO.setOrder(1);
+		questionVO.setDescription(" ");
+		questionVO.setName(" ");
+		questionVO.setCcSeq(7L);
+		questionVO.setIsEssential('Y');
+		mapper.insertQuestion(questionVO);
+
+		QuestionItemVO questionItemVO = new QuestionItemVO();
+		questionItemVO.setQuestionSeq(questionVO.getSeq());
+		questionItemVO.setContent("");
+		questionItemVO.setOrderNum(1);
+		mapper.insertQuestionItem(questionItemVO);
+
+		return true;
 	}
 
 	@Override

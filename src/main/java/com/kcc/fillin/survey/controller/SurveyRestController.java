@@ -88,8 +88,7 @@ public class SurveyRestController {
             @RequestParam("endDate") String endDateStr
             ) {
 
-        System.out.println("surveySeq = " + surveySeq);
-        System.out.println("클라이언트에서온 데이터 " + surveySeq + startDateStr+ endDateStr);
+
         LocalDate startDate = LocalDate.parse(startDateStr);
         LocalDate endDate = LocalDate.parse(endDateStr);
 
@@ -106,8 +105,7 @@ public class SurveyRestController {
             @RequestParam("surveySeq") Long surveySeq,
             @RequestParam("startDate") String startDateStr,
             @RequestParam("endDate") String endDateStr) {
-        System.out.println("surveySeq = " + surveySeq);
-        System.out.println("클라이언트에서온 데이터 2: "  + startDateStr+"    "+ endDateStr);
+//
         LocalDate startDate = LocalDate.parse(startDateStr);
         LocalDate endDate = LocalDate.parse(endDateStr);
 
