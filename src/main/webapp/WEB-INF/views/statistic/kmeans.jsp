@@ -122,7 +122,7 @@
                                                         <span id="rangeMaxValue">20</span>
                                                     </div>
                                                 </div>
-                                                <div class="col-2">
+                                                <div class="col-3">
                                                     <span id="currentRangeValue">2</span>
                                                 </div>
                                             </div>
@@ -142,13 +142,13 @@
                                     <div class="card mt-3">
                                         <div class="card-body" style="padding: 0; max-height: 420px; overflow-y: auto">
                                             <table class="table table-hover"
-                                                style="table-layout: fixed; width: 100%; text-align: center">
+                                                style="table-layout: fixed; width: 100%; ">
                                                 <thead
-                                                    style="position: sticky; top: 0; background-color: white; z-index: 1;">
+                                                    style="position: sticky; top: 0; background-color: white; z-index: 1; padding: 10px;">
                                                     <tr>
-                                                        <th scope="col" style="width: 25%">응답일</th>
-                                                        <th scope="col" style="width: 10%">Cluster</th>
-                                                        <th scope="col" style="width: 65%">내용</th>
+                                                        <th scope="col" style="width: 25%; text-align: center;">응답일</th>
+                                                        <th scope="col" style="width: 10%; text-align: center;">Cluster</th>
+                                                        <th scope="col" style="width: 65%;  text-align: center;">내용</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody id="table-body"></tbody>

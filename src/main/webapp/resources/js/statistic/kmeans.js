@@ -313,9 +313,9 @@ function updateTable(series) {
         cluster.data.forEach((data, dataIndex) => {
             const row = `
                 <tr>
-                    <td>${data[3]}</td> <!-- answerDate -->
-                    <td>${clusterIndex + 1}</td> <!-- cluster no -->
-                    <td>${data[2]}</td> <!-- answerContent -->
+                    <td style="text-align: center; padding: 10px;">${data[3]}</td> <!-- answerDate -->
+                    <td style="text-align: center; padding: 10px;">${clusterIndex + 1}</td> <!-- cluster no -->
+                    <td style=" padding: 10px;">${data[2]}</td> <!-- answerContent -->
                 </tr>
             `;
             tableBody.append(row); // 테이블에 행 추가
