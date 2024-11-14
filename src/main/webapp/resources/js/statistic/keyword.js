@@ -523,7 +523,7 @@ function analyzeEmotionByRow(data) {
 
     data.forEach((item, index) => {
         $.ajax({
-            url: "https://fillin.kro.kr/api/statistic/analyzeEmotion",
+            url: "/api/statistic/analyzeEmotion",
             method: "POST",
             contentType: "application/json",
             data: JSON.stringify({text: item.answerContent}),
@@ -1136,7 +1136,7 @@ async function collectTableData() {
 function getDetailEmotion(text) {
     return new Promise((resolve, reject) => {
         $.ajax({
-            url: "https://fillin.kro.kr/api/statistic/analyzeEmotion",
+            url: "/api/statistic/analyzeEmotion",
             method: "POST",
             contentType: "application/json",
             data: JSON.stringify({ text: text }),
