@@ -448,7 +448,7 @@ $(document).ready(function () {
                 renderResponseTimeChart(data);
             },
             error: function () {
-                alert("로그 데이터를 가져오는 중 오류가 발생했습니다.");
+
             },
         });
     }
@@ -464,12 +464,12 @@ $(document).ready(function () {
                     renderStatusTable(data);
                     renderStatusChart(data);
                 } else {
-                    alert("조회된 설문 상태 비율 데이터가 없습니다.");
+
                 }
             },
             error: function (xhr, status, error) {
                 console.error("Error fetching status counts:", xhr, status, error);
-                alert("설문 상태 비율 데이터를 가져오는 중 오류가 발생했습니다.");
+
             },
         });
     }
