@@ -1136,7 +1136,7 @@ async function collectTableData() {
 function getDetailEmotion(text) {
     return new Promise((resolve, reject) => {
         $.ajax({
-            url: "/api/statistic/analyzeEmotion",
+            url: "https://fillin.kro.kr/api/statistic/analyzeEmotion",
             method: "POST",
             contentType: "application/json",
             data: JSON.stringify({ text: text }),

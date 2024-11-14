@@ -39,7 +39,7 @@ public class StatisticController2 {
 		model.addAttribute("clusteringData", clusteringData);
 		model.addAttribute("questionName", questionName);
 
-		log.info("qqqqqqqqqqqqn : " + questionName);
+
 
 		return "/statistic/keyword";
 	}
