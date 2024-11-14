@@ -142,6 +142,11 @@ function updateHitsPage(response) {
         labels.push(hit.occurDate);
     });
 
+    // 총 조회수, 시작수, 완료수를 HTML 요소에 업데이트
+    document.querySelector(".total-views .fs-4").textContent = totalViews.reduce((a, b) => a + b, 0);
+    document.querySelector(".start-count .fs-4").textContent = startCount.reduce((a, b) => a + b, 0);
+    document.querySelector(".completed-count .fs-4").textContent = completedCount.reduce((a, b) => a + b, 0);
+
     // 기존 차트가 있으면 제거
     if (hitsChart) {
         hitsChart.destroy();
