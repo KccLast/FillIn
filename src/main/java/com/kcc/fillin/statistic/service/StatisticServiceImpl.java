@@ -464,8 +464,10 @@ public class StatisticServiceImpl implements StatisticService {
 	}
 
 	// 감정 분석 API 요청 메서드
-	
+
 	public HttpResponse<String> sendSentimentRequest(String sentence)  throws IOException, InterruptedException {
+		System.out.println("client_id = " + client_id);
+		System.out.println("client_secret = " + client_secret);
 		HttpClient client = HttpClient.newHttpClient();
 		HttpRequest request = HttpRequest.newBuilder()
 				.uri(URI.create("https://naveropenapi.apigw.ntruss.com/sentiment-analysis/v1/analyze"))

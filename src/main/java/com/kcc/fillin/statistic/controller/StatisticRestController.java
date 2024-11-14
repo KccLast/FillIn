@@ -88,6 +88,7 @@ public class StatisticRestController {
 		System.out.println("여기까지 들어왔어요!");
 
 		SentimentAnalysisResult result = statisticService.analyzeSentiment(request.getText());
+		System.out.println("여기로 나왔어요!");
 		return new ResponseEntity<>(result, HttpStatus.OK);
 	}
 
