@@ -157,6 +157,11 @@
                 <div class="analysis-text">
                     <p id="analysisContent"></p>
                 </div>
+
+                <!-- 로딩 박스 -->
+                <div class="loading-box" style="display:none; padding: 20px">
+                    <span class="loader"></span>
+                </div>
             </div>
         </div>
 

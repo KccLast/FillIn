@@ -42,7 +42,19 @@ function loadQuestionData() {
 
 // 분석 버튼 클릭 이벤트
 $(document).on('click', '.ai-analysis-button', function() {
-    sendDataToServer();
+    // 로딩 박스를 화면에 표시
+    $('.loading-box').show();
+
+    sendDataToServer().done(function(response) {
+        console.log(response);
+        // 분석이 완료된 후 로딩 박스를 숨기고 결과 표시
+        $('.loading-box').hide();
+        $('#analysisContent').html(response.data);  // 서버에서 반환한 분석 결과
+    }).fail(function() {
+        // 실패 시 로딩 박스를 숨기고 오류 메시지 표시
+        $('.loading-box').hide();
+        $('#analysisContent').html('분석 실패. 다시 시도해 주세요.');
+    });
 });
 
 // 서버에 AJAX 요청 보내기
@@ -50,19 +62,19 @@ function sendDataToServer() {
     const data = prepareDataForRequest();
     console.log(data);
 
-    $.ajax({
+    return $.ajax({
         url: '/api/question/make-clustering',
         method: 'POST',
         contentType: 'application/json',
-        data: JSON.stringify(data),
-        success: function(response) {
-            console.log("서버 응답:", response);
-            // 서버 응답을 분석 텍스트에 삽입
-            $('#analysisContent').html(response.data); // 응답 텍스트를 삽입
-        },
-        error: function(error) {
-            console.error("에러 발생:", error);
-        }
+        data: JSON.stringify(data)
+        // success: function(response) {
+        //     console.log("서버 응답:", response);
+        //     // 서버 응답을 분석 텍스트에 삽입
+        //     $('#analysisContent').html(response.data); // 응답 텍스트를 삽입
+        // },
+        // error: function(error) {
+        //     console.error("에러 발생:", error);
+        // }
     });
 }
 
@@ -149,7 +161,11 @@ function updateRightTable(question) {
     rightTbody.empty();
 
     question.answerList.forEach((answer, index) => {
-        const clusters = answer.clusterList.map(cluster => `Cluster ${cluster}`).join(', ');
+        // clusterList가 비어 있으면 '-'을 넣고, 그렇지 않으면 클러스터 목록을 표시
+        const clusters = answer.clusterList.length > 0
+            ? answer.clusterList.map(cluster => `Cluster ${cluster}`).join(', ')
+            : '-';
+
         const row = `
             <tr>
                 <td>${index + 1}</td>

@@ -45,19 +45,21 @@
                                                                     data-bs-target="#j-user-sur-Modal">설문 전체 통계</h4>
 
                                                                 <!-- 임계값 입력과 제외하기 버튼을 추가 -->
-                                                                <!-- <div class="row g-3 my-auto justify-content-end">
-                                                                    <%-- <div class="col-auto">--%>
-                                                                        <%-- <input type="number" class="form-control"
-                                                                            id="thresholdInput" placeholder="임계값 입력 (초)"
-                                                                            value="60" --%>
-                                                                            <%-- min="20" max="60">--%>
-                                                                                <%-- </div>--%>
-                                                                                    <div class="col-auto">
-                                                                                        <button id="exclude-btn"
-                                                                                            class="btn btn-danger">비정상
-                                                                                            응답 필터</button>
-                                                                                    </div>
-                                                                </div> -->
+
+<%--                                                                <div class="row g-3 my-auto justify-content-end">--%>
+<%--                                                                    &lt;%&ndash; <div class="col-auto">&ndash;%&gt;--%>
+<%--                                                                        &lt;%&ndash; <input type="number" class="form-control"--%>
+<%--                                                                            id="thresholdInput" placeholder="임계값 입력 (초)"--%>
+<%--                                                                            value="60" &ndash;%&gt;--%>
+<%--                                                                            &lt;%&ndash; min="20" max="60">&ndash;%&gt;--%>
+<%--                                                                                &lt;%&ndash; </div>&ndash;%&gt;--%>
+<%--                                                                                    <div class="col-auto">--%>
+<%--                                                                                        <button id="exclude-btn"--%>
+<%--                                                                                            class="btn btn-danger">비정상--%>
+<%--                                                                                            응답 필터</button>--%>
+<%--                                                                                    </div>--%>
+<%--                                                                </div>--%>
+
 
                                                                 <!-- 임계값 입력과 제외하기 버튼을 추가 -->
 
@@ -120,16 +122,16 @@
                                                                     <h5 class="fw-bold mt-4">조회수 통계</h5>
                                                                     <div class="card">
                                                                         <div class="card-body">
-                                                                            <div class="row mb-3 fw-bold">
-                                                                                <div class="col">
+                                                                            <div class="row mb-3 fw-bold" style="height: auto;">
+                                                                                <div class="col total-views">
                                                                                     <div class="fs-8">총 조회수</div>
                                                                                     <div class="fs-4 fw-bold">25</div>
                                                                                 </div>
-                                                                                <div class="col">
+                                                                                <div class="col start-count">
                                                                                     <div class="fs-8">시작 수</div>
                                                                                     <div class="fs-4 fw-bold">25</div>
                                                                                 </div>
-                                                                                <div class="col">
+                                                                                <div class="col completed-count">
                                                                                     <div class="fs-8">완료 수</div>
                                                                                     <div class="fs-4 fw-bold">25</div>
                                                                                 </div>
