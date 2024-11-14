@@ -86,7 +86,7 @@ public class StatisticRestController {
 	@PostMapping("/analyzeEmotion")
 	public ResponseEntity<SentimentAnalysisResult> analyzeEmotion(@RequestBody EmotionRequest request) {
 		System.out.println("여기까지 들어왔어요!");
-		System.out.println("request = " + request);
+
 		SentimentAnalysisResult result = statisticService.analyzeSentiment(request.getText());
 		return new ResponseEntity<>(result, HttpStatus.OK);
 	}
