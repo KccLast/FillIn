@@ -1283,7 +1283,7 @@ function sendDataToServer() {
         .catch(error => console.error("에러 발생:", error));
 }
 
-/*document.addEventListener("DOMContentLoaded", function () {
+/* document.addEventListener("DOMContentLoaded", function () {
     $('#wordCloudContainer').focus();
 
     const maxChunkSize = 1000;
@@ -1754,3 +1754,4 @@ function analyzeEmotionByRow(data) {
 
                     // 가장 높은 confidence 값을 기준으로 감정을 결정하여 카운트
                     if (
+                    */
