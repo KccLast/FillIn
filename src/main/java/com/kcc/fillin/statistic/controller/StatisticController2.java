@@ -47,10 +47,11 @@ public class StatisticController2 {
 			// PostDateResponse postDateResponse = statisticService.getPostDate(surveyId);
 			model.addAttribute("postDateResponse", statisticService.getPostDate(surveyId));
 		}else{
+
 			Long lastSurveySeq = surveyService.getLastSurveySeq(principalDetail.getMember().getSeq());
 			if(lastSurveySeq == null) return "redirect:/survey/dashboard";
 			else{
-				return "redirect:/statistic/"+lastSurveySeq+"";
+				return "redirect:/statistic/"+lastSurveySeq;
 			}
 		}
 		return "/statistic/full";
@@ -58,7 +59,7 @@ public class StatisticController2 {
 
 	@GetMapping({"/clustering/{surveyId}","/clustering"})
 	public String getClustering(@PathVariable(required = false) Long surveyId, Model model, @AuthenticationPrincipal PrincipalDetail principalDetail)  {
-		
+
 		if(surveyId != null) {
 			System.out.println(surveyId);
 			model.addAttribute("surveyId", surveyId);

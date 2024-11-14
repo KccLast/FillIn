@@ -66,8 +66,12 @@
                             <li class="dashboard" style="width: 10%;">
 
                             </li>
+
                             <input class="j-header-surveyName j-header-name-focus form-control" type="text" readonly
                                 style="border: none; width: 85%;">
+                            <div class="removeSurvey-header" style="display: none;">
+                                <img class="removeSurvey-header-img" src="/resources/img/question/x-circle-red.png">
+                            </div>
                         </div>
                         <div class="d-flex align-items-center">
                             <li class="px-2 alarm-item"><img alt="alarm" src="/resources/img/common/alarm.png"
@@ -75,8 +79,7 @@
                                 <div class="circle"></div>
                             </li>
                             <li class="px-2 username">
-                                <sec:authentication property="principal.member.name" />님(
-                                <sec:authentication property="principal.member.username" />)
+                                <sec:authentication property="principal.member.name" />님(<sec:authentication property="principal.member.username" />)
                             </li>
                             <li class="px-2">
                                 <!-- 모달 연결 -->
