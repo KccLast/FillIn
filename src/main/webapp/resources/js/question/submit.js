@@ -243,7 +243,7 @@ function submitResponse() {
       url: '/api/question/submit',
       type: 'post',
       contentType: 'application/json',
-      data: JSON.stringify(filteredData),
+      data: JSON.stringify(localData),
       success: function () {
         alert('설문에 참여해주셔서 감사합니다.');
         //window.close();
@@ -260,7 +260,7 @@ function lenValid(dataList) {
   return true;
 }
 function essentialCheck(dataList) {
-  return false;
+  return true;
 }
 function getSubmitObject(target, value) {
   let $parentCard = $(target).parents('.j-question-card'); // 부모 .j-question-card 요소
