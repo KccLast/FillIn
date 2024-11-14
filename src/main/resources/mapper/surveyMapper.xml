@@ -132,7 +132,7 @@
         s.updated_at AS updated_at,
         s.post_date AS post_date,
         s.end_date AS end_date,
-        COUNT(a.seq) AS answer_count
+        COUNT(DISTINCT a.participant_seq) AS answer_count
         FROM
         survey s
         LEFT JOIN question q
