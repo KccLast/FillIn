@@ -418,3 +418,35 @@ button.custom-btn {
     position: relative; /* position 설정 */
     z-index: 1; /* z-index 설정 */
 }
+
+
+.sentiment-label {
+    display: inline-flex;
+    align-items: center;
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-weight: bold;
+    font-size: 0.9em;
+    color: #fff;
+}
+
+.sentiment-label img {
+    width: 20px;
+    height: 20px;
+    margin-right: 5px;
+}
+
+.sentiment-label.positive {
+    background-color: #D4F5D8; /* 긍정 - 연한 초록색 */
+    color: #2b8a3e; /* 텍스트 색상 */
+}
+
+.sentiment-label.neutral {
+    background-color: #FFF7C7; /* 중립 - 연한 노란색 */
+    color: #d4a017; /* 텍스트 색상 */
+}
+
+.sentiment-label.negative {
+    background-color: #FFDEDD; /* 부정 - 연한 빨간색 */
+    color: #b22222; /* 텍스트 색상 */
+}
