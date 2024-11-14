@@ -49,13 +49,13 @@ header {
 }
 
 .username {
-	font-weight: bold;
+   font-weight: bold;
 }
 
 
 .px-2 {
-	/* padding-right: .5rem !important; */
-	padding-left: .5rem !important;
+   /* padding-right: .5rem !important; */
+   padding-left: .5rem !important;
 }
 
 

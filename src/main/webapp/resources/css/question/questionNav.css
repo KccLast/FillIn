@@ -300,4 +300,14 @@ body {
 
 .j-header-surveyName {
   font-weight: bold !important;
+  width: 80% !important;
+}
+.removeSurvey-header > img {
+  width: 20px;
+  height: 20px;
+}
+.removeSurvey-header {
+  width: 20%;
+  display: block !important;
+  visibility: hidden;
 }

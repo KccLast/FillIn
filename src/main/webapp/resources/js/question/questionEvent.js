@@ -1,6 +1,24 @@
 var dragInstance;
 
 $(function () {
+  $('.dashboard')
+    .parent()
+    .on('mouseenter', function () {
+      $(this).find('img').css('visibility', 'visible'); // 마우스 올리면 보이기
+    });
+
+  $('.dashboard')
+    .parent()
+    .on('mouseleave', function () {
+      $(this).find('img').css('visibility', 'hidden'); // 마우스 떠나면 숨기기
+    });
+
+  $('.removeSurvey-header').on('click', function (e) {
+    // 클릭 이벤트를 추가로 처리할 내용이 있을 때 작성
+
+    e.stopPropagation();
+  });
+
   // x버튼 숨기기
   // jQuery로 이벤트 위임 설정
   $(document).on('mouseenter', '.j-question', function () {

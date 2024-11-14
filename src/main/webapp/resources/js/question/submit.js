@@ -246,7 +246,7 @@ function submitResponse() {
       data: JSON.stringify(filteredData),
       success: function () {
         alert('설문에 참여해주셔서 감사합니다.');
-        window.close();
+        //window.close();
       },
       error: function (error) {},
     });
@@ -946,6 +946,7 @@ function checkConditionalFlow(targetCard, targetVal) {
   console.log(idx);
   idx++;
   console.log(idx);
+
   let findNode = nodeList.find((node) => node.seq === parseInt(questionSeq));
 
   if (!findNode) return;
@@ -955,6 +956,20 @@ function checkConditionalFlow(targetCard, targetVal) {
   for (const con of findNode.conditionList) {
     if (cal(con.operation, con.val, targetVal)) {
       console.log(con.val);
+      //이전 next를 다시 원본으로 돌리는 부분
+      let preNodeNextSeq = findNode.next; // 기존 next 시퀀스 저장
+      if (preNodeNextSeq) {
+        let preNodeNext = nodeList.find((node) => node.seq === preNodeNextSeq);
+        if (preNodeNext) {
+          let originFree = originalNodeList.find(
+            (node) => node.seq === preNodeNextSeq
+          );
+          if (originFree) {
+            preNodeNext.prev = originFree.prev; // 원래 prev로 복구
+          }
+        }
+      }
+      //이전 연결된 next를 원본으로 돌리는 부분
       findNode.next = con.next;
       let nodeListNext = nodeList.find((node) => node.seq === con.next);
       nodeListNext.prev = findNode.seq;
@@ -963,7 +978,6 @@ function checkConditionalFlow(targetCard, targetVal) {
       break; // 반복 중단
     }
   }
-  console.log(nodeList);
 
   if (!isConditionAnswer) {
     let findOrigin = originalNodeList.find(
