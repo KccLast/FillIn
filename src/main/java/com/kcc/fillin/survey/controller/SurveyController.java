@@ -8,11 +8,7 @@ import com.kcc.fillin.member.auth.PrincipalDetail;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -41,7 +37,7 @@ public class SurveyController {
 	}
 	@GetMapping("/dashboard")
 	public String dashboard(Criteria cri, Model model, @AuthenticationPrincipal PrincipalDetail principalDetail) {
-		System.out.println("Criteria: " + cri);
+
 		int pageNum = cri.getPageNum();
 		int amount = cri.getAmount();
 
@@ -58,13 +54,11 @@ public class SurveyController {
 		model.addAttribute("pageNum", pageNum);
 		model.addAttribute("amount", amount);
 
-		System.out.println("pagedSurveys: " + pagedSurveys);
-		System.out.println("pageNum: " + pageNum);
-		System.out.println("amount: " + amount);
+
 
 		int totalSurveyCount = service.getTotalSurveyCount(username);
 		model.addAttribute("totalSurveyCount", totalSurveyCount);
-		System.out.println("totalSurveyCount: " + totalSurveyCount);
+
 
 		int totalPages = (int)Math.ceil((double)totalSurveyCount / amount);
 		model.addAttribute("totalPages", totalPages);
@@ -84,7 +78,7 @@ public class SurveyController {
 	public String newProject(SurveyVO newSurvey,  @AuthenticationPrincipal PrincipalDetail principalDetail) {
 		//test용으로 memberId 설정함 (추후 삭제 반드시 필요)
 		newSurvey.setMemberSeq(principalDetail.getMember().getSeq());
-		System.out.println("newSurvey = " + newSurvey);
+
 		boolean result = service.createNewSurvey(newSurvey);
 		//survey 등록 실패 관련 로직 필요
 		return "redirect:/survey/" + newSurvey.getSeq();
@@ -147,4 +141,10 @@ public class SurveyController {
 		return "/survey/participant";
 	}
 
+	@DeleteMapping("/{surveySeq}")
+	@ResponseBody
+	public String deleteSurvey(@PathVariable Long surveySeq){
+		service.deleteSurvey(surveySeq);
+		return "suce";
+	}
 }

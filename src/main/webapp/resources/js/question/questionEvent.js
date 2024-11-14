@@ -15,7 +15,36 @@ $(function () {
 
   $('.removeSurvey-header').on('click', function (e) {
     // 클릭 이벤트를 추가로 처리할 내용이 있을 때 작성
-
+    Swal.fire({
+         title: '정말 삭제하시겠습니가?',
+         text: '한번 삭제한 설문지는 복구할 수 없습니다!',
+         icon: 'warning',
+         showCancelButton: true,
+         confirmButtonColor: '#3085d6',
+         cancelButtonColor: '#d33',
+         confirmButtonText: 'Yes, delete it!',
+       }).then((result) => {
+         if (result.isConfirmed) {
+           Swal.fire({
+             title: 'Deleted!',
+             text: 'Your file has been deleted.',
+             icon: 'success',
+           });
+           let surveySeq = $('#surveySeq').val();
+           $.ajax({
+             url: '/survey/'+surveySeq, // surveySeq 변수를 경로에 포함
+             type: 'DELETE', // HTTP 메서드를 DELETE로 설정
+             success: function (response) {
+               // 성공 시 리디렉션
+               window.location.href = '/survey/dashboard';
+             },
+             error: function (xhr, status, error) {
+               console.error('삭제 요청 실패:', error);
+               alert('삭제에 실패했습니다.');
+             },
+           });
+         }
+       });
     e.stopPropagation();
   });
 

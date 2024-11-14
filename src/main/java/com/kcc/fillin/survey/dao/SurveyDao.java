@@ -2,6 +2,8 @@ package com.kcc.fillin.survey.dao;
 
 import java.util.List;
 
+import com.kcc.fillin.question.domain.QuestionItemVO;
+import com.kcc.fillin.question.domain.QuestionVO;
 import org.apache.ibatis.annotations.Mapper;
 
 import com.kcc.fillin.survey.domain.ParticipantVO;
@@ -42,4 +44,13 @@ public interface SurveyDao {
 
 	Long getLastSurveySeq(Long seq);
 
+    void deleteSurvey(Long surveySeq);
+
+	void deleteSurveyQuestion(Long surveySeq);
+
+	void deleteSurveyQuestionItem(Long surveySeq);
+
+	void insertQuestion(QuestionVO questionVO);
+
+	void insertQuestionItem(QuestionItemVO questionItemVO);
 }

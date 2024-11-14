@@ -99,8 +99,8 @@
             ROUND(COUNT(*) * 100.0 / SUM(COUNT(*)) OVER (), 2) AS percentage
             FROM combined_data
             WHERE
-            (TO_CHAR(start_date, 'YYYY-MM-DD') &gt;= #{startDate} AND TO_CHAR(end_date, 'YYYY-MM-DD') &lt;= #{endDate})
-            OR (TO_CHAR(start_date, 'YYYY-MM-DD') &gt;= #{startDate} AND end_date IS NULL)
+            (TO_CHAR(start_date, 'YYYY-MM-DD') <![CDATA[ >=]]> #{startDate} AND TO_CHAR(end_date, 'YYYY-MM-DD') <![CDATA[ <= ]]> #{endDate})
+            OR (TO_CHAR(start_date, 'YYYY-MM-DD')  <![CDATA[<=]]> #{startDate} AND end_date IS NULL)
             GROUP BY status
 </select>
 

@@ -45,6 +45,7 @@
                                                                     data-bs-target="#j-user-sur-Modal">설문 전체 통계</h4>
 
                                                                 <!-- 임계값 입력과 제외하기 버튼을 추가 -->
+
 <%--                                                                <div class="row g-3 my-auto justify-content-end">--%>
 <%--                                                                    &lt;%&ndash; <div class="col-auto">&ndash;%&gt;--%>
 <%--                                                                        &lt;%&ndash; <input type="number" class="form-control"--%>
@@ -58,6 +59,7 @@
 <%--                                                                                            응답 필터</button>--%>
 <%--                                                                                    </div>--%>
 <%--                                                                </div>--%>
+
 
                                                                 <!-- 임계값 입력과 제외하기 버튼을 추가 -->
 

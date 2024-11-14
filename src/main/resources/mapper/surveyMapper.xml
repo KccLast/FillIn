@@ -313,4 +313,48 @@
         FROM survey
         WHERE member_seq = #{memberSeq}
     </select>
+
+    <delete id="deleteSurvey" parameterType="Long">
+        delete from survey
+        WHERE seq = #{surveySeq}
+    </delete>
+    <delete id="deleteSurveyQuestion" parameterType="Long">
+        DELETE FROM question
+        WHERE survey_seq = #{surveySeq}
+    </delete>
+
+    <delete id="deleteSurveyQuestionItem" parameterType="Long">
+        DELETE FROM question_item
+        WHERE question_seq IN (
+        SELECT seq FROM question WHERE survey_seq = #{surveySeq}
+        )
+    </delete>
+
+    <insert id="insertQuestion" parameterType="QuestionVO">
+        <selectKey keyColumn="seq" keyProperty="seq" order="BEFORE" resultType="long">
+            SELECT question_seq.nextval FROM dual
+        </selectKey>
+        insert into question (seq,survey_seq,name,description,order_num,is_essential,created_at,updated_at,cc_seq)values(
+            #{seq},
+            #{surveySeq},
+            #{name},
+            #{description},
+            #{order},
+            'Y',
+            sysdate,
+        sysdate,
+        #{ccSeq}
+        )
+    </insert>
+    <insert id="insertQuestionItem" parameterType="QuestionItemVO">
+
+        <selectKey keyProperty="seq" resultType="long" order="BEFORE">
+            SELECT question_item_seq.nextval
+            FROM dual
+        </selectKey>
+
+        INSERT INTO question_item(seq,question_seq,content,order_num)
+        VALUES(#{seq},#{questionSeq},#{content},#{orderNum})
+
+    </insert>
 </mapper>
