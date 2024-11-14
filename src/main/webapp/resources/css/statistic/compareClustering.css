@@ -204,37 +204,47 @@ body {
     font-weight: bold;
 }
 
+/* 테이블 스타일 */
 .styled-table table {
     width: 100%;
+    table-layout: fixed; /* 열 너비 고정 */
     border-collapse: separate;
     border-spacing: 0 10px; /* 행 간격 */
+    height: 300px; /* 양쪽 테이블 높이 고정 */
+    overflow-y: auto; /* 테이블 내용이 높이를 초과할 경우 스크롤 */
+    /*display: block;*/
 }
 
+/* 테이블 헤더 스타일 */
 .styled-table th {
     font-weight: bold;
     text-align: left;
     padding: 10px;
-
     background-color: #e9ecef;
-    /*font-weight: bold;*/
     color: #333;
     border-top-left-radius: 10px;
     border-top-right-radius: 10px;
+    text-align: center;
 }
 
+/* 테이블 셀 스타일 */
 .styled-table td {
     background-color: #fff;
     padding: 10px;
     vertical-align: middle;
-    /*box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);*/
-    /*border-radius: 8px; !* 셀 둥글게 *!*/
+    /*overflow: hidden;*/
+    /*text-overflow: ellipsis; !* 말줄임표 (...) 추가 *!*/
+    /*white-space: nowrap; !* 텍스트를 한 줄로 유지 *!*/
+    text-align: center;
 }
 
+/* 테이블 행 스타일 */
 .styled-table tr {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     border-radius: 8px; /* 셀 둥글게 */
 }
 
+/* 번호 표시 스타일 */
 .styled-table .circle-number {
     display: inline-block;
     background-color: #f2f2f2;
@@ -246,13 +256,64 @@ body {
     font-weight: bold;
 }
 
+.styled-table .question-name {
+    position: relative;
+    max-width: 150px; /* 원하는 최대 너비로 조절 */
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis; /* 말줄임표 활성화 */
+    cursor: pointer; /* 마우스를 올렸을 때 손가락 모양 */
+}
+
+/* 툴팁 스타일 */
+.styled-table .question-name:hover::after {
+    content: attr(title); /* title 속성 내용 표시 */
+    position: absolute;
+    top: 100%; /* 요소 바로 아래에 툴팁 표시 */
+    left: 0;
+    background-color: #333; /* 툴팁 배경색 */
+    color: #fff;
+    padding: 5px;
+    border-radius: 5px;
+    white-space: nowrap;
+    font-size: 12px;
+    z-index: 1;
+    transform: translateY(5px); /* 약간의 간격 추가 */
+}
+
+/* 유형 아이콘 스타일 */
 .styled-table .type-icon {
     font-size: 1.2em;
     margin-right: 5px;
     vertical-align: middle;
 }
 
-.styled-table th, .styled-table td {
-    border: none;
-    text-align: center;
+/* 열 너비 설정 */
+.styled-table th:nth-child(1),
+.styled-table td:nth-child(1) {
+    width: 10%; /* 번호 열 너비 */
+}
+
+.styled-table th:nth-child(2),
+.styled-table td:nth-child(2) {
+    width: 60%; /* 질문/응답 열 너비 */
+}
+
+.styled-table th:nth-child(3),
+.styled-table td:nth-child(3) {
+    width: 45%; /* 유형/클러스터 열 너비 */
+}
+
+.table-left, .table-right {
+    border: 2px solid #ddd; /* 테두리 색상과 두께 */
+    border-radius: 10px; /* 둥근 모서리 */
+    padding: 20px; /* 테두리 안쪽 여백 */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* 그림자 */
+}
+
+.analysis-text {
+    max-height: 400px; /* 텍스트가 이 높이를 초과하면 스크롤 생김 */
+    overflow-y: auto; /* 세로 스크롤 추가 */
+    padding: 10px; /* 패딩 추가 (선택사항) */
+    border: 1px solid #ccc; /* 테두리 (선택사항) */
 }

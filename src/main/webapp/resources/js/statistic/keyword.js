@@ -36,6 +36,8 @@ const stopWords = [
 
 document.addEventListener("DOMContentLoaded", function () {
 
+    console.log(clusteringData);
+
     let currentData = clusteringData || [];
 
     $('#wordCloudContainer').focus();
@@ -1176,6 +1178,7 @@ $("#nextBtn").click(async function () {
     const searchParams = new URLSearchParams(window.location.search);
     let seq = searchParams.get('surveySeq');
     const topWordsByCluster = getTopWordsByCluster(clusteringData);
+    const qn = questionName;
     let clusterLength = $('#phrase > option').length -1;
 
      // 걍 index로 옮
@@ -1185,6 +1188,7 @@ $("#nextBtn").click(async function () {
     let sendData = {
         surveySeq : seq,
         clusterList:[],
+        questionName: qn
     }
     let clusterList = clusteringData.reduce((acc, item) => {
         // 해당 클러스터의 인덱스 찾기

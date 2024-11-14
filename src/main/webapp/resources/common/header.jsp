@@ -74,10 +74,10 @@
                             </div>
                         </div>
                         <div class="d-flex align-items-center">
-                            <li class="px-2 alarm-item"><img alt="alarm" src="/resources/img/common/alarm.png"
-                                    width="25" height="23">
-                                <div class="circle"></div>
-                            </li>
+<%--                            <li class="px-2 alarm-item"><img alt="alarm" src="/resources/img/common/alarm.png"--%>
+<%--                                    width="25" height="23">--%>
+<%--                                <div class="circle"></div>--%>
+<%--                            </li>--%>
                             <li class="px-2 username">
                                 <sec:authentication property="principal.member.name" />님(<sec:authentication property="principal.member.username" />)
                             </li>

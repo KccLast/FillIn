@@ -228,7 +228,9 @@
                         <%@ include file="/resources/common/dashBoardNav.jsp" %>
 
                             <script>
-                                var clusteringData = ${ clusteringData };
+                                var clusteringData = ${clusteringData};
+                                var questionName = ${questionName};
+                                console.log(questionName);
                                 console.log("Received Clustering Data: ", clusteringData);
                             </script>
 
