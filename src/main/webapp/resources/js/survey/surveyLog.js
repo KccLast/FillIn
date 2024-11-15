@@ -450,12 +450,12 @@ $(document).ready(function () {
 
   // 설문 상태 비율 데이터 로드
   function loadSurveyStatusCounts(surveySeq, startDate, endDate) {
-    console.log('hi');
     $.ajax({
       url: '/api/survey/status-counts',
       type: 'GET',
       data: { surveySeq, startDate, endDate },
       success: function (data) {
+        console.log('data');
         if (data && data.length > 0) {
           renderStatusTable(data);
           renderStatusChart(data);
