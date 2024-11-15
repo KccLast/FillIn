@@ -464,7 +464,7 @@ $(document).ready(function () {
       },
       error: function (xhr, status, error) {
         console.error('Error fetching status counts:', xhr, status, error);
-        console.error(error);
+
       },
     });
   }
