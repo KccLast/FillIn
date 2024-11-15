@@ -36,25 +36,44 @@
 --                  SELECT TRUNC(occur_date)                          AS occur_date,
                  SELECT TRUNC(occur_date)                            AS occur_date,
                         SUM(CASE WHEN cc_seq = 22 THEN 1 ELSE 0 END) AS total_views, -- 조회수
-                        SUM(CASE WHEN cc_seq = 23 THEN 1 ELSE 0 END) AS total_starts -- 시작수
+                        SUM(CASE WHEN cc_seq = 23 THEN 1 ELSE 0 END) AS total_starts, -- 시작수
+                        SUM(CASE WHEN cc_seq = 31 THEN 1 ELSE 0 END) AS participant_count
                  FROM survey_log
                  WHERE survey_seq = #{surveySeq}
                    AND occur_date BETWEEN #{startDate} AND #{endDate}
                  GROUP BY TRUNC(occur_date)) survey_log_data
-                 LEFT JOIN
-             (
-                 -- answer에서 날짜별 응답자 수 집계
-                 SELECT TRUNC(a.answer_date)              AS answer_date,
-                        COUNT(DISTINCT a.participant_seq) AS participant_count
-                 FROM answer a
-                          JOIN
-                      question q ON a.question_seq = q.seq
-                 WHERE q.survey_seq = #{surveySeq}
-                   AND a.answer_date BETWEEN #{startDate} AND #{endDate}
-                 GROUP BY TRUNC(a.answer_date)) answer_data
-             ON survey_log_data.occur_date = answer_data.answer_date
         ORDER BY occur_date
     </select>
+
+<!--    <select id="selectHits" resultType="HitsDTO">-->
+<!--        SELECT occur_date                     AS occurDate,-->
+<!--               COALESCE(total_views, 0)       AS totalViews,    &#45;&#45; 조회수-->
+<!--               COALESCE(total_starts, 0)      AS startCount,    &#45;&#45; 시작수-->
+<!--               COALESCE(participant_count, 0) AS completedCount &#45;&#45; 완료수-->
+<!--        FROM (-->
+<!--                 &#45;&#45; survey_log에서 조회수와 시작수를 날짜별로 집계-->
+<!--&#45;&#45;                  SELECT TRUNC(occur_date)                          AS occur_date,-->
+<!--                 SELECT TRUNC(occur_date)                            AS occur_date,-->
+<!--                        SUM(CASE WHEN cc_seq = 22 THEN 1 ELSE 0 END) AS total_views, &#45;&#45; 조회수-->
+<!--                        SUM(CASE WHEN cc_seq = 23 THEN 1 ELSE 0 END) AS total_starts &#45;&#45; 시작수-->
+<!--                 FROM survey_log-->
+<!--                 WHERE survey_seq = #{surveySeq}-->
+<!--                   AND occur_date BETWEEN #{startDate} AND #{endDate}-->
+<!--                 GROUP BY TRUNC(occur_date)) survey_log_data-->
+<!--                 LEFT JOIN-->
+<!--             (-->
+<!--                 &#45;&#45; answer에서 날짜별 응답자 수 집계-->
+<!--                 SELECT TRUNC(a.answer_date)              AS answer_date,-->
+<!--                        COUNT(DISTINCT a.participant_seq) AS participant_count-->
+<!--                 FROM answer a-->
+<!--                          JOIN-->
+<!--                      question q ON a.question_seq = q.seq-->
+<!--                 WHERE q.survey_seq = #{surveySeq}-->
+<!--                   AND a.answer_date BETWEEN #{startDate} AND #{endDate}-->
+<!--                 GROUP BY TRUNC(a.answer_date)) answer_data-->
+<!--             ON survey_log_data.occur_date = answer_data.answer_date-->
+<!--        ORDER BY occur_date-->
+<!--    </select>-->
 
     <resultMap id="quantitativeResponse" type="QuantitativeResponse">
         <id property="questionOrder" column="order_num"/>
