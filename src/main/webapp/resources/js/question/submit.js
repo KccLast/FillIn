@@ -246,7 +246,7 @@ function submitResponse() {
       data: JSON.stringify(localData),
       success: function () {
         alert('설문에 참여해주셔서 감사합니다.');
-        //window.close();
+        window.close();
       },
       error: function (error) {},
     });
