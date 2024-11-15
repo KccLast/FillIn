@@ -70,7 +70,9 @@
                                                     <th>비율 (%)</th>
                                                 </tr>
                                             </thead>
-                                            <tbody></tbody>
+                                            <tbody>
+
+                                            </tbody>
                                         </table>
                                     </div>
 
