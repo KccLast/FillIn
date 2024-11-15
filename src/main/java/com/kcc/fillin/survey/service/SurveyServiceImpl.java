@@ -116,6 +116,7 @@ public List<SurveyLogDTO> getSurveyLogs(Long surveySeq, LocalDateTime startDate,
 
 	@Override
 	public List<SurveyStatusDTO> getAllSurveyStatusCounts(Long surveySeq, LocalDateTime startDate, LocalDateTime endDate) {
+		System.out.println("surveySeq -======================================================== " + surveySeq);
 		return surveyLogMapper.findSurveyStatusCounts(surveySeq, startDate, endDate);
 	}
 

@@ -115,6 +115,7 @@ public class SurveyRestController {
 
 
         List<SurveyStatusDTO> statusCounts = service.getAllSurveyStatusCounts(surveySeq,startDateTime, endDateTime);
+		System.out.println("statusCounts = " + statusCounts);
 		System.out.println("여기까지도 왔다 이러면 진짜 이유를 몰라");
         return ResponseEntity.ok(statusCounts);
     }
