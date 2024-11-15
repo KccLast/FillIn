@@ -106,6 +106,7 @@ public class SurveyRestController {
             @RequestParam("startDate") String startDateStr,
             @RequestParam("endDate") String endDateStr) {
 //
+		System.out.println(" 여기 오냐 안오냐 제발 부탁해 와바바 ");
         LocalDate startDate = LocalDate.parse(startDateStr);
         LocalDate endDate = LocalDate.parse(endDateStr);
 

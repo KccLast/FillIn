@@ -455,6 +455,7 @@ $(document).ready(function () {
 
     // 설문 상태 비율 데이터 로드
     function loadSurveyStatusCounts(surveySeq, startDate, endDate) {
+        console.log(hi);
         $.ajax({
             url: "/api/survey/status-counts",
             type: "GET",
@@ -469,7 +470,7 @@ $(document).ready(function () {
             },
             error: function (xhr, status, error) {
                 console.error("Error fetching status counts:", xhr, status, error);
-
+                console.error(error);
             },
         });
     }
