@@ -191,13 +191,13 @@
         <if test="minAnswerCount > 0 or maxAnswerCount > 0">
             HAVING
             <if test="minAnswerCount > 0">
-                <![CDATA[COUNT(a.seq) >= #{minAnswerCount}]]>
+                <![CDATA[COUNT(DISTINCT a.participant_seq) >= #{minAnswerCount}]]>
             </if>
             <if test="minAnswerCount > 0 and maxAnswerCount > 0">
                 AND
             </if>
             <if test="maxAnswerCount > 0">
-                <![CDATA[COUNT(a.seq) <= #{maxAnswerCount}]]>
+                <![CDATA[COUNT(DISTINCT a.participant_seq) <= #{maxAnswerCount}]]>
             </if>
         </if>
     </select>
